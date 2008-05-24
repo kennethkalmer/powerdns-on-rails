@@ -1,0 +1,2 @@
+class NS < Record
+end

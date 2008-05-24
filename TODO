@@ -1,0 +1,26 @@
+== Bind DLZ on Rails TODO
+
+Simple list of things to do by version
+
+== 0.1
+
+* Basic database structure
+* Multiple users (admins or owners)
+* Solid models and model specs
+* Documentation
+* Configuration samples for bind-dlz
+* Zone/Record Templates
+* Basic API client
+
+== 0.2
+
+* User management
+* DNS Insight
+* API improvements
+* Deployment instructions directly from GitHub
+* Import scripts for standard zone files and PowerDNS
+
+== 0.3
+
+* Flexible model support?
+* Statistics (import bind logs)

@@ -1,0 +1,56 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+example_com_soa:
+  zone: example_com
+  ttl: 86400
+  type: SOA
+  host: @
+  primary_ns: ns1.example.com.
+  contact: admin.example.com.
+  serial: 2008040101
+  refresh: 10800
+  retry: 7200
+  expire: 604800
+  minimum: 86400
+example_com_ns_ns1:
+  zone: example_com
+  ttl: 86400
+  type: NS
+  host: @
+  data: ns1.example.com.
+example_com_ns_ns2:
+  zone: example_com
+  ttl: 86400
+  type: NS
+  host: @
+  data: ns2.example.com.
+example_com_a_ns1:
+  zone: example_com
+  ttl: 86400
+  type: A
+  host: ns1
+  data: 10.0.0.1
+example_com_a_ns2:
+  zone: example_com
+  ttl: 86400
+  type: A
+  host: ns2
+  data: 10.0.0.2
+example_com_a:
+  zone: example_com
+  ttl: 86400
+  type: A
+  host: @
+  data: 10.0.0.3
+example_com_mx:
+  zone: example_com
+  ttl: 86400
+  type: MX
+  host: @
+  data: mail
+example_com_a_mail:
+  zone: example_com
+  ttl: 86400
+  type: A
+  host: mail
+  data: 10.0.0.4

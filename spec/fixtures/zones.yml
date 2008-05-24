@@ -1,0 +1,10 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+example_com:
+  name: example.com
+
+#example_org:
+#  name: example.org
+#
+#example_net:
+#  name: example.net
