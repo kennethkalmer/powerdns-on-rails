@@ -112,4 +112,30 @@ describe Record, "when created" do
     @soa.reload
     @soa.serial.should_not eql(serial)
   end
+  
+  it "should inherit the TTL from the parent zone if not provided" do
+    ttl = zones( :example_com ).ttl
+    ttl.should be( 86400 )
+    
+    record = A.new(
+      :zone => zones( :example_com ),
+      :host => 'ftp',
+      :data => '10.0.0.6'
+    )
+    record.save.should be_true
+    
+    record.ttl.should be( 86400 )
+  end
+  
+  it "should prefer own TTL over that of parent zone" do
+    record = A.new(
+      :zone => zones( :example_com ),
+      :host => 'ftp',
+      :data => '10.0.0.6',
+      :ttl => 43200
+    )
+    record.save.should be_true
+    
+    record.ttl.should be( 43200 )
+  end
 end

@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 2) do
+ActiveRecord::Schema.define(:version => 3) do
 
   create_table "records", :force => true do |t|
     t.integer  "zone_id"
@@ -37,6 +37,7 @@ ActiveRecord::Schema.define(:version => 2) do
     t.string   "name"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "ttl",        :default => 86400
   end
 
   add_index "zones", ["name"], :name => "index_zones_on_name"

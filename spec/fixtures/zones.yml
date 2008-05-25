@@ -2,6 +2,7 @@
 
 example_com:
   name: example.com
+  ttl: 86400
 
 #example_org:
 #  name: example.org

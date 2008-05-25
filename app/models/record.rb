@@ -33,6 +33,13 @@ class Record < ActiveRecord::Base
     
   end
   
+  # Pull in the TTL from the zone if missing
+  def before_validation #:nodoc:
+    unless self.zone_id.nil?
+      self.ttl = self.zone.ttl if self.ttl.nil?
+    end
+  end
+  
   def after_save #:nodoc:
     unless self.type == 'SOA' || @serial_updated 
       self.zone.soa_record.update_serial!

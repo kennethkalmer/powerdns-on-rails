@@ -1,7 +1,14 @@
 # See #Zone
 
+# = Zone
+# 
 # A #Zone is a unique domain name entry, and contains various #Record entries to
 # represent its data.
+# 
+# The zone is used for the following purposes:
+# * It is the $ORIGIN off all its records
+# * It specifies a default $TTL
+# * Speedy lookups by bind-dlz to determine if its authorative
 # 
 class Zone < ActiveRecord::Base
   
