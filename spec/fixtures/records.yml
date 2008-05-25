@@ -11,7 +11,7 @@ example_com_soa:
   refresh: 10800
   retry: 7200
   expire: 604800
-  minimum: 86400
+  minimum: 10800
 example_com_ns_ns1:
   zone: example_com
   ttl: 86400

@@ -33,3 +33,83 @@ describe Record, "in general" do
   end
   
 end
+
+describe Record, "during updates" do
+  fixtures :all
+  
+  before(:each) do
+    @soa = records( :example_com_soa )
+  end
+  
+  it "should update the serial on the SOA" do
+    serial = @soa.serial
+    
+    record = records( :example_com_a )
+    record.data = '10.0.0.1'
+    record.save.should be_true
+    
+    @soa.reload
+    @soa.serial.should_not eql( serial )
+  end
+  
+  it "should be able to restrict the serial number to one change (multiple updates)" do
+    serial = @soa.serial
+    
+    # Implement some cheap DNS load balancing
+    Record.batch do
+      
+      record = A.new(
+        :zone => zones(:example_com),
+        :host => 'app',
+        :data => '10.0.0.5',
+        :ttl => 86400
+      )
+      record.save.should be_true
+      
+      record = A.new(
+        :zone => zones(:example_com),
+        :host => 'app',
+        :data => '10.0.0.6',
+        :ttl => 86400
+      )
+      record.save.should be_true
+      
+      record = A.new(
+        :zone => zones(:example_com),
+        :host => 'app',
+        :data => '10.0.0.7',
+        :ttl => 86400
+      )
+      record.save.should be_true
+    end
+    
+    # Our serial should have move just one position, not three
+    @soa.reload
+    @soa.serial.should_not be( serial )
+    @soa.serial.to_s.should eql( Time.now.strftime( "%Y%m%d" ) + '01' )
+  end
+  
+end
+
+describe Record, "when created" do
+  fixtures :all
+  
+  before(:each) do
+    @soa = records( :example_com_soa )
+  end
+  
+  it "should update the serial on the SOA" do
+    serial = @soa.serial
+    
+    record = A.new( 
+      :zone => zones(:example_com),
+      :host => 'admin',
+      :data => '10.0.0.5',
+      :ttl => 86400
+    )
+    record.save.should be_true
+    
+    @soa.reload
+    @soa.serial.should_not eql(serial)
+  end
+end
