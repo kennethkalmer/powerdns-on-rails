@@ -14,6 +14,11 @@ class TXT < Record
   
   # Wrap the text in double quotes
   def data=( txt )
+    if txt.nil?
+      self[:data] = nil
+      return
+    end
+    
     txt.insert( 0, '"' ) unless txt[ 0,1 ] == '"'
     txt << '"' unless txt[ txt.length, 1 ] == '"'
     

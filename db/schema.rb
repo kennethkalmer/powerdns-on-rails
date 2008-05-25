@@ -9,7 +9,24 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 3) do
+ActiveRecord::Schema.define(:version => 4) do
+
+  create_table "record_templates", :force => true do |t|
+    t.integer  "zone_template_id"
+    t.integer  "ttl"
+    t.string   "record_type"
+    t.string   "host",             :default => "@"
+    t.integer  "priority"
+    t.string   "data"
+    t.string   "primary_ns"
+    t.string   "contact"
+    t.integer  "refresh"
+    t.integer  "retry"
+    t.integer  "expire"
+    t.integer  "minimum"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "records", :force => true do |t|
     t.integer  "zone_id"
@@ -32,6 +49,13 @@ ActiveRecord::Schema.define(:version => 3) do
   add_index "records", ["zone_id"], :name => "index_records_on_zone_id"
   add_index "records", ["type"], :name => "index_records_on_type"
   add_index "records", ["host"], :name => "index_records_on_host"
+
+  create_table "zone_templates", :force => true do |t|
+    t.string   "name"
+    t.integer  "ttl",        :default => 86400
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "zones", :force => true do |t|
     t.string   "name"

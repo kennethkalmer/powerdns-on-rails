@@ -39,4 +39,5 @@ $TTL setting.
 
 == $ORIGIN
 
-The zone record is the $ORIGIN.
+The zone record is the $ORIGIN. The default host of any RR is '@', this is set
+in the database schema as well, just like the $TTL.
