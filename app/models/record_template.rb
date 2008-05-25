@@ -9,7 +9,7 @@ class RecordTemplate < ActiveRecord::Base
   
   # Convert this template record into a instance +record_type+ with the 
   # attributes of the template copied over to the instance
-  def build
+  def build( zone_name = nil )
     # get the class of the record_type
     record_class = self.record_type.constantize
 
@@ -18,6 +18,13 @@ class RecordTemplate < ActiveRecord::Base
     attrs = self.attributes.dup
     attrs.delete_if { |k,_| !record_class.columns.map( &:name ).include?( k ) }
     attrs.delete( :id )
+    
+    # parse each attribute, looking for %ZONE%
+    unless zone_name.nil?
+      attrs.keys.each do |k|
+        attrs[k] = attrs[k].gsub( '%ZONE%', zone_name ) if attrs[k].is_a?( String )
+      end
+    end
 
     # instantiate a new destination with our duplicated attributes & validate
     record_class.new( attrs )

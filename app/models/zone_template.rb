@@ -21,14 +21,14 @@ class ZoneTemplate < ActiveRecord::Base
       # build the SOA first since it is needed for the serial number updates
       # of subsequent records
       soa_template = record_templates.detect { |r| r.record_type == 'SOA' }
-      soa = soa_template.build
+      soa = soa_template.build( zone_name )
       soa.zone = zone
       soa.save!
       
       # now build the remaining records according to the templates
       templates.delete( soa_template )
       templates.each do |template|
-        record = template.build
+        record = template.build( zone_name )
         record.zone = zone
         record.save!
       end

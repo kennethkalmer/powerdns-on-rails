@@ -79,3 +79,26 @@ describe RecordTemplate, "should inherit" do
     @record_template.should have(1).error_on(:data)
   end
 end
+
+describe RecordTemplate, "when building" do
+  fixtures :all
+  
+  it "an SOA should replace the %ZONE% token with the provided zone name" do
+    template = record_templates( :east_coast_soa )
+    record = template.build( 'example.org' )
+    
+    record.should_not be_nil
+    record.should be_a_kind_of( SOA )
+    record.primary_ns.should eql('ns1.example.org.')
+  end
+  
+  it "an NS should replace the %ZONE% token with the provided zone name" do
+    template = record_templates( :east_coast_ns_ns1 )
+    record = template.build( 'example.org' )
+    
+    record.should_not be_nil
+    record.should be_a_kind_of( NS )
+    record.data.should eql('ns1.example.org.')
+  end
+  
+end
