@@ -1,3 +1,11 @@
+# See #SOA
+
+# = Start of Authority Record
+# Defined in RFC 1035. The SOA defines global parameters for the zone (domain). 
+# There is only one SOA record allowed in a zone file.
+# 
+# Obtained from http://www.zytrax.com/books/dns/ch8/soa.html
+# 
 class SOA < Record
   
   validates_presence_of :primary_ns, :contact

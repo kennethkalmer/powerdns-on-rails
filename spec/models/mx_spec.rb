@@ -23,4 +23,9 @@ describe MX, "when new" do
     @mx.priority = 10
     @mx.should have(:no).errors_on(:priority)
   end
+  
+  it "should require data" do
+    @mx.should have(1).error_on(:data)
+  end
+  
 end

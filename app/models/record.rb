@@ -1,3 +1,10 @@
+# See #Record
+
+# = Record
+# 
+# The parent class for all our DNS RR's. Used to apply global rules and logic
+# that can easily be applied to any DNS RR's
+#
 class Record < ActiveRecord::Base
   
   belongs_to :zone
