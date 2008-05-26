@@ -12,6 +12,8 @@
 # 
 class Zone < ActiveRecord::Base
   
+  belongs_to :user
+  
   has_many :records
   
   has_one  :soa_record,    :class_name => 'SOA'

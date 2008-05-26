@@ -74,6 +74,11 @@ describe User do
   it 'authenticates user' do
     User.authenticate('quentin', 'test').should == users(:quentin)
   end
+  
+  it 'has roles' do
+    users(:admin).roles.should_not be_empty
+    users(:quentin).roles.should be_empty
+  end
 
   it 'sets remember token' do
     users(:quentin).remember_me
@@ -170,5 +175,17 @@ protected
     record = User.new({ :login => 'quire', :email => 'quire@example.com', :password => 'quire', :password_confirmation => 'quire' }.merge(options))
     record.register! if record.valid?
     record
+  end
+end
+
+describe User, "as owner" do
+  fixtures :all
+  
+  before(:each) do
+    @user = users( :quentin )
+  end
+  
+  it "should have zones" do
+    @user.zones.should_not be_empty
   end
 end

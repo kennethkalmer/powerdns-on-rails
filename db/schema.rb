@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 6) do
+ActiveRecord::Schema.define(:version => 7) do
 
   create_table "record_templates", :force => true do |t|
     t.integer  "zone_template_id"
@@ -89,6 +89,7 @@ ActiveRecord::Schema.define(:version => 6) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "ttl",        :default => 86400
+    t.integer  "user_id"
   end
 
   add_index "zones", ["name"], :name => "index_zones_on_name"

@@ -4,8 +4,10 @@ example_com:
   name: example.com
   ttl: 86400
 
-#example_org:
-#  name: example.org
-#
+example_org:
+  name: example.org
+  ttl: 86400
+  user: quentin
+
 #example_net:
 #  name: example.net
