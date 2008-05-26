@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 4) do
+ActiveRecord::Schema.define(:version => 6) do
 
   create_table "record_templates", :force => true do |t|
     t.integer  "zone_template_id"
@@ -49,6 +49,33 @@ ActiveRecord::Schema.define(:version => 4) do
   add_index "records", ["zone_id"], :name => "index_records_on_zone_id"
   add_index "records", ["type"], :name => "index_records_on_type"
   add_index "records", ["host"], :name => "index_records_on_host"
+
+  create_table "roles", :force => true do |t|
+    t.string "name"
+  end
+
+  create_table "roles_users", :id => false, :force => true do |t|
+    t.integer "role_id"
+    t.integer "user_id"
+  end
+
+  add_index "roles_users", ["role_id"], :name => "index_roles_users_on_role_id"
+  add_index "roles_users", ["user_id"], :name => "index_roles_users_on_user_id"
+
+  create_table "users", :force => true do |t|
+    t.string   "login"
+    t.string   "email"
+    t.string   "crypted_password",          :limit => 40
+    t.string   "salt",                      :limit => 40
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "remember_token"
+    t.datetime "remember_token_expires_at"
+    t.string   "activation_code",           :limit => 40
+    t.datetime "activated_at"
+    t.string   "state",                                   :default => "passive"
+    t.datetime "deleted_at"
+  end
 
   create_table "zone_templates", :force => true do |t|
     t.string   "name"
