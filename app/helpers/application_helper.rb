@@ -13,7 +13,7 @@ module ApplicationHelper
     html = ''
     [ :info, :warning, :error ].each do |f|
       unless flash[f].nil?
-        html << content_tag( 'div', :class => "flash-#{f}") { flash[:f] }
+        html << content_tag( 'div', :class => "flash-#{f}") { flash[f] }
       end
     end
     html

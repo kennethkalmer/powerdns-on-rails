@@ -1,0 +1,34 @@
+%h1.underline
+  = @user.new_record? ? 'New User' : 'Update User'
+
+- form_for( @user ) do |f|
+  = error_messages_for( :user )
+
+  %table
+    %tr
+      %td Login
+      %td= f.text_field :login
+    %tr
+      %td Email address
+      %td= f.text_field :email
+    %tr
+      %td Password
+      %td= f.password_field :password
+    %tr
+      %td Password (Again)
+      %td= f.password_field :password_confirmation
+    %tr
+      %td.top Role
+      %td
+        = f.radio_button :admin, true
+        Admin
+        %br
+        = f.radio_button :admin, false
+        Domain Owner
+    %tr
+      %td &nbsp;
+      %td &nbsp;
+    %tr
+      %td.right= link_to 'Cancel', users_path
+      %td= submit_tag 'Save'
+    

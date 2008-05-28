@@ -82,6 +82,9 @@ table.grid {
 .right {
     text-align: right;
 }
+.top {
+    vertical-align: top;
+}
 .underline {
     border-bottom: 1px solid #777;
     margin-top: 10px;

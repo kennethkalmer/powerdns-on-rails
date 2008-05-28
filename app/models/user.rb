@@ -16,10 +16,10 @@ class User < ActiveRecord::Base
   
   # prevents a user from submitting a crafted form that bypasses activation
   # anything else you want your user to change should be added here.
-  attr_accessible :login, :email, :password, :password_confirmation
+  attr_accessible :login, :email, :password, :password_confirmation, :admin
 
   has_and_belongs_to_many :roles
-  has_many :zones
+  has_many :zones, :dependent => :nullify
   
   acts_as_state_machine :initial => :pending
   state :passive
@@ -106,6 +106,21 @@ class User < ActiveRecord::Base
     @_list ||= self.roles.collect(&:name)
     return true if @_list.include?("admin")
     (@_list.include?(role_in_question.to_s) )
+  end
+  
+  # Returns true if the user has the admin role
+  def admin
+    @admin ||= has_role?( 'admin' )
+  end
+  
+  # Temporary placeholder for an admin value
+  def admin=( value )
+    @admin = case value
+    when String, Symbol
+      value.to_s == "true"
+    else
+      value
+    end
   end
 
   protected

@@ -1,0 +1,26 @@
+%h1.underline 
+  Details for 
+  = @user.login
+
+%table.grid
+  %tr
+    %td Login
+    %td= @user.login
+  %tr
+    %td Email
+    %td= @user.email
+  %tr
+    %td Role
+    %td= @user.admin ? 'Admin' : 'Owner'
+  %tr
+    %td &nbsp;
+    %td &nbsp;
+  %tr
+    %td &nbsp;
+    %td
+      = link_to image_tag('user_edit.png'), edit_user_path( @user )
+      = link_to "Change", edit_user_path( @user )
+      &nbsp;&nbsp;&nbsp;
+      = link_to image_tag('user_delete.png'), user_path( @user ), :method => :delete, :confirm => 'Are you sure you want to remove this user?'
+      = link_to "Remove", user_path( @user ), :method => :delete, :confirm => 'Are you sure you want to remove this user?'
+      

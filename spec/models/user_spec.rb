@@ -189,3 +189,12 @@ describe User, "as owner" do
     @user.zones.should_not be_empty
   end
 end
+
+describe User, "and roles" do
+  fixtures :all
+  
+  it "should have a admin boolean flag" do
+    users( :admin ).admin.should be_true
+    users( :quentin ).admin.should be_false
+  end
+end

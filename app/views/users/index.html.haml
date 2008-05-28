@@ -1,0 +1,9 @@
+%h2.underline Users
+
+%table.grid
+  %tr
+    %td{ :colspan => 4 }
+      = link_to image_tag('user_add.png'), new_user_path
+      = link_to 'New user', new_user_path
+  = render :partial => 'user', :collection => @users
+

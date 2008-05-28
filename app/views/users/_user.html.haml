@@ -1,0 +1,7 @@
+%tr
+  %td= link_to user.login, user_path( user )
+  %td= user.email
+  %td= user.has_role?('admin') ? 'Admin' : 'User'
+  %td
+    = link_to image_tag('user_edit.png'), edit_user_path( user )
+    = link_to image_tag('user_delete.png'), user_path( user ), :method => :delete

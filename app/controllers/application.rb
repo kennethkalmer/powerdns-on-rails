@@ -16,5 +16,8 @@ class ApplicationController < ActionController::Base
   # :secret if you're not using the cookie session store
   protect_from_forgery # :secret => 'dc25a2ea6f551d9218bcb5f35625ed5e'
   
+  # All pages require a login...
+  before_filter :login_required
+  
   protected
 end

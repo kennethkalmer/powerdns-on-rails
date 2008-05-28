@@ -1,6 +1,5 @@
 class ZonesController < ApplicationController
   
-  before_filter :login_required
   require_role [ "admin", "owner" ]
   
   def index
