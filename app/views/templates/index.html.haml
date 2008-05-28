@@ -1,0 +1,8 @@
+%h1.underline Zone Templates
+
+%table.grid
+  %tr
+    %td
+      = link_to image_tag('table_add.png'), new_template_path
+      = link_to 'New template', new_template_path
+  = render :partial => 'template', :collection => @templates

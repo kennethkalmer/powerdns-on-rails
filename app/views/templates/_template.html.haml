@@ -1,0 +1,6 @@
+%tr
+  %td= link_to template.name, template_path( template )
+  %td
+    = link_to image_tag('table_edit.png'), edit_template_path( template )
+    = link_to image_tag('table_delete.png'), template_path( template ), :method => :delete, :confirm => 'Are you sure you want to remove this template?'
+    
