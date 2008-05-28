@@ -1,0 +1,52 @@
+- @page_title = @zone.name
+%h1.underline= @zone.name
+
+#domain-name.padded
+  %table.grid
+    %tr
+      %td Domain
+      %td= @zone.name
+    %tr
+      %td &nsp;
+      %td= image_tag 'database_edit.png'
+
+#domain-soa.padded
+  %h2.underline SOA Record
+  %table.grid
+    %tr
+      %td Primary name server
+      %td= @zone.soa_record.primary_ns
+    %tr
+      %td Contact
+      %td= @zone.soa_record.contact
+    %tr
+      %td Refresh
+      %td= @zone.soa_record.refresh
+    %tr
+      %td Retry
+      %td= @zone.soa_record.retry
+    %tr
+      %td Expire
+      %td= @zone.soa_record.expire
+    %tr
+      %td Minimum
+      %td= @zone.soa_record.minimum
+    %tr
+      %td &nbsp;
+      %td= image_tag 'database_edit.png'
+
+#domain-records.padded
+  %h2.underline Zone records
+  %table.grid
+    %tr
+      %td.small Hostname
+      %td.small TTL
+      %td.small Type
+      %td.small Priority
+      %td.small Data
+      %td &nbsp;
+    = render :partial => 'record', :collection => @zone.records_without_soa
+    %tr
+      %td{ :colspan => "6" } &nbsp;
+    %tr
+      %td{ :colspan => "6" }= image_tag 'database_add.png'

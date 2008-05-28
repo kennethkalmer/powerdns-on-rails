@@ -20,6 +20,10 @@ describe Zone, "when new" do
     @zone.should have(1).error_on(:name)
   end
   
+  it "should bail out on missing SOA fields" do
+    @zone.should have(1).error_on( :primary_ns )
+  end
+  
 end
 
 describe Zone, "when loaded" do
@@ -56,4 +60,56 @@ describe Zone, "when loaded" do
     a.should include( records( :example_com_a ) )
   end
   
+  it "should give access to all records excluding the SOA" do
+    @zone.records_without_soa.size.should be( @zone.records.size - 1 )
+  end
+  
+  it "should not complain about missing SOA fields" do
+    @zone.should have(:no).errors_on(:primary_ns)
+  end
+end
+
+describe Zone, "with scoped finders" do
+  fixtures :all
+  
+  it "should return all zones without a user" do
+    zones = Zone.find( :all )
+    zones.should_not be_empty
+    zones.size.should be( Zone.count )
+  end
+  
+  it "should only return a user's zones if not an admin" do
+    zones = Zone.find( :all, :user => users(:quentin) )
+    zones.should_not be_empty
+    zones.size.should be(1)
+    zones.each { |z| z.user.should eql( users( :quentin ) ) }
+  end
+  
+  it "should return all zones if the user is an admin" do
+    zones = Zone.find( :all, :user => users(:admin) )
+    zones.should_not be_empty
+    zones.size.should be( Zone.count )
+  end
+end
+
+describe Zone, "when created" do
+  fixtures :all
+  
+  before(:each) do
+    @zone = Zone.new
+  end
+  
+  it "with additional attributes should create an SOA record" do
+    @zone.name = 'example.org'
+    @zone.primary_ns = 'ns1.example.org'
+    @zone.contact = 'admin@example.org'
+    @zone.refresh = 10800
+    @zone.retry = 7200
+    @zone.expire = 604800
+    @zone.minimum = 10800
+    
+    @zone.save.should be_true
+    @zone.soa_record.should_not be_nil
+    @zone.soa_record.primary_ns.should eql('ns1.example.org')
+  end
 end

@@ -1,0 +1,36 @@
+!!!
+%html{ "xml:lang" => "en", :lang => "en", :xmlns => "http://www.w3.org/1999/xhtml" }
+  %head
+    %title
+      = page_title
+    = stylesheet_link_tag 'application'
+  %body
+    #Container
+      #Header
+        %h1
+          BIND DLZ on Rails
+      - if current_user
+      #Nav
+        %ul
+          %li
+            = link_to "Zones", zones_path
+          %li
+            Templates
+          %li
+            Logs
+          %li
+            Users
+          %li
+            Search form
+          %li
+            = link_to "Logout", logout_path
+      - end
+      #Body
+        = show_flash
+
+        = yield
+      #Footer
+        = link_to "BIND DLZ on Rails", "http://www.opensourcery.co.za/bind-dlz-on-rails"
+        \- &copy; Clear Planet Information Solutions (Pty) Ltd
+        %br
+        Released under the MIT License.

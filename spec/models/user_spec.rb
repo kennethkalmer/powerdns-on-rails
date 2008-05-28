@@ -77,7 +77,7 @@ describe User do
   
   it 'has roles' do
     users(:admin).roles.should_not be_empty
-    users(:quentin).roles.should be_empty
+    users(:aaron).roles.should be_empty
   end
 
   it 'sets remember token' do

@@ -1,4 +1,4 @@
 admin_role:
   name: admin
-user_role:
-  name: user
+owner_role:
+  name: owner

@@ -29,11 +29,18 @@ ActionController::Routing::Routes.draw do |map|
 
   # See how all your routes lay out with "rake routes"
   
+  map.root :controller => 'zones'
+  
+  # RESTful zones and records
+  map.resources :zones
+  map.resources :soa, :controller => 'records'
+  
+  # Authentication routes
   map.resources :users, :member => { :suspend   => :put,
                                      :unsuspend => :put,
                                      :purge     => :delete }
-
   map.resource :session
+  map.logout '/logout', :controller => 'sessions', :action => 'destroy'
 
   # Install the default routes as the lowest priority.
   map.connect ':controller/:action/:id'

@@ -1,0 +1,10 @@
+%ul.start
+  %li
+    = link_to image_tag('database_add.png'), new_zone_path
+    = link_to "Add new zone", new_zone_path
+
+%h1.underline
+  Newest zones
+
+%table
+  = render :partial => 'zone', :collection => @zones
