@@ -21,21 +21,15 @@ User.find_by_login('admin').roles << Role.find_by_name('admin')
 Zone.seed( :name ) do |s|
   s.name = 'example.com'
   s.ttl = 86400
-end
-
-# Sample records for example.com
-SOA.seed( :zone_id, :primary_ns ) do |s|
-  s.zone_id = Zone.find_by_name('example.com').id
-  s.ttl = 86400
-  s.host = '@'
   s.primary_ns = 'ns1.example.com.'
   s.contact = 'admin.example.com'
-  s.serial = '2008040101'
   s.refresh = 10800
   s.retry = 7200
   s.expire = 604800
   s.minimum = 10800
 end
+
+# Sample records for example.com
 NS.seed( :zone_id, :data ) do |s|
   s.zone_id = Zone.find_by_name('example.com').id
   s.ttl = 86400
