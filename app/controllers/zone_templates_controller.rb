@@ -31,6 +31,7 @@ class ZoneTemplatesController < ApplicationController
   def destroy
     @zone_template = ZoneTemplate.find(params[:id])
     @zone_template.destroy
+    redirect_to templates_path
   end
   
 end

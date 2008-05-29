@@ -79,6 +79,9 @@ table.grid {
 .small {
     font-size: 90%;
 }
+.center {
+    text-align: center;
+}
 .right {
     text-align: right;
 }

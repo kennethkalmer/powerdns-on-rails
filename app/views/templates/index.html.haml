@@ -3,6 +3,30 @@
 %table.grid
   %tr
     %td
-      = link_to image_tag('table_add.png'), new_template_path
-      = link_to 'New template', new_template_path
+      = link_to image_tag('table_add.png'), :controller => 'zone_templates', :action => 'new'
+      = link_to 'New template', :controller => 'zone_templates', :action => 'new'
   = render :partial => 'template', :collection => @templates
+
+%h1.underline Record Templates
+
+%table
+  %tr
+    %td{:colspan => 3}
+      = link_to image_tag('table_add.png'), :controller => 'record_templates', :action => 'new'
+      = link_to 'New template', :controller => 'record_templates', :action => 'new'
+  %tr.center
+    %td.small Hostname
+    %td.small TTL
+    %td.small Type
+    %td.small Priority
+    %td.small Data
+    %td.small Primary Name Server
+    %td.small Contact
+    %td.small Refresh
+    %td.small Retry
+    %td.small Expire
+    %td.small Minimum
+    %td.small Zone Template
+    %td
+    %td
+  = render :partial => 'record', :collection => @record_templates
