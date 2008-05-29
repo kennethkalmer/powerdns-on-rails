@@ -1,0 +1,43 @@
+%h1.underline New Template
+
+- form_for( :record_template, @record_template, :url => { :action => 'create' } ) do |f|
+  %table.grid
+    %tr
+      %td Host
+      %td= f.text_field :host
+    %tr
+      %td TTL
+      %td= f.text_field :ttl
+    %tr
+      %td Type
+      %td= f.text_field :record_type
+    %tr
+      %td Priority
+      %td= f.text_field :priority
+    %tr
+      %td Data
+      %td= f.text_field :data
+    %tr
+      %td Primary Name Server
+      %td= f.text_field :primary_ns
+    %tr
+      %td Contact
+      %td= f.text_field :contact
+    %tr
+      %td Refresh
+      %td= f.text_field :refresh
+    %tr
+      %td Retry
+      %td= f.text_field :retry
+    %tr
+      %td Expire
+      %td= f.text_field :expire
+    %tr
+      %td Minimum
+      %td= f.text_field :minimum
+    %tr
+      %td Zone Template
+      %td= select( :zone_template, :id, ZoneTemplate.find(:all, :order => :name).collect{ |z| [z.name,z.id] } )
+    %tr
+      %td.right= link_to 'Cancel', templates_path
+      %td= submit_tag 'Save'
