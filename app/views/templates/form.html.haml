@@ -1,6 +1,7 @@
-%h1.underline New Template
+%h1.underline 
+  = @zone_template.new_record? ? "New Zone Template" : "Update Zone Template"
 
-- form_for( :zone_template, @zone_template, :url => { :action => 'create' } ) do |f|
+- form_for( @zone_template ) do |f|
   %table
     %tr
       %td Name

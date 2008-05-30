@@ -1,0 +1,92 @@
+%h1.underline
+  = @zone_template.name
+  &nbsp;
+  = link_to image_tag( 'database_edit.png' ), :action => 'edit', :id => @zone_template.id
+
+%table
+  %tr
+    %td Name
+    %td= @zone_template.name
+  %tr
+    %td TTL
+    %td= @zone_template.ttl
+
+%h1.underline
+  = "Record Templates for #{@zone_template.name}"
+
+%table#record-table
+  %tr
+    %td.small Hostname
+    %td.small TTL
+    %td.small Type
+    %td.small Priority
+    %td.small Data
+    %td.small Primary Name Server
+    %td.small Contact
+    %td.small Refresh
+    %td.small Retry
+    %td.small Expire
+    %td.small Minimum
+    %td
+    %td
+  = render :partial => "record_template", :collection => @zone_template.record_templates
+
+= link_to_function image_tag('table_add.png'), "displayRecordForm()"
+= link_to_function 'New Record Template', "displayRecordForm()"
+
+#record-form{ :style => "display:none;" }
+  - remote_form_for( :record_template, @record_template, :url => record_template_path( @record_template, :format => 'js' ) ) do |f|
+    %table.grid
+      %tr
+        %td Host
+        %td= f.text_field :host
+      %tr
+        %td TTL
+        %td= f.text_field :ttl
+      %tr
+        %td Type
+        %td= f.text_field :record_type
+      %tr
+        %td Priority
+        %td= f.text_field :priority
+      %tr
+        %td Data
+        %td= f.text_field :data
+      %tr
+        %td Primary Name Server
+        %td= f.text_field :primary_ns
+      %tr
+        %td Contact
+        %td= f.text_field :contact
+      %tr
+        %td Refresh
+        %td= f.text_field :refresh
+      %tr
+        %td Retry
+        %td= f.text_field :retry
+      %tr
+        %td Expire
+        %td= f.text_field :expire
+      %tr
+        %td Minimum
+        %td= f.text_field :minimum
+      = hidden_field( :zone_template, :id )
+      %tr
+        %td.right= link_to_function 'Cancel', "hideAll()"
+        %td= submit_tag 'Save'
+
+:javascript
+  function hideAll() {
+    $('record-form').hide();
+  }
+  function displayRecordForm() {
+    $('record-form').show();
+  }
+  function editRecordTemplate(i){
+    $('show_record_template_' + i).hide();
+    $('edit_record_template_' + i).show();
+  }
+  function hideRecordTemplate(i) {
+    $('show_record_template_' + i).show();
+    $('edit_record_template_' + i).hide();
+  }

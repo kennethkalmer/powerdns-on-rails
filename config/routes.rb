@@ -37,6 +37,8 @@ ActionController::Routing::Routes.draw do |map|
   
   # RESTful templates
   map.resources :templates
+  map.resources :zone_templates
+  map.resources :record_templates
   
   # Authentication routes
   map.resources :users, :member => { :suspend   => :put,

@@ -1,0 +1,2 @@
+page.hide('record-form')
+page.insert_html(:bottom, 'record-table', { :partial => 'templates/record_template', :object => @record_template })

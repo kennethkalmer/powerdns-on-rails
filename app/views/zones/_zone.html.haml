@@ -1,3 +1,7 @@
 %tr
   %td
     = link_to zone.name, zone_path( zone )
+  %td &nbsp;
+  %td
+    = link_to image_tag('database_edit.png'), :action => 'edit', :id => zone.id
+    = link_to image_tag('database_delete.png'), { :action => 'destroy', :id => zone.id }, :method => :delete, :confirm => 'Are you sure?'
