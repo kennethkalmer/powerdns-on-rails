@@ -7,6 +7,9 @@ class RecordTemplate < ActiveRecord::Base
   validates_associated :zone_template
   validates_presence_of :record_type
   
+  @@record_types = ['A', 'CNAME', 'MX', 'NS', 'SOA', 'TXT']
+  cattr_reader :record_types
+  
   # Convert this template record into a instance +record_type+ with the 
   # attributes of the template copied over to the instance
   def build( zone_name = nil )
