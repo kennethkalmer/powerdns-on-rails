@@ -52,7 +52,7 @@ describe ZoneTemplate, "when used to build a zone" do
     @zone.should be_a_kind_of( Zone )
   end
   
-  it "should create the correct number of records (from template)" do
+  it "should create the correct number of records (from templates)" do
     @zone.records.size.should eql( @zone_template.record_templates.size )
   end
   

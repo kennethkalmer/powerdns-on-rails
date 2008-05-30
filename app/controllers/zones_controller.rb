@@ -34,15 +34,23 @@ class ZonesController < ApplicationController
   end
   
   def edit
-    
+    @zone = Zone.find( params[:id] )
   end
   
   def update
-    
+    @zone = Zone.find( params[:id] )
+    if @zone.update_attributes( params[:zone] )
+      flash[:info] = "Zone was updated!"
+      redirect_to zone_path
+    else
+      render :action => 'edit'
+    end
   end
   
   def destroy
-    
+    @zone = Zone.find( params[:id] )
+    @zone.destroy
+    redirect_to :action => 'index'
   end
   
 end
