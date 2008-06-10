@@ -14,4 +14,6 @@ User.seed( :login ) do |s|
   s.password_confirmation = 'secret'
   s.state = 'active'
 end
-User.find_by_login('admin').roles << Role.find_by_name('admin')
+admin = User.find_by_login('admin')
+admin.activate!
+admin.roles << Role.find_by_name('admin')
