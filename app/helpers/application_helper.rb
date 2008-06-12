@@ -18,4 +18,9 @@ module ApplicationHelper
     end
     html
   end
+  
+  # Link to Zytrax
+  def dns_book( text, link )
+    link_to text, "http://www.zytrax.com/books/dns/#{link}", :target => '_blank'
+  end
 end
