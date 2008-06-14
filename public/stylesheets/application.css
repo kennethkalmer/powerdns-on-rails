@@ -124,6 +124,9 @@ a img {
     border-bottom: none;
     margin-top: 0;
 }
+.fieldWithErrors {
+    display: inline;
+}
 
 input {
     border: 1px solid #555;
