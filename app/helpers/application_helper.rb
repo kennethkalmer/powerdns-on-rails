@@ -12,9 +12,9 @@ module ApplicationHelper
   def show_flash
     html = ''
     [ :info, :warning, :error ].each do |f|
-      unless flash[f].nil?
-        html << content_tag( 'div', :class => "flash-#{f}") { flash[f] }
-      end
+      options = { :id => "flash-#{f}", :class => "flash-#{f}" }
+      options.merge!( :style => 'display:none' ) if flash[f].nil?
+      html << content_tag( 'div', options ) { flash[f] || '' }
     end
     html
   end

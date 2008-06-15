@@ -1,33 +1,73 @@
+%tr[ record_template, :marker ]
 %tr[ record_template, :show ]
   %td= record_template.host
   %td= record_template.ttl
   %td= record_template.record_type
   %td= record_template.priority
   %td= record_template.data
-  %td= record_template.primary_ns
-  %td= record_template.contact
-  %td= record_template.refresh
-  %td= record_template.retry
-  %td= record_template.expire
-  %td= record_template.minimum
   %td
     = link_to_function image_tag('table_edit.png'), "editRecordTemplate(#{record_template.id})"
   %td
-    = link_to image_tag('table_delete.png'), record_template_path( record_template ), :method => :delete, :confirm => 'Are you sure you want to remove this template?'
-%tr[ record_template, :edit ]{ :style => 'display: none' }
-  - remote_form_for( :record_template, record_template, :url => record_template_path( record_template ), :method => :put ) do |f|
-    %td= f.text_field :host, :size => 5
-    %td= f.text_field :ttl, :size => 4
-    %td= f.text_field :record_type, :size => 4
-    %td= f.text_field :priority, :size => 1
-    %td= f.text_field :data, :size => 6
-    %td= f.text_field :primary_ns, :size => 13
-    %td= f.text_field :contact, :size => 4
-    %td= f.text_field :refresh, :size => 4
-    %td= f.text_field :retry, :size => 4
-    %td= f.text_field :expire, :size => 4
-    %td= f.text_field :minimum, :size => 4
-    %td= image_submit_tag "table_save.png"
-    %td= link_to_function image_tag("cancel.png"), "hideRecordTemplate(#{record_template.id})"
+    = link_to image_tag('table_delete.png'), record_template_path( record_template ), :method => :delete, :confirm => 'Are you sure you want to remove this record?'
+- if record_template.soa?
+  %tr[ record_template, 'show-soa' ]
+    %td{ :colspan => 2 } &nbsp;
+    %td{ :colspan => 5 }
+      %small
+        Primary Name Server:
+        = record_template.primary_ns
+        %br
+        Primary Contact:
+        = record_template.contact
+        %br
+        Refresh:
+        = record_template.refresh
+        %br
+        Retry:
+        = record_template.retry
+        %br
+        Expire:
+        = record_template.expire
+        %br
+        Minimum:
+        = record_template.minimum
 
-    
+%tr[ record_template, :edit ]{ :style => 'display: none' }
+  %td{ :colspan => 7 }
+    - remote_form_for( :record_template, record_template, :url => record_template_path( record_template ), :method => :put ) do |f|
+      %div[ record_template, :error ]
+      %table.gridwide
+        %tr
+        - if record_template.soa?
+          %td{ :colspan => 5 }
+            %table
+              %tr
+                %td{ :colspan => 2 }
+                  Editing SOA record of zone template
+              %tr
+                %td Primary nameserver
+                %td= f.text_field :primary_ns, :size => 13
+              %tr
+                %td Primary contact
+                %td= f.text_field :contact, :size => 4
+              %tr
+                %td Refresh
+                %td= f.text_field :refresh, :size => 4
+              %tr
+                %td Retry
+                %td= f.text_field :retry, :size => 4
+              %tr
+                %td Expire
+                %td= f.text_field :expire, :size => 4
+              %tr
+                %td Minimum
+                %td= f.text_field :minimum, :size => 4
+        - else
+          %td= f.text_field :host, :size => 5
+          %td= f.text_field :ttl, :size => 4
+          %td= record_template.record_type
+          %td= f.text_field :priority, :size => 1
+          %td= f.text_field :data, :size => 6
+
+        %td.top= image_submit_tag "table_save.png", { :class => 'nb' }
+        %td.top= link_to_function image_tag("cancel.png"), "hideRecordTemplate(#{record_template.id})"

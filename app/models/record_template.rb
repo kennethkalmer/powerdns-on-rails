@@ -33,6 +33,10 @@ class RecordTemplate < ActiveRecord::Base
     record_class.new( attrs )
   end
   
+  def soa?
+    self.record_type == 'SOA'
+  end
+  
   # Manage TTL inheritance here
   def before_validation #:nodoc:
     unless self.zone_template_id.nil?

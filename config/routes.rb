@@ -36,8 +36,7 @@ ActionController::Routing::Routes.draw do |map|
   map.resources :soa, :controller => 'records'
   
   # RESTful templates
-  map.resources :templates
-  map.resources :zone_templates
+  map.resources :zone_templates, :controller => 'templates'
   map.resources :record_templates
   
   # Authentication routes

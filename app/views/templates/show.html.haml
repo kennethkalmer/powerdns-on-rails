@@ -1,9 +1,9 @@
 %h1.underline
   = @zone_template.name
   &nbsp;
-  = link_to image_tag( 'database_edit.png' ), :action => 'edit', :id => @zone_template.id
+  = link_to image_tag( 'database_edit.png' ), edit_zone_template_path(@zone_template)
 
-%table
+%table.grid
   %tr
     %td Name
     %td= @zone_template.name
@@ -11,82 +11,97 @@
     %td TTL
     %td= @zone_template.ttl
 
-%h1.underline
-  = "Record Templates for #{@zone_template.name}"
+%p &nbsp;
 
-%table#record-table
+%h1.underline
+  Record templates
+
+%table#record-table.gridwide
   %tr
     %td.small Hostname
     %td.small TTL
     %td.small Type
     %td.small Priority
     %td.small Data
-    %td.small Primary Name Server
-    %td.small Contact
-    %td.small Refresh
-    %td.small Retry
-    %td.small Expire
-    %td.small Minimum
     %td
     %td
   = render :partial => "record_template", :collection => @zone_template.record_templates
 
+%p &nbsp;
+
 = link_to_function image_tag('table_add.png'), "displayRecordForm()"
 = link_to_function 'New Record Template', "displayRecordForm()"
 
-#record-form{ :style => "display:none;" }
-  - remote_form_for( :record_template, @record_template, :url => record_template_path( @record_template, :format => 'js' ) ) do |f|
+#record-form-div{ :style => 'display:none' }
+  - remote_form_for( :record_template, @record_template, :url => record_template_path( @record_template, :format => 'js' ), :html => { :id => 'record-form' } ) do |f|
+    = hidden_field( :zone_template, :id )
     %table.grid
+      %tr
+        %td Type
+        %td
+          = f.select :record_type, RecordTemplate.record_types.map { |t| [t,t] }
+          = observe_field "record_template_record_type", :function => 'toggleRecordFields(element,value);'
       %tr
         %td Host
         %td= f.text_field :host
       %tr
         %td TTL
-        %td= f.text_field :ttl
-      %tr
-        %td Type
-        %td= f.text_field :record_type
-      %tr
+        %td= f.text_field :ttl, :size => 6
+      %tr.rt-mx{ :style => 'display :none' }
         %td Priority
-        %td= f.text_field :priority
+        %td= f.text_field :priority, :size => 6
       %tr
         %td Data
         %td= f.text_field :data
-      %tr
+      %tr.rt-soa{ :style => 'display :none' }
         %td Primary Name Server
         %td= f.text_field :primary_ns
-      %tr
+      %tr.rt-soa{ :style => 'display :none' }
         %td Contact
         %td= f.text_field :contact
-      %tr
+      %tr.rt-soa{ :style => 'display :none' }
         %td Refresh
-        %td= f.text_field :refresh
-      %tr
+        %td= f.text_field :refresh, :size => 6
+      %tr.rt-soa{ :style => 'display :none' }
         %td Retry
-        %td= f.text_field :retry
-      %tr
+        %td= f.text_field :retry, :size => 6
+      %tr.rt-soa{ :style => 'display :none' }
         %td Expire
-        %td= f.text_field :expire
-      %tr
+        %td= f.text_field :expire, :size => 6
+      %tr.rt-soa{ :style => 'display :none' }
         %td Minimum
-        %td= f.text_field :minimum
-      = hidden_field( :zone_template, :id )
+        %td= f.text_field :minimum, :size => 6
       %tr
         %td.right= link_to_function 'Cancel', "hideAll()"
         %td= submit_tag 'Save'
 
 :javascript
   function hideAll() {
-    $('record-form').hide();
+    $('record-form-div').hide();
   }
   function displayRecordForm() {
-    $('record-form').show();
+    $('record-form-div').show();
   }
   function editRecordTemplate(i){
     $('show_record_template_' + i).hide();
+    soa = $('show-soa_record_template_' + i);
+    if (soa)
+      soa.hide();
     $('edit_record_template_' + i).show();
   }
   function hideRecordTemplate(i) {
     $('show_record_template_' + i).show();
+    soa = $('show-soa_record_template_' + i);
+    if (soa)
+      soa.show();
     $('edit_record_template_' + i).hide();
+  }
+  function toggleRecordFields(e,v){
+    t = 'rt-' + v.toLowerCase();
+    $('record-form-div').select('tr').each(function(r){
+      if(r.className && r.className != t)
+        r.hide();
+      else
+        r.show();
+    });
   }

@@ -1,2 +1,9 @@
-page.hide('record-form')
-page.insert_html(:bottom, 'record-table', { :partial => 'templates/record_template', :object => @record_template })
+if @record_template.errors.empty? 
+  page.hide('record-form-div')
+  page.insert_html(:bottom, 'record-table', { :partial => 'templates/record_template', :object => @record_template })
+
+  page.call 'showflash', 'info', flash[:info]
+else
+  page.insert_html :top, 'record-form', error_messages_for( :record_template )
+  page.call 'showflash', 'error', flash[:error]
+end

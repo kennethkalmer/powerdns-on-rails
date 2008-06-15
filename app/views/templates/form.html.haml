@@ -2,13 +2,14 @@
   = @zone_template.new_record? ? "New Zone Template" : "Update Zone Template"
 
 - form_for( @zone_template ) do |f|
+  = error_messages_for :zone_template
   %table
     %tr
       %td Name
       %td= f.text_field :name
     %tr
       %td TTL
-      %td= f.text_field :ttl
+      %td= f.text_field :ttl, :size => 6
     %tr
-      %td= link_to 'Cancel', templates_path
+      %td= link_to 'Cancel', zone_templates_path
       %td= submit_tag 'Save'

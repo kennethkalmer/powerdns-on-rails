@@ -3,6 +3,6 @@
 %table.grid
   %tr
     %td
-      = link_to image_tag('table_add.png'), :controller => 'zone_templates', :action => 'new'
-      = link_to 'New template', :controller => 'zone_templates', :action => 'new'
+      = link_to image_tag('table_add.png'), new_zone_template_path
+      = link_to 'New template', new_zone_template_path
   = render :partial => 'zone_template', :collection => @zone_templates
