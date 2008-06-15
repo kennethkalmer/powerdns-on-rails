@@ -14,7 +14,7 @@ class Record < ActiveRecord::Base
   validates_numericality_of( 
     :ttl, 
     :greater_than_or_equal_to => 0, 
-    :only_integer => true 
+    :only_integer => true
   )
   
   class_inheritable_accessor :batch_soa_updates

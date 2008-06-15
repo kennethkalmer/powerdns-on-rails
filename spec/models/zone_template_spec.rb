@@ -19,6 +19,11 @@ describe ZoneTemplate, "when new" do
     @zone_template.name = "East Coast Data Center"
     @zone_template.should have(1).error_on(:name)
   end
+  
+  it "should require a TTL" do
+    @zone_template.ttl = nil
+    @zone_template.should have(1).error_on(:ttl)
+  end
 end
 
 describe ZoneTemplate, "when loaded" do

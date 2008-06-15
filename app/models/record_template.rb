@@ -33,6 +33,13 @@ class RecordTemplate < ActiveRecord::Base
     record_class.new( attrs )
   end
   
+  # Manage TTL inheritance here
+  def before_validation #:nodoc:
+    unless self.zone_template_id.nil?
+      self.ttl = self.zone_template.ttl if self.ttl.nil?
+    end
+  end
+  
   # Here we perform some magic to inherit the validations from the "destination"
   # model without any duplication of rules. This allows us to simply extend the
   # appropriate record and gain those validations in the templates

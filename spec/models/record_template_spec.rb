@@ -102,3 +102,30 @@ describe RecordTemplate, "when building" do
   end
   
 end
+
+describe RecordTemplate, "when creating" do
+  fixtures :all
+  
+  it "should inherit the TTL from the ZoneTemplate" do
+    zone_template = zone_templates( :east_coast_dc )
+    record_template = RecordTemplate.new( :zone_template => zone_template )
+    record_template.record_type = 'A'
+    record_template.host = '@'
+    record_template.data = '10.0.0.1'
+    record_template.save.should be_true
+    
+    record_template.ttl.should eql(zone_template.ttl)
+  end
+  
+  it "should prefer own TTL over that of the ZoneTemplate" do
+    zone_template = zone_templates( :east_coast_dc )
+    record_template = RecordTemplate.new( :zone_template => zone_template )
+    record_template.record_type = 'A'
+    record_template.host = '@'
+    record_template.data = '10.0.0.1'
+    record_template.ttl = 43200
+    record_template.save.should be_true
+    
+    record_template.ttl.should eql(43200)
+  end
+end

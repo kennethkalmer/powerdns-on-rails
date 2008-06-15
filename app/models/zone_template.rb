@@ -4,6 +4,7 @@ class ZoneTemplate < ActiveRecord::Base
   
   validates_presence_of :name
   validates_uniqueness_of :name
+  validates_presence_of :ttl
   
   # Build a new zone using +self+ as a template. +zone+ should be valid zone 
   # name. This method will throw exceptions as it encounters errors, and will
