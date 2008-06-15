@@ -22,7 +22,7 @@ RecordTemplate.seed( :zone_template_id, :record_type, :host, :data ) do |s|
   s.ttl = 86400
   s.record_type = 'NS'
   s.host = '@'
-  s.data = 'ns1.%ZONE.'
+  s.data = 'ns1.%ZONE%.'
 end
 RecordTemplate.seed( :zone_template_id, :record_type, :host, :data ) do |s|
   s.zone_template_id = zone_template.id
