@@ -17,8 +17,8 @@ http://kennethkalmer.lighthouseapp.com/projects/11831-bind-dlz-on-rails/
 
 == 0.2
 
-* User management
-* DNS Insight
+* User management                           [ moving target ]
+* DNS Insight                               [ started ]
 * API improvements
 * Deployment instructions directly from GitHub
 * Import scripts for standard zone files and PowerDNS
