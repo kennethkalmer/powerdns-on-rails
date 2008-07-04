@@ -34,7 +34,7 @@ class RecordsController < ApplicationController
   def destroy
     @record = @zone.records.find( params[:id] )
     @record.destroy
-    redirect_to zones_path( @zone )
+    redirect_to zone_path( @zone )
   end
   
   protected

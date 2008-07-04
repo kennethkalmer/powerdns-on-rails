@@ -60,7 +60,15 @@ describe RecordsController do
   end
   
   it "should destroy a record when requested to do so" do
-    pending
+    Zone.stubs( :find ).with( @zone.id.to_s, :user => users( :admin ) ).returns( @zone )
+    record = Record.new
+    @zone.records.expects( :find ).with( '1' ).returns( record )
+    
+    delete :destroy, :zone_id => @zone.id, :id => '1'
+    
+    response.should be_redirect
+    response.should redirect_to( zone_path( @zone ) )
+    
   end
 end
 
