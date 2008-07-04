@@ -47,11 +47,13 @@ describe ZonesController, "when creating" do
     assigns[:zone_templates].should_not be_empty
   end
   
-  it "should build the zone from a zone template if a zone template is selected" do
+  it "should build from a zone template if selected" do
+    @zone_template = zone_templates(:east_coast_dc)
+    ZoneTemplate.stubs(:find).with('1').returns(@zone_template)
+    
     post 'create', :zone => { :name => 'example.org' }, :zone_template => { :id => "1" }
     
-    assigns[:zone_template].should_not be_empty
-    assigns[:zone].should_not be_empty
+    assigns[:zone].should_not be_nil
     response.should be_redirect
     response.should redirect_to( zone_path(assigns[:zone]) )
   end

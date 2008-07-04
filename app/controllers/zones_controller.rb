@@ -21,11 +21,11 @@ class ZonesController < ApplicationController
   end
   
   def create
-    if params[:zone_template][:id].nil?
-      @zone = Zone.new( params[:zone] )
+    @zone_template = ZoneTemplate.find(params[:zone_template][:id]) unless params[:zone_template][:id].blank?
+    unless @zone_template.nil?
+      @zone = @zone_template.build( params[:zone][:name] )
     else
-      @zone_template = ZoneTemplate.find(params[:zone_template][:id])
-      @zone = @zone_template.build(params[:zone][:name].to_s)
+      @zone = Zone.new( params[:zone] )
     end
     @zone.user = current_user unless current_user.has_role?( 'admin' )
 
