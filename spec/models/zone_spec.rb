@@ -113,3 +113,13 @@ describe Zone, "when created" do
     @zone.soa_record.primary_ns.should eql('ns1.example.org')
   end
 end
+
+describe Zone, "when deleting" do
+  fixtures :all
+  
+  it "should delete its records as well" do
+    @zone = zones(:example_com)
+    lambda { @zone.destroy }.should change(Record, :count).by(-8)
+    
+  end
+end

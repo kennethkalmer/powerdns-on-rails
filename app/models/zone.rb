@@ -14,7 +14,7 @@ class Zone < ActiveRecord::Base
   
   belongs_to :user
   
-  has_many :records
+  has_many :records, :dependent => :destroy
   
   has_one  :soa_record,    :class_name => 'SOA'
   has_many :ns_records,    :class_name => 'NS'

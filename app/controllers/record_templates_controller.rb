@@ -15,13 +15,13 @@ class RecordTemplatesController < ApplicationController
   
   def update
     @record_template = RecordTemplate.find(params[:id])
+    
     if @record_template.update_attributes(params[:record_template])
       @record_template.save!
       flash.now[:info] = "Record template updated"
     else
       flash.now[:error] = "Record template could not be saved"
     end
-    
   end
   
   def destroy

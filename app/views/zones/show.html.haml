@@ -39,6 +39,10 @@
   %h2.underline Zone records
   %table.grid
     %tr
+      %td{ :colspan => "6" }
+        = link_to image_tag('database_add.png'), new_zone_record_path( @zone )
+        = link_to "New record", new_zone_record_path( @zone )
+    %tr
       %td.small Hostname
       %td.small TTL
       %td.small Type
@@ -49,4 +53,5 @@
     %tr
       %td{ :colspan => "6" } &nbsp;
     %tr
-      %td{ :colspan => "6" }= image_tag 'database_add.png'
+      %td{ :colspan => "6" }
+        = image_tag 'database_add.png'

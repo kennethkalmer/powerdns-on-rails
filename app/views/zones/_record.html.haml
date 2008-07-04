@@ -10,5 +10,5 @@
   %td
     = record.data
   %td
-    = image_tag 'database_edit.png'
-    = image_tag 'database_delete.png'
+    = link_to image_tag('database_edit.png'), edit_zone_record_path( record.zone, record )
+    = link_to image_tag('database_delete.png'), zone_record_path( @zone ), :method => :delete
