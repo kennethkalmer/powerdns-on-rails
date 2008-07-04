@@ -1,6 +1,11 @@
 %h1.underline 
   = @zone_template.new_record? ? "New Zone Template" : "Update Zone Template"
 
+%div{:style => "display: none;"}
+  #zone-name
+    The name by which our zone templates will be known.
+  #zone-ttl
+
 - form_for( @zone_template ) do |f|
   = error_messages_for :zone_template
   %table

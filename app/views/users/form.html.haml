@@ -1,6 +1,12 @@
 %h1.underline
   = @user.new_record? ? 'New User' : 'Update User'
 
+%div{:style => "display: none"}
+  #admin-user
+    This user has access to all BIND DLZ on Rails facilities.
+  #domain-owner
+    This user can only change aspects of his domain.
+
 - form_for( @user ) do |f|
   = error_messages_for( :user )
 
@@ -22,9 +28,11 @@
       %td
         = f.radio_button :admin, true
         Admin
+        = prototip_help_icon('admin-user')
         %br
         = f.radio_button :admin, false
         Domain Owner
+        = prototip_help_icon('domain-owner')
     %tr
       %td &nbsp;
       %td &nbsp;
