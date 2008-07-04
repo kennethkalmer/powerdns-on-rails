@@ -21,9 +21,14 @@ class ZonesController < ApplicationController
   end
   
   def create
-    @zone = Zone.new( params[:zone] )
+    if params[:zone_template][:id].nil?
+      @zone = Zone.new( params[:zone] )
+    else
+      @zone_template = ZoneTemplate.find(params[:zone_template][:id])
+      @zone = @zone_template.build(params[:zone][:name].to_s)
+    end
     @zone.user = current_user unless current_user.has_role?( 'admin' )
-    
+
     if @zone.save
       flash[:info] = "Zone created"
       redirect_to zone_path( @zone )

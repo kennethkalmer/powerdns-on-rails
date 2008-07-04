@@ -1,5 +1,5 @@
 # This file is auto-generated from the current state of the database. Instead of editing this file, 
-# please use the migrations feature of Active Record to incrementally modify your database, and
+# please use the migrations feature of ActiveRecord to incrementally modify your database, and
 # then regenerate this schema definition.
 #
 # Note that this schema.rb definition is the authoritative source for your database schema. If you need
@@ -12,36 +12,36 @@
 ActiveRecord::Schema.define(:version => 7) do
 
   create_table "record_templates", :force => true do |t|
-    t.integer  "zone_template_id", :limit => 11
-    t.integer  "ttl",              :limit => 11
+    t.integer  "zone_template_id"
+    t.integer  "ttl"
     t.string   "record_type"
-    t.string   "host",                           :default => "@"
-    t.integer  "priority",         :limit => 11
+    t.string   "host",             :default => "@"
+    t.integer  "priority"
     t.string   "data"
     t.string   "primary_ns"
     t.string   "contact"
-    t.integer  "refresh",          :limit => 11
-    t.integer  "retry",            :limit => 11
-    t.integer  "expire",           :limit => 11
-    t.integer  "minimum",          :limit => 11
+    t.integer  "refresh"
+    t.integer  "retry"
+    t.integer  "expire"
+    t.integer  "minimum"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
   create_table "records", :force => true do |t|
-    t.integer  "zone_id",    :limit => 11
-    t.integer  "ttl",        :limit => 11
+    t.integer  "zone_id"
+    t.integer  "ttl"
     t.string   "type"
-    t.string   "host",                     :default => "@"
-    t.integer  "priority",   :limit => 11
+    t.string   "host",       :default => "@"
+    t.integer  "priority"
     t.string   "data"
     t.string   "primary_ns"
     t.string   "contact"
-    t.integer  "serial",     :limit => 11
-    t.integer  "refresh",    :limit => 11
-    t.integer  "retry",      :limit => 11
-    t.integer  "expire",     :limit => 11
-    t.integer  "minimum",    :limit => 11
+    t.integer  "serial"
+    t.integer  "refresh"
+    t.integer  "retry"
+    t.integer  "expire"
+    t.integer  "minimum"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -55,8 +55,8 @@ ActiveRecord::Schema.define(:version => 7) do
   end
 
   create_table "roles_users", :id => false, :force => true do |t|
-    t.integer "role_id", :limit => 11
-    t.integer "user_id", :limit => 11
+    t.integer "role_id"
+    t.integer "user_id"
   end
 
   add_index "roles_users", ["role_id"], :name => "index_roles_users_on_role_id"
@@ -79,7 +79,7 @@ ActiveRecord::Schema.define(:version => 7) do
 
   create_table "zone_templates", :force => true do |t|
     t.string   "name"
-    t.integer  "ttl",        :limit => 11, :default => 86400
+    t.integer  "ttl",        :default => 86400
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -88,8 +88,8 @@ ActiveRecord::Schema.define(:version => 7) do
     t.string   "name"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "ttl",        :limit => 11, :default => 86400
-    t.integer  "user_id",    :limit => 11
+    t.integer  "ttl",        :default => 86400
+    t.integer  "user_id"
   end
 
   add_index "zones", ["name"], :name => "index_zones_on_name"

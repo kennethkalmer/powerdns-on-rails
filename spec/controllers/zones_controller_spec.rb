@@ -40,11 +40,20 @@ describe ZonesController, "when creating" do
   end
   
   it "should not save a partial form" do
-    post 'create', :zone => { :name => 'example.org' }
+    post 'create', :zone => { :name => 'example.org' }, :zone_template => { :id => "" }
     
     response.should_not be_redirect
     response.should render_template('zones/new')
     assigns[:zone_templates].should_not be_empty
+  end
+  
+  it "should build the zone from a zone template if a zone template is selected" do
+    post 'create', :zone => { :name => 'example.org' }, :zone_template => { :id => "1" }
+    
+    assigns[:zone_template].should_not be_empty
+    assigns[:zone].should_not be_empty
+    response.should be_redirect
+    response.should redirect_to( zone_path(assigns[:zone]) )
   end
   
   it "should be redirected to the zone details after a successful save" do
@@ -52,7 +61,7 @@ describe ZonesController, "when creating" do
       :name => 'example.org', :primary_ns => 'ns1.example.org', 
       :contact => 'admin.example.org', :refresh => 10800, :retry => 7200,
       :expire => 604800, :minimum => 10800
-    }
+    }, :zone_template => { :id => "" }
     
     response.should be_redirect
     response.should redirect_to( zone_path( assigns[:zone] ) )
@@ -60,7 +69,7 @@ describe ZonesController, "when creating" do
   end
   
   it "should offer to create templates if none are found" do
-    
+    pending "Move to view specs"
   end
   
 end
