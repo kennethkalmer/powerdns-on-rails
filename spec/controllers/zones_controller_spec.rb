@@ -37,6 +37,7 @@ describe ZonesController, "when creating" do
     response.should render_template('zones/new')
     assigns[:zone].should be_a_kind_of( Zone )
     assigns[:zone_templates].should_not be_empty
+    assigns[:zone_templates].size.should be(2)
   end
   
   it "should not save a partial form" do

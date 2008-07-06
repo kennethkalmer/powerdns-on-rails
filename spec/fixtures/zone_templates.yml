@@ -7,3 +7,8 @@ east_coast_dc:
 west_coast_dc:
   name: West Coast Data Center
   ttl: 86400
+
+# Has no SOA records, so should never be used in zone creation
+partially_complete:
+  name: Partially Complete
+  ttl: 43200

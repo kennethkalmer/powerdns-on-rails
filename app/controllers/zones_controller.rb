@@ -17,7 +17,7 @@ class ZonesController < ApplicationController
   
   def new
     @zone = Zone.new
-    @zone_templates = ZoneTemplate.find( :all )
+    @zone_templates = ZoneTemplate.find( :all, :require_soa => true )
   end
   
   def create

@@ -6,7 +6,28 @@ class ZoneTemplate < ActiveRecord::Base
   validates_uniqueness_of :name
   validates_presence_of :ttl
   
-  # Build a new zone using +self+ as a template. +zone+ should be valid zone 
+  class << self
+    
+    # Custom find that takes one additional parameter, :require_soa (bool), for
+    # restricting the returned resultset to only instances that #has_soa?
+    def find_with_validations( *args )
+      options = args.extract_options!
+      valid_soa = options.delete( :require_soa ) || false
+      
+      # find as per usual
+      records = find_without_validations( *args << options )
+      
+      if valid_soa
+        records.delete_if { |z| !z.has_soa? }
+      end
+      
+      records # give back
+    end
+    alias_method_chain :find, :validations
+    
+  end
+  
+  # Build a new zone using +self+ as a template. +zone+ should be valid zone
   # name. This method will throw exceptions as it encounters errors, and will
   # use a transaction to complete the operation
   def build( zone_name )
@@ -39,4 +60,10 @@ class ZoneTemplate < ActiveRecord::Base
     
     zone
   end
+  
+  # If the template has an SOA record, it can be used for building zones
+  def has_soa?
+    record_templates.count( :conditions => "record_type LIKE 'SOA'" ) == 1
+  end
+  
 end

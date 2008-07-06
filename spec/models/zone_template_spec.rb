@@ -42,6 +42,12 @@ describe ZoneTemplate, "when loaded" do
     zone.should be_a_kind_of( Zone )
     zone.should be_valid
   end
+  
+  it "should have a sense of validity" do
+    @zone_template.has_soa?.should be_true
+    
+    zone_templates( :partially_complete ).has_soa?.should_not be_true
+  end
 end
 
 describe ZoneTemplate, "when used to build a zone" do
@@ -75,4 +81,16 @@ describe ZoneTemplate, "when used to build a zone" do
     ns.each { |r| r.should be_a_kind_of( NS ) }
   end
   
+end
+
+describe ZoneTemplate, "and finders" do
+  fixtures :all
+  
+  it "should be able to return all templates" do
+    ZoneTemplate.find(:all).size.should be( ZoneTemplate.count )
+  end
+  
+  it "should respect required validations" do
+    ZoneTemplate.find(:all, :require_soa => true).size.should be( 2 )
+  end
 end
