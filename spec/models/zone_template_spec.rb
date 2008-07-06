@@ -71,6 +71,7 @@ describe ZoneTemplate, "when used to build a zone" do
     soa = @zone.soa_record
     soa.should_not be_nil
     soa.should be_a_kind_of( SOA )
+    soa.primary_ns.should eql('ns1.example.org.')
   end
   
   it "should create two NS records" do

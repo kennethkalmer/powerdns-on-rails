@@ -36,12 +36,10 @@ class ZoneTemplate < ActiveRecord::Base
     self.class.transaction do
       # Pick our SOA template out, and populate the zone
       soa_template = record_templates.detect { |r| r.record_type == 'SOA' }
-      zone.primary_ns = soa_template.primary_ns
-      zone.contact = soa_template.contact
-      zone.refresh = soa_template.refresh
-      zone.retry = soa_template.retry
-      zone.expire = soa_template.expire
-      zone.minimum = soa_template.minimum
+      built_soa_template = soa_template.build( zone_name )
+      Zone::SOA_FIELDS.each do |f|
+        zone.send( "#{f}=", built_soa_template.send( f ) )
+      end
       
       # save the zone or die
       zone.save!
