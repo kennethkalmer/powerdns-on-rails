@@ -1,10 +1,9 @@
-%h1.underline Update/Edit record
+%h1.underline Edit record
 
 %p= "Modifies an existing record for #{@zone.name} by entering relevant data below."
 
-- form_for([@zone, @record]) do |f|
+- form_for( [:zone, @record] ) do |f|
   = error_messages_for :record
-  %p &nbsp;
   #record-form-div
     %table.grid
       %tr

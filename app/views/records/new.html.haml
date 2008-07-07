@@ -1,5 +1,9 @@
 %h1.underline New record
 
+%div{:style => "display: none;"}
+  #record-types
+    %i Some description here...
+
 %p= "Create a new record for #{@zone.name} by entering relevant data below."
 
 - form_for([@zone, @record]) do |f|
@@ -11,6 +15,7 @@
         %td{:width => "300"} Type
         %td
           = select( :record, :type, RecordTemplate.record_types.map{ |t| [t,t] } - [["SOA", "SOA"]] )
+          = prototip_help_icon('record-types')
           = observe_field "record_type", :function => 'toggleRecordFields(element,value);'
       %tr
         %td Host
