@@ -10,6 +10,10 @@
       #Header
         %h1
           BIND DLZ on Rails
+        #search-field{ :style => "display: inline; text-align: right;" }
+          - form_for( :search, :url => { :controller => "search", :action => "results" } ) do |f|
+            = f.text_field :parameters
+            = submit_tag "Search"
       - if current_user
       #Nav
         %ul
