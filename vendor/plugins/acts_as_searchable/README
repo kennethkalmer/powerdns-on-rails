@@ -1,0 +1,23 @@
+ActsAsSearchable
+================
+
+ActsAsSearchable provides a simple way to search upon a model.  It uses named_scope if available; otherwise, it will accept a block or return find(:all) with applicable conditions applied
+
+
+Example
+=======
+
+class Entry < ActiveRecord::Base
+  acts_as_searchable :on => [:title, :body, "comments.body", "CONCAT(users.first_name, ' ', users.last_name)", "users.login"], :include => [:comments, :user]
+  
+  belongs_to :user
+  has_many :comments
+end
+
+# within console
+Entry.search('Josh Clayton') #=> [<Entry>, <Entry>]
+Entry.search('%ruby%') #=> [<Entry>, <Entry>, <Entry>]
+
+=======
+
+Copyright (c) 2008 Josh Clayton, released under the MIT license

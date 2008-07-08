@@ -1,0 +1,8 @@
+%h1.underline= "Results for \"#{@search_parameters}\""
+%br/
+
+%h2.underline Zones
+
+- unless @zones.blank?
+  - for zone in @zones do
+    = link_to zone.name, zone_path( zone )

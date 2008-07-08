@@ -12,6 +12,8 @@
 # 
 class Zone < ActiveRecord::Base
   
+  acts_as_searchable
+  
   belongs_to :user
   
   has_many :records, :dependent => :destroy
