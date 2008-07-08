@@ -3,5 +3,14 @@
   %td= user.email
   %td= user.has_role?('admin') ? 'Admin' : 'User'
   %td
-    = link_to image_tag('user_edit.png'), edit_user_path( user )
-    = link_to image_tag('user_delete.png'), user_path( user ), :method => :delete
+    - unless user.suspended?
+      = prototip_info_icon('flag_green.png', 'active-user')
+    - else
+      = prototip_info_icon('flag_orange.png', 'suspended-user')
+  %td
+    = link_to prototip_info_icon('user_edit.png', 'edit-user'), edit_user_path( user )
+    - unless user.suspended?
+      = link_to prototip_info_icon('user_suspend.png', 'suspend-user'), suspend_user_path( user )
+    - else
+      = link_to prototip_info_icon('user_go.png', 'reactivate-user'), unsuspend_user_path( user )
+    = link_to prototip_info_icon('user_delete.png', 'delete-user'), user_path( user ), :method => :delete

@@ -8,7 +8,7 @@ module ApplicationHelper
     title
   end
   
-  # Output the flashes if the exist
+  # Output the flashes if they exist
   def show_flash
     html = ''
     [ :info, :warning, :error ].each do |f|

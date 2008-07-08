@@ -6,9 +6,9 @@
   %td= record_template.priority
   %td= record_template.data
   %td
-    = link_to_function image_tag('table_edit.png'), "editRecordTemplate(#{record_template.id})"
+    = link_to_function prototip_info_icon('table_edit.png', 'edit-record-template'), "editRecordTemplate(#{record_template.id})"
   %td
-    = link_to image_tag('table_delete.png'), record_template_path( record_template ), :method => :delete, :confirm => 'Are you sure you want to remove this record?'
+    = link_to prototip_info_icon('table_delete.png', 'delete-record-template'), record_template_path( record_template ), :method => :delete, :confirm => 'Are you sure you want to remove this record?'
 - if record_template.soa?
   %tr[ record_template, 'show-soa' ]
     %td{ :colspan => 2 } &nbsp;

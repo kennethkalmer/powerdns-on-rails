@@ -18,4 +18,21 @@ module PrototipHelper
       EOF
     end
   end
+  
+  def prototip_info_icon( image_name, dom_id )
+    html = image_tag( image_name, :id => 'proto-info-' + dom_id )
+    html << javascript_tag( :defer => 'defer' ) do
+      <<-EOF
+        new Tip( 'proto-info-#{dom_id}', $('#{dom_id}'), {
+        title: 'Quick Info',
+        delay: false,
+        hideAfter: 2,
+        hook: { tip: 'leftMiddle', mouse: true },
+        hideOn: 'mouseout',
+        offset: { x: 15, y: 0 },
+        width: 'auto'
+        });
+      EOF
+    end
+  end
 end

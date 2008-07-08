@@ -1,7 +1,21 @@
+%div{ :style => "display: none;" }
+  #new-template
+    Add a new zone template
+  #edit-template
+    Edit this zone template's information
+  #delete-template
+    Delete this zone template
+  #new-record-template
+    Add a new record template
+  #edit-record-template
+    Edit this record template's information
+  #delete-record-template
+    Delete this record template
+
 %h1.underline
   = @zone_template.name
   &nbsp;
-  = link_to image_tag( 'database_edit.png' ), edit_zone_template_path(@zone_template)
+  = link_to prototip_info_icon( 'database_edit.png', 'edit-template' ), edit_zone_template_path(@zone_template)
 
 %table.grid
   %tr
@@ -29,7 +43,7 @@
 
 %p &nbsp;
 
-= link_to_function image_tag('table_add.png'), "displayRecordForm()"
+= link_to_function prototip_info_icon('table_add.png', 'new-record-template'), "displayRecordForm()"
 = link_to_function 'New Record Template', "displayRecordForm()"
 
 #record-form-div{ :style => 'display:none' }

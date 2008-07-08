@@ -1,6 +1,6 @@
 %tr
   %td= link_to zone_template.name, zone_template_path( zone_template )
   %td
-    = link_to image_tag('table_edit.png'), edit_zone_template_path( zone_template )
-    = link_to image_tag('table_delete.png'), zone_template_path( zone_template ), :method => :delete, :confirm => 'Are you sure you want to remove this template?'
+    = link_to prototip_info_icon('table_edit.png', 'edit-template'), edit_zone_template_path( zone_template )
+    = link_to prototip_info_icon('table_delete.png', 'delete-template'), zone_template_path( zone_template ), :method => :delete, :confirm => 'Are you sure you want to remove this template?'
     
