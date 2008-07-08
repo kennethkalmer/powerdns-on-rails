@@ -12,7 +12,7 @@
 # 
 class Zone < ActiveRecord::Base
   
-  acts_as_searchable :on => [:name]
+  acts_as_searchable
   
   belongs_to :user
   
