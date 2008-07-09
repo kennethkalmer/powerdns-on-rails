@@ -1,4 +1,13 @@
 - @page_title = @zone.name
+
+%div{ :style => "display: none;" }
+  #record-template-new
+    Create a new record for this zone
+  #record-template-edit
+    Edit this record's details
+  #record-template-delete
+    Delete this record
+
 %h1.underline
   = @zone.name
   &nbsp;
@@ -40,7 +49,7 @@
   %table.grid
     %tr
       %td{ :colspan => "6" }
-        = link_to image_tag('database_add.png'), new_zone_record_path( @zone )
+        = link_to prototip_info_icon('database_add.png', 'record-template-new'), new_zone_record_path( @zone )
         = link_to "New record", new_zone_record_path( @zone )
     %tr
       %td.small Hostname
