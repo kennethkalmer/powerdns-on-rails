@@ -32,8 +32,9 @@ ActionController::Routing::Routes.draw do |map|
   map.root :controller => 'zones'
   
   # RESTful zones and records
-  map.resources :zones, :has_many => :records
+  map.resources :zones
   map.resources :soa, :controller => 'records'
+  map.resources :records, :name_prefix => 'zone_'
   
   # RESTful templates
   map.resources :zone_templates, :controller => 'templates'

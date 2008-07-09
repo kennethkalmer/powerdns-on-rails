@@ -2,7 +2,7 @@
 
 %p= "Modifies an existing record for #{@zone.name} by entering relevant data below."
 
-- form_for( [:zone, @record] ) do |f|
+- form_for( :record, @record, :url => zone_record_path( @zone ), :html => { :method => :put } ) do |f|
   = error_messages_for :record
   #record-form-div
     %table.grid

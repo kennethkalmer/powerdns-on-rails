@@ -1,16 +1,14 @@
 class RecordsController < ApplicationController
   
-  before_filter :get_zone
-  
   def new
-    @record = @zone.records.new
+    @record = Record.new
   end
   
   def create
-    @record = @zone.records.new( params[:record] )
+    @record = Record.new( params[:record] )
     @record.zone_id = @zone.id
     if @record.save
-      flash[:now] = "Record created!"
+      flash[:info] = "Record created!"
       redirect_to zone_path( @zone )
     else
       render :action => :new
@@ -18,13 +16,13 @@ class RecordsController < ApplicationController
   end
   
   def edit
-    @record = @zone.records.find( params[:id] )
+    @record = Record.find( params[:id] )
   end
   
   def update
-    @record = @zone.records.find( params[:id] )
+    @record = Record.find( params[:id] )
     if @record.update_attributes( params[:record] )
-      flash[:now] = "Record udpated!"
+      flash[:info] = "Record udpated!"
       redirect_to zone_path( @zone )
     else
       render :action => :edit
@@ -32,7 +30,7 @@ class RecordsController < ApplicationController
   end
   
   def destroy
-    @record = @zone.records.find( params[:id] )
+    @record = Record.find( params[:id] )
     @record.destroy
     redirect_to zone_path( @zone )
   end

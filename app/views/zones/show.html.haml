@@ -3,15 +3,15 @@
 %div{ :style => "display: none;" }
   #record-template-new
     Create a new record for this zone
-  #record-template-edit
-    Edit this record's details
-  #record-template-delete
-    Delete this record
+  #soa-record-edit
+    Edit the SOA record's details
+  #zone-edit
+    Edit this zone's details
 
 %h1.underline
   = @zone.name
   &nbsp;
-  = image_tag 'database_edit.png'
+  = link_to prototip_info_icon('database_edit.png', 'zone-edit'), edit_zone_path( @zone )
 
 #domain-name.padded
   %table.grid
@@ -23,7 +23,7 @@
   %h2.underline
     SOA Record
     &nbsp;
-    = image_tag 'database_edit.png'
+    = prototip_info_icon('database_edit.png', 'soa-record-edit')
   %table.grid
     %tr
       %td Primary name server
@@ -49,8 +49,8 @@
   %table.grid
     %tr
       %td{ :colspan => "6" }
-        = link_to prototip_info_icon('database_add.png', 'record-template-new'), new_zone_record_path( @zone )
-        = link_to "New record", new_zone_record_path( @zone )
+        = link_to prototip_info_icon('database_add.png', 'record-template-new'), new_zone_record_path
+        = link_to "New record", new_zone_record_path
     %tr
       %td.small Hostname
       %td.small TTL
@@ -64,3 +64,13 @@
     %tr
       %td{ :colspan => "6" }
         = image_tag 'database_add.png'
+
+:javascript
+  function editRecord(id, type) {
+    $('show_' + type + '_' + id).hide();
+    $('edit_' + type + '_' + id).show();
+  }
+  function hideRecord(id, type) {
+    $('edit_' + type + '_' + id).hide();
+    $('show_' + type + '_' + id).show();
+  }
