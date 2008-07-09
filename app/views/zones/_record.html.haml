@@ -10,5 +10,5 @@
   %td
     = record.data
   %td
-    = link_to image_tag('database_edit.png'), edit_zone_record_path( record.zone, record )
-    = link_to image_tag('database_delete.png'), zone_record_path( @zone ), :method => :delete
+    = prototip_info_icon('database_edit.png', 'record-template-edit')
+    = link_to prototip_info_icon('database_delete.png', 'record-template-delete'), zone_record_path( record.zone, record ), :method => :delete, :confirm => "Are you sure?"
