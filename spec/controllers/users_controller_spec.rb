@@ -38,5 +38,13 @@ describe UsersController do
       assigns[:user].should_not be_nil
     end
     
+    it 'should be able to suspend users' do
+      @user = users(:quentin)
+      User.stubs(:find).with('1').returns(@user)
+      put 'suspend', :id => '1'
+      
+      response.should be_redirect
+      response.should redirect_to( users_path )
+    end
   end
 end
