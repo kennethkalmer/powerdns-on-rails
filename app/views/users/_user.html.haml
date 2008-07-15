@@ -1,16 +1,32 @@
-%tr
+%div{ :style => "display: none;" }
+  %div{ :id => "new-user-#{user.id}" }
+    Creates a new user
+  %div{ :id => "active-user-#{user.id}" }
+    This is an active user
+  %div{ :id => "suspended-user-#{user.id}" }
+    This user is currently suspended
+  %div{ :id => "edit-user-#{user.id}" }
+    Edit this user's details
+  %div{ :id => "suspend-user-#{user.id}" }
+    Suspend this user
+  %div{ :id => "reactivate-user-#{user.id}" }
+    Re-activates this user
+  %div{ :id => "delete-user-#{user.id}" }
+    Delete this user from the system
+
+%tr[ user, :show ]
   %td= link_to user.login, user_path( user )
   %td= user.email
   %td= user.has_role?('admin') ? 'Admin' : 'User'
   %td
     - unless user.suspended?
-      = prototip_info_icon('flag_green.png', 'active-user')
+      = prototip_info_icon('flag_green.png', "active-user-#{user.id}")
     - else
-      = prototip_info_icon('flag_orange.png', 'suspended-user')
+      = prototip_info_icon('flag_orange.png', "suspended-user-#{user.id}")
   %td
-    = link_to prototip_info_icon('user_edit.png', 'edit-user'), edit_user_path( user )
+    = link_to prototip_info_icon('user_edit.png', "edit-user-#{user.id}"), edit_user_path( user )
     - unless user.suspended?
-      = link_to prototip_info_icon('user_suspend.png', 'suspend-user'), suspend_user_path( user ), :method => :put
+      = link_to prototip_info_icon('user_suspend.png', "suspend-user-#{user.id}"), suspend_user_path( user ), :method => :put
     - else
-      = link_to prototip_info_icon('user_go.png', 'reactivate-user'), unsuspend_user_path( user ), :method => :put
-    = link_to prototip_info_icon('user_delete.png', 'delete-user'), purge_user_path( user ), :method => :delete
+      = link_to prototip_info_icon('user_go.png', "reactivate-user-#{user.id}"), unsuspend_user_path( user ), :method => :put
+    = link_to prototip_info_icon('user_delete.png', "delete-user-#{user.id}"), purge_user_path( user ), :method => :delete unless User.count.eql?(1)
