@@ -3,6 +3,6 @@
 
 %h2.underline Zones
 
-- unless @zones.blank?
-  - for zone in @zones do
+- unless @results.blank?
+  - for zone in @results do
     = link_to zone.name, zone_path( zone )

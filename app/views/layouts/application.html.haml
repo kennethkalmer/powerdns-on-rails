@@ -10,6 +10,10 @@
       #Header
         %h1
           BIND DLZ on Rails
+      #search-bar{:style => "float: right"}
+        - form_for( :search, :url => { :controller => :search, :action => :results } ) do |f|
+          = f.text_field :parameter
+          = submit_tag "Search"
       - if current_user
       #Nav
         %ul
