@@ -18,10 +18,10 @@
     = record.data
   %td
     = link_to_function prototip_info_icon('database_edit.png', "record-template-edit-#{record.id}"), "editRecord(#{record.id}, '#{record.type.downcase}')"
-    = link_to prototip_info_icon('database_delete.png', "record-template-delete-#{record.id}"), zone_record_path( record ), :method => :delete, :confirm => "Are you sure?"
+    = link_to prototip_info_icon('database_delete.png', "record-template-delete-#{record.id}"), zone_record_path( record.zone, record ), :method => :delete, :confirm => "Are you sure?"
 
 %tr[ record, :edit ]{ :style => "display: none;" }
-  - remote_form_for( :record, record, :url => zone_record_path( record ), :html => { :method => :put } ) do |f|
+  - remote_form_for( :record, record, :url => zone_record_path(record.zone, record), :html => { :method => :put } ) do |f|
     %td= f.text_field :host, :size => 2
     %td= f.text_field :ttl, :size => 3
     %td= record.type
