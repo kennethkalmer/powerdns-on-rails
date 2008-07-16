@@ -10,8 +10,8 @@ class RecordsController < ApplicationController
     @record = @zone.send( "#{params[:record][:type].downcase}_records".to_sym ).new( params[:record] )
     if @record.save
       flash[:info] = "Record created!"
-      redirect_to zone_path( @zone )
     else
+      flash[:error] = "Record not created!"
       render :action => :new
     end
   end
@@ -24,8 +24,8 @@ class RecordsController < ApplicationController
     @record = @zone.records.find( params[:id] )
     if @record.update_attributes( params[:record] )
       flash[:info] = "Record udpated!"
-      redirect_to zone_path( @zone )
     else
+      flash[:error] = "Record not updated!"
       render :action => :edit
     end
   end

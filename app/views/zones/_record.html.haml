@@ -21,15 +21,19 @@
     = link_to prototip_info_icon('database_delete.png', "record-template-delete-#{record.id}"), zone_record_path( record.zone, record ), :method => :delete, :confirm => "Are you sure?"
 
 %tr[ record, :edit ]{ :style => "display: none;" }
-  - remote_form_for( :record, record, :url => formatted_zone_record_path(record.zone, record, :js), :html => { :method => :put }) do |f|
-    %td= f.text_field :host, :size => 2
-    %td= f.text_field :ttl, :size => 3
-    %td= record.type
-    - if record.type.downcase == 'mx'
-      %td= f.text_field :priority, :size => 2
-    - else
-      %td= record.priority
-    %td= f.text_field :data, :size => 15
-    %td
-      = image_submit_tag "table_save.png", { :class => 'nb' }
-      = link_to_function image_tag("cancel.png"), "hideRecord(#{record.id}, '#{record.type.downcase}')"
+  %td{ :colspan => 7 }
+    - remote_form_for( :record, record, :url => formatted_zone_record_path(record.zone, record, :js), :html => { :method => :put }) do |f|
+      %div[ record, :error ]
+      %table.gridwide
+        %tr
+          %td= f.text_field :host, :size => 2
+          %td= f.text_field :ttl, :size => 3
+          %td= record.type
+          - if record.type.downcase == 'mx'
+            %td= f.text_field :priority, :size => 2
+          - else
+            %td= record.priority
+          %td= f.text_field :data, :size => 15
+          %td
+            = image_submit_tag "table_save.png", { :class => 'nb' }
+            = link_to_function image_tag("cancel.png"), "hideRecord(#{record.id}, '#{record.type.downcase}')"

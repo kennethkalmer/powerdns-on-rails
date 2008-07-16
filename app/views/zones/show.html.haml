@@ -46,7 +46,7 @@
 
 #domain-records.padded
   %h2.underline Zone records
-  %table.grid
+  %table.grid#record-table
     %tr
       %td.small Hostname
       %td.small TTL
@@ -56,10 +56,9 @@
       %td &nbsp;
     = render :partial => 'record', :collection => @zone.records_without_soa
 
-    %tr
-      %td{ :colspan => "6" }
-        = link_to_function prototip_info_icon('database_add.png', 'record-template-new'), "displayRecordForm()"
-        = link_to_function "New record", "displayRecordForm()"
+= link_to_function prototip_info_icon('database_add.png', 'record-template-new'), "displayRecordForm()"
+= link_to_function "New record", "displayRecordForm()"
+
 #record-form{ :style => "display: none;" }
   - remote_form_for( :record, @record, :url => formatted_zone_records_path( @zone, :js ), :html => { :id => 'record-form' } ) do |f|
     #record-form-div
