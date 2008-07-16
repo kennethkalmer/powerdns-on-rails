@@ -10,18 +10,17 @@
       #Header
         %h1
           BIND DLZ on Rails
-      #search-bar{:style => "float: right"}
+      - if current_user
+      #search-bar{:style => "display: inline; float: right;"}
         - form_for( :search, :url => { :controller => :search, :action => :results } ) do |f|
           = f.text_field :parameter
           = submit_tag "Search"
-      - if current_user
       #Nav
         %ul
           %li
             = link_to "Zones", zones_path
           %li
             = link_to "Templates", zone_templates_path
-          / Logs
           %li
             = link_to "Users", users_path
           %li
