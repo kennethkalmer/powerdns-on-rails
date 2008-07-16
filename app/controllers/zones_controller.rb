@@ -13,6 +13,7 @@ class ZonesController < ApplicationController
   
   def show
     @zone = Zone.find( params[:id], :include => :records )
+    @record = @zone.records.new
   end
   
   def new

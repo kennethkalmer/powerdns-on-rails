@@ -29,4 +29,4 @@
       = link_to prototip_info_icon('user_suspend.png', "suspend-user-#{user.id}"), suspend_user_path( user ), :method => :put
     - else
       = link_to prototip_info_icon('user_go.png', "reactivate-user-#{user.id}"), unsuspend_user_path( user ), :method => :put
-    = link_to prototip_info_icon('user_delete.png', "delete-user-#{user.id}"), purge_user_path( user ), :method => :delete unless User.count.eql?(1)
+    = link_to prototip_info_icon('user_delete.png', "delete-user-#{user.id}"), purge_user_path( user ), :method => :delete unless user.admin?

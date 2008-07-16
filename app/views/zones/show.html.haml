@@ -48,10 +48,6 @@
   %h2.underline Zone records
   %table.grid
     %tr
-      %td{ :colspan => "6" }
-        = link_to prototip_info_icon('database_add.png', 'record-template-new'), new_zone_record_path( @zone )
-        = link_to "New record", new_zone_record_path( @zone )
-    %tr
       %td.small Hostname
       %td.small TTL
       %td.small Type
@@ -59,11 +55,55 @@
       %td.small Data
       %td &nbsp;
     = render :partial => 'record', :collection => @zone.records_without_soa
-    %tr
-      %td{ :colspan => "6" } &nbsp;
+
     %tr
       %td{ :colspan => "6" }
-        = image_tag 'database_add.png'
+        = link_to_function prototip_info_icon('database_add.png', 'record-template-new'), "displayRecordForm()"
+        = link_to_function "New record", "displayRecordForm()"
+#record-form{ :style => "display: none;" }
+  - remote_form_for( :record, @record, :url => formatted_new_zone_record_path( @zone, :js ), :html => { :id => 'record-form' } ) do |f|
+    #record-form-div
+      %table
+        %tr
+          %td Type
+          %td
+            = f.select( :type, RecordTemplate.record_types.map{ |t| [t,t] } - [["SOA", "SOA"]])
+            = observe_field "record_type", :function => "toggleRecordFields(element,value)"
+        %tr
+          %td Host
+          %td= f.text_field :host
+        %tr
+          %td TTL
+          %td= f.text_field :ttl, :size => 6
+        %tr.rt-mx{ :style => 'display :none' }
+          %td Priority
+          %td= f.text_field :priority, :size => 6
+        %tr
+          %td Data
+          %td= f.text_field :data
+        %tr.rt-soa{ :style => 'display :none' }
+          %td Primary Name Server
+          %td= f.text_field :primary_ns
+        %tr.rt-soa{ :style => 'display :none' }
+          %td Contact
+          %td= f.text_field :contact
+        %tr.rt-soa{ :style => 'display :none' }
+          %td Refresh
+          %td= f.text_field :refresh, :size => 6
+        %tr.rt-soa{ :style => 'display :none' }
+          %td Retry
+          %td= f.text_field :retry, :size => 6
+        %tr.rt-soa{ :style => 'display :none' }
+          %td Expire
+          %td= f.text_field :expire, :size => 6
+        %tr.rt-soa{ :style => 'display :none' }
+          %td Minimum
+          %td= f.text_field :minimum, :size => 6
+        %tr
+          %td &nbsp;
+          %td
+            = link_to_function "Cancel", "hideRecordForm()"
+            = submit_tag "Create"
 
 :javascript
   function editRecord(id, type) {
@@ -73,4 +113,19 @@
   function hideRecord(id, type) {
     $('edit_' + type + '_' + id).hide();
     $('show_' + type + '_' + id).show();
+  }
+  function displayRecordForm() {
+    $('record-form').show();
+  }
+  function hideRecordForm() {
+    $('record-form').hide();
+  }
+  function toggleRecordFields(e,v){
+    t = 'rt-' + v.toLowerCase();
+    $('record-form-div').select('tr').each(function(r){
+      if(r.className && r.className != t)
+        r.hide();
+      else
+        r.show();
+    });
   }
