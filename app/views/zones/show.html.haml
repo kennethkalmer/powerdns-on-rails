@@ -7,6 +7,12 @@
     Edit the SOA record's details
   #zone-edit
     Edit this zone's details
+  #note-new
+    Adds a note with miscellaneous info to the zone
+    %br/
+    NB: Notes can't be deleted
+  #note-edit
+    Edit the zone's current note
 
 %h1.underline
   = @zone.name
@@ -18,6 +24,26 @@
     %tr
       %td Domain
       %td= @zone.name
+    %tr#note-display
+      %td Notes
+      %td= @zone.notes unless @zone.notes.blank?
+    %tr#note-row
+      - unless @zone.notes.blank?
+        %td
+          = link_to_function prototip_info_icon('note_edit.png', 'note-edit'), "showNote()"
+          = link_to_function "Edit note", "showNote()"
+      - else
+        %td
+          = link_to_function prototip_info_icon('note_add.png', 'note-new'), "showNote()"
+          = link_to_function "New note", "showNote()"
+
+  #note{ :style => "display: none;" }
+    - remote_form_for( :zone, @zone, :url => formatted_update_note_zone_path( @zone, :js ), :html => { :method => :put } ) do |f|
+      = f.text_area :notes, :rows => 5
+      %br/
+      = link_to_function "Cancel", "hideNote()"
+      = submit_tag "Create note"
+
 
 #domain-soa.padded
   %h2.underline
@@ -127,4 +153,12 @@
       else
         r.show();
     });
+  }
+  function showNote() {
+    $('note-row').hide();
+    $('note').show();
+  }
+  function hideNote() {
+    $('note').hide();
+    $('note-row').show();
   }

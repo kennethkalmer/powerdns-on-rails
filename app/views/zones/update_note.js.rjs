@@ -1,0 +1,5 @@
+if @zone.errors.empty?
+  page.hide 'note'
+  page.show 'note-row'
+  page.show 'note-display'
+end

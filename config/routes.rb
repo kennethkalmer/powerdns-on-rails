@@ -32,7 +32,7 @@ ActionController::Routing::Routes.draw do |map|
   map.root :controller => 'zones'
   
   # RESTful zones and records
-  map.resources :zones, :has_many => :records
+  map.resources :zones, :has_many => :records, :member => { :update_note => :put }
   map.resources :soa, :controller => 'records'
   
   # RESTful templates

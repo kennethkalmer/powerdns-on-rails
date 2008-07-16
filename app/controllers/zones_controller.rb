@@ -59,4 +59,10 @@ class ZonesController < ApplicationController
     redirect_to :action => 'index'
   end
   
+  # Non-CRUD methods
+  def update_note
+    @zone = Zone.find( params[:id] )
+    @zone.update_attribute( :notes, params[:zone][:notes] )
+  end
+  
 end
