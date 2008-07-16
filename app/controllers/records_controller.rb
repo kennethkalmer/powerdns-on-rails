@@ -7,8 +7,7 @@ class RecordsController < ApplicationController
   end
   
   def create
-    @record = @zone.records.new( params[:record] )
-    @record.zone_id = @zone.id
+    @record = @zone.send( "#{params[:record][:type].downcase}_records".to_sym ).new( params[:record] )
     if @record.save
       flash[:info] = "Record created!"
       redirect_to zone_path( @zone )
