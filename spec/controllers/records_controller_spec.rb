@@ -18,6 +18,7 @@ describe RecordsController do
       'type' => "NS", 
       'data' => "n3.example.com"
     }
+    
     @zone.records.expects( :new ).with( params ).returns( record )
     
     record.expects( :zone_id= ).with( @zone.id )
