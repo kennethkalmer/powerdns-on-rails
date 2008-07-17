@@ -146,8 +146,15 @@ end
 describe Zone, "when searching" do
   fixtures :all
   
-  it "should return results when valid" do
-    user = users(:admin)
-    Zone.search('exa', 1, user).should_not be_empty
+  it "should return results for admins" do
+    Zone.search('exa', 1, users(:admin)).should_not be_empty
+  end
+  
+  it "should return results for users" do
+    Zone.search('exa', 1, users(:quentin)).should_not be_empty
+  end
+  
+  it "should return unscoped results" do
+    Zone.search('exa', 1).should_not be_empty
   end
 end

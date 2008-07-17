@@ -59,13 +59,26 @@ class Zone < ActiveRecord::Base
     end
     alias_method_chain :find, :scope
     
+    def paginate_with_scope( *args, &block )
+      options = args.pop
+      user = options.delete( :user )
+      
+      unless user.nil? || user.has_role?( 'admin' )
+        with_scope( :find => { :conditions => [ 'user_id = ?', user.id ] } ) do
+          paginate_without_scope( *args << options, &block )
+        end
+      else
+        paginate_without_scope( *args << options, &block )
+      end
+    end
+    alias_method_chain :paginate, :scope
+    
     # For our lookup purposes
-    def search( params, page, user )
+    def search( params, page, user = nil )
       paginate :per_page => 5, :page => page, 
         :conditions => ['name LIKE ?', "%#{params}%"],
         :user => user
     end
-    
   end
   
   # return the records, excluding the SOA record

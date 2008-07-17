@@ -4,6 +4,7 @@
 - if @results.empty?
   %strong No zones found
 - else
-  = render :partial => '/zones/zone', :collection => @results
+  %table
+    = render :partial => '/zones/zone', :collection => @results
 
   = will_paginate @results
