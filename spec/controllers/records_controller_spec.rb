@@ -27,8 +27,6 @@ describe RecordsController do
     
     assigns[:zone].should_not be_nil
     assigns[:record].should_not be_nil
-    response.should be_redirect
-    response.should redirect_to( zone_path( assigns[:zone] ) )
   end
   
   it "shouldn't save an invalid record" do
@@ -62,9 +60,6 @@ describe RecordsController do
     @zone.records.expects( :find ).with( '1' ).returns( record )
     
     put :update, :id => '1', :zone_id => @zone.id, :record => params
-    
-    response.should be_redirect
-    response.should redirect_to( zone_path( @zone ) )
   end
   
   it "shouldn't update an invalid record" do

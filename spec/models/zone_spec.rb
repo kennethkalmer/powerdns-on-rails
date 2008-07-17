@@ -123,3 +123,11 @@ describe Zone, "when deleting" do
     
   end
 end
+
+describe Zone, "when searching" do
+  fixtures :all
+  
+  it "should return results when valid" do
+    Zone.search('exa').should_not be_empty
+  end
+end

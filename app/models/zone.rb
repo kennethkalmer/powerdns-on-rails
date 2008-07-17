@@ -12,8 +12,6 @@
 # 
 class Zone < ActiveRecord::Base
   
-  acts_as_searchable
-  
   belongs_to :user
   
   has_many :records, :dependent => :destroy
@@ -60,6 +58,11 @@ class Zone < ActiveRecord::Base
       end
     end
     alias_method_chain :find, :scope
+    
+    # For our lookup purposes
+    def search( params )
+      find(:all, :conditions => ["name LIKE ?", "%#{params}%"])
+    end
     
   end
   
