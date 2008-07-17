@@ -1,11 +1,10 @@
 class SearchController < ApplicationController
   
   def results
-    @search_parameter = params[:search][:parameter]
-    if @search_parameter.blank?
+    if params[:q].blank?
       redirect_to root_path
     else
-      @results = Zone.search(@search_parameter, params[:page], current_user)
+      @results = Zone.search(params[:q], params[:page], current_user)
     end
   end
   
