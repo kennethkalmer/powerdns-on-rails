@@ -1,9 +1,10 @@
-%h1.underline= "Results for \"#{@search_parameter}\""
+%h1.underline= "Results for \"#{params[:q]}\""
 %br/
 
-%h2.underline Zones
+- if @results.empty?
+  %strong No zones found
+- else
+  %table
+    = render :partial => '/zones/zone', :collection => @results
 
-- unless @results.blank?
-  - for zone in @results do
-    = link_to zone.name, zone_path( zone )
-    %br/
+  = will_paginate @results

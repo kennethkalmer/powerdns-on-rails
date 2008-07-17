@@ -3,12 +3,7 @@ class ZonesController < ApplicationController
   require_role [ "admin", "owner" ]
   
   def index
-    @zones = Zone.find(
-      :all,
-      :user => current_user,
-      :limit => 20,
-      :order => 'created_at DESC'
-    )
+    @zones = Zone.paginate :page => params[:page], :user => current_user
   end
   
   def show

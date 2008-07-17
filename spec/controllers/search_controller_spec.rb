@@ -8,14 +8,14 @@ describe SearchController do
   end
   
   it "should return results when searched legally" do
-    post :results, :search => { :parameter => 'exa' }
+    get :results, :q => 'exa'
     
-    assigns['results'].should_not be_nil
+    assigns[:results].should_not be_nil
     response.should render_template('results')
   end
   
   it "should redirect to the index page when nothing has been searched for" do
-    post :results, :search => { :parameter => "" }
+    get :results, :q => ''
     
     response.should be_redirect
     response.should redirect_to( root_path )

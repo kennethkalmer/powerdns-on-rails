@@ -24,25 +24,19 @@
     %tr
       %td Domain
       %td= @zone.name
-    %tr#note-display
-      %td Notes
-      %td= @zone.notes unless @zone.notes.blank?
     %tr#note-row
-      - unless @zone.notes.blank?
-        %td
-          = link_to_function prototip_info_icon('note_edit.png', 'note-edit'), "showNote()"
-          = link_to_function "Edit note", "showNote()"
-      - else
-        %td
-          = link_to_function prototip_info_icon('note_add.png', 'note-new'), "showNote()"
-          = link_to_function "New note", "showNote()"
+      %td Notes
+      %td
+        = @zone.notes unless @zone.notes.blank?
+        &nbsp;
+        = link_to_function prototip_info_icon('note_edit.png', 'note-edit'), "showNote()"
 
   #note{ :style => "display: none;" }
     - remote_form_for( :zone, @zone, :url => formatted_update_note_zone_path( @zone, :js ), :html => { :method => :put } ) do |f|
       = f.text_area :notes, :rows => 5
       %br/
       = link_to_function "Cancel", "hideNote()"
-      = submit_tag "Create note"
+      = submit_tag "Update note"
 
 
 #domain-soa.padded

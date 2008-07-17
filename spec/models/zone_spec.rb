@@ -90,6 +90,25 @@ describe Zone, "with scoped finders" do
     zones.should_not be_empty
     zones.size.should be( Zone.count )
   end
+  
+  it "should support will_paginate (no user)" do
+    zones = Zone.paginate( :page => 1 )
+    zones.should_not be_empty
+    zones.size.should be( Zone.count )
+  end
+  
+  it "shoud support will_paginate (admin user)" do
+    zones = Zone.paginate( :page => 1, :user => users(:admin) )
+    zones.should_not be_empty
+    zones.size.should be( Zone.count )
+  end
+  
+  it "should support will_paginate (zone owner)" do
+    zones = Zone.paginate( :page => 1, :user => users(:quentin) )
+    zones.should_not be_empty
+    zones.size.should be(1)
+    zones.each { |z| z.user.should eql(users(:quentin)) }
+  end
 end
 
 describe Zone, "when created" do
@@ -127,7 +146,15 @@ end
 describe Zone, "when searching" do
   fixtures :all
   
-  it "should return results when valid" do
-    Zone.search('exa').should_not be_empty
+  it "should return results for admins" do
+    Zone.search('exa', 1, users(:admin)).should_not be_empty
+  end
+  
+  it "should return results for users" do
+    Zone.search('exa', 1, users(:quentin)).should_not be_empty
+  end
+  
+  it "should return unscoped results" do
+    Zone.search('exa', 1).should_not be_empty
   end
 end
