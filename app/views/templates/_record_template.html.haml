@@ -1,18 +1,17 @@
 %tr[ record_template, :marker ]
 %tr[ record_template, :show ]
   %td= record_template.host
-  %td= record_template.ttl
-  %td= record_template.record_type
-  %td= record_template.priority
+  %td{ :width => 50 }= record_template.ttl
+  %td{ :width => 30 }= record_template.record_type
+  %td{ :width => 30 }= record_template.priority
   %td= record_template.data
-  %td
+  %td{ :width => 36 }
     = link_to_function prototip_info_icon('table_edit.png', 'edit-record-template'), "editRecordTemplate(#{record_template.id})"
-  %td
     = link_to prototip_info_icon('table_delete.png', 'delete-record-template'), record_template_path( record_template ), :method => :delete, :confirm => 'Are you sure you want to remove this record?'
 - if record_template.soa?
   %tr[ record_template, 'show-soa' ]
     %td{ :colspan => 2 } &nbsp;
-    %td{ :colspan => 5 }
+    %td{ :colspan => 4 }
       %small
         Primary Name Server:
         = record_template.primary_ns
@@ -33,7 +32,7 @@
         = record_template.minimum
 
 %tr[ record_template, :edit ]{ :style => 'display: none' }
-  %td{ :colspan => 7 }
+  %td{ :colspan => 6 }
     - remote_form_for( :record_template, record_template, :url => record_template_path( record_template ), :method => :put ) do |f|
       %div[ record_template, :error ]
       %table.gridwide
@@ -42,32 +41,47 @@
           %td{ :colspan => 5 }
             %table
               %tr
-                %td{ :colspan => 2 }
+                %td{ :colspan => 3 }
                   Editing SOA record of zone template
               %tr
                 %td Primary nameserver
-                %td= f.text_field :primary_ns, :size => 13
+                %td= f.text_field :primary_ns, :size => 20
+                %td= prototip_help_icon('help-primary-ns')
               %tr
                 %td Primary contact
-                %td= f.text_field :contact, :size => 4
+                %td= f.text_field :contact, :size => 20
+                %td= prototip_help_icon('help-contact')
               %tr
                 %td Refresh
-                %td= f.text_field :refresh, :size => 4
+                %td
+                  = f.text_field :refresh, :size => 6
+                  = prototip_help_icon('help-refresh')
+                %td &nbsp;
               %tr
                 %td Retry
-                %td= f.text_field :retry, :size => 4
+                %td
+                  = f.text_field :retry, :size => 6
+                  = prototip_help_icon('help-retry')
+                %td &nbsp;
               %tr
                 %td Expire
-                %td= f.text_field :expire, :size => 4
+                %td
+                  = f.text_field :expire, :size => 6
+                  = prototip_help_icon('help-expire')
+                %td &nbsp;
               %tr
                 %td Minimum
-                %td= f.text_field :minimum, :size => 4
+                %td
+                  = f.text_field :minimum, :size => 6
+                  = prototip_help_icon('help-minimum')
+                %td &nbsp;
         - else
-          %td= f.text_field :host, :size => 3
-          %td= f.text_field :ttl, :size => 3
-          %td= record_template.record_type
-          %td= f.text_field :priority, :size => 1
-          %td= f.text_field :data, :size => 6
+          %td= f.text_field :host, :size => 15
+          %td{ :width => 50 }= f.text_field :ttl, :size => 3
+          %td{ :width => 30 }= record_template.record_type
+          %td{ :width => 30 }= f.text_field :priority, :size => 1
+          %td= f.text_field :data, :size => 15
 
-        %td.top= image_submit_tag "table_save.png", { :class => 'nb' }
-        %td.top= link_to_function image_tag("cancel.png"), "hideRecordTemplate(#{record_template.id})"
+        %td.top{ :width => 39 }
+          = image_submit_tag "table_save.png", { :class => 'nb' }
+          = link_to_function image_tag("cancel.png"), "hideRecordTemplate(#{record_template.id})"
