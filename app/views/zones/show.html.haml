@@ -16,53 +16,61 @@
 
 %h1.underline
   = @zone.name
-  &nbsp;
-  = link_to prototip_info_icon('database_edit.png', 'zone-edit'), edit_zone_path( @zone )
 
 #domain-name.padded
   %table.grid
     %tr
       %td Domain
       %td= @zone.name
-    %tr#note-row
-      %td Notes
+    %tr
+      %td{ :valign => 'top' } Notes
       %td
-        = @zone.notes unless @zone.notes.blank?
-        &nbsp;
-        = link_to_function prototip_info_icon('note_edit.png', 'note-edit'), "showNote()"
+        #note-row
+          = @zone.notes
+          %br
+          = link_to_function prototip_info_icon('note_edit.png', 'note-edit'), "showNote()"
 
-  #note{ :style => "display: none;" }
-    - remote_form_for( :zone, @zone, :url => formatted_update_note_zone_path( @zone, :js ), :html => { :method => :put } ) do |f|
-      = f.text_area :notes, :rows => 5
-      %br/
-      = link_to_function "Cancel", "hideNote()"
-      = submit_tag "Update note"
+        #note{ :style => "display: none;" }
+          - remote_form_for( :zone, @zone, :url => formatted_update_note_zone_path( @zone, :js ), :html => { :method => :put } ) do |f|
+            = f.text_area :notes, :rows => 5, :cols => 17
+            %br/
+            = link_to_function "Cancel", "hideNote()"
+            = submit_tag "Update note"
 
 
 #domain-soa.padded
   %h2.underline
     SOA Record
     &nbsp;
-    = prototip_info_icon('database_edit.png', 'soa-record-edit')
-  %table.grid
-    %tr
-      %td Primary name server
-      %td= @zone.soa_record.primary_ns
-    %tr
-      %td Contact
-      %td= @zone.soa_record.contact
-    %tr
-      %td Refresh
-      %td= @zone.soa_record.refresh
-    %tr
-      %td Retry
-      %td= @zone.soa_record.retry
-    %tr
-      %td Expire
-      %td= @zone.soa_record.expire
-    %tr
-      %td Minimum
-      %td= @zone.soa_record.minimum
+    = link_to_function prototip_info_icon('database_edit.png', 'soa-record-edit'), "showSOAEdit()"
+  = render :partial => '/zones/soa_record', :object => @zone.soa_record
+
+  #soa-edit-form{ :style => "display: none;" }
+    - remote_form_for( :record, :url => formatted_update_soa_record_path( @zone.soa_record, :js, :zone_id => @zone.id ), :html => { :method => :put } ) do |f|
+      %table.grid
+        %tr
+          %td Primary name server
+          %td= f.text_field :primary_ns
+        %tr
+          %td Contact
+          %td= f.text_field :contact
+        %tr
+          %td Refresh
+          %td= f.text_field :refresh
+        %tr
+          %td Retry
+          %td= f.text_field :retry
+        %tr
+          %td Expire
+          %td= f.text_field :expire
+        %tr
+          %td Minimum
+          %td= f.text_field :minimum
+        %tr
+          %td
+          %td
+            = link_to_function "Cancel", "showSOAForm()"
+            = submit_tag "Update"
 
 #domain-records.padded
   %h2.underline Zone records
@@ -155,4 +163,12 @@
   function hideNote() {
     $('note').hide();
     $('note-row').show();
+  }
+  function showSOAEdit() {
+    $('soa-form').hide();
+    $('soa-edit-form').show();
+  }
+  function showSOAForm() {
+    $('soa-edit-form').hide();
+    $('soa-form').show();
   }
