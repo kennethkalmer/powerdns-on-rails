@@ -1,6 +1,15 @@
 # Shamelessly copied and modified from the Redmine source
 # http://redmine.rubyforge.org/svn/branches/0.7-stable/lib/tasks/migrate_from_trac.rake
 
+################################################################################
+#
+# BIG FAT NOISY WARNING
+#
+# This migration script should be used in a staging environment before running
+# it in a production environment!
+#
+################################################################################
+
 require 'iconv'
 
 namespace :migrate do
@@ -31,8 +40,12 @@ namespace :migrate do
       @@db_port = nil
       mattr_accessor :db_port
       
+      @@logger = nil
+      @@log_file_path = File.join( RAILS_ROOT, 'log', 'powerdns-import-' + Time.now.strftime("%Y%m%d%H%M%S") + '.log')
+      mattr_reader :log_file_path
+      
       ###
-      # Models
+      # PowerDNS Models
       ###
       class PdnsDomain < ActiveRecord::Base
         set_table_name :domains
@@ -56,32 +69,55 @@ namespace :migrate do
         set_table_name :records
         set_inheritance_column 'something_totally_different'
         
-        def ns?
+        def soa?
           self[:type] =~ /SOA/
         end
       end
+      
+      ###
+      # Extensions to our models
+      ###
+      module SoaMinimum
+        # Sanitize possible minimum values higher than allowed maximum
+        def minimum=( value )
+          self[:minimum] = (value.to_i > 10800 ? 10800 : value.to_i)
+        end
+      end
+      SOA.send( :include, SoaMinimum )
       
       def self.migrate!
         establish_connection
         
         # Quick database test
-        PdnsDomain.count
+        logger.info "Migration #{PdnsDomain.count.to_s} domains"
         
         migrated_domains = 0
         migrated_records = 0
         
         PdnsDomain.each do |domain|
-          print 'Importing ' + domain.name
+          logger.info "Importing #{domain.name}"
+          print "Importing #{domain.name} "
           
           # copy the records
-          records = domain.records.dup
+          pdns_records = domain.records.dup
           
           # get the SOA entry
-          soa = records.select { |r| r.ns? }.first
-          records.delete_if { |r| r.ns? }
+          soa = pdns_records.select { |r| r.soa? }.first
+          pdns_records.delete_if { |r| r.soa? }
+          
+          # check for missing SOA records
+          if soa.nil?
+            logger.warn "Could not find SOA record for #{domain.name}, skipping domain!"
+            print "!\n"
+            STDOUT.flush
+            next
+          end
           
           # extract SOA information
           soa_ns, soa_contact, soa_serial, soa_refresh, soa_retry, soa_expire, soa_minimum = soa.content.split(' ')
+          
+          # remove the zone if it exists
+          Zone.destroy_all( [ 'name LIKE ?', domain.name ] )
           
           # add the zone
           zone = Zone.find_or_create_by_name( encode( domain.name ) )
@@ -95,23 +131,34 @@ namespace :migrate do
           zone.minimum = soa_minimum
           zone.ttl = soa.ttl
           
-          next unless zone.save
+          # Save and report
+          unless zone.save
+            logger.warn "* Could not create new Zone/SOA record for #{domain.name}, skipping domain!"
+            logger.warn "* ActiveRecord said: #{zone.errors.full_messages.join(', ')}"
+            print "!\n"
+            STDOUT.flush
+            next
+          end
           
           migrated_domains += 1
+          migrated_records += 1 # SOA record created above :)
           
           # clear the existing records completely (except the SOA)
           Record.delete_all( "zone_id = #{zone.id} AND type <> 'SOA'")
           
+          logger.info "* Adding records for #{domain.name}"
           Record.batch do
             # add the remaining records
-            domain.records.each do |pdns_record|
-              print '.'
-              STDOUT.flush
+            pdns_records.each do |pdns_record|
+              logger.info "** Importing #{pdns_record.name} #{pdns_record.ttl} IN #{pdns_record.type} #{pdns_record.prio} #{pdns_record.content}"
               
               begin
                 # create a correct 'type' of record
                 record = zone.send( "#{pdns_record.type.downcase}_records".to_sym ).new
               rescue
+                logger.warn "** #{pdns_record.name} (#{pdns_record.type}) is not supported by this project yet"
+                print "!"
+                STDOUT.flush
                 next
               end
 
@@ -125,16 +172,28 @@ namespace :migrate do
 
               # set the data, also stripping out the PowerDNS rubbish
               record.data = encode( pdns_record.content.gsub( ".#{domain.name}", '' ) )
+              record.ttl = pdns_record.ttl
+              
+              # set the priority if we're dealing with an MX record
+              record.priority = pdns_record.prio if record.is_a?( MX )
 
-              # Set the TTL if we're dealing with an MX
-              record.ttl = pdns_record.ttl if record.is_a?( MX )
-
-              next unless record.save
+              # save and report
+              unless record.save
+                logger.warn "** Could not save record imported from #{pdns_record.name} (#{pdns_record.type}"
+                logger.warn "** ActiveRecord said: #{record.errors.full_messages.join(', ')}"
+                print '!'
+                STDOUT.flush
+                next
+              end
 
               migrated_records += 1
+              
+              print '.'
+              STDOUT.flush
             end
           end
           
+          logger.info ""
           print "\n"
         end
         
@@ -142,6 +201,12 @@ namespace :migrate do
         puts "Zones:      #{migrated_domains}/#{PdnsDomain.count}"
         puts "Records:    #{migrated_records}/#{PdnsRecord.count}"
         puts
+        puts "Verbose logging saved to #{log_file_path}"
+        puts
+      end
+      
+      def self.logger
+        @@logger ||= Logger.new( log_file_path )
       end
       
       def self.connection_params
@@ -156,6 +221,7 @@ namespace :migrate do
       end
       
       def self.establish_connection
+        logger.info "Setting up database connections"
         constants.each do |const|
           klass = const_get(const)
           next unless klass.respond_to? 'establish_connection'
@@ -200,7 +266,12 @@ namespace :migrate do
     prompt("PowerDNS database name" ) { |name| PowerDnsMigration.db_name = name }
     prompt("PowerDNS database username") { |user| PowerDnsMigration.db_username = user }
     prompt("PowerDNS database password") { |pass| PowerDnsMigration.db_password = pass }
-    prompt('PowerDNS database encoding', :default => 'UTF-8') {|encoding| PowerDnsMigration.encoding encoding}
+    prompt('PowerDNS database encoding', :default => 'UTF-8') { |encoding| PowerDnsMigration.encoding encoding }
+    
+    puts
+    puts "A complete log file containing verbose data will be available at the path below after the migration"
+    puts PowerDnsMigration.log_file_path
+    puts
     
     PowerDnsMigration.migrate!
   end
