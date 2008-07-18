@@ -7,10 +7,13 @@
     Edit this zone template's information
   #delete-template
     Delete this zone template
+  #missing-soa
+    Zone templates without SOA records cannot be used when creating new zones.
 
 %table.grid
   %tr
     %td
       = link_to prototip_info_icon('table_add.png', 'new-template'), new_zone_template_path
       = link_to 'New template', new_zone_template_path
+    %td &nbsp;
   = render :partial => 'zone_template', :collection => @zone_templates

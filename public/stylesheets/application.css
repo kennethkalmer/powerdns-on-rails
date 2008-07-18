@@ -99,7 +99,7 @@ a img {
     border: none;
 }
 
-.flash-info, .flash-error, .flash-warning, .errorExplanation {
+.flash-info, .flash-error, .flash-warning, .errorExplanation, .generic-warning {
     padding: 5px;
     padding-left: 30px;
     background-position: 5px 5px;
@@ -129,6 +129,13 @@ a img {
 }
 .fieldWithErrors {
     display: inline;
+}
+.generic-warning {
+    border: 1px solid #F66;
+    background-color: #FFC;
+}
+.generic-warning img {
+    maring-left: - 25px;
 }
 
 input {

@@ -11,6 +11,31 @@
     Edit this record template's information
   #delete-record-template
     Delete this record template
+  #help-primary-ns
+    This is the fully qualified domain name (FQDN) of the primary name server
+    of the domain.
+  #help-contact
+    The primary contact of the domain, usualy the DNS administrator's email
+    address would be entered here.
+  #help-refresh
+    Indicates the time when the slave will try to refresh the zone from the 
+    master. RFC 1912 recommends 1200 to 43200 seconds, low (1200) if the data is
+    volatile or 43200 (12 hours) if it's not. If you are using NOTIFY you can 
+    set for much higher values e.g. 1 or more days > 86400.
+  #help-retry
+    It defines the time between retries if the slave (secondary) fails to 
+    contact the master when refresh (above) has expired. Typical values would be
+    180 (3 minutes) to 900 (15 minutes) or higher.
+  #help-expire
+    Indicates when the zone data is no longer authoritative. Applies to Slaves 
+    or Secondaries servers only. BIND9 slaves stop responding to queries for the
+    zone when this time has expired and no contact has been made with the 
+    master.
+  #help-minimum
+    RFC 2308 (implemented by BIND 9) redefined this value to be the negative 
+    caching time - the time a NAME ERROR = NXDOMAIN record is cached. The 
+    maximum value allowed by BIND 9 for this parameter is 3 hours (10800 
+    seconds).
 
 %h1.underline
   = @zone_template.name
@@ -29,6 +54,13 @@
 
 %h1.underline
   Record templates
+
+- unless @zone_template.has_soa?
+  &nbsp;
+  #soa-warning.generic-warning
+    = image_tag('table_error.png')
+    This template cannot be used to create new zones until it has an SOA record
+  &nbsp;
 
 %table#record-table.gridwide
   %tr
@@ -55,36 +87,55 @@
         %td
           = f.select :record_type, RecordTemplate.record_types.map { |t| [t,t] }
           = observe_field "record_template_record_type", :function => 'toggleRecordFields(element,value);'
+        %td &nbsp;
       %tr
         %td Host
         %td= f.text_field :host
+        %td &nbsp;
       %tr
         %td TTL
         %td= f.text_field :ttl, :size => 6
+        %td &nbsp;
       %tr.rt-mx{ :style => 'display :none' }
         %td Priority
         %td= f.text_field :priority, :size => 6
+        %td &nbsp;
       %tr
         %td Data
         %td= f.text_field :data
+        %td &nbsp;
       %tr.rt-soa{ :style => 'display :none' }
         %td Primary Name Server
         %td= f.text_field :primary_ns
+        %td= prototip_help_icon('help-primary-ns')
       %tr.rt-soa{ :style => 'display :none' }
         %td Contact
         %td= f.text_field :contact
+        %td= prototip_help_icon('help-contact')
       %tr.rt-soa{ :style => 'display :none' }
         %td Refresh
-        %td= f.text_field :refresh, :size => 6
+        %td
+          = f.text_field :refresh, :size => 6
+          = prototip_help_icon('help-refresh')
+        %td &nbsp;
       %tr.rt-soa{ :style => 'display :none' }
         %td Retry
-        %td= f.text_field :retry, :size => 6
+        %td
+          = f.text_field :retry, :size => 6
+          = prototip_help_icon('help-retry')
+        %td &nbsp;
       %tr.rt-soa{ :style => 'display :none' }
         %td Expire
-        %td= f.text_field :expire, :size => 6
+        %td
+          = f.text_field :expire, :size => 6
+          = prototip_help_icon('help-expire')
+        %td &nbsp;
       %tr.rt-soa{ :style => 'display :none' }
         %td Minimum
-        %td= f.text_field :minimum, :size => 6
+        %td
+          = f.text_field :minimum, :size => 6
+          = prototip_help_icon('help-minimum')
+        %td &nbsp;
       %tr
         %td.right= link_to_function 'Cancel', "hideAll()"
         %td= submit_tag 'Save'
