@@ -129,6 +129,6 @@ describe Zone, "when searching" do
   
   it "should return results when valid" do
     user = users(:admin)
-    Zone.search('exa', user).should_not be_empty
+    Zone.search('exa', 1, user).should_not be_empty
   end
 end

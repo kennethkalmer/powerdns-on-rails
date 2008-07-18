@@ -60,8 +60,10 @@ class Zone < ActiveRecord::Base
     alias_method_chain :find, :scope
     
     # For our lookup purposes
-    def search( params, user )
-      find(:all, :conditions => ["name LIKE ?", "%#{params}%"], :user => user)
+    def search( params, page, user )
+      paginate :per_page => 5, :page => page, 
+        :conditions => ['name LIKE ?', "%#{params}%"],
+        :user => user
     end
     
   end

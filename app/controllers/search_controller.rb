@@ -5,7 +5,7 @@ class SearchController < ApplicationController
     if @search_parameter.blank?
       redirect_to root_path
     else
-      @results = Zone.search(@search_parameter, current_user)
+      @results = Zone.search(@search_parameter, params[:page], current_user)
     end
   end
   
