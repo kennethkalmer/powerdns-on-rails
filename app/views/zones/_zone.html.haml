@@ -3,5 +3,4 @@
     = link_to zone.name, zone_path( zone )
   %td &nbsp;
   %td
-    = link_to prototip_info_icon('database_edit.png', 'edit-zone'), edit_zone_path( zone )
     = link_to prototip_info_icon('database_delete.png', 'delete-zone'), zone_path( zone ), :method => :delete, :confirm => 'Are you sure?'

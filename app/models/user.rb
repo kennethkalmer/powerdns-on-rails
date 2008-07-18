@@ -109,7 +109,7 @@ class User < ActiveRecord::Base
   end
   
   # Returns true if the user has the admin role
-  def admin?
+  def admin
     @admin ||= has_role?( 'admin' )
   end
   
