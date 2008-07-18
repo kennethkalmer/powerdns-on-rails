@@ -26,6 +26,29 @@ class ZoneTemplate < ActiveRecord::Base
     end
     alias_method_chain :find, :validations
     
+    # Convenient scoped finder method that restricts lookups to the specified
+    # :user. If the user has an admin role, the scoping is discarded totally,
+    # since an admin _is an admin_.
+    #
+    # Example:
+    # 
+    #   ZoneTemplate.find(:all) # Normal behavior
+    #   ZoneTemplate.find(:all, :user => user_instance) # Will scope lookups to 
+    #     the user
+    #
+    def find_with_scope( *args )
+      options = args.extract_options!
+      user = options.delete( :user )
+      
+      unless user.nil? || user.has_role?( 'admin' )
+        with_scope( :find => { :conditions => [ 'user_id = ?', user.id ] } ) do
+          find_without_scope( *args << options )
+        end
+      else
+        find_without_scope( *args << options )
+      end
+    end
+    alias_method_chain :find, :scope
   end
   
   # Build a new zone using +self+ as a template. +zone+ should be valid zone

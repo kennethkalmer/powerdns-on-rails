@@ -54,6 +54,51 @@ describe ZoneTemplate, "when loaded" do
   end
 end
 
+describe ZoneTemplate, "with scoped finders" do
+  fixtures :all
+  
+  it "should return all templates without a user" do
+    templates = ZoneTemplate.find( :all )
+    templates.should_not be_empty
+    templates.size.should be( ZoneTemplate.count )
+  end
+  
+  it "should only return a user's templates if not an admin" do
+    templates = ZoneTemplate.find( :all, :user => users(:quentin) )
+    templates.should_not be_empty
+    templates.size.should be(1)
+    templates.each { |z| z.user.should eql( users( :quentin ) ) }
+  end
+  
+  it "should return all templates if the user is an admin" do
+    templates = ZoneTemplate.find( :all, :user => users(:admin) )
+    templates.should_not be_empty
+    templates.size.should be( ZoneTemplate.count )
+  end
+  
+  it "should support will_paginate (no user)" do
+    pending
+    templates = ZoneTemplate.paginate( :page => 1 )
+    templates.should_not be_empty
+    templates.size.should be( ZoneTemplate.count )
+  end
+  
+  it "shoud support will_paginate (admin user)" do
+    pending
+    templates = ZoneTemplate.paginate( :page => 1, :user => users(:admin) )
+    templates.should_not be_empty
+    templates.size.should be( ZoneTemplate.count )
+  end
+  
+  it "should support will_paginate (template owner)" do
+    pending
+    templates = ZoneTemplate.paginate( :page => 1, :user => users(:quentin) )
+    templates.should_not be_empty
+    templates.size.should be(1)
+    templates.each { |z| z.user.should eql(users(:quentin)) }
+  end
+end
+
 describe ZoneTemplate, "when used to build a zone" do
   fixtures :all
   

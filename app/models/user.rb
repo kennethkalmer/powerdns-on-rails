@@ -20,6 +20,7 @@ class User < ActiveRecord::Base
 
   has_and_belongs_to_many :roles
   has_many :zones, :dependent => :nullify
+  has_many :zone_templates, :dependent => :nullify
   
   acts_as_state_machine :initial => :pending
   state :passive

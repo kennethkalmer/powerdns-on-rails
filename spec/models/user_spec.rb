@@ -188,6 +188,26 @@ describe User, "as owner" do
   it "should have zones" do
     @user.zones.should_not be_empty
   end
+  
+  it "should have templates" do
+    @user.zone_templates.should_not be_empty
+  end
+end
+
+describe User, "as admin" do
+  fixtures :all
+  
+  before(:each) do
+    @admin = users(:admin)
+  end
+  
+  it "should not own zones" do
+    @admin.zones.should be_empty
+  end
+  
+  it "should not own zone templates" do
+    @admin.zone_templates.should be_empty
+  end
 end
 
 describe User, "and roles" do

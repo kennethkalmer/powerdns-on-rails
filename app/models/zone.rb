@@ -59,6 +59,7 @@ class Zone < ActiveRecord::Base
     end
     alias_method_chain :find, :scope
     
+    # Paginated find with scope. See #find.
     def paginate_with_scope( *args, &block )
       options = args.pop
       user = options.delete( :user )
