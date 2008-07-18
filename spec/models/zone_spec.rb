@@ -128,6 +128,7 @@ describe Zone, "when searching" do
   fixtures :all
   
   it "should return results when valid" do
-    Zone.search('exa').should_not be_empty
+    user = users(:admin)
+    Zone.search('exa', user).should_not be_empty
   end
 end
