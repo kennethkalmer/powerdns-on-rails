@@ -34,6 +34,9 @@ class Zone < ActiveRecord::Base
     validates_presence_of f, :on => :create
   end
   
+  # Serial is optional, but will be passed to the SOA too
+  attr_accessor :serial
+  
   class << self
     
     # Convenient scoped finder method that restricts lookups to the specified
@@ -93,6 +96,7 @@ class Zone < ActiveRecord::Base
     SOA_FIELDS.each do |f|
       soa.send( "#{f}=", send( f ) )
     end
+    soa.serial = serial unless serial.nil? # Optional
     soa.save
   end
 end
