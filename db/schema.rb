@@ -62,11 +62,6 @@ ActiveRecord::Schema.define(:version => 8) do
   add_index "roles_users", ["role_id"], :name => "index_roles_users_on_role_id"
   add_index "roles_users", ["user_id"], :name => "index_roles_users_on_user_id"
 
-  create_table "schema_migrations", :primary_key => "version", :force => true do |t|
-  end
-
-  add_index "schema_migrations", ["version"], :name => "unique_schema_migrations", :unique => true
-
   create_table "users", :force => true do |t|
     t.string   "login"
     t.string   "email"
