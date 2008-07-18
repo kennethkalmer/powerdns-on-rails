@@ -12,7 +12,7 @@
           BIND DLZ on Rails
       - if current_user
       #search-bar{:style => "display: inline; float: right;"}
-        - form_tag( :search, :url => { :controller => :search, :action => :results }, :method => :get ) do |f|
+        - form_for( :search, :url => { :controller => :search, :action => :results }, :html => { :method => :get } ) do |f|
           = f.text_field :parameter
           = submit_tag "Search"
       #Nav
