@@ -38,8 +38,7 @@
     %tr
       %td{:width => "300"} Domain name
       %td= f.text_field :name
-      %td
-        = prototip_help_icon('help-domain')
+      %td= prototip_help_icon('help-domain')
     %tr
       %td Zone Template
       %td= collection_select( :zone_template, :id, @zone_templates, :id, :name, :include_blank => true )
@@ -50,13 +49,11 @@
       %tr
         %td{:width => "300"} Primary name server
         %td= f.text_field :primary_ns
-        %td
-          = prototip_help_icon('help-primary-ns')
+        %td= prototip_help_icon('help-primary-ns')
       %tr
         %td Contact
         %td= f.text_field :contact
-        %td
-          = prototip_help_icon('help-contact')
+        %td= prototip_help_icon('help-contact')
       %tr
         %td Refresh
         %td
