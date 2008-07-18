@@ -6,22 +6,20 @@ describe RecordsController do
   before( :each ) do
     session[:user_id] = users( :admin ).id
     @zone = zones( :example_com )
-    Zone.stubs( :find ).with( @zone.id.to_s, :user => users( :admin ) ).returns( @zone )
+    Zone.expects( :find ).with( @zone.id.to_s, :user => users( :admin ) ).returns( @zone )
   end
   
   it "should create a new record when valid" do
     record = Record.new
     
-    params = {  
-      'host' => "@", 
-      'ttl' => "864400", 
-      'type' => "NS", 
-      'data' => "n3.example.com"
+    params = {
+      'host' => '@',
+      'ttl' => '86400',
+      'type' => 'NS',
+      'data' => 'n3.example.com'
     }
     
-    @zone.records.expects( :new ).with( params ).returns( record )
-    
-    record.expects( :zone_id= ).with( @zone.id )
+    @zone.ns_records.expects( :new ).with( params ).returns( record )
     record.expects( :save ).returns( true )
     
     post :create, :zone_id => @zone.id, :record => params
@@ -40,11 +38,12 @@ describe RecordsController do
       'data' => "n3.example.com"
     }
     
-    @zone.records.expects( :new ).with( params ).returns( record )
-    record.expects( :zone_id= ).with( @zone.id )
+    @zone.ns_records.expects( :new ).with( params ).returns( record )
     record.expects( :save ).returns( false )
     
     post :create, :zone_id => @zone.id, :record => params
+    
+    response.should render_template( 'new' )
   end
   
   it "should update a valid record" do
