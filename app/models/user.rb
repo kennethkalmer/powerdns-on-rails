@@ -32,7 +32,7 @@ class User < ActiveRecord::Base
   end
   
   event :unsuspend do
-    transitions :from => :suspended, :to => :active,  :guard => Proc.new {|u| !u.activated_at.blank? }
+    transitions :from => :suspended, :to => :active
   end
   
   event :delete do
