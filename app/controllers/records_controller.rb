@@ -38,7 +38,7 @@ class RecordsController < ApplicationController
   
   # Non-CRUD methods
   def update_soa
-    @zone.soa_record.update_attributes( params[:record] )
+    @zone.soa_record.update_attributes( params[:soa] )
     if @zone.soa_record.valid?
       flash[:info] = "SOA record updated!"
     else
