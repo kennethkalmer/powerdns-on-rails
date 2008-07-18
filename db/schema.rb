@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 8) do
+ActiveRecord::Schema.define(:version => 9) do
 
   create_table "record_templates", :force => true do |t|
     t.integer  "zone_template_id"
@@ -82,6 +82,7 @@ ActiveRecord::Schema.define(:version => 8) do
     t.integer  "ttl",        :default => 86400
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "user_id"
   end
 
   create_table "zones", :force => true do |t|

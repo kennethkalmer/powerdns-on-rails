@@ -1,5 +1,6 @@
 class ZoneTemplate < ActiveRecord::Base
   
+  belongs_to :user
   has_many :record_templates
   
   validates_presence_of :name
@@ -28,10 +29,14 @@ class ZoneTemplate < ActiveRecord::Base
   end
   
   # Build a new zone using +self+ as a template. +zone+ should be valid zone
-  # name. This method will throw exceptions as it encounters errors, and will
-  # use a transaction to complete the operation
-  def build( zone_name )
+  # name. Pass the optional +user+ object along to have the new one owned by the
+  # user, otherwise it's for admins only.
+  # 
+  # This method will throw exceptions as it encounters errors, and will use a 
+  # transaction to complete/rollback the operation.
+  def build( zone_name, user = nil )
     zone = Zone.new( :name => zone_name, :ttl => self.ttl )
+    zone.user = user if user.is_a?( User )
     
     self.class.transaction do
       # Pick our SOA template out, and populate the zone

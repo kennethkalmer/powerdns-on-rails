@@ -10,7 +10,7 @@ east_coast_soa:
   refresh: 10800
   retry: 7200
   expire: 604800
-  minimum: 10800
+  minimum: 3600
 east_coast_ns_ns1:
   zone_template: east_coast_dc
   ttl: 86400
@@ -66,4 +66,48 @@ west_coast_soa:
   refresh: 10800
   retry: 7200
   expire: 604800
-  minimum: 10800
+  minimum: 3600
+
+# Quentin's home template
+quentin_home_soa:
+  zone_template: quentin_home
+  ttl: 60
+  record_type: SOA
+  host: @
+  primary_ns: ns1.example.com.
+  contact: quentin.homelinux.net
+  refresh: 10800
+  retry: 7200
+  expire: 604800
+  minimum: 3600
+quentin_home_ns1:
+  zone_template: quentin_home
+  ttl: 60
+  record_type: NS
+  host: @
+  data: ns1.example.com
+quentin_home_ns2:
+  zone_template: quentin_home
+  ttl: 60
+  record_type: NS
+  host: @
+  data: ns2.example.com
+quentin_home_a:
+  zone_template: quentin_home
+  ttl: 60
+  record_type: CNAME
+  host: @
+  data: quentin.homelinux.net
+quentin_home_www:
+  zone_template: quentin_home
+  ttl: 60
+  record_type: CNAME
+  host: www
+  data: quentin.homelinux.net
+quentin_home_mx:
+  zone_template: quentin_home
+  ttl: 60
+  record_type: MX
+  host: @
+  data: quentin.homelinux.net
+  priority: 10
