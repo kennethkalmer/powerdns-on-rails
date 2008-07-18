@@ -11,8 +11,7 @@
     = link_to prototip_info_icon('database_add.png', 'new-zone'), new_zone_path
     = link_to "Add new zone", new_zone_path
 
-%h1.underline
-  Newest zones
+%h1.underline Zones
 
 %table
   = render :partial => 'zone', :collection => @zones

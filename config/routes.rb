@@ -29,7 +29,7 @@ ActionController::Routing::Routes.draw do |map|
 
   # See how all your routes lay out with "rake routes"
   
-  map.root :controller => 'zones'
+  map.root :controller => 'dashboard'
   
   # RESTful zones and records
   map.resources :zones, :has_many => :records, :member => { :update_note => :put }

@@ -11,21 +11,23 @@
         %h1
           BIND DLZ on Rails
       - if current_user
-      #search-bar{:style => "display: inline; float: right;"}
-        - form_tag( { :controller => :search, :action => :results }, { :method => :get } ) do |f|
-          = text_field_tag :q
-          = submit_tag "Search"
-      #Nav
-        %ul
-          %li
-            = link_to "Zones", zones_path
-          %li
-            = link_to "Templates", zone_templates_path
-          %li
-            = link_to "Users", users_path
-          %li
-            = link_to "Logout", logout_path
-      - end
+        #search-bar{:style => "display: inline; float: right;"}
+          - form_tag( { :controller => :search, :action => :results }, { :method => :get } ) do |f|
+            = text_field_tag :q
+            = submit_tag "Search"
+        #Nav
+          %ul
+            %li
+              = link_to "Home", root_url
+            %li
+              = link_to "Zones", zones_path
+            %li
+              = link_to "Templates", zone_templates_path
+            %li
+              = link_to "Users", users_path
+            %li
+              = link_to "Logout", logout_path
+
       #Body
         = show_flash
 
