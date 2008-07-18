@@ -29,7 +29,7 @@ class RecordTemplatesController < ApplicationController
     zt = @record_template.zone_template
     @record_template.destroy
     flash[:info] = "Record template removed"
-    redirect_to template_path( zt )
+    redirect_to zone_template_path( zt )
   end
   
 end

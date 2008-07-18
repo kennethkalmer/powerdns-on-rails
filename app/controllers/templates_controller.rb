@@ -48,8 +48,8 @@ class TemplatesController < ApplicationController
   end
   
   def destroy
-    @zone_template.delete!
-    redirect_to template_path
+    @zone_template.destroy
+    redirect_to zone_templates_path
   end
   
   private

@@ -36,6 +36,16 @@ class RecordsController < ApplicationController
     redirect_to zone_path( @zone )
   end
   
+  # Non-CRUD methods
+  def update_soa
+    @zone.soa_record.update_attributes( params[:soa] )
+    if @zone.soa_record.valid?
+      flash[:info] = "SOA record updated!"
+    else
+      flash[:error] = "SOA record not updated!"
+    end
+  end
+  
   protected
   
   def get_zone
