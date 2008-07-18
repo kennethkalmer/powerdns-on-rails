@@ -3,7 +3,6 @@
 example_com:
   name: example.com
   ttl: 86400
-  user: admin
 
 example_net:
   name: example.net

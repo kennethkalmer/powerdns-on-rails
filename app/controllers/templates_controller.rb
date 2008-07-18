@@ -1,11 +1,11 @@
 class TemplatesController < ApplicationController
   
-  require_role "admin"
+  require_role ["admin", "owner"]
   
   before_filter :load_zone, :only => [ :show, :edit, :update, :destroy ]
   
   def index
-    @zone_templates = ZoneTemplate.find( :all, :order => 'name' )
+    @zone_templates = ZoneTemplate.find( :all, :order => 'name', :user => current_user )
   end
   
   def show
@@ -14,6 +14,10 @@ class TemplatesController < ApplicationController
   
   def new
     @zone_template = ZoneTemplate.new
+    
+    # load the owners if this is an admin
+    @users = User.find(:all).select{ |u| u.has_role?('owner') } if current_user.admin?
+    
     render :action => :form
   end
   
@@ -24,6 +28,8 @@ class TemplatesController < ApplicationController
   
   def create
     @zone_template = ZoneTemplate.new(params[:zone_template])
+    @zone_template.user = current_user unless current_user.admin?
+    
     if @zone_template.save
       flash[:info] = 'Zone template created'
       redirect_to zone_template_path( @zone_template )

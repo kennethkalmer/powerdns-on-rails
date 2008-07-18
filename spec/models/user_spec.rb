@@ -20,16 +20,10 @@ describe User do
       @creating_user.should change(User, :count).by(1)
     end
 
-    it 'initializes #activation_code' do
+    it 'starts in active state' do
       @creating_user.call
       @user.reload
-      @user.activation_code.should_not be_nil
-    end
-
-    it 'starts in pending state' do
-      @creating_user.call
-      @user.reload
-      @user.should be_pending
+      @user.should be_active
     end
   end
 
@@ -119,14 +113,6 @@ describe User do
     users(:quentin).remember_token_expires_at.between?(before, after).should be_true
   end
 
-  it 'registers passive user' do
-    user = create_user(:password => nil, :password_confirmation => nil)
-    user.should be_passive
-    user.update_attributes(:password => 'new password', :password_confirmation => 'new password')
-    user.register!
-    user.should be_pending
-  end
-
   it 'suspends user' do
     users(:quentin).suspend!
     users(:quentin).should be_suspended
@@ -157,24 +143,11 @@ describe User do
       @user.should be_active
     end
     
-    it 'reverts to passive state if activation_code and activated_at are nil' do
-      User.update_all :activation_code => nil, :activated_at => nil
-      @user.reload.unsuspend!
-      @user.should be_passive
-    end
-    
-    it 'reverts to pending state if activation_code is set and activated_at is nil' do
-      User.update_all :activation_code => 'foo-bar', :activated_at => nil
-      @user.reload.unsuspend!
-      @user.should be_pending
-    end
   end
 
 protected
   def create_user(options = {})
-    record = User.new({ :login => 'quire', :email => 'quire@example.com', :password => 'quire', :password_confirmation => 'quire' }.merge(options))
-    record.register! if record.valid?
-    record
+    User.create({ :login => 'quire', :email => 'quire@example.com', :password => 'quire', :password_confirmation => 'quire' }.merge(options))
   end
 end
 
@@ -187,6 +160,26 @@ describe User, "as owner" do
   
   it "should have zones" do
     @user.zones.should_not be_empty
+  end
+  
+  it "should have templates" do
+    @user.zone_templates.should_not be_empty
+  end
+end
+
+describe User, "as admin" do
+  fixtures :all
+  
+  before(:each) do
+    @admin = users(:admin)
+  end
+  
+  it "should not own zones" do
+    @admin.zones.should be_empty
+  end
+  
+  it "should not own zone templates" do
+    @admin.zone_templates.should be_empty
   end
 end
 

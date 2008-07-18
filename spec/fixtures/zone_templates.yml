@@ -12,3 +12,9 @@ west_coast_dc:
 partially_complete:
   name: Partially Complete
   ttl: 43200
+
+# User owned-template, home DSL
+quentin_home:
+  name: Quentin Home
+  ttl: 60
+  user: quentin

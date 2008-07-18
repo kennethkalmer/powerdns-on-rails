@@ -20,34 +20,23 @@ class User < ActiveRecord::Base
 
   has_and_belongs_to_many :roles
   has_many :zones, :dependent => :nullify
+  has_many :zone_templates, :dependent => :nullify
   
-  acts_as_state_machine :initial => :pending
-  state :passive
-  state :pending, :enter => :make_activation_code
-  state :active,  :enter => :do_activate
+  acts_as_state_machine :initial => :active
+  state :active, :enter => :do_activate
   state :suspended
   state :deleted, :enter => :do_delete
 
-  event :register do
-    transitions :from => :passive, :to => :pending, :guard => Proc.new {|u| !(u.crypted_password.blank? && u.password.blank?) }
-  end
-  
-  event :activate do
-    transitions :from => :pending, :to => :active 
-  end
-  
   event :suspend do
-    transitions :from => [:passive, :pending, :active], :to => :suspended
+    transitions :from => :active, :to => :suspended
+  end
+  
+  event :unsuspend do
+    transitions :from => :suspended, :to => :active,  :guard => Proc.new {|u| !u.activated_at.blank? }
   end
   
   event :delete do
-    transitions :from => [:passive, :pending, :active, :suspended], :to => :deleted
-  end
-
-  event :unsuspend do
-    transitions :from => :suspended, :to => :active,  :guard => Proc.new {|u| !u.activated_at.blank? }
-    transitions :from => :suspended, :to => :pending, :guard => Proc.new {|u| !u.activation_code.blank? }
-    transitions :from => :suspended, :to => :passive
+    transitions :from => [:suspended, :active], :to => :deleted
   end
 
   # Authenticates a user by their login name and unencrypted password.  Returns the user or nil.
@@ -101,10 +90,8 @@ class User < ActiveRecord::Base
   end
   
   # has_role? simply needs to return true or false whether a user has a role or not.  
-  # It may be a good idea to have "admin" roles return true always
   def has_role?(role_in_question)
     @_list ||= self.roles.collect(&:name)
-    return true if @_list.include?("admin")
     (@_list.include?(role_in_question.to_s) )
   end
   
@@ -112,6 +99,7 @@ class User < ActiveRecord::Base
   def admin?
     @admin ||= has_role?( 'admin' )
   end
+  alias :admin :admin?
   
   # Temporary placeholder for an admin value
   def admin=( value )
@@ -130,14 +118,9 @@ class User < ActiveRecord::Base
       self.salt = Digest::SHA1.hexdigest("--#{Time.now.to_s}--#{login}--") if new_record?
       self.crypted_password = encrypt(password)
     end
-      
-    def password_required?
-      crypted_password.blank? || !password.blank?
-    end
     
-    def make_activation_code
-      self.deleted_at = nil
-      self.activation_code = Digest::SHA1.hexdigest( Time.now.to_s.split(//).sort_by {rand}.join )
+    def password_required?
+      crypted_password.nil? || !password.nil?
     end
     
     def do_delete
@@ -145,6 +128,7 @@ class User < ActiveRecord::Base
     end
 
     def do_activate
+      encrypt_password
       @activated = true
       self.activated_at = Time.now.utc
       self.deleted_at = self.activation_code = nil
