@@ -11,10 +11,17 @@
   %table
     %tr
       %td Name
+      %td &nbsp;
       %td= f.text_field :name
     %tr
       %td TTL
+      %td &nbsp;
       %td= f.text_field :ttl, :size => 6
+    - unless @users.nil?
+      %tr
+        %td Owner
+        %td &nbsp;
+        %td= f.collection_select :user_id, @users, :id, :login, :include_blank => true
     %tr
       %td= link_to 'Cancel', zone_templates_path
       %td= submit_tag 'Save'
