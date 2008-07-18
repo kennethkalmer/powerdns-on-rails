@@ -1,10 +1,10 @@
 %tr[ record_template, :marker ]
 %tr[ record_template, :show ]
-  %td= record_template.host
+  %td{ :width => 250 }= record_template.host
   %td{ :width => 50 }= record_template.ttl
   %td{ :width => 30 }= record_template.record_type
   %td{ :width => 30 }= record_template.priority
-  %td= record_template.data
+  %td{ :width => 250 }= record_template.data
   %td{ :width => 36 }
     = link_to_function prototip_info_icon('table_edit.png', 'edit-record-template'), "editRecordTemplate(#{record_template.id})"
     = link_to prototip_info_icon('table_delete.png', 'delete-record-template'), record_template_path( record_template ), :method => :delete, :confirm => 'Are you sure you want to remove this record?'
@@ -38,7 +38,7 @@
       %table.gridwide
         %tr
         - if record_template.soa?
-          %td{ :colspan => 5 }
+          %td
             %table
               %tr
                 %td{ :colspan => 3 }
@@ -76,11 +76,13 @@
                   = prototip_help_icon('help-minimum')
                 %td &nbsp;
         - else
-          %td= f.text_field :host, :size => 15
+          %td{ :width => 250 }= f.text_field :host, :size => 15
           %td{ :width => 50 }= f.text_field :ttl, :size => 3
           %td{ :width => 30 }= record_template.record_type
-          %td{ :width => 30 }= f.text_field :priority, :size => 1
-          %td= f.text_field :data, :size => 15
+          %td{ :width => 30 }
+            - if record_template.record_type == 'MX'
+              = f.text_field :priority, :size => 1
+          %td{ :width => 250 }= f.text_field :data, :size => 15
 
         %td.top{ :width => 39 }
           = image_submit_tag "table_save.png", { :class => 'nb' }
