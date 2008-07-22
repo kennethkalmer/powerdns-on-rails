@@ -17,7 +17,10 @@ class ZonesController < ApplicationController
   end
   
   def create
-    @zone_template = ZoneTemplate.find(params[:zone_template][:id]) unless params[:zone_template][:id].blank?
+    unless params[:zone_template].blank? || params[:zone_template][:id].blank?
+      @zone_template = ZoneTemplate.find(params[:zone_template][:id])
+    end
+    
     unless @zone_template.nil?
       @zone = @zone_template.build( params[:zone][:name] )
     else
@@ -25,12 +28,20 @@ class ZonesController < ApplicationController
     end
     @zone.user = current_user unless current_user.has_role?( 'admin' )
 
-    if @zone.save
-      flash[:info] = "Zone created"
-      redirect_to zone_path( @zone )
-    else
-      @zone_templates = ZoneTemplate.find( :all )
-      render :action => :new
+    respond_to do |format|
+      if @zone.save
+        format.html { 
+          flash[:info] = "Zone created"
+          redirect_to zone_path( @zone ) 
+        }
+        format.xml { render :xml => @zone, :status => :created, :location => zone_url( @zone ) }
+      else
+        format.html {
+          @zone_templates = ZoneTemplate.find( :all )
+          render :action => :new
+        }
+        format.xml { render :xml => @zone.errors, :status => :unprocessable_entity }
+      end
     end
   end
   

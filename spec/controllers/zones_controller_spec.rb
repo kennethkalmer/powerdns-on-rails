@@ -1,10 +1,12 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
+include AuthenticatedTestHelper
+
 describe ZonesController, "index" do
   fixtures :all
   
   it "should display all zones to the admin" do
-    session[:user_id] = users( :admin ).id
+    login_as(:admin)
     
     get 'index'
     
@@ -14,7 +16,7 @@ describe ZonesController, "index" do
   end
   
   it "should restrict zones for owners" do
-    session[:user_id] = users( :quentin ).id
+    login_as( :quentin )
     
     get 'index'
     
@@ -28,7 +30,7 @@ describe ZonesController, "when creating" do
   fixtures :all
   
   before(:each) do
-    session[:user_id] = users( :admin ).id
+    login_as(:admin)
   end
   
   it "should have a form for adding a new zone" do
@@ -75,4 +77,34 @@ describe ZonesController, "when creating" do
     pending "Move to view specs"
   end
   
+end
+
+describe ZonesController, "should handle a REST client" do
+  fixtures :all
+  
+  before(:each) do
+    authorize_as(:api_client)
+  end
+  
+  it "should create a new zone without a template" do
+    lambda {
+      post 'create', :zone => { 
+        :name => 'example.org', :primary_ns => 'ns1.example.org', 
+        :contact => 'admin.example.org', :refresh => 10800, :retry => 7200,
+        :expire => 604800, :minimum => 10800
+      }, :format => "xml"
+    }.should change( Zone, :count ).by( 1 )
+    
+    response.should have_tag( 'zone' )
+  end
+  
+  it "should not tolerate invalid output" do
+    lambda {
+      post 'create', :zone => {
+        :name => 'example.org'
+      }, :format => "xml"
+    }.should_not change( Zone, :count )
+    
+    response.should have_tag( 'errors' )
+  end
 end
