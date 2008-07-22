@@ -190,4 +190,21 @@ describe User, "and roles" do
     users( :admin ).admin.should be_true
     users( :quentin ).admin.should be_false
   end
+  
+  it "should accept string and symbol values for admin value" do
+    user = users(:quentin)
+    user.should_not be_admin
+    
+    user.admin = "true"
+    user.should be_admin
+    user.reload
+    
+    user.admin = :true
+    user.should be_admin
+    user.reload
+    
+    # Kinda pointless, but good for rcov
+    user.admin = 911
+    user.admin.should be(911)
+  end
 end

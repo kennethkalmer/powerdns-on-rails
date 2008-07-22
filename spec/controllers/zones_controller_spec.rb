@@ -106,6 +106,14 @@ describe ZonesController, "should handle a REST client" do
     response.should have_tag( 'zone' )
   end
   
+  it "creating a zone with a named template" do
+    post 'create', :zone => { :name => 'example.org' }, 
+      :zone_template => { :name => zone_templates(:east_coast_dc).name }, 
+      :format => "xml"
+    
+    response.should have_tag( 'zone' )
+  end
+  
   it "creating a zone with invalid input" do
     lambda {
       post 'create', :zone => {
