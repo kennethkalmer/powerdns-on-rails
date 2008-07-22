@@ -1,10 +1,12 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
+include AuthenticatedTestHelper
+
 describe TemplatesController, "and admins" do
   fixtures :all
   
   before(:each) do
-    session[:user_id] = users(:admin).id
+    login_as(:admin)
   end
   
   it "should have a template list" do
@@ -26,7 +28,7 @@ describe TemplatesController, "and users" do
   fixtures :all
   
   before(:each) do
-    session[:user_id] = users(:quentin).id
+    login_as(:quentin)
   end
   
   it "should have a limited list" do
@@ -40,5 +42,21 @@ describe TemplatesController, "and users" do
     get :new
     
     assigns[:users].should be_nil
+  end
+end
+
+describe TemplatesController, "should handle a REST client" do
+  fixtures :all
+  
+  before(:each) do
+    authorize_as(:api_client)
+  end
+  
+  it "asking for a list of templates" do
+    get :index, :format => "xml"
+    
+    response.should have_tag('zone-templates') do
+      with_tag('zone-template')
+    end
   end
 end

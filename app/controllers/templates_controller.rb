@@ -6,6 +6,11 @@ class TemplatesController < ApplicationController
   
   def index
     @zone_templates = ZoneTemplate.find( :all, :order => 'name', :user => current_user )
+    
+    respond_to do |format|
+      format.html
+      format.xml { render :xml => @zone_templates.to_xml }
+    end
   end
   
   def show

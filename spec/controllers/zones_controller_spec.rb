@@ -86,7 +86,7 @@ describe ZonesController, "should handle a REST client" do
     authorize_as(:api_client)
   end
   
-  it "should create a new zone without a template" do
+  it "creating a new zone without a template" do
     lambda {
       post 'create', :zone => { 
         :name => 'example.org', :primary_ns => 'ns1.example.org', 
@@ -98,7 +98,15 @@ describe ZonesController, "should handle a REST client" do
     response.should have_tag( 'zone' )
   end
   
-  it "should not tolerate invalid output" do
+  it "creating a zone with a template" do
+    post 'create', :zone => { :name => 'example.org' }, 
+      :zone_template => { :id => zone_templates(:east_coast_dc).id }, 
+      :format => "xml"
+    
+    response.should have_tag( 'zone' )
+  end
+  
+  it "creating a zone with invalid input" do
     lambda {
       post 'create', :zone => {
         :name => 'example.org'
