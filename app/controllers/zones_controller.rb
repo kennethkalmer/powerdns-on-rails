@@ -17,10 +17,8 @@ class ZonesController < ApplicationController
   end
   
   def create
-    unless params[:zone_template].blank?
-      @zone_template = ZoneTemplate.find(params[:zone_template][:id]) unless params[:zone_template][:id].blank?
-      @zone_template ||= ZoneTemplate.find_by_name(params[:zone_template][:name]) unless params[:zone_template][:name].blank?
-    end
+    @zone_template = ZoneTemplate.find(params[:zone][:zone_template_id]) unless params[:zone][:zone_template_id].blank?
+    @zone_template ||= ZoneTemplate.find_by_name(params[:zone][:zone_template_name]) unless params[:zone][:zone_template_name].blank?
     
     unless @zone_template.nil?
       @zone = @zone_template.build( params[:zone][:name] )

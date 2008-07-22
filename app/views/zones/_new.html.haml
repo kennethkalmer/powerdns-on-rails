@@ -41,8 +41,9 @@
       %td= prototip_help_icon('help-domain')
     %tr
       %td Zone Template
-      %td= collection_select( :zone_template, :id, @zone_templates, :id, :name, :include_blank => true )
-    = observe_field :zone_template_id, :function =>"if(value == \"\") $('no-template-input').show(); else $('no-template-input').hide()", :on => 'select'
+      %td= f.collection_select( :zone_template_id, @zone_templates, :id, :name, :include_blank => true )
+      %td &nbsp;
+    = observe_field :zone_zone_template_id, :function =>"if(value == \"\") $('no-template-input').show(); else $('no-template-input').hide()", :on => 'select'
     
   #no-template-input
     %table.grid

@@ -37,6 +37,9 @@ class Zone < ActiveRecord::Base
   # Serial is optional, but will be passed to the SOA too
   attr_accessor :serial
   
+  # Helper attributes for API clients and forms (keep it RESTful)
+  attr_accessor :zone_template_id, :zone_template_name
+  
   class << self
     
     # Convenient scoped finder method that restricts lookups to the specified

@@ -54,7 +54,7 @@ describe ZonesController, "when creating" do
     @zone_template = zone_templates(:east_coast_dc)
     ZoneTemplate.stubs(:find).with('1').returns(@zone_template)
     
-    post 'create', :zone => { :name => 'example.org' }, :zone_template => { :id => "1" }
+    post 'create', :zone => { :name => 'example.org', :zone_template_id => "1" }
     
     assigns[:zone].should_not be_nil
     response.should be_redirect
@@ -65,8 +65,7 @@ describe ZonesController, "when creating" do
     post 'create', :zone => { 
       :name => 'example.org', :primary_ns => 'ns1.example.org', 
       :contact => 'admin.example.org', :refresh => 10800, :retry => 7200,
-      :expire => 604800, :minimum => 10800
-    }, :zone_template => { :id => "" }
+      :expire => 604800, :minimum => 10800, :zone_template_id => "" }
     
     response.should be_redirect
     response.should redirect_to( zone_path( assigns[:zone] ) )
@@ -99,16 +98,16 @@ describe ZonesController, "should handle a REST client" do
   end
   
   it "creating a zone with a template" do
-    post 'create', :zone => { :name => 'example.org' }, 
-      :zone_template => { :id => zone_templates(:east_coast_dc).id }, 
+    post 'create', :zone => { :name => 'example.org', 
+      :zone_template_id => zone_templates(:east_coast_dc).id }, 
       :format => "xml"
     
     response.should have_tag( 'zone' )
   end
   
   it "creating a zone with a named template" do
-    post 'create', :zone => { :name => 'example.org' }, 
-      :zone_template => { :name => zone_templates(:east_coast_dc).name }, 
+    post 'create', :zone => { :name => 'example.org', 
+      :zone_template_name => zone_templates(:east_coast_dc).name }, 
       :format => "xml"
     
     response.should have_tag( 'zone' )
