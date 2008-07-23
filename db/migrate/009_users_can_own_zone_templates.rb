@@ -4,6 +4,6 @@ class UsersCanOwnZoneTemplates < ActiveRecord::Migration
   end
 
   def self.down
-    remove_column :zone_temapltes, :user_id
+    remove_column :zone_templates, :user_id
   end
 end

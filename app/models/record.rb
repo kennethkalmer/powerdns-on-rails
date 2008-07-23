@@ -10,6 +10,7 @@ class Record < ActiveRecord::Base
   belongs_to :zone
 
   validates_presence_of :zone_id
+  validates_presence_of :zone_name, :if => Proc.new { |r| !r.zone_id.nil? }
   validates_associated :zone
   validates_numericality_of( 
     :ttl, 
@@ -36,7 +37,8 @@ class Record < ActiveRecord::Base
   # Pull in the TTL from the zone if missing
   def before_validation #:nodoc:
     unless self.zone_id.nil?
-      self.ttl = self.zone.ttl if self.ttl.nil?
+      self.ttl ||= self.zone.ttl
+      self.zone_name ||= self.zone.name
     end
   end
   

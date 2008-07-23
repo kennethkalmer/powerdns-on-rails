@@ -1,6 +1,8 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
 describe Record, "in general" do
+  fixtures :all
+  
   before(:each) do
     @record = Record.new
   end
@@ -30,6 +32,11 @@ describe Record, "in general" do
   
   it "should have @ as the host be default" do
     @record.host.should eql('@')
+  end
+  
+  it "should require the zone_name (cache column) if it has a zone_id" do
+    @record.zone = zones(:example_com)
+    @record.should have(:no).errors_on(:zone_name)
   end
   
 end
@@ -138,4 +145,17 @@ describe Record, "when created" do
     
     record.ttl.should be( 43200 )
   end
+  
+  it "should have the zone_name (cache_column) filled in" do
+    record = A.new(
+      :zone => zones( :example_com ),
+      :host => 'ftp',
+      :data => '10.0.0.6',
+      :ttl => 43200
+    )
+    record.save.should be_true
+    
+    record.zone_name.should eql( 'example.com' )
+  end
+  
 end

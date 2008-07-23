@@ -17,10 +17,11 @@ class RecordTemplate < ActiveRecord::Base
     record_class = self.record_type.constantize
 
     # duplicate our own attributes, strip out the ones the destination doesn't
-    # have (and the id as well)
+    # have (and the id/zone_name as well)
     attrs = self.attributes.dup
     attrs.delete_if { |k,_| !record_class.columns.map( &:name ).include?( k ) }
     attrs.delete( :id )
+    attrs.delete( :zone_name )
     
     # parse each attribute, looking for %ZONE%
     unless zone_name.nil?
