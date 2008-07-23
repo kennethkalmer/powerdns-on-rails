@@ -152,3 +152,31 @@ describe SOA, "and serial numbers" do
     @soa.serial.to_s.should eql( date_segment + '03' )
   end
 end
+
+describe SOA, "and responsible contact persons" do
+  fixtures :all
+  
+  before(:each) do
+    @soa = records( :example_com_soa )
+  end
+  
+  it "should re-format an email address" do
+    @soa.contact = 'test@example.com'
+    @soa.contact.should eql('test.example.com.')
+  end
+  
+  it "should add a missing period to the end of the email address" do
+    @soa.contact = 'test.example.com'
+    @soa.contact.should eql('test.example.com.')
+  end
+  
+  it "should not tamper with username-only addresses" do
+    @soa.contact = 'test'
+    @soa.contact.should eql('test')
+  end
+  
+  it "should not tamper with well-formed addresses" do
+    @soa.contact = 'test.example.com.'
+    @soa.contact.should eql('test.example.com.')
+  end
+end

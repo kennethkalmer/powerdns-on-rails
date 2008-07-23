@@ -50,6 +50,7 @@ ActiveRecord::Schema.define(:version => 10) do
   add_index "records", ["zone_id"], :name => "index_records_on_zone_id"
   add_index "records", ["type"], :name => "index_records_on_type"
   add_index "records", ["host"], :name => "index_records_on_host"
+  add_index "records", ["zone_name"], :name => "index_records_on_zone_name"
 
   create_table "roles", :force => true do |t|
     t.string "name"

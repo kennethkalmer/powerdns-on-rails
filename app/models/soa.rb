@@ -54,6 +54,22 @@ class SOA < Record
     
   end
   
+  # Ensure well-formed email address
+  def contact=( value = nil )
+    return if value.nil?
+    
+    # No period, no worry
+    self[:contact] = value and return if value.index('.').nil?
+    
+    # replace @ with period
+    value.gsub!('@', '.')
+    
+    # add trailing period if required
+    value << '.' unless value.end_with?('.')
+    
+    self[:contact] = value
+  end
+  
   # Same as #update_serial and saves the record
   def update_serial!
     update_serial
