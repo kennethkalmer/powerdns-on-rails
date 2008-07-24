@@ -177,8 +177,9 @@ namespace :migrate do
               else
                 pdns_record_content
               end
-              new_pdns_record_content << '.' if pdns_record_content =~ /[a-z]/
+              new_pdns_record_content << '.' if new_pdns_record_content =~ /[a-z]/ && new_pdns_record_content.index('.')
               record.data = new_pdns_record_content
+              
               
               # ttl
               record.ttl = pdns_record.ttl
