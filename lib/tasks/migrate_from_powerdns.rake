@@ -172,13 +172,15 @@ namespace :migrate do
 
               # set the data, also stripping out the PowerDNS rubbish
               pdns_record_content = encode( pdns_record.content )
-              record.data = if ( pdns_record_content.index( domain.name ) )
+              new_pdns_record_content = if ( pdns_record_content.index( domain.name ) )
                 pdns_record_content.gsub( ".#{domain.name}", '' )
-              elsif pdns_record_content =~ /[a-z]/
-                pdns_record_content << '.'
               else
                 pdns_record_content
               end
+              new_pdns_record_content << '.' if pdns_record_content =~ /[a-z]/
+              record.data = new_pdns_record_content
+              
+              # ttl
               record.ttl = pdns_record.ttl
               
               # set the priority if we're dealing with an MX record
