@@ -9,7 +9,19 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 10) do
+ActiveRecord::Schema.define(:version => 8) do
+
+  create_table "domains", :force => true do |t|
+    t.string   "name"
+    t.integer  "ttl",        :default => 86400
+    t.integer  "integer",    :default => 86400
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "user_id"
+    t.text     "notes"
+  end
+
+  add_index "domains", ["name"], :name => "index_domains_on_name"
 
   create_table "record_templates", :force => true do |t|
     t.integer  "zone_template_id"
@@ -29,28 +41,20 @@ ActiveRecord::Schema.define(:version => 10) do
   end
 
   create_table "records", :force => true do |t|
-    t.integer  "zone_id"
-    t.integer  "ttl"
-    t.string   "type"
-    t.string   "host",       :default => "@"
-    t.integer  "priority"
-    t.string   "data"
-    t.string   "primary_ns"
-    t.string   "contact"
-    t.integer  "serial"
-    t.integer  "refresh"
-    t.integer  "retry"
-    t.integer  "expire"
-    t.integer  "minimum"
+    t.integer  "domain_id",   :null => false
+    t.string   "name",        :null => false
+    t.string   "type",        :null => false
+    t.string   "content",     :null => false
+    t.integer  "ttl",         :null => false
+    t.integer  "prio"
+    t.integer  "change_date", :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "zone_name"
   end
 
-  add_index "records", ["zone_id"], :name => "index_records_on_zone_id"
-  add_index "records", ["type"], :name => "index_records_on_type"
-  add_index "records", ["host"], :name => "index_records_on_host"
-  add_index "records", ["zone_name"], :name => "index_records_on_zone_name"
+  add_index "records", ["domain_id"], :name => "index_records_on_domain_id"
+  add_index "records", ["name"], :name => "index_records_on_name"
+  add_index "records", ["name", "type"], :name => "index_records_on_name_and_type"
 
   create_table "roles", :force => true do |t|
     t.string "name"
@@ -63,11 +67,6 @@ ActiveRecord::Schema.define(:version => 10) do
 
   add_index "roles_users", ["role_id"], :name => "index_roles_users_on_role_id"
   add_index "roles_users", ["user_id"], :name => "index_roles_users_on_user_id"
-
-  create_table "schema_migrations", :primary_key => "version", :force => true do |t|
-  end
-
-  add_index "schema_migrations", ["version"], :name => "unique_schema_migrations", :unique => true
 
   create_table "users", :force => true do |t|
     t.string   "login"
@@ -91,16 +90,5 @@ ActiveRecord::Schema.define(:version => 10) do
     t.datetime "updated_at"
     t.integer  "user_id"
   end
-
-  create_table "zones", :force => true do |t|
-    t.string   "name"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.integer  "ttl",        :default => 86400
-    t.integer  "user_id"
-    t.text     "notes"
-  end
-
-  add_index "zones", ["name"], :name => "index_zones_on_name"
 
 end

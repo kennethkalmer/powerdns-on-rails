@@ -1,26 +1,20 @@
 class CreateRecords < ActiveRecord::Migration
   def self.up
     create_table :records do |t|
-      t.integer :zone_id
-      t.integer :ttl
-      t.string :type
-      t.string :host, :default => '@'
-      t.integer :priority
-      t.string :data
-      t.string :primary_ns
-      t.string :contact
-      t.integer :serial
-      t.integer :refresh
-      t.integer :retry
-      t.integer :expire
-      t.integer :minimum
-
+      t.integer :domain_id, :null => false
+      t.string :name, :null => false
+      t.string :type, :null => false
+      t.string :content, :null => false
+      t.integer :ttl, :null => false
+      t.integer :prio
+      t.integer :change_date, :null => false
+      
       t.timestamps
     end
     
-    add_index :records, :zone_id
-    add_index :records, :type
-    add_index :records, :host
+    add_index :records, :domain_id
+    add_index :records, :name
+    add_index :records, [ :name, :type ]
   end
 
   def self.down
