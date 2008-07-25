@@ -3,7 +3,7 @@ module ApplicationHelper
   
   # Outputs a page title with +@page_title+ appended
   def page_title
-    title = "BIND DLZ on Rails"
+    title = "PowerDNS on Rails"
     title << ' - ' + @page_title unless @page_title.nil?
     title
   end

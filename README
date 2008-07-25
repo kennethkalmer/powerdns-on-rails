@@ -1,9 +1,9 @@
-== Bind DLZ on Rails
+== PowerDNS on Rails
 
-The Bind DLZ on Rails README is located in doc/README_FOR_APP, other supporting
+The PowerDNS on Rails README is located in doc/README_FOR_APP, other supporting
 documents are also located in doc/
 
-Bind DLZ on Rails is written in Ruby, using the Ruby on Rails framework. All
+PowerDNS on Rails is written in Ruby, using the Ruby on Rails framework. All
 external dependencies have been bundled inside this project to ease the 
 installation and use of the code by system administrators.
 
@@ -18,54 +18,51 @@ installation and use of the code by system administrators.
 
 == Overview
 
-Bind is the defacto DNS server out there, and the bind-dlz extensions enhances
-it even further by providing support for database backends. This simplifies
-the management of thousands of zones, and provides added redundancy (by way of
-database replication) and opens the doors for web frontends that ease this even
-more.
+PowerDNS on Rails is a split from the BIND DLZ on Rails project.
 
-Bind DLZ on Rails is built based on our experience of managing thousands of DNS
+PowerDNS is a reliable alternative to BIND and sports a flexible, feature rich
+design and support for various backends, including MySQL and PostgreSQL. This 
+simplifies the management of thousands of zones, and provides added redundancy 
+(by way of database replication) and opens the doors for web frontends that ease
+this even more.
+
+PowerDNS on Rails is built based on our experience of managing thousands of DNS
 records through various (often crude) techniques, that included building zone
 files from databases via cron, and implementing PowerDNS for its database
 backends.
 
-Nothing we tried seemed convincing, and we opted to go back to Bind using
-bind-dlz on a MySQL 5.0 backend. Using Rails 2 for a interface just makes sense
-because we can build a rich interface and an REST API in a single go. We have
-a lot of integration needs, and this was our main driver.
+We first built BIND DLZ on Rails that allowed us to migrate back to BIND using
+a MySQL 5.0 backend, but after several failed production runs we decided to
+split the project off to use our existing PowerDNS infrastructure.  Using Rails 
+2 for a interface just makes sense because we can build a rich interface and an
+REST API in a single go. We have a lot of integration needs, and this was our 
+main driver.
 
-== Bind DLZ Information
+== PowerDNS Information
 
-The bind-dlz project can be found at http://bind-dlz.sourceforge.net. The
-documentation is in-depth on that site, I won't repeat anything here unless its
-related to this project specifically.
+The PowerDNS project can be found at http://www.powerdns.com. The documentation
+is in-depth on that site, I won't repeat anything here unless its related to 
+this project specifically.
 
 == Database Structure
 
-The bind-dlz project allows you to use any database structure you want, since
-you specify the SQL statements in the configuration files.
+PowerDNS does not allow you to alter the database schema at all, and you're 
+forced to use at least one set database table. It can however handle additions
+to the table without problems.
 
-For the DNS records specifically we've opted for a simple two-table approach,
-`zones` and `records`.
+We also add additional table to accomodate users, templates, etc.
 
-The `records` table will be exponentially larger than the the `zones` table, at
-the very least `zone` * 3 (two NS and one SOA). Splitting the records table is
-possible, but the case for it isn't string enough at this point. Maybe when we
-reach a couple of million rows, or someone else does, we can investigate
-splitting that.
+== Migration to PowerDNS
 
-== Migration to bind-dlz
-
-We plan to build various import and conversion tools after the initial release.
-You are welcome to submit your own converter/importer for inclusion in the 
-project.
+PowerDNS does provide a suite of migration tools, and they're all covered in the
+official documentation.
 
 == Testing
 
-Bind DLZ on Rails is built using extensive RSpec suites, often termed "Behaviour
+PowerDNS on Rails is built using extensive RSpec suites, often termed "Behaviour
 Driven Development". It is critical for a core service like DNS to be reliable
 and that all changes are correct and won't impact services offered to clients.
 
 Apart from the extensive programmatic tests, we'll be implementing tests that
 actually seed a DNS database and use BIND's dig utility to query a configured
-bind-dlz installation.
+PowerDNS installation.

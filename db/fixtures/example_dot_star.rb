@@ -1,4 +1,4 @@
-# Seed data for BIND DLZ on Rails, just to get you started.
+# Seed data for PowerDNS on Rails, just to get you started.
 
 # Sample zone
 Zone.seed( :name ) do |s|
