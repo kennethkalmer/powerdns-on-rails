@@ -9,8 +9,8 @@ describe NS, "when new" do
     @ns.should_not be_valid
   end
   
-  it "should require data" do
-    @ns.should have(1).error_on(:data)
+  it "should require content" do
+    @ns.should have(1).error_on(:content)
   end
   
 end

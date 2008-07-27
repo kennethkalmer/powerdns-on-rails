@@ -9,7 +9,7 @@ describe CNAME, "when new" do
     @cname.should_not be_valid
   end
   
-  it "should require data" do
-    @cname.should have(1).error_on(:data)
+  it "should require content" do
+    @cname.should have(1).error_on(:content)
   end
 end

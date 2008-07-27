@@ -1,0 +1,6 @@
+if @domain.errors.empty?
+  page.hide 'note'
+  page.show 'note-row'
+  page.replace_html('note-row', @domain.notes)
+  page.replace_html('zone_notes', @domain.notes)
+end

@@ -10,19 +10,6 @@
 # Obtained from http://www.zytrax.com/books/dns/ch8/txt.html
 class TXT < Record
   
-  validates_presence_of :data
-  
-  # Wrap the text in double quotes
-  def data=( txt )
-    if txt.nil?
-      self[:data] = nil
-      return
-    end
-    
-    txt.insert( 0, '"' ) unless txt[ 0,1 ] == '"'
-    txt << '"' unless txt[ txt.length, 1 ] == '"'
-    
-    self[:data] = txt
-  end
+  validates_presence_of :content
   
 end

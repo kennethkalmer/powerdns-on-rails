@@ -1,30 +1,30 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
 describe RecordsController do
-  fixtures :users, :zones
+  fixtures :users, :domains
   
   before( :each ) do
     session[:user_id] = users( :admin ).id
-    @zone = zones( :example_com )
-    Zone.expects( :find ).with( @zone.id.to_s, :user => users( :admin ) ).returns( @zone )
+    @domain = domains( :example_com )
+    Domain.expects( :find ).with( @domain.id.to_s, :user => users( :admin ) ).returns( @domain )
   end
   
   it "should create a new record when valid" do
     record = Record.new
     
     params = {
-      'host' => '@',
+      'name' => '',
       'ttl' => '86400',
       'type' => 'NS',
-      'data' => 'n3.example.com'
+      'content' => 'n3.example.com'
     }
     
-    @zone.ns_records.expects( :new ).with( params ).returns( record )
+    @domain.ns_records.expects( :new ).with( params ).returns( record )
     record.expects( :save ).returns( true )
     
-    post :create, :zone_id => @zone.id, :record => params
+    post :create, :domain_id => @domain.id, :record => params
     
-    assigns[:zone].should_not be_nil
+    assigns[:domain].should_not be_nil
     assigns[:record].should_not be_nil
   end
   
@@ -32,16 +32,16 @@ describe RecordsController do
     record = Record.new
     
     params = {  
-      'host' => "@", 
+      'name' => "", 
       'ttl' => "864400", 
       'type' => "NS", 
-      'data' => "n3.example.com"
+      'content' => "n3.example.com"
     }
     
-    @zone.ns_records.expects( :new ).with( params ).returns( record )
+    @domain.ns_records.expects( :new ).with( params ).returns( record )
     record.expects( :save ).returns( false )
     
-    post :create, :zone_id => @zone.id, :record => params
+    post :create, :domain_id => @domain.id, :record => params
     
     response.should render_template( 'new' )
   end
@@ -50,32 +50,32 @@ describe RecordsController do
     record = Record.new
     
     params = {  
-      'host' => "@", 
+      'name' => "", 
       'ttl' => "864400", 
       'type' => "NS", 
-      'data' => "n4.example.com"
+      'content' => "n4.example.com"
     }
     
     record.expects( :save ).returns( true )
-    @zone.records.expects( :find ).with( '1' ).returns( record )
+    @domain.records.expects( :find ).with( '1' ).returns( record )
     
-    put :update, :id => '1', :zone_id => @zone.id, :record => params
+    put :update, :id => '1', :domain_id => @domain.id, :record => params
   end
   
   it "shouldn't update an invalid record" do
     record = Record.new
     
     params = {  
-      'host' => "@", 
+      'name' => "@", 
       'ttl' => '',
       'type' => "NS", 
-      'data' => "n4.example.com"
+      'content' => "n4.example.com"
     }
     
     record.expects( :save ).returns( false )
-    @zone.records.expects( :find ).with( '1' ).returns( record )
+    @domain.records.expects( :find ).with( '1' ).returns( record )
     
-    put :update, :id => '1', :zone_id => @zone.id, :record => params
+    put :update, :id => '1', :domain_id => @domain.id, :record => params
     
     response.should_not be_redirect
     response.should render_template( "edit" )
@@ -83,12 +83,12 @@ describe RecordsController do
   
   it "should destroy a record when requested to do so" do
     record = Record.new
-    @zone.records.expects( :find ).with( '1' ).returns( record )
+    @domain.records.expects( :find ).with( '1' ).returns( record )
     
-    delete :destroy, :zone_id => @zone.id, :id => '1'
+    delete :destroy, :domain_id => @domain.id, :id => '1'
     
     response.should be_redirect
-    response.should redirect_to( zone_path( @zone ) )
+    response.should redirect_to( domain_path( @domain ) )
     
   end
 end

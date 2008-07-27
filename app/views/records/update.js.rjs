@@ -1,6 +1,6 @@
 if @record.errors.empty?
   page.remove "show_#{@record.type.downcase}_#{@record.id}", "edit_#{@record.type.downcase}_#{@record.id}"
-  page.replace "marker_#{@record.type.downcase}_#{@record.id}", :partial => "/zones/record", :object => @record
+  page.replace "marker_#{@record.type.downcase}_#{@record.id}", :partial => "/domains/record", :object => @record
   page.visual_effect( :highlight, "show_#{@record.type.downcase}_#{@record.id}" )
   page.call 'showflash', 'info', flash[:info]
 else

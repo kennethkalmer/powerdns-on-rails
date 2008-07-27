@@ -1,7 +1,7 @@
 / These div's contain the help information.
 %div{ :style => 'display: none' }
   #help-domain
-    This is the fully qualified domain name (FQDN) of the zone.
+    This is the fully qualified domain name (FQDN) of the domain.
   #help-primary-ns
     This is the fully qualified domain name (FQDN) of the primary name server
     of the domain.
@@ -29,10 +29,10 @@
     seconds).
 
 %p
-  Create a new zone by entering the Start of Authority (SOA) information below:
+  Create a new domain by entering the Start of Authority (SOA) information below:
 
-- form_for(@zone) do |f|
-  = error_messages_for :zone
+- form_for(@domain) do |f|
+  = error_messages_for :domain
   %p &nbsp;
   %table.grid
     %tr
@@ -82,6 +82,6 @@
         %td &nbsp;
   %table.grid
     %tr
-      %td.right{:width => "300"}= link_to "Cancel", zones_path
+      %td.right{:width => "300"}= link_to "Cancel", domains_path
       %td= submit_tag "Save"
       %td &nbsp;

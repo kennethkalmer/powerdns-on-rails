@@ -1,16 +1,14 @@
-- @page_title = @zone.name
+- @page_title = @domain.name
 
 %div{ :style => "display: none;" }
   #record-template-new
-    Create a new record for this zone
+    Create a new record for this domain
   #soa-record-edit
     Edit the SOA record's details
   #zone-edit
-    Edit this zone's details
+    Edit this domain's details
   #note-new
-    Adds a note with miscellaneous info to the zone
-    %br
-    NB: Notes can't be deleted
+    Adds a note with miscellaneous info to the domain
   #note-edit
     Edit the zone's current note
   #help-primary-ns
@@ -40,23 +38,23 @@
     seconds).
 
 %h1.underline
-  = @zone.name
+  = @domain.name
 
 #domain-name.padded
   %table.grid
     %tr
       %td Domain
-      %td= @zone.name
+      %td= @domain.name
     %tr
       %td{ :valign => 'top' } Notes
       %td
         #note-row
-          = @zone.notes
+          = @domain.notes
           %br
           = link_to_function prototip_info_icon('note_edit.png', 'note-edit'), "showNote()"
 
         #note{ :style => "display: none;" }
-          - remote_form_for( :zone, @zone, :url => formatted_update_note_zone_path( @zone, :js ), :html => { :method => :put } ) do |f|
+          - remote_form_for( :domain, @domain, :url => formatted_update_note_domain_path( @domain, :js ), :html => { :method => :put } ) do |f|
             = f.text_area :notes, :rows => 5, :cols => 17
             %br/
             = link_to_function "Cancel", "hideNote()"
@@ -68,10 +66,10 @@
     SOA Record
     &nbsp;
     = link_to_function prototip_info_icon('database_edit.png', 'soa-record-edit'), "showSOAEdit()"
-  = render :partial => '/zones/soa_record', :object => @zone.soa_record
+  = render :partial => '/domains/soa_record', :object => @domain.soa_record
 
   #soa-edit-form{ :style => "display: none;" }
-    - remote_form_for( @zone.soa_record, :url => formatted_update_soa_record_path( @zone.soa_record, :js, :zone_id => @zone.id ), :html => { :method => :put } ) do |f|
+    - remote_form_for( @domain.soa_record, :url => formatted_update_soa_record_path( @domain.soa_record, :js, :domain_id => @domain.id ), :html => { :method => :put } ) do |f|
       %table.grid
         %tr
           %td Primary name server
@@ -111,7 +109,7 @@
           %td &nbsp;
 
 #domain-records.padded
-  %h2.underline Zone records
+  %h2.underline Domain RR's
   %table.gridwide#record-table
     %tr
       %td.small Hostname
@@ -120,13 +118,13 @@
       %td.small Priority
       %td.small Data
       %td &nbsp;
-    = render :partial => 'record', :collection => @zone.records_without_soa
+    = render :partial => 'record', :collection => @domain.records_without_soa
 
 = link_to_function prototip_info_icon('database_add.png', 'record-template-new'), "displayRecordForm()"
 = link_to_function "New record", "displayRecordForm()"
 
 #record-form{ :style => "display: none;" }
-  - remote_form_for( :record, @record, :url => formatted_zone_records_path( @zone, :js ), :html => { :id => 'record-form' } ) do |f|
+  - remote_form_for( :record, @record, :url => formatted_domain_records_path( @domain, :js ), :html => { :id => 'record-form' } ) do |f|
     #record-form-div
       %table
         %tr
@@ -136,16 +134,16 @@
             = observe_field "record_type", :function => "toggleRecordFields(element,value)"
         %tr
           %td Host
-          %td= f.text_field :host
+          %td= f.text_field :name
         %tr
           %td TTL
           %td= f.text_field :ttl, :size => 6
         %tr.rt-mx{ :style => 'display :none' }
           %td Priority
-          %td= f.text_field :priority, :size => 6
+          %td= f.text_field :prio, :size => 6
         %tr
           %td Data
-          %td= f.text_field :data
+          %td= f.text_field :content
         %tr.rt-soa{ :style => 'display :none' }
           %td Primary Name Server
           %td= f.text_field :primary_ns

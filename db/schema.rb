@@ -13,8 +13,13 @@ ActiveRecord::Schema.define(:version => 8) do
 
   create_table "domains", :force => true do |t|
     t.string   "name"
-    t.integer  "ttl",        :default => 86400
-    t.integer  "integer",    :default => 86400
+    t.string   "master"
+    t.integer  "last_check"
+    t.string   "type",            :default => "NATIVE"
+    t.integer  "notified_serial"
+    t.string   "account"
+    t.integer  "ttl",             :default => 86400
+    t.integer  "integer",         :default => 86400
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "user_id"
@@ -25,17 +30,11 @@ ActiveRecord::Schema.define(:version => 8) do
 
   create_table "record_templates", :force => true do |t|
     t.integer  "zone_template_id"
-    t.integer  "ttl"
-    t.string   "record_type"
-    t.string   "host",             :default => "@"
-    t.integer  "priority"
-    t.string   "data"
-    t.string   "primary_ns"
-    t.string   "contact"
-    t.integer  "refresh"
-    t.integer  "retry"
-    t.integer  "expire"
-    t.integer  "minimum"
+    t.string   "name"
+    t.string   "record_type",      :null => false
+    t.string   "content",          :null => false
+    t.integer  "ttl",              :null => false
+    t.integer  "prio"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

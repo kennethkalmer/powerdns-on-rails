@@ -1,6 +1,0 @@
-if @zone.errors.empty?
-  page.hide 'note'
-  page.show 'note-row'
-  page.replace_html('note-row', @zone.notes)
-  page.replace_html('zone_notes', @zone.notes)
-end

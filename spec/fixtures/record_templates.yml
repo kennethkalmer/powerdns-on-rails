@@ -4,110 +4,95 @@ east_coast_soa:
   zone_template: east_coast_dc
   ttl: 86400
   record_type: SOA
-  host: @
-  primary_ns: ns1.%ZONE%.
-  contact: east-coast.example.com
-  refresh: 10800
-  retry: 7200
-  expire: 604800
-  minimum: 3600
+  name:
+  content: ns1.%ZONE% east-coast@example.com 0 10800 7200 604800 3600
 east_coast_ns_ns1:
   zone_template: east_coast_dc
   ttl: 86400
   record_type: NS
-  host: @
-  data: ns1.%ZONE%.
+  name: 
+  content: ns1.%ZONE%
 east_coast_ns_ns2:
   zone_template: east_coast_dc
   ttl: 86400
   record_type: NS
-  host: @
-  data: ns2.%ZONE%.
+  name: 
+  content: ns2.%ZONE%
 east_coast_a_ns1:
   zone_template: east_coast_dc
   ttl: 86400
   record_type: A
-  host: ns1
-  data: 10.0.0.1
+  name: ns1
+  content: 10.0.0.1
 east_coast_a_ns2:
   zone_template: east_coast_dc
   ttl: 86400
   record_type: A
-  host: ns2
-  data: 10.0.0.2
+  name: ns2
+  content: 10.0.0.2
 east_coast_a:
   zone_template: east_coast_dc
   ttl: 86400
   record_type: A
-  host: @
-  data: 10.0.0.3
+  name: 
+  content: 10.0.0.3
 east_coast_mx:
   zone_template: east_coast_dc
   ttl: 86400
   record_type: MX
-  host: @
-  priority: 10
-  data: mail
+  name: 
+  prio: 10
+  content: mail.%ZONE%
 east_coast_a_mail:
   zone_template: east_coast_dc
   ttl: 86400
   record_type: A
-  host: mail
-  data: 10.0.0.4
+  name: mail
+  content: 10.0.0.4
 
 # This template only has an SOA record
 west_coast_soa:
   zone_template: west_coast_dc
   ttl: 86400
   record_type: SOA
-  host: @
-  primary_ns: ns1.%ZONE%.
-  contact: ewest-coast.example.com
-  refresh: 10800
-  retry: 7200
-  expire: 604800
-  minimum: 3600
+  name: 
+  content: ns1.%ZONE% west-coast@example.com 0 10800 7200 604800 3600
 
 # Quentin's home template
 quentin_home_soa:
   zone_template: quentin_home
   ttl: 60
   record_type: SOA
-  host: @
-  primary_ns: ns1.example.com.
-  contact: quentin.homelinux.net
-  refresh: 10800
-  retry: 7200
-  expire: 604800
-  minimum: 3600
+  name: 
+  content: ns1.example.com quentin@homelinux.net 0 10800 7200 604800 3600
 quentin_home_ns1:
   zone_template: quentin_home
   ttl: 60
   record_type: NS
-  host: @
-  data: ns1.example.com
+  name: 
+  content: ns1.example.com
 quentin_home_ns2:
   zone_template: quentin_home
   ttl: 60
   record_type: NS
-  host: @
-  data: ns2.example.com
+  name: 
+  content: ns2.example.com
 quentin_home_a:
   zone_template: quentin_home
   ttl: 60
   record_type: CNAME
-  host: @
-  data: quentin.homelinux.net
+  name: 
+  content: quentin.homelinux.net
 quentin_home_www:
   zone_template: quentin_home
   ttl: 60
   record_type: CNAME
-  host: www
-  data: quentin.homelinux.net
+  name: www
+  content: quentin.homelinux.net
 quentin_home_mx:
   zone_template: quentin_home
   ttl: 60
   record_type: MX
-  host: @
-  data: quentin.homelinux.net
-  priority: 10
+  name: 
+  content: quentin.homelinux.net
+  prio: 10

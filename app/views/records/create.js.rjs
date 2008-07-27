@@ -1,6 +1,6 @@
 if @record.errors.empty?
   page.hide('record-form-div')
-  page.insert_html(:bottom, 'record-table', { :partial => '/zones/record', :object => @record })
+  page.insert_html(:bottom, 'record-table', { :partial => '/domains/record', :object => @record })
   page.call 'showflash', 'info', flash[:info]
 else
   page.insert_html(:top, 'record-table', error_messages_for( :record )) 

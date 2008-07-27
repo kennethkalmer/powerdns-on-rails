@@ -44,6 +44,10 @@ The PowerDNS project can be found at http://www.powerdns.com. The documentation
 is in-depth on that site, I won't repeat anything here unless its related to 
 this project specifically.
 
+It is however worth noting that this interface excepts the "Generic MySQL and
+PgSQL backend" to be used, as per 
+http://doc.powerdns.com/generic-mypgsql-backends.html
+
 == Database Structure
 
 PowerDNS does not allow you to alter the database schema at all, and you're 

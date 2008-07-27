@@ -1,7 +1,7 @@
-%h1.underline Latest 3 zones
+%h1.underline Latest 3 domains
 
 %table
-  = render :partial => '/zones/zone', :collection => @latest_zones
+  = render :partial => '/domains/domain', :collection => @latest_domains
 
 &nbsp;
 %h1 Search
@@ -11,6 +11,6 @@
   = submit_tag "Search"
 
 &nbsp;
-%h1.underline New zone
+%h1.underline New domain
 
-= render :partial => '/zones/new'
+= render :partial => '/domains/new'

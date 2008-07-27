@@ -9,12 +9,12 @@ describe TXT, "when new" do
     @txt.should_not be_valid
   end
   
-  it "should require data" do
-    @txt.should have(1).error_on(:data)
+  it "should require content" do
+    @txt.should have(1).error_on(:content)
   end
   
-  it "should wrap the data in quotes" do
-    @txt.data = "google.com"
-    @txt.data.should eql('"google.com"')
+  it "should not tamper with content" do
+    @txt.content = "google.com"
+    @txt.content.should eql("google.com")
   end
 end

@@ -12,13 +12,11 @@ PowerDNS on Rails supports two modes of automatic serial number generation.
 
 === PowerDNS automatic serial numbers
 
-When the SOA record of a zone has a serial number of 0, PowerDNS will use the
-highest timestamp value in the `change_date` column of the zone records to 
-dynamically generate a serial number.
+NOTE: Read this page: http://doc.powerdns.com/generic-mypgsql-backends.html
 
-This is the default operarion for PowerDNS on Rails as well. If a zone's SOA RR
-does have a serial number value, Power DNS on Rails will manage that, see the
-next section.
+Allthough PowerDNS supports automatic serial number generation on some backends,
+the "Generic MySQL and PgSQL backend" does not support automatic serial number
+generation!
 
 === PowerDNS on Rails automatic serial numbers
 

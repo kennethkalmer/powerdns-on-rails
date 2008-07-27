@@ -8,7 +8,7 @@
 # 
 class SOA < Record
   
-  validates_presence_of :primary_ns, :contact
+  validates_presence_of :primary_ns, :content, :name
   validates_numericality_of(
     :serial, :refresh, :retry, :expire,
     :greater_than_or_equal_to => 0
@@ -18,18 +18,39 @@ class SOA < Record
     :greater_than_or_equal_to => 0,
     :less_than_or_equal_to => 10800
   )
-  validates_uniqueness_of :zone_id
+  validates_uniqueness_of :domain_id
+  validates_format_of :contact, :with => /^[a-zA-Z0-9\-\.]+@[a-zA-Z0-9-]+\.[a-zA-Z.]{2,6}$/
   
-  def initialize( *args ) #:nodoc:
-    super
-    
-    # Generate a new serial number if needed
-    self.serial = Time.now.strftime( "%Y%m%d01" ).to_i if self.serial.nil?
+  # The portions of the +content+ column that make up our SOA fields
+  SOA_FIELDS = %w{ primary_ns contact serial refresh retry expire minimum }
+  
+  # This allows us to have these convenience attributes act like any other
+  # column in terms of validations
+  SOA_FIELDS.each do |soa_entry|
+    attr_accessor soa_entry
+    define_method "#{soa_entry}_before_type_cast" do
+      instance_variable_get("@#{soa_entry}")
+    end
   end
+  
+  # Convert our +content+ field into convenience variables
+  def after_initialize 
+    update_convenience_accessors
+  end
+  
+  # Hook into #reload
+  def reload_with_content
+    reload_without_content
+    update_convenience_accessors
+  end
+  alias_method_chain :reload, :content
   
   # Updates the serial number to the next logical one. Format of the generated
   # serial is YYYYMMDDNN, where NN is the number of the change for the day.
   # 01 for the first change, 02 the seconds, etc...
+  #
+  # If the serial number is 0, we opt for PowerDNS's automatic serial number
+  # generation
   def update_serial
     unless Record.batch_soa_updates.nil? 
       if Record.batch_soa_updates.include?( self.id )
@@ -51,23 +72,6 @@ class SOA < Record
     end
 
     self.serial = ( date_segment + increment.rjust(2, "0") ).to_i
-    
-  end
-  
-  # Ensure well-formed email address
-  def contact=( value = nil )
-    return if value.nil?
-    
-    # No period, no worry
-    self[:contact] = value and return if value.index('.').nil?
-    
-    # replace @ with period
-    value.gsub!('@', '.')
-    
-    # add trailing period if required
-    value << '.' unless value.end_with?('.')
-    
-    self[:contact] = value
   end
   
   # Same as #update_serial and saves the record
@@ -78,5 +82,28 @@ class SOA < Record
   
   def before_update #:nodoc:
     update_serial unless @serial_updated
+  end
+  
+  def before_validation_with_content
+    self.content = SOA_FIELDS.map { |f| instance_variable_get("@#{f}").to_s  }.join(' ')
+    before_validation_without_content
+  end
+  alias_method_chain :before_validation, :content
+  
+  private
+  
+  # Update our convenience accessors when the object has changed
+  def update_convenience_accessors
+    # Setup our convenience values
+    @primary_ns, @contact, @serial, @refresh, @retry, @expire, @minimum = 
+      self.content.split(' ') unless self.content.nil?
+    %w{ serial refresh retry expire minimum }.each do |i|
+      value = instance_variable_get("@#{i}")
+      value = value.to_i unless value.nil?
+      send("#{i}=", value )
+    end
+    
+    # Let PowerDNS handle the serial numbers for us
+    @serial ||= 0
   end
 end

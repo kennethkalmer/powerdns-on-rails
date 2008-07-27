@@ -2,9 +2,9 @@
 %br/
 
 - if @results.empty?
-  %strong No zones found
+  %strong No domains found
 - else
   %table
-    = render :partial => '/zones/zone', :collection => @results
+    = render :partial => '/domains/domain', :collection => @results
 
   = will_paginate @results

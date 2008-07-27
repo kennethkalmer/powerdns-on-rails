@@ -117,10 +117,10 @@ namespace :migrate do
           soa_ns, soa_contact, soa_serial, soa_refresh, soa_retry, soa_expire, soa_minimum = soa.content.split(' ')
           
           # remove the zone if it exists
-          Zone.destroy_all( [ 'name LIKE ?', domain.name ] )
+          Domain.destroy_all( [ 'name LIKE ?', domain.name ] )
           
           # add the zone
-          zone = Zone.find_or_create_by_name( encode( domain.name ) )
+          zone = Domain.find_or_create_by_name( encode( domain.name ) )
           zone.name = encode(domain.name)
           zone.primary_ns = encode(soa_ns)
           zone.contact = encode(soa_contact)

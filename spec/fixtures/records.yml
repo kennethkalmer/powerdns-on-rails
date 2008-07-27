@@ -1,65 +1,51 @@
 # Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
 
 example_com_soa:
-  zone: example_com
+  domain: example_com
   ttl: 86400
   type: SOA
-  host: @
-  primary_ns: ns1.example.com.
-  contact: admin.example.com.
-  serial: 2008040101
-  refresh: 10800
-  retry: 7200
-  expire: 604800
-  minimum: 10800
-  zone_name: example.com
+  name: example.com
+  content: ns1.example.com.  admin@example.com 2008040101 10800 7200 604800 10800
 example_com_ns_ns1:
-  zone: example_com
+  domain: example_com
   ttl: 86400
   type: NS
-  host: @
-  data: ns1.example.com.
-  zone_name: example.com
+  name: example.com
+  content: ns1.example.com.
 example_com_ns_ns2:
-  zone: example_com
+  domain: example_com
   ttl: 86400
   type: NS
-  host: @
-  data: ns2.example.com.
-  zone_name: example.com
+  name: example.com
+  content: ns2.example.com.
 example_com_a_ns1:
-  zone: example_com
+  domain: example_com
   ttl: 86400
   type: A
-  host: ns1
-  data: 10.0.0.1
-  zone_name: example.com
+  name: ns1.example.com
+  content: 10.0.0.1
 example_com_a_ns2:
-  zone: example_com
+  domain: example_com
   ttl: 86400
   type: A
-  host: ns2
-  data: 10.0.0.2
-  zone_name: example.com
+  name: ns2.example.com
+  content: 10.0.0.2
 example_com_a:
-  zone: example_com
+  domain: example_com
   ttl: 86400
   type: A
-  host: @
-  data: 10.0.0.3
-  zone_name: example.com
+  name: example.com
+  content: 10.0.0.3
 example_com_mx:
-  zone: example_com
+  domain: example_com
   ttl: 86400
   type: MX
-  host: @
-  priority: 10
-  data: mail
-  zone_name: example.com
+  name: @
+  prio: 10
+  content: mail.example.com
 example_com_a_mail:
-  zone: example_com
+  domain: example_com
   ttl: 86400
   type: A
-  host: mail
-  data: 10.0.0.4
-  zone_name: example.com
+  name: mail.example.com
+  content: 10.0.0.4

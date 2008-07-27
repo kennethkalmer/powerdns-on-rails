@@ -2,9 +2,11 @@
 
 example_com:
   name: example.com
+  type: NATIVE
   ttl: 86400
 
 example_net:
   name: example.net
+  type: NATIVE
   ttl: 86400
   user: quentin

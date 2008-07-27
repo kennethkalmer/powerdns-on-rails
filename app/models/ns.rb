@@ -21,6 +21,6 @@
 # 
 class NS < Record
   
-  validates_presence_of :data
+  validates_presence_of :content
   
 end

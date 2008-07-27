@@ -9,17 +9,11 @@ class CreateTemplates < ActiveRecord::Migration
     
     create_table :record_templates do |t|
       t.integer :zone_template_id
-      t.integer :ttl
-      t.string :record_type
-      t.string :host, :default => '@'
-      t.integer :priority
-      t.string :data
-      t.string :primary_ns
-      t.string :contact
-      t.integer :refresh
-      t.integer :retry
-      t.integer :expire
-      t.integer :minimum
+      t.string :name
+      t.string :record_type, :null => false
+      t.string :content, :null => false
+      t.integer :ttl, :null => false
+      t.integer :prio
 
       t.timestamps
     end

@@ -9,9 +9,9 @@
 class MX < Record
   
   validates_numericality_of(
-    :priority,
+    :prio,
     :greater_than_or_equal_to => 0
   )
-  validates_presence_of :data
+  validates_presence_of :content
   
 end

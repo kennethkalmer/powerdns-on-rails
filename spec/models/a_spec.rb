@@ -9,29 +9,29 @@ describe A, "when new" do
     @a.should_not be_valid
   end
   
-  it "should only accept valid IPv4 addresses as data" do
-    @a.data = '10'
-    @a.should have(1).error_on(:data)
+  it "should only accept valid IPv4 addresses as content" do
+    @a.content = '10'
+    @a.should have(1).error_on(:content)
     
-    @a.data = '10.0'
-    @a.should have(1).error_on(:data)
+    @a.content = '10.0'
+    @a.should have(1).error_on(:content)
     
-    @a.data = '10.0.0'
-    @a.should have(1).error_on(:data)
+    @a.content = '10.0.0'
+    @a.should have(1).error_on(:content)
     
-    @a.data = '10.0.0.9/32'
-    @a.should have(1).error_on(:data)
+    @a.content = '10.0.0.9/32'
+    @a.should have(1).error_on(:content)
     
-    @a.data = '256.256.256.256'
-    @a.should have(1).error_on(:data)
+    @a.content = '256.256.256.256'
+    @a.should have(1).error_on(:content)
     
-    @a.data = '10.0.0.9'
-    @a.should have(:no).error_on(:data)
+    @a.content = '10.0.0.9'
+    @a.should have(:no).error_on(:content)
   end
   
   it "should not act as a CNAME" do
-    @a.data = 'google.com'
-    @a.should have(1).error_on(:data)
+    @a.content = 'google.com'
+    @a.should have(1).error_on(:content)
   end
   
 end

@@ -7,18 +7,20 @@
 #
 class Record < ActiveRecord::Base
   
-  belongs_to :zone
+  belongs_to :domain
 
-  validates_presence_of :zone_id
-  validates_presence_of :zone_name, :if => Proc.new { |r| !r.zone_id.nil? }
-  validates_associated :zone
+  validates_presence_of :domain_id, :name
   validates_numericality_of( 
-    :ttl, 
+    :ttl,
     :greater_than_or_equal_to => 0, 
     :only_integer => true
   )
   
   class_inheritable_accessor :batch_soa_updates
+  
+  # This is needed here for generic form support, actual functionality 
+  # implemented in #SOA
+  attr_accessor :primary_ns, :contact, :refresh, :retry, :expire, :minimum
   
   class << self
     
@@ -34,19 +36,39 @@ class Record < ActiveRecord::Base
     
   end
   
-  # Pull in the TTL from the zone if missing
+  # Return the short name of the RR
+  def name( short = true )
+    return self[:name] if self.domain_id.nil? || self[:name].nil?
+    
+    short ? self[:name].gsub( ".#{self.domain.name}", '' ) : self[:name]
+  end
+  
+  # Pull in the name & TTL from the domain if missing
   def before_validation #:nodoc:
-    unless self.zone_id.nil?
-      self.ttl ||= self.zone.ttl
-      self.zone_name ||= self.zone.name
+    unless self.domain_id.nil?
+      append_domain_name!
+      self.ttl ||= self.domain.ttl
     end
+  end
+  
+  # Update the change date for automatic serial number generation
+  def before_save
+    self.change_date = Time.now.to_i
   end
   
   def after_save #:nodoc:
     unless self.type == 'SOA' || @serial_updated 
-      self.zone.soa_record.update_serial!
+      self.domain.soa_record.update_serial!
       @serial_updated = true
     end
   end
   
+  private
+  
+  # Append the domain name to the +name+ field if missing
+  def append_domain_name!
+    self[:name] ||= self.domain.name
+    
+    self[:name] << ".#{self.domain.name}" unless self[:name].index( self.domain.name )
+  end
 end

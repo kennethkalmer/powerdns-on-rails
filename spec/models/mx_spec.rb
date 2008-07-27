@@ -10,22 +10,22 @@ describe MX, "when new" do
   end
   
   it "should require a priority" do
-    @mx.should have(1).error_on(:priority)
+    @mx.should have(1).error_on(:prio)
   end
   
   it "should only allow positive, numeric priorities" do
-    @mx.priority = -10
-    @mx.should have(1).error_on(:priority)
+    @mx.prio = -10
+    @mx.should have(1).error_on(:prio)
     
-    @mx.priority = 'low'
-    @mx.should have(1).error_on(:priority)
+    @mx.prio = 'low'
+    @mx.should have(1).error_on(:prio)
     
-    @mx.priority = 10
-    @mx.should have(:no).errors_on(:priority)
+    @mx.prio = 10
+    @mx.should have(:no).errors_on(:prio)
   end
   
-  it "should require data" do
-    @mx.should have(1).error_on(:data)
+  it "should require content" do
+    @mx.should have(1).error_on(:content)
   end
   
 end

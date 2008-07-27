@@ -10,7 +10,7 @@ describe DashboardController, "and admins" do
   end
 
   it "should have a list of the latest zones" do
-    assigns[:latest_zones].should_not be_empty
+    assigns[:latest_domains].should_not be_empty
   end
   
   it "should have a list of templates for quick zone additions" do

@@ -1,16 +1,15 @@
-# See #Zone
+# See #Domain
 
-# = Zone
+# = Domain
 # 
-# A #Zone is a unique domain name entry, and contains various #Record entries to
+# A #Domain is a unique domain name entry, and contains various #Record entries to
 # represent its data.
 # 
 # The zone is used for the following purposes:
 # * It is the $ORIGIN off all its records
 # * It specifies a default $TTL
-# * Speedy lookups by bind-dlz to determine if its authorative
 # 
-class Zone < ActiveRecord::Base
+class Domain < ActiveRecord::Base
   
   belongs_to :user
   
@@ -25,6 +24,9 @@ class Zone < ActiveRecord::Base
   
   validates_presence_of :name
   validates_uniqueness_of :name
+  
+  # Disable single table inheritence (STI)
+  set_inheritance_column 'not_used_here'
   
   # Virtual attributes that ease new zone creation. If present, they'll be
   # used to create an SOA for the domain
@@ -48,8 +50,8 @@ class Zone < ActiveRecord::Base
     #
     # Example:
     # 
-    #   Zone.find(:all) # Normal behavior
-    #   Zone.find(:all, :user => user_instance) # Will scope lookups to the user
+    #   Domain.find(:all) # Normal behavior
+    #   Domain.find(:all, :user => user_instance) # Will scope lookups to the user
     #
     def find_with_scope( *args )
       options = args.extract_options!
@@ -93,9 +95,24 @@ class Zone < ActiveRecord::Base
     records.select { |r| !r.is_a?( SOA ) }
   end
   
+  # Expand our validations to include SOA details
+  def after_validation_on_create #:nodoc:
+    soa = SOA.new( :domain => self )
+    SOA_FIELDS.each do |f|
+      soa.send( "#{f}=", send( f ) )
+    end
+    soa.serial = serial unless serial.nil? # Optional
+    
+    unless soa.valid?
+      soa.errors.each_full do |e|
+        errors.add_to_base e
+      end
+    end
+  end
+  
   # Setup an SOA if we have the requirements
   def after_create #:nodoc:
-    soa = SOA.new( :zone => self )
+    soa = SOA.new( :domain => self )
     SOA_FIELDS.each do |f|
       soa.send( "#{f}=", send( f ) )
     end

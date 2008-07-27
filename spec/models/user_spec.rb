@@ -158,8 +158,8 @@ describe User, "as owner" do
     @user = users( :quentin )
   end
   
-  it "should have zones" do
-    @user.zones.should_not be_empty
+  it "should have domains" do
+    @user.domains.should_not be_empty
   end
   
   it "should have templates" do
@@ -174,8 +174,8 @@ describe User, "as admin" do
     @admin = users(:admin)
   end
   
-  it "should not own zones" do
-    @admin.zones.should be_empty
+  it "should not own domains" do
+    @admin.domains.should be_empty
   end
   
   it "should not own zone templates" do

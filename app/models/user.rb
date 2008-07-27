@@ -19,7 +19,7 @@ class User < ActiveRecord::Base
   attr_accessible :login, :email, :password, :password_confirmation, :admin
 
   has_and_belongs_to_many :roles
-  has_many :zones, :dependent => :nullify
+  has_many :domains, :dependent => :nullify
   has_many :zone_templates, :dependent => :nullify
   
   acts_as_state_machine :initial => :active

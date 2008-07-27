@@ -12,7 +12,7 @@ class RecordTemplate < ActiveRecord::Base
   
   # Convert this template record into a instance +record_type+ with the 
   # attributes of the template copied over to the instance
-  def build( zone_name = nil )
+  def build( domain_name = nil )
     # get the class of the record_type
     record_class = self.record_type.constantize
 
@@ -21,12 +21,11 @@ class RecordTemplate < ActiveRecord::Base
     attrs = self.attributes.dup
     attrs.delete_if { |k,_| !record_class.columns.map( &:name ).include?( k ) }
     attrs.delete( :id )
-    attrs.delete( :zone_name )
     
     # parse each attribute, looking for %ZONE%
-    unless zone_name.nil?
+    unless domain_name.nil?
       attrs.keys.each do |k|
-        attrs[k] = attrs[k].gsub( '%ZONE%', zone_name ) if attrs[k].is_a?( String )
+        attrs[k] = attrs[k].gsub( '%ZONE%', domain_name ) if attrs[k].is_a?( String )
       end
     end
 
@@ -52,7 +51,8 @@ class RecordTemplate < ActiveRecord::Base
     unless self.record_type.nil?
       record = build
       record.errors.each do |k,v|
-        next if k == "zone_id" # skip associations we don't have
+        # skip associations we don't have, validations we don't care about
+        next if k == "domain_id" || k == "name" 
 
         self.errors.add( k, v )
       end unless record.valid?

@@ -11,8 +11,8 @@ describe Record, "in general" do
     @record.should_not be_valid
   end
   
-  it "should require a zone" do
-    @record.should have(1).error_on(:zone_id)
+  it "should require a domain" do
+    @record.should have(1).error_on(:domain_id)
   end
   
   it "should require a ttl" do
@@ -30,13 +30,8 @@ describe Record, "in general" do
     @record.should have(:no).errors_on(:ttl)
   end
   
-  it "should have @ as the host be default" do
-    @record.host.should eql('@')
-  end
-  
-  it "should require the zone_name (cache column) if it has a zone_id" do
-    @record.zone = zones(:example_com)
-    @record.should have(:no).errors_on(:zone_name)
+  it "should require a name" do
+    @record.should have(1).error_on(:name)
   end
   
 end
@@ -52,7 +47,7 @@ describe Record, "during updates" do
     serial = @soa.serial
     
     record = records( :example_com_a )
-    record.data = '10.0.0.1'
+    record.content = '10.0.0.1'
     record.save.should be_true
     
     @soa.reload
@@ -66,25 +61,25 @@ describe Record, "during updates" do
     Record.batch do
       
       record = A.new(
-        :zone => zones(:example_com),
-        :host => 'app',
-        :data => '10.0.0.5',
+        :domain => domains(:example_com),
+        :name => 'app',
+        :content => '10.0.0.5',
         :ttl => 86400
       )
       record.save.should be_true
       
       record = A.new(
-        :zone => zones(:example_com),
-        :host => 'app',
-        :data => '10.0.0.6',
+        :domain => domains(:example_com),
+        :name => 'app',
+        :content => '10.0.0.6',
         :ttl => 86400
       )
       record.save.should be_true
       
       record = A.new(
-        :zone => zones(:example_com),
-        :host => 'app',
-        :data => '10.0.0.7',
+        :domain => domains(:example_com),
+        :name => 'app',
+        :content => '10.0.0.7',
         :ttl => 86400
       )
       record.save.should be_true
@@ -109,9 +104,9 @@ describe Record, "when created" do
     serial = @soa.serial
     
     record = A.new( 
-      :zone => zones(:example_com),
-      :host => 'admin',
-      :data => '10.0.0.5',
+      :domain => domains(:example_com),
+      :name => 'admin',
+      :content => '10.0.0.5',
       :ttl => 86400
     )
     record.save.should be_true
@@ -120,42 +115,51 @@ describe Record, "when created" do
     @soa.serial.should_not eql(serial)
   end
   
-  it "should inherit the TTL from the parent zone if not provided" do
-    ttl = zones( :example_com ).ttl
+  it "should inherit the name from the parent domain if not provided" do
+    record = A.new(
+      :domain => domains( :example_com ),
+      :content => '10.0.0.6'
+    )
+    record.save.should be_true
+    
+    record.name.should eql('example.com')
+  end
+  
+  it "should append the domain name to the name if not present" do
+    record = A.new(
+      :domain => domains( :example_com ),
+      :name => 'test',
+      :content => '10.0.0.6'
+    )
+    record.save.should be_true
+    
+    record.name(false).should eql('test.example.com')
+  end
+  
+  it "should inherit the TTL from the parent domain if not provided" do
+    ttl = domains( :example_com ).ttl
     ttl.should be( 86400 )
     
     record = A.new(
-      :zone => zones( :example_com ),
-      :host => 'ftp',
-      :data => '10.0.0.6'
+      :domain => domains( :example_com ),
+      :name => 'ftp',
+      :content => '10.0.0.6'
     )
     record.save.should be_true
     
     record.ttl.should be( 86400 )
   end
   
-  it "should prefer own TTL over that of parent zone" do
+  it "should prefer own TTL over that of parent domain" do
     record = A.new(
-      :zone => zones( :example_com ),
-      :host => 'ftp',
-      :data => '10.0.0.6',
+      :domain => domains( :example_com ),
+      :name => 'ftp',
+      :content => '10.0.0.6',
       :ttl => 43200
     )
     record.save.should be_true
     
     record.ttl.should be( 43200 )
-  end
-  
-  it "should have the zone_name (cache_column) filled in" do
-    record = A.new(
-      :zone => zones( :example_com ),
-      :host => 'ftp',
-      :data => '10.0.0.6',
-      :ttl => 43200
-    )
-    record.save.should be_true
-    
-    record.zone_name.should eql( 'example.com' )
   end
   
 end

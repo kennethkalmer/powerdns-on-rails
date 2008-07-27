@@ -3,7 +3,7 @@ require File.dirname(__FILE__) + '/../spec_helper'
 describe ZoneTemplate, "when new" do
   fixtures :all
   
-  before(:each) do
+  before(:each) do 
     @zone_template = ZoneTemplate.new
   end
 
@@ -43,7 +43,7 @@ describe ZoneTemplate, "when loaded" do
   
   it "should provide an easy way to build a zone" do
     zone = @zone_template.build('example.org')
-    zone.should be_a_kind_of( Zone )
+    zone.should be_a_kind_of( Domain )
     zone.should be_valid
   end
   
@@ -104,27 +104,27 @@ describe ZoneTemplate, "when used to build a zone" do
   
   before(:each) do
     @zone_template = zone_templates( :east_coast_dc )
-    @zone = @zone_template.build( 'example.org' )
+    @domain = @zone_template.build( 'example.org' )
   end
   
   it "should create a valid new zone" do
-    @zone.should be_valid
-    @zone.should be_a_kind_of( Zone )
+    @domain.should be_valid
+    @domain.should be_a_kind_of( Domain )
   end
   
   it "should create the correct number of records (from templates)" do
-    @zone.records.size.should eql( @zone_template.record_templates.size )
+    @domain.records.size.should eql( @zone_template.record_templates.size )
   end
   
   it "should create a SOA record" do
-    soa = @zone.soa_record
+    soa = @domain.soa_record
     soa.should_not be_nil
     soa.should be_a_kind_of( SOA )
-    soa.primary_ns.should eql('ns1.example.org.')
+    soa.primary_ns.should eql('ns1.example.org')
   end
   
   it "should create two NS records" do
-    ns = @zone.ns_records
+    ns = @domain.ns_records
     ns.should be_a_kind_of( Array )
     ns.size.should be(2)
     
@@ -139,31 +139,31 @@ describe ZoneTemplate, "when used to build a zone for a user" do
   before(:each) do
     @user = users(:quentin)
     @zone_template = zone_templates( :quentin_home )
-    @zone = @zone_template.build( 'example.org', @user )
+    @domain = @zone_template.build( 'example.org', @user )
   end
   
   it "should create a valid new zone" do
-    @zone.should be_valid
-    @zone.should be_a_kind_of( Zone )
+    @domain.should be_valid
+    @domain.should be_a_kind_of( Domain )
   end
   
   it "should be owned by the user" do
-    @zone.user.should be( @user )
+    @domain.user.should be( @user )
   end
   
   it "should create the correct number of records (from templates)" do
-    @zone.records.size.should eql( @zone_template.record_templates.size )
+    @domain.records.size.should eql( @zone_template.record_templates.size )
   end
   
   it "should create a SOA record" do
-    soa = @zone.soa_record
+    soa = @domain.soa_record
     soa.should_not be_nil
     soa.should be_a_kind_of( SOA )
-    soa.primary_ns.should eql('ns1.example.com.')
+    soa.primary_ns.should eql('ns1.example.com')
   end
   
   it "should create two NS records" do
-    ns = @zone.ns_records
+    ns = @domain.ns_records
     ns.should be_a_kind_of( Array )
     ns.size.should be(2)
     
@@ -171,7 +171,7 @@ describe ZoneTemplate, "when used to build a zone for a user" do
   end
   
   it "should create the correct CNAME's from the template" do
-    cnames = @zone.cname_records
+    cnames = @domain.cname_records
     cnames.size.should be(2)
   end
   

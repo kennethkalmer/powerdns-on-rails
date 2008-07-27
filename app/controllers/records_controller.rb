@@ -3,11 +3,11 @@ class RecordsController < ApplicationController
   before_filter :get_zone
   
   def new
-    @record = @zone.records.new
+    @record = @domain.records.new
   end
   
   def create
-    @record = @zone.send( "#{params[:record][:type].downcase}_records".to_sym ).new( params[:record] )
+    @record = @domain.send( "#{params[:record][:type].downcase}_records".to_sym ).new( params[:record] )
     if @record.save
       flash[:info] = "Record created!"
     else
@@ -17,11 +17,11 @@ class RecordsController < ApplicationController
   end
   
   def edit
-    @record = @zone.records.find( params[:id] )
+    @record = @domain.records.find( params[:id] )
   end
   
   def update
-    @record = @zone.records.find( params[:id] )
+    @record = @domain.records.find( params[:id] )
     if @record.update_attributes( params[:record] )
       flash[:info] = "Record udpated!"
     else
@@ -31,15 +31,15 @@ class RecordsController < ApplicationController
   end
   
   def destroy
-    @record = @zone.records.find( params[:id] )
+    @record = @domain.records.find( params[:id] )
     @record.destroy
-    redirect_to zone_path( @zone )
+    redirect_to domain_path( @domain )
   end
   
   # Non-CRUD methods
   def update_soa
-    @zone.soa_record.update_attributes( params[:soa] )
-    if @zone.soa_record.valid?
+    @domain.soa_record.update_attributes( params[:soa] )
+    if @domain.soa_record.valid?
       flash[:info] = "SOA record updated!"
     else
       flash[:error] = "SOA record not updated!"
@@ -49,6 +49,6 @@ class RecordsController < ApplicationController
   protected
   
   def get_zone
-    @zone = Zone.find(params[:zone_id], :user => current_user)
+    @domain = Domain.find(params[:domain_id], :user => current_user)
   end
 end
