@@ -14,8 +14,11 @@ describe RecordTemplate, "when new" do
 end
 
 describe RecordTemplate, "should inherit" do
+  fixtures :all
+  
   before(:each) do
     @record_template = RecordTemplate.new
+    @record_template.zone_template = zone_templates(:east_coast_dc)
   end
   
   it "validations from A" do
@@ -64,6 +67,13 @@ describe RecordTemplate, "should inherit" do
     @record_template.should have(1).error_on(:content)
   end
   
+  it "validations from TXT" do
+    @record_template.record_type = 'TXT'
+    @record_template.should_not be_valid
+    
+    @record_template.should have(1).error_on(:content)
+  end
+  
   it "validations from SOA" do
     @record_template.record_type = 'SOA'
     @record_template.should_not be_valid
@@ -72,11 +82,19 @@ describe RecordTemplate, "should inherit" do
     @record_template.should have(1).error_on(:contact)
   end
   
-  it "validations from TXT" do
-    @record_template.record_type = 'TXT'
-    @record_template.should_not be_valid
+  it "convenience methods from SOA" do
+    @record_template.record_type = 'SOA'
     
-    @record_template.should have(1).error_on(:content)
+    @record_template.primary_ns = 'ns1.%ZONE%'
+    @record_template.contact = 'admin@example.com'
+    @record_template.refresh = 7200
+    @record_template.retry = 1800
+    @record_template.expire = 604800
+    @record_template.minimum = 10800
+    
+    @record_template.content.should eql('ns1.%ZONE% admin@example.com 0 7200 1800 604800 10800')
+    @record_template.should be_valid
+    @record_template.save.should be_true
   end
 end
 
@@ -133,5 +151,15 @@ describe RecordTemplate, "when creating" do
     record_template.save.should be_true
     
     record_template.ttl.should be(43200)
+  end
+end
+
+describe RecordTemplate, "when loaded" do
+  fixtures :all
+  
+  it "should have SOA convenience, if an SOA template" do
+    record_template = record_templates(:east_coast_soa)
+    record_template.primary_ns.should eql('ns1.%ZONE%')
+    record_template.retry.should be(7200)
   end
 end

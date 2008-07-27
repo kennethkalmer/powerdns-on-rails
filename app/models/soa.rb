@@ -96,14 +96,13 @@ class SOA < Record
   def update_convenience_accessors
     # Setup our convenience values
     @primary_ns, @contact, @serial, @refresh, @retry, @expire, @minimum = 
-      self.content.split(' ') unless self.content.nil?
+      self[:content].split(/\s+/) unless self[:content].blank?
     %w{ serial refresh retry expire minimum }.each do |i|
       value = instance_variable_get("@#{i}")
       value = value.to_i unless value.nil?
       send("#{i}=", value )
     end
     
-    # Let PowerDNS handle the serial numbers for us
-    @serial ||= 0
+    update_serial if @serial.nil? || @serial.zero?
   end
 end

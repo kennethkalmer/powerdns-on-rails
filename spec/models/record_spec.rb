@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
-describe Record, "in general" do
+describe Record, "when new" do
   fixtures :all
   
   before(:each) do
@@ -133,7 +133,8 @@ describe Record, "when created" do
     )
     record.save.should be_true
     
-    record.name(false).should eql('test.example.com')
+    record.shortname.should eql('test')
+    record.name.should eql('test.example.com')
   end
   
   it "should inherit the TTL from the parent domain if not provided" do
@@ -162,4 +163,20 @@ describe Record, "when created" do
     record.ttl.should be( 43200 )
   end
   
+end
+
+describe Record, "when loaded" do
+  fixtures :all
+  
+  before(:each) do
+    @record = records(:example_com_a)
+  end
+  
+  it "should have a full name" do
+    @record.name.should eql('example.com')
+  end
+  
+  it "should have a short name" do
+    @record.shortname.should be_blank
+  end
 end

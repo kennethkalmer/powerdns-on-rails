@@ -10,6 +10,16 @@ class RecordTemplate < ActiveRecord::Base
   @@record_types = ['A', 'CNAME', 'MX', 'NS', 'SOA', 'TXT']
   cattr_reader :record_types
   
+  # We need to cope with the SOA convenience
+  SOA::SOA_FIELDS.each do |f|
+    attr_accessor f
+  end
+  
+  # Convert our +content+ field into convenience variables
+  def after_initialize 
+    update_convenience_accessors
+  end
+  
   # Convert this template record into a instance +record_type+ with the 
   # attributes of the template copied over to the instance
   def build( domain_name = nil )
@@ -17,7 +27,7 @@ class RecordTemplate < ActiveRecord::Base
     record_class = self.record_type.constantize
 
     # duplicate our own attributes, strip out the ones the destination doesn't
-    # have (and the id/zone_name as well)
+    # have (and the id as well)
     attrs = self.attributes.dup
     attrs.delete_if { |k,_| !record_class.columns.map( &:name ).include?( k ) }
     attrs.delete( :id )
@@ -26,6 +36,13 @@ class RecordTemplate < ActiveRecord::Base
     unless domain_name.nil?
       attrs.keys.each do |k|
         attrs[k] = attrs[k].gsub( '%ZONE%', domain_name ) if attrs[k].is_a?( String )
+      end
+    end
+    
+    # Handle SOA convenience fields if needed
+    if soa?
+      SOA::SOA_FIELDS.each do |soa_field|
+        attrs[soa_field] = instance_variable_get("@#{soa_field}")
       end
     end
 
@@ -37,11 +54,20 @@ class RecordTemplate < ActiveRecord::Base
     self.record_type == 'SOA'
   end
   
+  def content
+    soa? ? SOA::SOA_FIELDS.map{ |f| instance_variable_get("@#{f}") || 0 }.join(' ') : self[:content]
+  end
+  
   # Manage TTL inheritance here
   def before_validation #:nodoc:
     unless self.zone_template_id.nil?
       self.ttl = self.zone_template.ttl if self.ttl.nil?
     end
+  end
+  
+  # Manage SOA content
+  def before_create #:nodoc:
+    self[:content] = content if soa?
   end
   
   # Here we perform some magic to inherit the validations from the "destination"
@@ -59,4 +85,19 @@ class RecordTemplate < ActiveRecord::Base
     end
   end
   
+  private
+  
+  # Update our convenience accessors when the object has changed
+  def update_convenience_accessors
+    return unless self.record_type == 'SOA'
+    
+    # Setup our convenience values
+    @primary_ns, @contact, @serial, @refresh, @retry, @expire, @minimum = 
+      self[:content].split(/\s+/) unless self[:content].blank?
+    %w{ serial refresh retry expire minimum }.each do |i|
+      value = instance_variable_get("@#{i}")
+      value = value.to_i unless value.nil?
+      send("#{i}=", value )
+    end
+  end
 end

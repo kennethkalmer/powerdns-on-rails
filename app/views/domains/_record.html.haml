@@ -6,7 +6,7 @@
 
 %tr[ record, :marker ]
 %tr[ record, :show ]
-  %td{ :width => 250 }= record.name
+  %td{ :width => 250 }= record.shortname
   %td{ :width => 50 }= record.ttl
   %td{ :width => 30 }= record.type
   %td{ :width => 30 }= record.prio
@@ -21,7 +21,7 @@
       %div[ record, :error ]
       %table.gridwide
         %tr
-          %td{ :width => 250 }= f.text_field :name, :size => 15
+          %td{ :width => 250 }= f.text_field :shortname, :size => 15
           %td{ :width => 50 }= f.text_field :ttl, :size => 3
           %td{ :width => 30 }= record.type
           %td{ :width => 30 }

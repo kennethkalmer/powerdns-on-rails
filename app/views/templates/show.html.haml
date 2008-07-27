@@ -89,7 +89,7 @@
         %td &nbsp;
       %tr
         %td Host
-        %td= f.text_field :host
+        %td= f.text_field :name
         %td &nbsp;
       %tr
         %td TTL
@@ -97,11 +97,11 @@
         %td &nbsp;
       %tr.rt-mx{ :style => 'display :none' }
         %td Priority
-        %td= f.text_field :priority, :size => 6
+        %td= f.text_field :prio, :size => 6
         %td &nbsp;
       %tr
         %td Data
-        %td= f.text_field :data
+        %td= f.text_field :content
         %td &nbsp;
       %tr.rt-soa{ :style => 'display :none' }
         %td Primary Name Server

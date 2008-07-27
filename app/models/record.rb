@@ -36,11 +36,12 @@ class Record < ActiveRecord::Base
     
   end
   
-  # Return the short name of the RR
-  def name( short = true )
-    return self[:name] if self.domain_id.nil? || self[:name].nil?
-    
-    short ? self[:name].gsub( ".#{self.domain.name}", '' ) : self[:name]
+  def shortname
+    self[:name].gsub( /\.?#{self.domain.name}$/, '' )
+  end
+  
+  def shortname=( value )
+    self[:name] = value
   end
   
   # Pull in the name & TTL from the domain if missing
@@ -67,7 +68,7 @@ class Record < ActiveRecord::Base
   
   # Append the domain name to the +name+ field if missing
   def append_domain_name!
-    self[:name] ||= self.domain.name
+    self[:name] = self.domain.name if self[:name].blank?
     
     self[:name] << ".#{self.domain.name}" unless self[:name].index( self.domain.name )
   end

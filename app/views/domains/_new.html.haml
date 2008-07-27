@@ -43,7 +43,7 @@
       %td Zone Template
       %td= f.collection_select( :zone_template_id, @zone_templates, :id, :name, :include_blank => true )
       %td &nbsp;
-    = observe_field :zone_zone_template_id, :function =>"if(value == \"\") $('no-template-input').show(); else $('no-template-input').hide()", :on => 'select'
+    = observe_field :domain_zone_template_id, :function =>"if(value == \"\") $('no-template-input').show(); else $('no-template-input').hide()", :on => 'select'
     
   #no-template-input
     %table.grid
