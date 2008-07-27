@@ -14,7 +14,7 @@ require 'iconv'
 
 namespace :migrate do
   
-  desc 'Migrate a PowerDNS database into a clean BIND DLZ database'
+  desc 'Migrate an existing PowerDNS database into a clean copy'
   task :powerdns => :environment do
     
     module PowerDnsMigration
@@ -74,17 +74,6 @@ namespace :migrate do
         end
       end
       
-      ###
-      # Extensions to our models
-      ###
-      module SoaMinimum
-        # Sanitize possible minimum values higher than allowed maximum
-        def minimum=( value )
-          self[:minimum] = (value.to_i > 10800 ? 10800 : value.to_i)
-        end
-      end
-      SOA.send( :include, SoaMinimum )
-      
       def self.migrate!
         establish_connection
         
@@ -120,7 +109,7 @@ namespace :migrate do
           Domain.destroy_all( [ 'name LIKE ?', domain.name ] )
           
           # add the zone
-          zone = Domain.find_or_create_by_name( encode( domain.name ) )
+          zone = Domain.new
           zone.name = encode(domain.name)
           zone.primary_ns = encode(soa_ns)
           zone.contact = encode(soa_contact)
@@ -128,7 +117,7 @@ namespace :migrate do
           zone.refresh = soa_refresh
           zone.retry = soa_retry
           zone.expire = soa_expire
-          zone.minimum = soa_minimum
+          zone.minimum = (soa_minimum.to_i > 10800 ? 10800 : soa_minimum.to_i)
           zone.ttl = soa.ttl
           
           # Save and report
@@ -144,7 +133,7 @@ namespace :migrate do
           migrated_records += 1 # SOA record created above :)
           
           # clear the existing records completely (except the SOA)
-          Record.delete_all( "zone_id = #{zone.id} AND type <> 'SOA'")
+          Record.delete_all( "domain_id = #{zone.id} AND type <> 'SOA'")
           
           logger.info "* Adding records for #{domain.name}"
           Record.batch do
@@ -162,34 +151,20 @@ namespace :migrate do
                 next
               end
 
-              # set the correct host value by cleaning up the PowerDNS name field
-              record.host = case
-              when pdns_record.name == domain.name
-                '@'
-              else
-                encode( pdns_record.name.gsub( ".#{domain.name}", '' ) )
-              end
-
-              # set the data, also stripping out the PowerDNS rubbish
-              pdns_record_content = encode( pdns_record.content )
-              new_pdns_record_content = if ( pdns_record_content.index( domain.name ) )
-                pdns_record_content.gsub( ".#{domain.name}", '' )
-              else
-                pdns_record_content
-              end
-              new_pdns_record_content << '.' if new_pdns_record_content =~ /[a-z]/ && new_pdns_record_content.index('.')
-              record.data = new_pdns_record_content
-              
+              # copy the name
+              record.name = encode( pdns_record.name )
+              # copy the content
+              record.content = encode( pdns_record.content )
               
               # ttl
               record.ttl = pdns_record.ttl
               
               # set the priority if we're dealing with an MX record
-              record.priority = pdns_record.prio if record.is_a?( MX )
+              record.prio = pdns_record.prio if record.is_a?( MX )
 
               # save and report
               unless record.save
-                logger.warn "** Could not save record imported from #{pdns_record.name} (#{pdns_record.type}"
+                logger.warn "** Could not save record imported from #{pdns_record.name} (#{pdns_record.type})"
                 logger.warn "** ActiveRecord said: #{record.errors.full_messages.join(', ')}"
                 print '!'
                 STDOUT.flush
@@ -254,7 +229,7 @@ namespace :migrate do
     end
     
     puts "WARNING: This will import all the domains and records from a PowerDNS"
-    puts "database into the local BIND DLZ database. Existing records will be"
+    puts "database into the PowerDNS on Rails database. Existing records will be"
     puts "overwritten in the process without warning."
     print "Are you sure you want to continue? [y/N] "
     break unless STDIN.gets.match(/^y$/i)  
