@@ -10,7 +10,11 @@
   #note-new
     Adds a note with miscellaneous info to the domain
   #note-edit
-    Edit the zone's current note
+    Edit the domains's current note
+  #delete-zone
+    Permantly remove this domain from the system
+  #change-owner
+    Change or remove the owner of this domain
   #help-primary-ns
     This is the fully qualified domain name (FQDN) of the primary name server
     of the domain.
@@ -45,9 +49,24 @@
     %tr
       %td Domain
       %td= @domain.name
+      %td= link_to prototip_info_icon('database_delete.png', 'delete-zone'), domain_path( @domain ), :method => :delete, :confirm => "Are you sure you want to remove #{@domain.name}?"
+    - if current_user.admin?
+      %tr
+        %td Owner
+        %td
+          #owner-info
+            - if @domain.user
+              = @domain.user.login
+            - else
+              \-
+          #owner-edit{ :style => 'display: none' }
+            - remote_form_for( :domain, @domain, :url => formatted_change_owner_domain_path( @domain, :js ), :html => { :method => :put } ) do |f|
+              = f.collection_select "user_id", @users, :id, :login, :include_blank => true
+              = submit_tag "Save"
+        %td= link_to_function prototip_info_icon('user_edit.png', 'change-owner'), "changeOwner()"
     %tr
       %td{ :valign => 'top' } Notes
-      %td
+      %td{ :colspan => 2 }
         #note-row
           = @domain.notes
           %br
@@ -59,7 +78,6 @@
             %br/
             = link_to_function "Cancel", "hideNote()"
             = submit_tag "Update note"
-
 
 #domain-soa.padded
   %h2.underline
@@ -207,4 +225,8 @@
   function showSOAForm() {
     $('soa-edit-form').hide();
     $('soa-form').show();
+  }
+  function changeOwner() {
+    $('owner-info').toggle();
+    $('owner-edit').toggle();
   }

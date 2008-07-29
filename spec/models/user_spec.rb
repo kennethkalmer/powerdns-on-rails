@@ -207,4 +207,8 @@ describe User, "and roles" do
     user.admin = 911
     user.admin.should be(911)
   end
+  
+  it "should have a way to easily find active owners" do
+    pending
+  end
 end

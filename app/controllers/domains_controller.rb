@@ -9,6 +9,8 @@ class DomainsController < ApplicationController
   def show
     @domain = Domain.find( params[:id], :include => :records )
     @record = @domain.records.new
+    
+    @users = User.active_owners
   end
   
   def new
@@ -70,4 +72,8 @@ class DomainsController < ApplicationController
     @domain.update_attribute( :notes, params[:domain][:notes] )
   end
   
+  def change_owner
+    @domain = Domain.find( params[:id] )
+    @domain.update_attribute :user_id, params[:domain][:user_id]
+  end
 end

@@ -39,15 +39,23 @@ class User < ActiveRecord::Base
     transitions :from => [:suspended, :active], :to => :deleted
   end
 
-  # Authenticates a user by their login name and unencrypted password.  Returns the user or nil.
-  def self.authenticate(login, password)
-    u = find_in_state :first, :active, :conditions => {:login => login} # need to get the salt
-    u && u.authenticated?(password) ? u : nil
-  end
-
-  # Encrypts some data with the salt.
-  def self.encrypt(password, salt)
-    Digest::SHA1.hexdigest("--#{salt}--#{password}--")
+  class << self
+    
+    # Returns a list of active owners for the domain
+    def active_owners
+      find(:all, :conditions => 'state = "active"').select { |u| u.has_role?('owner') }
+    end
+    
+    # Authenticates a user by their login name and unencrypted password.  Returns the user or nil.
+    def authenticate(login, password)
+      u = find_in_state :first, :active, :conditions => {:login => login} # need to get the salt
+      u && u.authenticated?(password) ? u : nil
+    end
+    
+    # Encrypts some data with the salt.
+    def encrypt(password, salt)
+      Digest::SHA1.hexdigest("--#{salt}--#{password}--")
+    end
   end
 
   # Encrypts the password with the user salt

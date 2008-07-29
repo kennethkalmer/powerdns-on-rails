@@ -78,6 +78,25 @@ describe DomainsController, "when creating" do
   
 end
 
+describe DomainsController do
+  fixtures :all
+  
+  before(:each) do
+    login_as(:admin)
+  end
+  
+  it "should accept ownership changes" do
+    domain = domains(:example_com)
+    
+    lambda {
+      put :change_owner, :id => domain.id, :domain => { :user_id => users(:quentin).id }
+      domain.reload
+    }.should change( domain, :user_id )
+    
+    response.should render_template('domains/change_owner')
+  end
+end
+
 describe DomainsController, "should handle a REST client" do
   fixtures :all
   
