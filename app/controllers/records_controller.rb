@@ -9,9 +9,9 @@ class RecordsController < ApplicationController
   def create
     @record = @domain.send( "#{params[:record][:type].downcase}_records".to_sym ).new( params[:record] )
     if @record.save
-      flash[:info] = "Record created!"
+      flash.now[:info] = "Record created!"
     else
-      flash[:error] = "Record not created!"
+      flash.now[:error] = "Record not created!"
       render :action => :new
     end
   end
