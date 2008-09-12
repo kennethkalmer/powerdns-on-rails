@@ -43,7 +43,7 @@ class User < ActiveRecord::Base
     
     # Returns a list of active owners for the domain
     def active_owners
-      find(:all, :conditions => 'state = "active"').select { |u| u.has_role?('owner') }
+      find_in_state(:all, :active).select { |u| u.has_role?('owner') }
     end
     
     # Authenticates a user by their login name and unencrypted password.  Returns the user or nil.

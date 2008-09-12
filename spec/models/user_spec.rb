@@ -209,6 +209,10 @@ describe User, "and roles" do
   end
   
   it "should have a way to easily find active owners" do
-    pending
+    candidates = User.active_owners
+    candidates.each do |user|
+      user.should be_active
+      user.should_not be_admin
+    end
   end
 end
