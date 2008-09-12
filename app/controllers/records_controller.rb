@@ -23,9 +23,9 @@ class RecordsController < ApplicationController
   def update
     @record = @domain.records.find( params[:id] )
     if @record.update_attributes( params[:record] )
-      flash[:info] = "Record udpated!"
+      flash.now[:info] = "Record udpated!"
     else
-      flash[:error] = "Record not updated!"
+      flash.now[:error] = "Record not updated!"
       render :action => :edit
     end
   end
@@ -40,9 +40,9 @@ class RecordsController < ApplicationController
   def update_soa
     @domain.soa_record.update_attributes( params[:soa] )
     if @domain.soa_record.valid?
-      flash[:info] = "SOA record updated!"
+      flash.now[:info] = "SOA record updated!"
     else
-      flash[:error] = "SOA record not updated!"
+      flash.now[:error] = "SOA record not updated!"
     end
   end
   

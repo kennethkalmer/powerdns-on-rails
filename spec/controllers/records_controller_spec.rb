@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
-describe RecordsController do
+describe RecordsController, "and non-SOA records" do
   fixtures :users, :domains
   
   before( :each ) do
@@ -9,7 +9,7 @@ describe RecordsController do
     Domain.expects( :find ).with( @domain.id.to_s, :user => users( :admin ) ).returns( @domain )
   end
   
-  it "should create a new record when valid" do
+  it "should create when valid" do
     record = Record.new
     
     params = {
@@ -28,7 +28,7 @@ describe RecordsController do
     assigns[:record].should_not be_nil
   end
   
-  it "shouldn't save an invalid record" do
+  it "shouldn't save when invalid" do
     record = Record.new
     
     params = {  
@@ -46,7 +46,7 @@ describe RecordsController do
     response.should render_template( 'new' )
   end
   
-  it "should update a valid record" do
+  it "should update when valid" do
     record = Record.new
     
     params = {  
@@ -62,7 +62,7 @@ describe RecordsController do
     put :update, :id => '1', :domain_id => @domain.id, :record => params
   end
   
-  it "shouldn't update an invalid record" do
+  it "shouldn't update when invalid" do
     record = Record.new
     
     params = {  
@@ -81,7 +81,7 @@ describe RecordsController do
     response.should render_template( "edit" )
   end
   
-  it "should destroy a record when requested to do so" do
+  it "should destroy when requested to do so" do
     record = Record.new
     @domain.records.expects( :find ).with( '1' ).returns( record )
     
@@ -93,4 +93,21 @@ describe RecordsController do
   end
 end
 
-
+describe RecordsController, "and SOA records" do
+  fixtures :all
+  
+  it "should update when valid" do
+    login_as(:admin)
+    
+    target_soa = records(:example_com_soa)
+    
+    put "update_soa", :id => target_soa.id, :domain_id => target_soa.domain.id,
+      :soa => { 
+        :primary_ns => 'ns1.example.com', :contact => 'dnsadmin@example.com',
+        :refresh => "10800", :retry => "10800", :minimum => "10800", :expire => "604800"
+      }
+    
+    target_soa.reload
+    target_soa.contact.should eql('dnsadmin@example.com')
+  end
+end
