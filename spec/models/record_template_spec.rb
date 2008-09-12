@@ -163,3 +163,17 @@ describe RecordTemplate, "when loaded" do
     record_template.retry.should be(7200)
   end
 end
+
+describe RecordTemplate, "when updated" do
+  fixtures :all
+  
+  it "should handle SOA convenience" do
+    record_template = record_templates(:east_coast_soa)
+    record_template.primary_ns = 'ns1.provider.net'
+    
+    record_template.save
+    record_template.reload
+    
+    record_template.primary_ns.should eql('ns1.provider.net')
+  end
+end

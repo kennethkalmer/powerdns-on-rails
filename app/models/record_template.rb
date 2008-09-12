@@ -10,6 +10,8 @@ class RecordTemplate < ActiveRecord::Base
   @@record_types = ['A', 'CNAME', 'MX', 'NS', 'SOA', 'TXT']
   cattr_reader :record_types
   
+  before_save :update_soa_content
+  
   # We need to cope with the SOA convenience
   SOA::SOA_FIELDS.each do |f|
     attr_accessor f
@@ -19,6 +21,13 @@ class RecordTemplate < ActiveRecord::Base
   def after_initialize 
     update_convenience_accessors
   end
+  
+  # Hook into #reload
+  def reload_with_content
+    reload_without_content
+    update_convenience_accessors
+  end
+  alias_method_chain :reload, :content
   
   # Convert this template record into a instance +record_type+ with the 
   # attributes of the template copied over to the instance
@@ -66,8 +75,8 @@ class RecordTemplate < ActiveRecord::Base
   end
   
   # Manage SOA content
-  def before_create #:nodoc:
-    self[:content] = content if soa?
+  def update_soa_content #:nodoc:
+    self[:content] = content
   end
   
   # Here we perform some magic to inherit the validations from the "destination"
