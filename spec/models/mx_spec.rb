@@ -13,8 +13,11 @@ describe MX, "when new" do
     @mx.should have(1).error_on(:prio)
   end
   
-  it "should only allow positive, numeric priorities" do
+  it "should only allow positive, numeric priorities, between 0 and 65535 (inclusive)" do
     @mx.prio = -10
+    @mx.should have(1).error_on(:prio)
+    
+    @mx.prio = 65536
     @mx.should have(1).error_on(:prio)
     
     @mx.prio = 'low'
@@ -25,6 +28,11 @@ describe MX, "when new" do
   end
   
   it "should require content" do
+    @mx.should have(1).error_on(:content)
+  end
+  
+  it "should not accept IP addresses as content" do
+    @mx.content = "127.0.0.1"
     @mx.should have(1).error_on(:content)
   end
   
