@@ -850,8 +850,8 @@ module ActionController #:nodoc:
           response.headers["Location"] = url_for(location)
         end
 
-        if text = options[:text]
-          render_for_text(text, options[:status])
+        if options.has_key?(:text)
+          render_for_text(options[:text], options[:status])
 
         else
           if file = options[:file]
@@ -1029,7 +1029,8 @@ module ActionController #:nodoc:
       # RedirectBackError will be raised. You may specify some fallback
       # behavior for this case by rescuing RedirectBackError.
       def redirect_to(options = {}, response_status = {}) #:doc: 
-        
+        raise ActionControllerError.new("Cannot redirect to nil!") if options.nil?
+
         if options.is_a?(Hash) && options[:status] 
           status = options.delete(:status) 
         elsif response_status[:status] 

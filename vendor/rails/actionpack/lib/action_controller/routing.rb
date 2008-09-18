@@ -306,8 +306,8 @@ module ActionController
             gsub(%r{(.)[\\/]$}, '\1')  # drop final / or \ if path ends with it
 
           # eliminate .. paths where possible
-          re = %r{\w+[/\\]\.\.[/\\]}
-          path.gsub!(%r{\w+[/\\]\.\.[/\\]}, "") while path.match(re)
+          re = %r{[^/\\]+[/\\]\.\.[/\\]}
+          path.gsub!(re, "") while path.match(re)
           path
         end
 
@@ -1216,7 +1216,7 @@ module ActionController
                 opts = if args.empty? || Hash === args.first
                   args.first || {}
                 else
-                  options = args.last.is_a?(Hash) ? args.pop : {}
+                  options = args.extract_options!
                   args = args.zip(#{route.segment_keys.inspect}).inject({}) do |h, (v, k)|
                     h[k] = v
                     h

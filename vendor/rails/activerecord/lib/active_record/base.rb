@@ -1,4 +1,3 @@
-require 'base64'
 require 'yaml'
 require 'set'
 
@@ -549,8 +548,14 @@ module ActiveRecord #:nodoc:
       #   Person.exists?(:name => "David")
       #   Person.exists?(['name LIKE ?', "%#{query}%"])
       def exists?(id_or_conditions)
-        !find(:first, :select => "#{quoted_table_name}.#{primary_key}",
-              :conditions => expand_id_conditions(id_or_conditions)).nil?
+        connection.select_all(
+          construct_finder_sql(
+            :select     => "#{quoted_table_name}.#{primary_key}", 
+            :conditions => expand_id_conditions(id_or_conditions), 
+            :limit      => 1
+          ), 
+          "#{name} Exists"
+        ).size > 0
       end
 
       # Creates an object (or multiple objects) and saves it to the database, if validations pass.
@@ -593,7 +598,7 @@ module ActiveRecord #:nodoc:
       def update(id, attributes)
         if id.is_a?(Array)
           idx = -1
-          id.collect { |id| idx += 1; update(id, attributes[idx]) }
+          id.collect { |one_id| idx += 1; update(one_id, attributes[idx]) }
         else
           object = find(id)
           object.update_attributes(attributes)
@@ -643,7 +648,11 @@ module ActiveRecord #:nodoc:
       #   todos = [1,2,3]
       #   Todo.destroy(todos)
       def destroy(id)
-        id.is_a?(Array) ? id.each { |id| destroy(id) } : find(id).destroy
+        if id.is_a?(Array)
+          id.map { |one_id| destroy(one_id) }
+        else
+          find(id).destroy
+        end
       end
 
       # Updates all records with details given if they match a set of conditions supplied, limits and order can
@@ -671,8 +680,8 @@ module ActiveRecord #:nodoc:
         sql  = "UPDATE #{table_name} SET #{sanitize_sql_for_assignment(updates)} "
         scope = scope(:find)
         add_conditions!(sql, conditions, scope)
-        add_order!(sql, options[:order], scope)
-        add_limit!(sql, options, scope)
+        add_order!(sql, options[:order], nil)
+        add_limit!(sql, options, nil)
         connection.update(sql, "#{name} Update")
       end
 
@@ -957,14 +966,19 @@ module ActiveRecord #:nodoc:
       end
 
       def reset_primary_key #:nodoc:
+        key = get_primary_key(base_class.name)
+        set_primary_key(key)
+        key
+      end
+
+      def get_primary_key(base_name) #:nodoc:
         key = 'id'
         case primary_key_prefix_type
           when :table_name
-            key = Inflector.foreign_key(base_class.name, false)
+            key = Inflector.foreign_key(base_name, false)
           when :table_name_with_underscore
-            key = Inflector.foreign_key(base_class.name)
+            key = Inflector.foreign_key(base_name)
         end
-        set_primary_key(key)
         key
       end
 
@@ -1076,9 +1090,9 @@ module ActiveRecord #:nodoc:
 
       # Returns an array of column objects for the table associated with this class.
       def columns
-        unless @columns
+        unless defined?(@columns) && @columns
           @columns = connection.columns(table_name, "#{name} Columns")
-          @columns.each {|column| column.primary = column.name == primary_key}
+          @columns.each { |column| column.primary = column.name == primary_key }
         end
         @columns
       end
@@ -1176,13 +1190,13 @@ module ActiveRecord #:nodoc:
       #     project.milestones << Milestone.find(:all)
       #   end
       #
-      # The benchmark is only recorded if the current level of the logger matches the <tt>log_level</tt>, which makes it
-      # easy to include benchmarking statements in production software that will remain inexpensive because the benchmark
-      # will only be conducted if the log level is low enough.
+      # The benchmark is only recorded if the current level of the logger is less than or equal to the <tt>log_level</tt>,
+      # which makes it easy to include benchmarking statements in production software that will remain inexpensive because
+      # the benchmark will only be conducted if the log level is low enough.
       #
       # The logging of the multiple statements is turned off unless <tt>use_silence</tt> is set to false.
       def benchmark(title, log_level = Logger::DEBUG, use_silence = true)
-        if logger && logger.level == log_level
+        if logger && logger.level <= log_level
           result = nil
           seconds = Benchmark.realtime { result = use_silence ? silence { yield } : yield }
           logger.add(log_level, "#{title} (#{'%.5f' % seconds})")
@@ -1218,7 +1232,7 @@ module ActiveRecord #:nodoc:
       # Returns whether this class is a base AR class.  If A is a base class and
       # B descends from A, then B.base_class will return B.
       def abstract_class?
-        abstract_class == true
+        defined?(@abstract_class) && @abstract_class == true
       end
 
       private
@@ -1429,7 +1443,7 @@ module ActiveRecord #:nodoc:
           case join
           when Symbol, Hash, Array
             join_dependency = ActiveRecord::Associations::ClassMethods::InnerJoinDependency.new(self, join, nil)
-            sql << " #{join_dependency.join_associations.collect{|join| join.association_join }.join} "
+            sql << " #{join_dependency.join_associations.collect { |assoc| assoc.association_join }.join} "
           else
             sql << " #{join} "
           end
@@ -1484,7 +1498,7 @@ module ActiveRecord #:nodoc:
 
             self.class_eval %{
               def self.#{method_id}(*args)
-                options = args.last.is_a?(Hash) ? args.pop : {}
+                options = args.extract_options!
                 attributes = construct_attributes_from_arguments([:#{attribute_names.join(',:')}], args)
                 finder_options = { :conditions => attributes }
                 validate_find_options(options)
@@ -1863,10 +1877,13 @@ module ActiveRecord #:nodoc:
         end
 
         def expand_range_bind_variables(bind_vars) #:nodoc:
-          bind_vars.each_with_index do |var, index|
-            bind_vars[index, 1] = [var.first, var.last] if var.is_a?(Range)
+          bind_vars.sum do |var|
+            if var.is_a?(Range)
+              [var.first, var.last]
+            else
+              [var]
+            end
           end
-          bind_vars
         end
 
         def quote_bound_value(value) #:nodoc:
@@ -1963,7 +1980,7 @@ module ActiveRecord #:nodoc:
 
       # Returns true if this object hasn't been saved yet -- that is, a record for the object doesn't exist yet.
       def new_record?
-        @new_record
+        defined?(@new_record) && @new_record
       end
 
       # * No record exists: Creates a new record with values matching those of the object attributes.
@@ -2040,28 +2057,28 @@ module ActiveRecord #:nodoc:
         save!
       end
 
-      # Initializes the +attribute+ to zero if nil and adds one. Only makes sense for number-based attributes. Returns self.
-      def increment(attribute)
+      # Initializes the +attribute+ to zero if nil and adds the value passed as +by+ (default is one). Only makes sense for number-based attributes. Returns self.
+      def increment(attribute, by = 1)
         self[attribute] ||= 0
-        self[attribute] += 1
+        self[attribute] += by
         self
       end
 
       # Increments the +attribute+ and saves the record.
-      def increment!(attribute)
-        increment(attribute).update_attribute(attribute, self[attribute])
+      def increment!(attribute, by = 1)
+        increment(attribute, by).update_attribute(attribute, self[attribute])
       end
 
-      # Initializes the +attribute+ to zero if nil and subtracts one. Only makes sense for number-based attributes. Returns self.
-      def decrement(attribute)
+      # Initializes the +attribute+ to zero if nil and subtracts the value passed as +by+ (default is one). Only makes sense for number-based attributes. Returns self.
+      def decrement(attribute, by = 1)
         self[attribute] ||= 0
-        self[attribute] -= 1
+        self[attribute] -= by
         self
       end
 
       # Decrements the +attribute+ and saves the record.
-      def decrement!(attribute)
-        decrement(attribute).update_attribute(attribute, self[attribute])
+      def decrement!(attribute, by = 1)
+        decrement(attribute, by).update_attribute(attribute, self[attribute])
       end
 
       # Turns an +attribute+ that's currently true into false and vice versa. Returns self.
@@ -2128,6 +2145,7 @@ module ActiveRecord #:nodoc:
         if options.nil?
           attributes
         else
+          ActiveSupport::Deprecation.warn "Passing options to Base#attributes is deprecated and will be removed in Rails 2.1. Please use Hash#slice or Hash#except instead"
           if except = options[:except]
             except = Array(except).collect { |attribute| attribute.to_s }
             except.each { |attribute_name| attributes.delete(attribute_name) }
@@ -2214,7 +2232,7 @@ module ActiveRecord #:nodoc:
       # Returns +true+ if the record is read only. Records loaded through joins with piggy-back
       # attributes will be marked as read only since they cannot be saved.
       def readonly?
-        @readonly == true
+        defined?(@readonly) && @readonly == true
       end
 
       # Marks this record as read only.
@@ -2335,11 +2353,11 @@ module ActiveRecord #:nodoc:
       # Returns a copy of the attributes hash where all the values have been safely quoted for use in
       # an SQL statement.
       def attributes_with_quotes(include_primary_key = true, include_readonly_attributes = true)
-        quoted = attributes.inject({}) do |quoted, (name, value)|
+        quoted = attributes.inject({}) do |result, (name, value)|
           if column = column_for_attribute(name)
-            quoted[name] = quote_value(value, column) unless !include_primary_key && column.primary
+            result[name] = quote_value(value, column) unless !include_primary_key && column.primary
           end
-          quoted
+          result
         end
         include_readonly_attributes ? quoted : remove_readonly_attributes(quoted)
       end
@@ -2379,6 +2397,10 @@ module ActiveRecord #:nodoc:
       end
 
       # Includes an ugly hack for Time.local instead of Time.new because the latter is reserved by Time itself.
+      def instantiate_time_object(*values)
+        @@default_timezone == :utc ? Time.utc(*values) : Time.local(*values)
+      end
+
       def execute_callstack_for_multiparameter_attributes(callstack)
         errors = []
         callstack.each do |name, values|
@@ -2387,7 +2409,19 @@ module ActiveRecord #:nodoc:
             send(name + "=", nil)
           else
             begin
-              send(name + "=", Time == klass ? (@@default_timezone == :utc ? klass.utc(*values) : klass.local(*values)) : klass.new(*values))
+              value = if Time == klass
+                instantiate_time_object(*values)
+              elsif Date == klass
+                begin
+                  Date.new(*values)
+                rescue ArgumentError => ex # if Date.new raises an exception on an invalid date
+                  instantiate_time_object(*values).to_date # we instantiate Time object and convert it back to a date thus using Time's logic in handling invalid dates
+                end
+              else
+                klass.new(*values)
+              end
+
+              send(name + "=", value)
             rescue => ex
               errors << AttributeAssignmentError.new("error on assignment #{values.inspect} to #{name}", ex, name)
             end
@@ -2455,9 +2489,9 @@ module ActiveRecord #:nodoc:
       end
 
       def clone_attributes(reader_method = :read_attribute, attributes = {})
-        self.attribute_names.inject(attributes) do |attributes, name|
-          attributes[name] = clone_attribute_value(reader_method, name)
-          attributes
+        self.attribute_names.inject(attributes) do |attrs, name|
+          attrs[name] = clone_attribute_value(reader_method, name)
+          attrs
         end
       end
 

@@ -33,7 +33,11 @@ module ActionController
           elsif type.is_a?(Symbol) && @response.response_code == ActionController::StatusCodes::SYMBOL_TO_STATUS_CODE[type]
             assert_block("") { true } # to count the assertion
           else
-            assert_block(build_message(message, "Expected response to be a <?>, but was <?>", type, @response.response_code)) { false }
+            if @response.error?
+              assert_block(build_message(message, "Expected response to be a <?>, but was <?>\n<?>", type, @response.response_code, @response.template.instance_variable_get(:@exception).message)) { false }
+            else
+              assert_block(build_message(message, "Expected response to be a <?>, but was <?>", type, @response.response_code)) { false }
+            end
           end
         end
       end
@@ -91,7 +95,7 @@ module ActionController
                 value['controller'] = value['controller'].to_s
                 if key == :actual && value['controller'].first != '/' && !value['controller'].include?('/')
                   new_controller_path = ActionController::Routing.controller_relative_to(value['controller'], @controller.class.controller_path)
-                  value['controller'] = new_controller_path if value['controller'] != new_controller_path && ActionController::Routing.possible_controllers.include?(new_controller_path)
+                  value['controller'] = new_controller_path if value['controller'] != new_controller_path && ActionController::Routing.possible_controllers.include?(new_controller_path) && @response.redirected_to.is_a?(Hash)
                 end
                 value['controller'] = value['controller'][1..-1] if value['controller'].first == '/' # strip leading hash
               end

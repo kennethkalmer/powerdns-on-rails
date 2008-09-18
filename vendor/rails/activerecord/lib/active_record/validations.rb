@@ -1,12 +1,12 @@
 module ActiveRecord
   # Raised by save! and create! when the record is invalid.  Use the
-  # record method to retrieve the record which did not validate.
+  # +record+ method to retrieve the record which did not validate.
   #   begin
   #     complex_operation_that_calls_save!_internally
   #   rescue ActiveRecord::RecordInvalid => invalid
   #     puts invalid.record.errors
   #   end
-  class RecordInvalid < ActiveRecordError #:nodoc:
+  class RecordInvalid < ActiveRecordError
     attr_reader :record
     def initialize(record)
       @record = record
@@ -633,7 +633,7 @@ module ActiveRecord
       #
       # Because this check is performed outside the database there is still a chance that duplicate values
       # will be inserted in two parallel transactions.  To guarantee against this you should create a 
-      # unique index on the field. See +create_index+ for more information.
+      # unique index on the field. See +add_index+ for more information.
       #
       # Configuration options:
       # * <tt>message</tt> - Specifies a custom error message (default is: "has already been taken")
@@ -707,6 +707,8 @@ module ActiveRecord
       #
       # Configuration options:
       # * <tt>message</tt> - A custom error message (default is: "is invalid")
+      # * <tt>allow_nil</tt> - If set to true, skips this validation if the attribute is null (default is: false)
+      # * <tt>allow_blank</tt> - If set to true, skips this validation if the attribute is blank (default is: false)
       # * <tt>with</tt> - The regular expression used to validate the format with (note: must be supplied!)
       # * <tt>on</tt> Specifies when this validation is active (default is :save, other options :create, :update)
       # * <tt>if</tt> - Specifies a method, proc or string to call to determine if the validation should

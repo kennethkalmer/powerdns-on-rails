@@ -217,7 +217,7 @@ module ActionView
       #     <script type="text/javascript" src="/javascripts/cart.js"></script>
       #     <script type="text/javascript" src="/javascripts/checkout.js"></script>
       #
-      #   javascript_include_tag "prototype", "cart", "checkout", :cache => "shop" # when ActionController::Base.perform_caching is false =>
+      #   javascript_include_tag "prototype", "cart", "checkout", :cache => "shop" # when ActionController::Base.perform_caching is true =>
       #     <script type="text/javascript" src="/javascripts/shop.js"></script>
       def javascript_include_tag(*sources)
         options = sources.extract_options!.stringify_keys
@@ -435,9 +435,11 @@ module ActionView
               else
                 source = "/#{dir}/#{source}" unless source[0] == ?/
                 if has_request
-                  source = "#{@controller.request.relative_url_root}#{source}"
+                  unless source =~ %r{^#{@controller.request.relative_url_root}/}
+                    source = "#{@controller.request.relative_url_root}#{source}"
+                  end
                 end
-                rewrite_asset_path!(source)
+                source = rewrite_asset_path(source)
 
                 if include_host
                   host = compute_asset_host(source)
@@ -484,11 +486,15 @@ module ActionView
           end
         end
 
-        # Break out the asset path rewrite so you wish to put the asset id
+        # Break out the asset path rewrite in case plugins wish to put the asset id
         # someplace other than the query string.
-        def rewrite_asset_path!(source)
+        def rewrite_asset_path(source)
           asset_id = rails_asset_id(source)
-          source << "?#{asset_id}" if !asset_id.blank?
+          if asset_id.blank?
+            source
+          else
+            source + "?#{asset_id}"
+          end
         end
 
         def javascript_src_tag(source, options)

@@ -346,7 +346,7 @@ module ActiveRecord
           # There are some incorrectly compiled postgres drivers out there
           # that don't define PGconn.escape.
           self.class.instance_eval do
-            undef_method(:quote_string)
+            remove_method(:quote_string)
           end
         end
         quote_string(s)
@@ -386,8 +386,8 @@ module ActiveRecord
 
       # Executes an INSERT query and returns the new record's ID
       def insert(sql, name = nil, pk = nil, id_value = nil, sequence_name = nil)
-        table = sql.split(" ", 4)[2]
-        super || last_insert_id(table, sequence_name || default_sequence_name(table, pk))
+        table = sql.split(" ", 4)[2].gsub('"', '')
+        super || pk && last_insert_id(table, sequence_name || default_sequence_name(table, pk))
       end
 
       # Queries the database and returns the results in an Array or nil otherwise.

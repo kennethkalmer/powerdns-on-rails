@@ -3,9 +3,15 @@ require 'active_support/test_case'
 module ActionController
   class NonInferrableControllerError < ActionControllerError
     def initialize(name)
+      @name = name
       super "Unable to determine the controller to test from #{name}. " +
         "You'll need to specify it using 'tests YourController' in your " +
-        "test case definition"
+        "test case definition. This could mean that #{inferred_controller_name} does not exist " +
+        "or it contains syntax errors"
+    end
+
+    def inferred_controller_name
+      @name.sub(/Test$/, '')
     end
   end
 
@@ -44,10 +50,24 @@ module ActionController
       end
     end
 
-    def setup
+    def setup_with_controller
       @controller = self.class.controller_class.new
       @request    = TestRequest.new
       @response   = TestResponse.new
     end
-  end
+    alias_method :setup, :setup_with_controller
+
+    def self.method_added(method)
+      if method.to_s == 'setup'
+        unless method_defined?(:setup_without_controller)
+          alias_method :setup_without_controller, :setup
+          define_method(:setup) do
+            setup_with_fixtures if respond_to?(:setup_with_fixtures)
+            setup_with_controller
+            setup_without_controller
+          end
+        end
+      end
+    end
+ end
 end

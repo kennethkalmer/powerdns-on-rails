@@ -124,6 +124,18 @@ class ActionPackAssertionsController < ActionController::Base
   def rescue_action(e) raise; end
 end
 
+# Used to test that assert_response includes the exception message
+# in the failure message when an action raises and assert_response
+# is expecting something other than an error.
+class AssertResponseWithUnexpectedErrorController < ActionController::Base
+  def index
+    raise 'FAIL'
+  end
+end
+
+class UserController < ActionController::Base
+end
+
 module Admin
   class InnerModuleController < ActionController::Base
     def index
@@ -161,7 +173,7 @@ class ActionPackAssertionsControllerTest < Test::Unit::TestCase
   # let's get this party started
   def setup
     ActionController::Routing::Routes.reload
-    ActionController::Routing.use_controllers!(%w(action_pack_assertions admin/inner_module content admin/user))
+    ActionController::Routing.use_controllers!(%w(action_pack_assertions admin/inner_module user content admin/user))
     @controller = ActionPackAssertionsController.new
     @request, @response = ActionController::TestRequest.new, ActionController::TestResponse.new
   end
@@ -255,7 +267,7 @@ class ActionPackAssertionsControllerTest < Test::Unit::TestCase
       assert_redirected_to admin_inner_module_path
     end
   end
-  
+
   def test_assert_redirected_to_top_level_named_route_from_nested_controller
     with_routing do |set|
       set.draw do |map|
@@ -266,6 +278,20 @@ class ActionPackAssertionsControllerTest < Test::Unit::TestCase
       process :redirect_to_top_level_named_route
       # passes -> assert_redirected_to "http://test.host/action_pack_assertions/foo"
       assert_redirected_to "/action_pack_assertions/foo"
+    end
+  end
+
+
+  def test_assert_redirected_to_top_level_named_route_with_same_controller_name_in_both_namespaces
+    with_routing do |set|
+      set.draw do |map|
+        # this controller exists in the admin namespace as well which is the only difference from previous test
+        map.top_level '/user/:id', :controller => 'user', :action => 'index'
+        map.connect   ':controller/:action/:id'
+      end
+      @controller = Admin::InnerModuleController.new
+      process :redirect_to_top_level_named_route
+      assert_redirected_to "/user/foo"
     end
   end
 
@@ -464,6 +490,15 @@ class ActionPackAssertionsControllerTest < Test::Unit::TestCase
       assert false
     rescue Test::Unit::AssertionFailedError => e
     end
+  end
+
+  def test_assert_response_uses_exception_message
+    @controller = AssertResponseWithUnexpectedErrorController.new
+    get :index
+    assert_response :success
+    flunk 'Expected non-success response'
+  rescue Test::Unit::AssertionFailedError => e
+    assert e.message.include?('FAIL')
   end
 end
 

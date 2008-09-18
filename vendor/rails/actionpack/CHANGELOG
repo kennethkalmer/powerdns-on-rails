@@ -1,3 +1,48 @@
+*2.0.4* (2nd September 2008)
+
+* Avoid remote_ip spoofing.  [Brian Candler]
+
+* Correct inconsistencies in RequestForgeryProtection docs.  #11032 [mislav]
+
+* Make assert_routing aware of the HTTP method used.  #8039 [mpalmer]
+   e.g. assert_routing({ :method => 'put', :path => '/product/321' }, { :controller => "product", :action => "update", :id => "321" })
+
+* Remove ERB trim variables from trace template in case ActionView::Base.erb_trim_mode is changed in the application.  #10098 [tpope, kampers]
+
+* Fix typo in form_helper documentation.  #10650 [xaviershay, kampers]
+
+* Fix bug with setting Request#format= after the getter has cached the value.  #10889 [cch1]
+
+* Add label_tag helper for generating elements. #10802 [DefV]
+
+* TestSession supports indifferent access.  #7372 [tamc, Arsen7, mhackett, julik, jean.helou]
+
+* UrlWriter respects relative_url_root.  #10748 [Cheah Chu Yeow]
+
+* Support render :text => nil.  #6684 [tjennings, PotatoSalad, Cheah Chu Yeow]
+
+* assert_response failures include the exception message.  #10688 [Seth Rasmussen]
+
+* Fixed rendering of partials with layout when done from site layout #9209 [antramm]
+
+* Fix atom_feed_helper to comply with the atom spec.  Closes #10672 [xaviershay]
+
+  * The tags created do not contain a date (http://feedvalidator.org/docs/error/InvalidTAG.html)
+  * IDs are not guaranteed unique
+  * A default self link was not provided, contrary to the documentation
+  * NOTE:  This changes tags for existing atom entries, but at least they validate now.
+
+* Correct indentation in tests.  Closes #10671 [l.guidi]
+
+* Fix that auto_link looks for ='s in url paths (Amazon urls have them).  Closes #10640 [bgreenlee]
+
+* Ensure that test case setup is run even if overridden.  #10382 [Josh Peek]
+
+* Fix HTML Sanitizer to allow trailing spaces in CSS style attributes.  Closes #10566 [wesley.moxam]
+
+* Add :default option to time_zone_select.  #10590 [Matt Aimonetti]
+
+
 *2.0.2* (December 16th, 2007)
 
 * Added delete_via_redirect and put_via_redirect to integration testing #10497 [philodespotos]

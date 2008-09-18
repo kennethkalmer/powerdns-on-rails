@@ -14,7 +14,7 @@ module ActiveRecord
       def create(attributes = {})
         create_record(attributes) { |record| insert_record(record) }
       end
-      
+
       def create!(attributes = {})
         create_record(attributes) { |record| insert_record(record, true) }
       end
@@ -33,10 +33,10 @@ module ActiveRecord
 
           if ids.size == 1
             id = ids.first.to_i
-            record = load_target.detect { |record| id == record.id }
+            record = load_target.detect { |r| id == r.id }
             expects_array ? [record] : record
           else
-            load_target.select { |record| ids.include?(record.id) }
+            load_target.select { |r| ids.include?(r.id) }
           end
         else
           conditions = "#{@finder_sql}"
@@ -80,30 +80,30 @@ module ActiveRecord
           end
 
           if @reflection.options[:insert_sql]
-            @owner.connection.execute(interpolate_sql(@reflection.options[:insert_sql], record))
+            @owner.connection.insert(interpolate_sql(@reflection.options[:insert_sql], record))
           else
             columns = @owner.connection.columns(@reflection.options[:join_table], "#{@reflection.options[:join_table]} Columns")
 
-            attributes = columns.inject({}) do |attributes, column|
+            attributes = columns.inject({}) do |attrs, column|
               case column.name
                 when @reflection.primary_key_name
-                  attributes[column.name] = @owner.quoted_id
+                  attrs[column.name] = @owner.quoted_id
                 when @reflection.association_foreign_key
-                  attributes[column.name] = record.quoted_id
+                  attrs[column.name] = record.quoted_id
                 else
-                  if record.attributes.has_key?(column.name)
+                  if record.has_attribute?(column.name)
                     value = @owner.send(:quote_value, record[column.name], column)
-                    attributes[column.name] = value unless value.nil?
+                    attrs[column.name] = value unless value.nil?
                   end
               end
-              attributes
+              attrs
             end
 
             sql =
               "INSERT INTO #{@reflection.options[:join_table]} (#{@owner.send(:quoted_column_names, attributes).join(', ')}) " +
               "VALUES (#{attributes.values.join(', ')})"
 
-            @owner.connection.execute(sql)
+            @owner.connection.insert(sql)
           end
 
           return true
@@ -111,11 +111,11 @@ module ActiveRecord
 
         def delete_records(records)
           if sql = @reflection.options[:delete_sql]
-            records.each { |record| @owner.connection.execute(interpolate_sql(sql, record)) }
+            records.each { |record| @owner.connection.delete(interpolate_sql(sql, record)) }
           else
             ids = quoted_record_ids(records)
-            sql = "DELETE FROM #{@reflection.options[:join_table]} WHERE #{@reflection.primary_key_name} = #{@owner.quoted_id} AND #{@reflection.association_foreign_key} IN (#{ids})"
-            @owner.connection.execute(sql)
+            sql = "DELETE FROM #{@owner.connection.quote_table_name @reflection.options[:join_table]} WHERE #{@reflection.primary_key_name} = #{@owner.quoted_id} AND #{@reflection.association_foreign_key} IN (#{ids})"
+            @owner.connection.delete(sql)
           end
         end
 

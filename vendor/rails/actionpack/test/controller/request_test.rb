@@ -13,9 +13,17 @@ class RequestTest < Test::Unit::TestCase
     assert_equal '1.2.3.4', @request.remote_ip
 
     @request.env['HTTP_CLIENT_IP'] = '2.3.4.5'
+    assert_equal '1.2.3.4', @request.remote_ip
+
+    @request.remote_addr = '192.168.0.1'
     assert_equal '2.3.4.5', @request.remote_ip
     @request.env.delete 'HTTP_CLIENT_IP'
 
+    @request.remote_addr = '1.2.3.4'
+    @request.env['HTTP_X_FORWARDED_FOR'] = '3.4.5.6'
+    assert_equal '1.2.3.4', @request.remote_ip
+
+    @request.remote_addr = '127.0.0.1'
     @request.env['HTTP_X_FORWARDED_FOR'] = '3.4.5.6'
     assert_equal '3.4.5.6', @request.remote_ip
 
@@ -35,10 +43,23 @@ class RequestTest < Test::Unit::TestCase
     assert_equal '3.4.5.6', @request.remote_ip
 
     @request.env['HTTP_X_FORWARDED_FOR'] = '127.0.0.1,3.4.5.6'
-    assert_equal '127.0.0.1', @request.remote_ip
+    assert_equal '3.4.5.6', @request.remote_ip
 
     @request.env['HTTP_X_FORWARDED_FOR'] = 'unknown,192.168.0.1'
-    assert_equal '1.2.3.4', @request.remote_ip
+    assert_equal 'unknown', @request.remote_ip
+
+    @request.env['HTTP_X_FORWARDED_FOR'] = '9.9.9.9, 3.4.5.6, 10.0.0.1, 172.31.4.4'
+    assert_equal '3.4.5.6', @request.remote_ip
+
+    @request.env['HTTP_CLIENT_IP'] = '8.8.8.8'
+    e = assert_raises(ActionController::ActionControllerError) {
+      @request.remote_ip
+    }
+    assert_match /IP spoofing attack/, e.message
+    assert_match /HTTP_X_FORWARDED_FOR="9.9.9.9, 3.4.5.6, 10.0.0.1, 172.31.4.4"/, e.message
+    assert_match /HTTP_CLIENT_IP="8.8.8.8"/, e.message
+
+    @request.env.delete 'HTTP_CLIENT_IP'
     @request.env.delete 'HTTP_X_FORWARDED_FOR'
   end
 
@@ -369,6 +390,13 @@ class RequestTest < Test::Unit::TestCase
   def test_content_type
     @request.env["CONTENT_TYPE"] = "text/html"
     assert_equal Mime::HTML, @request.content_type
+  end
+
+  def test_format_assignment_should_set_format
+    @request.instance_eval { self.format = :txt }
+    assert !@request.format.xml?
+    @request.instance_eval { self.format = :xml }
+    assert @request.format.xml?
   end
 
   def test_content_no_type
@@ -789,7 +817,7 @@ end
 
 class XmlParamsParsingTest < Test::Unit::TestCase
   def test_single_file
-    person = parse_body("<person><name>David</name><avatar type='file' name='me.jpg' content_type='image/jpg'>#{Base64.encode64('ABC')}</avatar></person>")
+    person = parse_body("<person><name>David</name><avatar type='file' name='me.jpg' content_type='image/jpg'>#{ActiveSupport::Base64.encode64('ABC')}</avatar></person>")
 
     assert_equal "image/jpg", person['person']['avatar'].content_type
     assert_equal "me.jpg", person['person']['avatar'].original_filename
@@ -801,8 +829,8 @@ class XmlParamsParsingTest < Test::Unit::TestCase
       <person>
         <name>David</name>
         <avatars>
-          <avatar type='file' name='me.jpg' content_type='image/jpg'>#{Base64.encode64('ABC')}</avatar>
-          <avatar type='file' name='you.gif' content_type='image/gif'>#{Base64.encode64('DEF')}</avatar>
+          <avatar type='file' name='me.jpg' content_type='image/jpg'>#{ActiveSupport::Base64.encode64('ABC')}</avatar>
+          <avatar type='file' name='you.gif' content_type='image/gif'>#{ActiveSupport::Base64.encode64('DEF')}</avatar>
         </avatars>
       </person>
     end_body

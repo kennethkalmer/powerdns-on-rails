@@ -310,26 +310,26 @@ HELP
             logger.exists relative_path
           else
             logger.create relative_path
-	    unless options[:pretend]
-	      FileUtils.mkdir_p(path)
+	          unless options[:pretend]
+	            FileUtils.mkdir_p(path)
 	      
-	      # Subversion doesn't do path adds, so we need to add
-	      # each directory individually.
-	      # So stack up the directory tree and add the paths to
-	      # subversion in order without recursion.
-	      if options[:svn]
-		stack=[relative_path]
-		until File.dirname(stack.last) == stack.last # dirname('.') == '.'
-		  stack.push File.dirname(stack.last)
-		end
-		stack.reverse_each do |rel_path|
-		  svn_path = destination_path(rel_path)
-		  system("svn add -N #{svn_path}") unless File.directory?(File.join(svn_path, '.svn'))
-		end
-	      end
-	    end
-	  end
-	end
+	            # Subversion doesn't do path adds, so we need to add
+	            # each directory individually.
+	            # So stack up the directory tree and add the paths to
+	            # subversion in order without recursion.
+	            if options[:svn]
+		            stack=[relative_path]
+		            until File.dirname(stack.last) == stack.last # dirname('.') == '.'
+		              stack.push File.dirname(stack.last)
+		            end
+		            stack.reverse_each do |rel_path|
+		              svn_path = destination_path(rel_path)
+		              system("svn add -N #{svn_path}") unless File.directory?(File.join(svn_path, '.svn'))
+		            end
+	            end
+            end
+          end
+        end
 
         # Display a README.
         def readme(*relative_sources)
@@ -391,7 +391,7 @@ end_message
             raise UsageError, message
           end
 
-          SYNONYM_LOOKUP_URI = "http://wordnet.princeton.edu/cgi-bin/webwn2.0?stage=2&word=%s&posnumber=1&searchtypenumber=2&senses=&showglosses=1"
+          SYNONYM_LOOKUP_URI = "http://wordnet.princeton.edu/perl/webwn?s=%s"
 
           # Look up synonyms on WordNet.  Thanks to Florian Gross (flgr).
           def find_synonyms(word)
@@ -399,8 +399,8 @@ end_message
             require 'timeout'
             timeout(5) do
               open(SYNONYM_LOOKUP_URI % word) do |stream|
-                data = stream.read.gsub("&nbsp;", " ").gsub("<BR>", "")
-                data.scan(/^Sense \d+\n.+?\n\n/m)
+                # Grab words linked to dictionary entries as possible synonyms
+                data = stream.read.gsub("&nbsp;", " ").scan(/<a href="webwn.*?">([\w ]*?)<\/a>/s).uniq
               end
             end
           rescue Exception

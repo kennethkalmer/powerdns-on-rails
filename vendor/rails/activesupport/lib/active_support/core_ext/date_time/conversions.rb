@@ -1,9 +1,9 @@
 module ActiveSupport #:nodoc:
   module CoreExtensions #:nodoc:
     module DateTime #:nodoc:
-      # Getting datetimes in different convenient string representations and other objects
+      # Converting datetimes to formatted strings, dates, and times.
       module Conversions
-        def self.included(base)
+        def self.included(base) #:nodoc:
           base.class_eval do
             alias_method :to_datetime_default_s, :to_s
             alias_method :to_s, :to_formatted_s
@@ -15,11 +15,10 @@ module ActiveSupport #:nodoc:
             remove_method :to_time if base.instance_methods.include?(:to_time)
           end
         end
-        
-        # Convert to a formatted string - see DATE_FORMATS for predefined formats.
-        # You can also add your own formats to the DATE_FORMATS constant and use them with this method.
+
+        # Convert to a formatted string. See Time::DATE_FORMATS for predefined formats.
         # 
-        # This method is also aliased as <tt>to_s</tt>.
+        # This method is aliased to <tt>to_s</tt>.
         # 
         # === Examples:
         #   datetime = DateTime.civil(2007, 12, 4, 0, 0, 0, 0)   # => Tue, 04 Dec 2007 00:00:00 +0000
@@ -31,6 +30,16 @@ module ActiveSupport #:nodoc:
         #   datetime.to_formatted_s(:long)          # => "December 04, 2007 00:00"
         #   datetime.to_formatted_s(:long_ordinal)  # => "December 4th, 2007 00:00"
         #   datetime.to_formatted_s(:rfc822)        # => "Tue, 04 Dec 2007 00:00:00 +0000"
+        #
+        # == Adding your own datetime formats to to_formatted_s
+        # DateTime formats are shared with Time. You can add your own to the
+        # Time::DATE_FORMATS hash. Use the format name as the hash key and
+        # either a strftime string or Proc instance that takes a time or
+        # datetime argument as the value.
+        #
+        #   # config/initializers/time_formats.rb
+        #   Time::DATE_FORMATS[:month_and_year] = "%B %Y"
+        #   Time::DATE_FORMATS[:short_ordinal] = lambda { |time| time.strftime("%B #{time.day.ordinalize}") }
         def to_formatted_s(format = :default)
           if formatter = ::Time::DATE_FORMATS[format]
             if formatter.respond_to?(:call)
