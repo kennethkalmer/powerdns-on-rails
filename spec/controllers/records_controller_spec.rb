@@ -1,7 +1,7 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
 describe RecordsController, "and non-SOA records" do
-  fixtures :users, :domains
+  fixtures :users, :domains, :records
   
   before( :each ) do
     session[:user_id] = users( :admin ).id
@@ -82,10 +82,7 @@ describe RecordsController, "and non-SOA records" do
   end
   
   it "should destroy when requested to do so" do
-    record = Record.new
-    @domain.records.expects( :find ).with( '1' ).returns( record )
-    
-    delete :destroy, :domain_id => @domain.id, :id => '1'
+    delete :destroy, :domain_id => @domain.id, :id => records(:example_com_mx).id
     
     response.should be_redirect
     response.should redirect_to( domain_path( @domain ) )
