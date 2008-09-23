@@ -10,6 +10,9 @@ class ApplicationController < ActionController::Base
   # gives you the require_role helpers, and others.
   include RoleRequirementSystem
 
+  # Enable audits
+  audit Domain, Record
+  
   helper :all # include all helpers, all the time
 
   # See ActionController::RequestForgeryProtection for details Uncomment the

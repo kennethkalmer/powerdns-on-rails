@@ -1,7 +1,6 @@
 class RecordsController < ApplicationController
   
   require_role [ "admin", "owner" ]
-  audit Domain, Record
   
   before_filter :get_zone
   

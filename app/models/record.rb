@@ -22,6 +22,9 @@ class Record < ActiveRecord::Base
   # implemented in #SOA
   attr_accessor :primary_ns, :contact, :refresh, :retry, :expire, :minimum
   
+  before_save :update_change_date
+  after_save  :update_soa_serial
+  
   class << self
     
     # Restrict the SOA serial number updates to just one during the execution
@@ -53,11 +56,11 @@ class Record < ActiveRecord::Base
   end
   
   # Update the change date for automatic serial number generation
-  def before_save
+  def update_change_date
     self.change_date = Time.now.to_i
   end
   
-  def after_save #:nodoc:
+  def update_soa_serial #:nodoc:
     unless self.type == 'SOA' || @serial_updated 
       self.domain.soa_record.update_serial!
       @serial_updated = true

@@ -68,19 +68,21 @@ class ZoneTemplate < ActiveRecord::Base
       Domain::SOA_FIELDS.each do |f|
         domain.send( "#{f}=", built_soa_template.send( f ) )
       end
-      
+
       # save the zone or die
       domain.save!
-      
+
       # get the templates
       templates = record_templates.dup
       
-      # now build the remaining records according to the templates
-      templates.delete( soa_template )
-      templates.each do |template|
-        record = template.build( domain_name )
-        record.domain = domain
-        record.save!
+      Record.batch do
+        # now build the remaining records according to the templates
+        templates.delete( soa_template )
+        templates.each do |template|
+          record = template.build( domain_name )
+          record.domain = domain
+          record.save!
+        end
       end
     end
     

@@ -2,8 +2,6 @@ class DomainsController < ApplicationController
   
   require_role [ "admin", "owner" ]
   
-  audit Domain, Record
-  
   def index
     @domains = Domain.paginate :page => params[:page], :user => current_user, :order => 'name'
   end
