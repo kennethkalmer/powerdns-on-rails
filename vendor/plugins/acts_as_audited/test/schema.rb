@@ -13,6 +13,11 @@ ActiveRecord::Schema.define(:version => 0) do
     t.column :name, :string
   end
   
+  create_table :branches, :force => true do |t|
+    t.column :company_id, :integer
+    t.column :name, :string
+  end
+  
   create_table :authors, :force => true do |t|
     t.column :name, :string
   end

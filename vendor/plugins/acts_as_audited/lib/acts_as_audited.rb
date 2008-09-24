@@ -155,6 +155,14 @@ module CollectiveIdea #:nodoc:
             :order => "created_at DESC")
           revision_with changes_from(audit.version) if audit
         end
+        
+        # Return the current revision of the instance.
+        def current_revision
+          @current_revision ||= (
+            audit = audits.find(:first, :select => 'version')
+            audit ? audit.version : 1
+          )
+        end
 
       private
       

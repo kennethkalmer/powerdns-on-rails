@@ -26,6 +26,10 @@ class User < ActiveRecord::Base
   acts_as_audited :except => :password
 end
 class Company < ActiveRecord::Base
+  has_many :branches
+end
+class Branch < ActiveRecord::Base
+  belongs_to :company
 end
 
 class Test::Unit::TestCase #:nodoc:
