@@ -234,4 +234,21 @@ class ActsAsAuditedTest < Test::Unit::TestCase
     assert_nothing_raised { AccessibleUser.new(:name => 'NO FAIL!') }
   end
   
+  # Test parent tracking
+  class ::Author < ActiveRecord::Base
+    has_many :books
+  end
+  class ::Book < ActiveRecord::Base
+    belongs_to :author
+    acts_as_audited :parent => :author
+  end
+  def test_track_parent_enabled
+    assert_respond_to( Author.new, :book_audits )
+  end
+  def test_track_parent_in_child_audit
+    a = Author.create!( :name => 'Kenneth Kalmer' )
+    b = Book.create!( :title => 'Open Sourcery 101', :author => a )
+    assert_equal a, b.audits.first.auditable_parent
+    assert_equal b, a.book_audits.first.auditable
+  end
 end
