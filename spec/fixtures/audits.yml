@@ -1,0 +1,14 @@
+example_com_erronous_a_removed:
+  auditable: example_com_a_gone
+  auditable_type: A
+  auditable_parent: example_com
+  auditable_parent_type: Domain
+  user: admin
+  user_type: User
+  action: destroy
+  changes:
+    name: local
+    domain_id: <%= Fixtures.identify(:example_com) %>
+    type: A
+    content: 127.0.0.1
+  version: 1

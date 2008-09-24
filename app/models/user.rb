@@ -21,6 +21,7 @@ class User < ActiveRecord::Base
   has_and_belongs_to_many :roles
   has_many :domains, :dependent => :nullify
   has_many :zone_templates, :dependent => :nullify
+  has_many :audits, :as => :user
   
   acts_as_state_machine :initial => :active
   state :active, :enter => :do_activate
@@ -38,6 +39,8 @@ class User < ActiveRecord::Base
   event :delete do
     transitions :from => [:suspended, :active], :to => :deleted
   end
+  
+  after_destroy :persist_audits
 
   class << self
     
@@ -140,5 +143,12 @@ class User < ActiveRecord::Base
       @activated = true
       self.activated_at = Time.now.utc
       self.deleted_at = self.activation_code = nil
+    end
+    
+    def persist_audits
+      Audit.update_all( 
+        "username = \"#{self.login}\"", 
+        [ 'user_type = ? AND user_id = ?', self.class.class_name, self.id ] 
+      )
     end
 end

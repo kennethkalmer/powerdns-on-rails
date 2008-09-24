@@ -216,3 +216,21 @@ describe User, "and roles" do
     end
   end
 end
+
+describe User, "and audits" do
+  fixtures :all
+  
+  it "should have username persisted in audits when removed" do
+    audit = audits(:example_com_erronous_a_removed)
+    admin = users(:admin)
+    
+    audit.user.should eql( admin )
+    audit.username.should be_nil
+    
+    admin.destroy
+    audit.reload
+    
+    audit.user.should eql( 'admin' ) 
+    audit.username.should eql('admin')
+  end
+end
