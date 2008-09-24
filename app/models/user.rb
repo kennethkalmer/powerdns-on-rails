@@ -118,7 +118,7 @@ class User < ActiveRecord::Base
       value
     end
   end
-
+  
   protected
     # before filter 
     def encrypt_password

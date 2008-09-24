@@ -37,6 +37,14 @@ class Record < ActiveRecord::Base
       self.batch_soa_updates = nil
     end
     
+    # Make some ammendments to the acts_as_audited assumptions
+    def configure_audits
+      defaults = [ non_audited_columns ].flatten
+      defaults.delete( inheritance_column )
+      defaults.push( :change_date )
+      write_inheritable_attribute :non_audited_columns, defaults.flatten.map(&:to_s)
+    end
+    
   end
   
   def shortname
@@ -65,6 +73,11 @@ class Record < ActiveRecord::Base
       self.domain.soa_record.update_serial!
       @serial_updated = true
     end
+  end
+  
+  # Force acts_as_audited to record all attributes when a record is destroyed
+  def audit_destroy(user = nil)
+    write_audit(:action => 'destroy', :auditable_parent => auditable_parent, :changes => audited_attributes, :user => user)
   end
   
   private

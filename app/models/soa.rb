@@ -76,8 +76,10 @@ class SOA < Record
   
   # Same as #update_serial and saves the record
   def update_serial!
-    update_serial
-    save
+    without_auditing do
+      update_serial
+      save
+    end
   end
   
   def before_update #:nodoc:

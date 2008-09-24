@@ -4,23 +4,18 @@ describe RecordsController, "and non-SOA records" do
   fixtures :users, :domains, :records
   
   before( :each ) do
-    session[:user_id] = users( :admin ).id
+    login_as(:admin)
+    
     @domain = domains( :example_com )
-    Domain.expects( :find ).with( @domain.id.to_s, :user => users( :admin ) ).returns( @domain )
   end
   
   it "should create when valid" do
-    record = Record.new
-    
     params = {
       'name' => '',
       'ttl' => '86400',
       'type' => 'NS',
       'content' => 'n3.example.com'
     }
-    
-    @domain.ns_records.expects( :new ).with( params ).returns( record )
-    record.expects( :save ).returns( true )
     
     post :create, :domain_id => @domain.id, :record => params
     
@@ -29,17 +24,12 @@ describe RecordsController, "and non-SOA records" do
   end
   
   it "shouldn't save when invalid" do
-    record = Record.new
-    
     params = {  
       'name' => "", 
       'ttl' => "864400", 
       'type' => "NS", 
-      'content' => "n3.example.com"
+      'content' => ""
     }
-    
-    @domain.ns_records.expects( :new ).with( params ).returns( record )
-    record.expects( :save ).returns( false )
     
     post :create, :domain_id => @domain.id, :record => params
     
@@ -47,7 +37,7 @@ describe RecordsController, "and non-SOA records" do
   end
   
   it "should update when valid" do
-    record = Record.new
+    record = records(:example_com_ns_ns2)
     
     params = {  
       'name' => "", 
@@ -56,26 +46,25 @@ describe RecordsController, "and non-SOA records" do
       'content' => "n4.example.com"
     }
     
-    record.expects( :save ).returns( true )
-    @domain.records.expects( :find ).with( '1' ).returns( record )
+    put :update, :id => record.id, :domain_id => @domain.id, :record => params
     
-    put :update, :id => '1', :domain_id => @domain.id, :record => params
+    response.should render_template("update")
   end
   
   it "shouldn't update when invalid" do
-    record = Record.new
+    record = records(:example_com_ns_ns2)
     
     params = {  
       'name' => "@", 
       'ttl' => '',
       'type' => "NS", 
-      'content' => "n4.example.com"
+      'content' => ""
     }
     
-    record.expects( :save ).returns( false )
-    @domain.records.expects( :find ).with( '1' ).returns( record )
-    
-    put :update, :id => '1', :domain_id => @domain.id, :record => params
+    lambda {
+      put :update, :id => record.id, :domain_id => @domain.id, :record => params
+      record.reload
+    }.should_not change( record, :content )
     
     response.should_not be_redirect
     response.should render_template( "edit" )

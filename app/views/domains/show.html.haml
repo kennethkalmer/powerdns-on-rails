@@ -13,6 +13,8 @@
     Edit the domains's current note
   #delete-zone
     Permantly remove this domain from the system
+  #audits
+    Views the audits/history for this domain
   #change-owner
     Change or remove the owner of this domain
   #help-primary-ns
@@ -49,7 +51,9 @@
     %tr
       %td Domain
       %td= @domain.name
-      %td= link_to prototip_info_icon('database_delete.png', 'delete-zone'), domain_path( @domain ), :method => :delete, :confirm => "Are you sure you want to remove #{@domain.name}?"
+      %td
+        = link_to prototip_info_icon('report_magnify.png', 'audits'), audits_path(:action => :domain, :id => @domain)
+        = link_to prototip_info_icon('database_delete.png', 'delete-zone'), domain_path( @domain ), :method => :delete, :confirm => "Are you sure you want to remove #{@domain.name}?"
     - if current_user.admin?
       %tr
         %td Owner

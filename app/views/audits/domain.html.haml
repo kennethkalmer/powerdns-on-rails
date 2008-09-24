@@ -1,0 +1,35 @@
+%h1.underline
+  Audit information for
+  = link_to @domain.name, domain_path(@domain)
+
+%p
+  You can click on any revision number on the lists below to see the details
+  of the revision
+
+%h2.underline Domain Revisions
+
+- if @domain.audits.size > 0
+  %ul
+    = render :partial => 'domain_audit', :collection => sort_audits_by_date( @domain.audits )
+- else
+  %p
+    %em No revisions found for the domain.
+
+%h2.underline RR Revisions
+
+- if @domain.record_audits.size > 0
+  %p Revisions below sorted in reverse chronoligical order.
+
+  %ul
+    = render :partial => 'record_audit', :collection => sort_audits_by_date( @domain.record_audits )
+- else
+  %p
+    %em No revisions found for any resource records of the domain.
+
+:javascript
+  function toggleDomainAudit(id){
+    $('audit_' + id).toggle();
+  }
+  function toggleRecordAudit(id){
+    $('audit_' + id).toggle();
+  }

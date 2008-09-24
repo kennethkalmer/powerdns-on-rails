@@ -1,0 +1,10 @@
+%li
+  = link_to_record_audit( record_audit )
+  %div[ record_audit ]{ :style => 'display: none' }
+    %strong Time:
+    = record_audit.created_at
+    %br
+    %strong Changes:
+    %br
+    = display_hash record_audit.changes
+  

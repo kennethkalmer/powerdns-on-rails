@@ -42,6 +42,9 @@ ActionController::Routing::Routes.draw do |map|
   map.resources :zone_templates, :controller => 'templates'
   map.resources :record_templates
   
+  # Audits
+  map.audits '/audits/:action/:id', :controller => 'audits', :action => 'index'
+  
   # Authentication routes
   map.resources :users, :member => { :suspend   => :put,
                                      :unsuspend => :put,

@@ -6,7 +6,7 @@
 &nbsp;
 %h1 Search
 
-- form_tag( { :controller => :search, :action => :results }, { :method => :get } ) do |f|
+- form_tag( { :controller => :search, :action => :results }, { :method => :get } ) do
   = text_field_tag :q
   = submit_tag "Search"
 
