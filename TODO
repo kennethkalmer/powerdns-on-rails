@@ -19,9 +19,12 @@ http://kennethkalmer.lighthouseapp.com/projects/11831-bind-dlz-on-rails/
 
 * User management                           [ moving target ]
 * DNS Insight                               [ started ]
-* API improvements
+* API improvements                          [ moving target ]
 * Deployment instructions directly from GitHub
+  * mod_passenger installation
+  * simple git clone and future git pull's
 * Import scripts for standard zone files and PowerDNS
+* Authentication tokens for one-time access
 
 == 0.3
 
