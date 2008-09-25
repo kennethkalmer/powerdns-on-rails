@@ -12,6 +12,7 @@ module AuditsHelper
   
   def link_to_record_audit( audit )
     caption = audit.changes['type']
+    caption ||= audit.auditable.type rescue '[UNKNOWN]'
     caption += " (#{audit.changes['name']})" unless audit.changes['name'].nil?
     caption += " #{audit.version} #{audit.action} by "
     caption += (audit.user ? audit.user.login : audit.username)
