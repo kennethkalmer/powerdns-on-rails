@@ -131,3 +131,26 @@ describe AuthToken, "and permissions" do
     @auth_token.can_change?( records(:example_com_soa) ).should be_false
   end
 end
+
+describe AuthToken, "and authentication" do
+  fixtures :auth_tokens
+  
+  before(:each) do
+    @auth_token = auth_tokens(:token_example_com)
+  end
+  
+  it "should authenticate current tokens" do
+    AuthToken.authenticate( '5zuld3g9dv76yosy' ).should eql( @auth_token )
+  end
+  
+  it "should not authenticate expired tokens" do
+    AuthToken.authenticate( 'invalid' ).should be_nil
+  end
+  
+  it "should have an easy way to test if it expired" do
+    @auth_token.should_not be_expired
+    @auth_token.expire
+    @auth_token.expires_at.should <( Time.now )
+    @auth_token.should be_expired
+  end
+end

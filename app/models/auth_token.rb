@@ -22,6 +22,13 @@ class AuthToken < ActiveRecord::Base
       Array.new( 16, '' ).collect{ chars[ rand(chars.size) ] }.join
     end
     
+    def authenticate( token )
+      t = find_by_token( token )
+      
+      unless t.nil? || t.expires_at < Time.now
+        return t
+      end
+    end
   end
   
   def after_initialize #:nodoc:
@@ -122,6 +129,15 @@ class AuthToken < ActiveRecord::Base
     
     # Default policy
     return @permissions['policy'] == 'allow'
+  end
+  
+  # Force the token to expire
+  def expire
+    update_attribute :expires_at, 1.minute.ago
+  end
+  
+  def expired?
+    self.expires_at <= Time.now
   end
   
   private
