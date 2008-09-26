@@ -140,6 +140,11 @@ class AuthToken < ActiveRecord::Base
     self.expires_at <= Time.now
   end
   
+  # A token can only have the token role...
+  def has_role?( role_in_question )
+    role_in_question == 'token'
+  end
+  
   private
   
   def get_name_from_param( record )

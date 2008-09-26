@@ -153,4 +153,9 @@ describe AuthToken, "and authentication" do
     @auth_token.expires_at.should <( Time.now )
     @auth_token.should be_expired
   end
+  
+  it "should correctly report the 'token' role" do
+    @auth_token.has_role?('token').should be_true
+    @auth_token.has_role?('admin').should be_false
+  end
 end
