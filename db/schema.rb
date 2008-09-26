@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 9) do
+ActiveRecord::Schema.define(:version => 10) do
 
   create_table "audits", :force => true do |t|
     t.integer  "auditable_id"
@@ -29,6 +29,16 @@ ActiveRecord::Schema.define(:version => 9) do
   add_index "audits", ["auditable_parent_id", "auditable_parent_type"], :name => "auditable_parent_index"
   add_index "audits", ["user_id", "user_type"], :name => "user_index"
   add_index "audits", ["created_at"], :name => "index_audits_on_created_at"
+
+  create_table "auth_tokens", :force => true do |t|
+    t.integer  "domain_id"
+    t.integer  "user_id"
+    t.string   "token",       :null => false
+    t.text     "permissions", :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.datetime "expires_at",  :null => false
+  end
 
   create_table "domains", :force => true do |t|
     t.string   "name"
