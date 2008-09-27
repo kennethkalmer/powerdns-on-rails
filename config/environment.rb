@@ -9,6 +9,7 @@ RAILS_GEM_VERSION = '2.0.4' unless defined? RAILS_GEM_VERSION
 
 # Bootstrap the Rails environment, frameworks, and default configuration
 require File.join(File.dirname(__FILE__), 'boot')
+require 'yaml'
 
 Rails::Initializer.run do |config|
   # Settings in config/environments/* take precedence over those specified here.
@@ -39,9 +40,10 @@ Rails::Initializer.run do |config|
   # If you change this key, all old sessions will become invalid!
   # Make sure the secret is at least 30 characters and all random, 
   # no regular words or you'll be exposed to dictionary attacks.
+  db_cfg = YAML::load_file( File.join(RAILS_ROOT, 'config', 'database.yml') )
   config.action_controller.session = {
-    :session_key => '_bind-dlz-on-rails_session',
-    :secret      => 'a11676991448e5fbf9cd0849fc4dbf143fbf5ec17a7d3d555d7f8daddda7189f1c0a348b37fa5acfc74db9184448219d44b9c062b12d26832e5c9af610775b51'
+    :session_key => db_cfg[RAILS_ENV]['session_key'],
+    :secret      => db_cfg[RAILS_ENV]['session_secret']
   }
 
   # Use the database for sessions instead of the cookie-based default,
