@@ -1,16 +1,23 @@
 class DomainsController < ApplicationController
   
-  require_role [ "admin", "owner" ]
+  require_role [ "admin", "owner" ], :unless => "token_user?"
+  
+  # Keep token users in line
+  before_filter :restrict_token_movements, :except => :show
   
   def index
     @domains = Domain.paginate :page => params[:page], :user => current_user, :order => 'name'
   end
   
   def show
-    @domain = Domain.find( params[:id], :include => :records )
-    @record = @domain.records.new
+    if current_user
+      @domain = Domain.find( params[:id], :user => current_user, :include => :records )
+      @users = User.active_owners if current_user.admin?
+    else
+      @domain = Domain.find( current_token.domain_id, :include => :records )
+    end
     
-    @users = User.active_owners
+    @record = @domain.records.new
   end
   
   def new
@@ -75,5 +82,11 @@ class DomainsController < ApplicationController
   def change_owner
     @domain = Domain.find( params[:id] )
     @domain.update_attribute :user_id, params[:domain][:user_id]
+  end
+  
+  private
+  
+  def restrict_token_movements
+    redirect_to domain_path( current_token.domain ) if current_token
   end
 end

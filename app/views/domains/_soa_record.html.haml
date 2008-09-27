@@ -17,3 +17,44 @@
   %tr
     %td Minimum
     %td= soa_record.minimum
+
+- if current_user
+  #soa-edit-form{ :style => "display: none;" }
+    - remote_form_for( @domain.soa_record, :url => formatted_update_soa_record_path( @domain.soa_record, :js, :domain_id => @domain.id ), :html => { :method => :put } ) do |f|
+      %table.grid
+        %tr
+          %td Primary name server
+          %td= f.text_field :primary_ns
+          %td= prototip_help_icon('help-primary-ns')
+        %tr
+          %td Contact
+          %td= f.text_field :contact
+          %td= prototip_help_icon('help-contact')
+        %tr
+          %td Refresh
+          %td
+            = f.text_field :refresh, :size => 6
+            = prototip_help_icon('help-refresh')
+          %td &nbsp;
+        %tr
+          %td Retry
+          %td
+            = f.text_field :retry, :size => 6
+            = prototip_help_icon('help-retry')
+          %td &nbsp;
+        %tr
+          %td Expire
+          %td
+            = f.text_field :expire, :size => 6
+            = prototip_help_icon('help-expire') 
+          %td &nbsp;
+        %tr
+          %td Minimum
+          %td
+            = f.text_field :minimum, :size => 6
+            = prototip_help_icon('help-minimum')
+          %td &nbsp;
+        %tr
+          %td.right= link_to_function "Cancel", "showSOAForm()"
+          %td= submit_tag "Update"
+          %td &nbsp;

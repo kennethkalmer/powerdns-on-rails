@@ -54,7 +54,7 @@
       %td
         = link_to prototip_info_icon('report_magnify.png', 'audits'), audits_path(:action => :domain, :id => @domain)
         = link_to prototip_info_icon('database_delete.png', 'delete-zone'), domain_path( @domain ), :method => :delete, :confirm => "Are you sure you want to remove #{@domain.name}?"
-    - if current_user.admin?
+    - if current_user && current_user.admin?
       %tr
         %td Owner
         %td
@@ -87,48 +87,9 @@
   %h2.underline
     SOA Record
     &nbsp;
-    = link_to_function prototip_info_icon('database_edit.png', 'soa-record-edit'), "showSOAEdit()"
+    - if current_user
+      = link_to_function prototip_info_icon('database_edit.png', 'soa-record-edit'), "showSOAEdit()"
   = render :partial => '/domains/soa_record', :object => @domain.soa_record
-
-  #soa-edit-form{ :style => "display: none;" }
-    - remote_form_for( @domain.soa_record, :url => formatted_update_soa_record_path( @domain.soa_record, :js, :domain_id => @domain.id ), :html => { :method => :put } ) do |f|
-      %table.grid
-        %tr
-          %td Primary name server
-          %td= f.text_field :primary_ns
-          %td= prototip_help_icon('help-primary-ns')
-        %tr
-          %td Contact
-          %td= f.text_field :contact
-          %td= prototip_help_icon('help-contact')
-        %tr
-          %td Refresh
-          %td
-            = f.text_field :refresh, :size => 6
-            = prototip_help_icon('help-refresh')
-          %td &nbsp;
-        %tr
-          %td Retry
-          %td
-            = f.text_field :retry, :size => 6
-            = prototip_help_icon('help-retry')
-          %td &nbsp;
-        %tr
-          %td Expire
-          %td
-            = f.text_field :expire, :size => 6
-            = prototip_help_icon('help-expire') 
-          %td &nbsp;
-        %tr
-          %td Minimum
-          %td
-            = f.text_field :minimum, :size => 6
-            = prototip_help_icon('help-minimum')
-          %td &nbsp;
-        %tr
-          %td.right= link_to_function "Cancel", "showSOAForm()"
-          %td= submit_tag "Update"
-          %td &nbsp;
 
 #domain-records.padded
   %h2.underline Domain RR's
@@ -145,49 +106,50 @@
 = link_to_function prototip_info_icon('database_add.png', 'record-template-new'), "displayRecordForm()"
 = link_to_function "New record", "displayRecordForm()"
 
-#record-form-div{ :style => "display: none;" }
-  - remote_form_for( :record, @record, :url => formatted_domain_records_path( @domain, :js ), :html => { :id => 'record-form' } ) do |f|
-    %table
-      %tr
-        %td Type
-        %td
-          = f.select( :type, RecordTemplate.record_types.map{ |t| [t,t] } - [["SOA", "SOA"]])
-          = observe_field "record_type", :function => "toggleRecordFields(element,value)"
-      %tr
-        %td Host
-        %td= f.text_field :name
-      %tr
-        %td TTL
-        %td= f.text_field :ttl, :size => 6
-      %tr.rt-mx{ :style => 'display :none' }
-        %td Priority
-        %td= f.text_field :prio, :size => 6
-      %tr
-        %td Data
-        %td= f.text_field :content
-      %tr.rt-soa{ :style => 'display :none' }
-        %td Primary Name Server
-        %td= f.text_field :primary_ns
-      %tr.rt-soa{ :style => 'display :none' }
-        %td Contact
-        %td= f.text_field :contact
-      %tr.rt-soa{ :style => 'display :none' }
-        %td Refresh
-        %td= f.text_field :refresh, :size => 6
-      %tr.rt-soa{ :style => 'display :none' }
-        %td Retry
-        %td= f.text_field :retry, :size => 6
-      %tr.rt-soa{ :style => 'display :none' }
-        %td Expire
-        %td= f.text_field :expire, :size => 6
-      %tr.rt-soa{ :style => 'display :none' }
-        %td Minimum
-        %td= f.text_field :minimum, :size => 6
-      %tr
-        %td &nbsp;
-        %td
-          = link_to_function "Cancel", "hideRecordForm()"
-          = submit_tag "Create"
+- if current_user || current_token.allow_new_records?
+  #record-form-div{ :style => "display: none;" }
+    - remote_form_for( :record, @record, :url => formatted_domain_records_path( @domain, :js ), :html => { :id => 'record-form' } ) do |f|
+      %table
+        %tr
+          %td Type
+          %td
+            = f.select( :type, RecordTemplate.record_types.map{ |t| [t,t] } - [["SOA", "SOA"]])
+            = observe_field "record_type", :function => "toggleRecordFields(element,value)"
+        %tr
+          %td Host
+          %td= f.text_field :name
+        %tr
+          %td TTL
+          %td= f.text_field :ttl, :size => 6
+        %tr.rt-mx{ :style => 'display :none' }
+          %td Priority
+          %td= f.text_field :prio, :size => 6
+        %tr
+          %td Data
+          %td= f.text_field :content
+        %tr.rt-soa{ :style => 'display :none' }
+          %td Primary Name Server
+          %td= f.text_field :primary_ns
+        %tr.rt-soa{ :style => 'display :none' }
+          %td Contact
+          %td= f.text_field :contact
+        %tr.rt-soa{ :style => 'display :none' }
+          %td Refresh
+          %td= f.text_field :refresh, :size => 6
+        %tr.rt-soa{ :style => 'display :none' }
+          %td Retry
+          %td= f.text_field :retry, :size => 6
+        %tr.rt-soa{ :style => 'display :none' }
+          %td Expire
+          %td= f.text_field :expire, :size => 6
+        %tr.rt-soa{ :style => 'display :none' }
+          %td Minimum
+          %td= f.text_field :minimum, :size => 6
+        %tr
+          %td &nbsp;
+          %td
+            = link_to_function "Cancel", "hideRecordForm()"
+            = submit_tag "Create"
 
 :javascript
   function editRecord(id, type) {

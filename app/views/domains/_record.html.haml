@@ -12,24 +12,27 @@
   %td{ :width => 30 }= record.prio
   %td{ :width => 250 }= record.content
   %td{ :width => 39 }
-    = link_to_function prototip_info_icon('database_edit.png', "record-template-edit-#{record.id}"), "editRecord(#{record.id}, '#{record.type.downcase}')"
-    = link_to prototip_info_icon('database_delete.png', "record-template-delete-#{record.id}"), domain_record_path( record.domain, record ), :method => :delete, :confirm => "Are you sure?"
+    - if current_user || current_token.can_change?( record )
+      = link_to_function prototip_info_icon('database_edit.png', "record-template-edit-#{record.id}"), "editRecord(#{record.id}, '#{record.type.downcase}')"
+    - if current_user || current_token.can_remove?( record )
+      = link_to prototip_info_icon('database_delete.png', "record-template-delete-#{record.id}"), domain_record_path( record.domain, record ), :method => :delete, :confirm => "Are you sure?"
 
-%tr[ record, :edit ]{ :style => "display: none;" }
-  %td{ :colspan => 7 }
-    - remote_form_for( :record, record, :url => formatted_domain_record_path(record.domain, record, :js), :html => { :method => :put }) do |f|
-      %div[ record, :error ]
-      %table.gridwide
-        %tr
-          %td{ :width => 250 }= f.text_field :shortname, :size => 15
-          %td{ :width => 50 }= f.text_field :ttl, :size => 3
-          %td{ :width => 30 }= record.type
-          %td{ :width => 30 }
-            - if record.is_a?( MX )
-              = f.text_field :prio, :size => 2
-            - else
-              &nbsp;
-          %td{ :width => 250 }= f.text_field :content, :size => 15
-          %td{ :width => 39 }
-            = image_submit_tag "table_save.png", { :class => 'nb' }
-            = link_to_function image_tag("cancel.png"), "hideRecord(#{record.id}, '#{record.type.downcase}')"
+- if current_user || current_token.can_change?( record )
+  %tr[ record, :edit ]{ :style => "display: none;" }
+    %td{ :colspan => 7 }
+      - remote_form_for( :record, record, :url => formatted_domain_record_path(record.domain, record, :js), :html => { :method => :put }) do |f|
+        %div[ record, :error ]
+        %table.gridwide
+          %tr
+            %td{ :width => 250 }= f.text_field :shortname, :size => 15
+            %td{ :width => 50 }= f.text_field :ttl, :size => 3
+            %td{ :width => 30 }= record.type
+            %td{ :width => 30 }
+              - if record.is_a?( MX )
+                = f.text_field :prio, :size => 2
+              - else
+                &nbsp;
+            %td{ :width => 250 }= f.text_field :content, :size => 15
+            %td{ :width => 39 }
+              = image_submit_tag "table_save.png", { :class => 'nb' }
+              = link_to_function image_tag("cancel.png"), "hideRecord(#{record.id}, '#{record.type.downcase}')"

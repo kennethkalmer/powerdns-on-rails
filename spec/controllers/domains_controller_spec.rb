@@ -142,3 +142,35 @@ describe DomainsController, "should handle a REST client" do
     response.should have_tag( 'errors' )
   end
 end
+
+describe DomainsController, "and auth tokens" do
+  fixtures :all
+  
+  before(:each) do
+    tokenize_as(:token_example_com)
+  end
+  
+  it "should display the domain in the token" do
+    get :show, :id => domains(:example_com)
+    
+    response.should render_template('domains/show')
+  end
+  
+  it "should restrict the domain to that of the token" do
+    get :show, :id => rand(1_000_000)
+    
+    assigns[:domain].should eql(domains(:example_com))
+  end
+  
+  it "should not allow a list of domains" do
+    get :index
+    
+    response.should be_redirect
+  end
+  
+  it "should not accept updates to the domain" do
+    put :update, :id => domains(:example_com), :domain => { :name => 'hack' }
+    
+    response.should be_redirect
+  end
+end
