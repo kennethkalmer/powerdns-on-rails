@@ -6,6 +6,9 @@ token_example_com:
     policy: deny
     new: false
     remove: false
-    protected: ---
-    protected_types: ---
+    protected: []
+    protected_types: []
+    allowed:
+    - example.com
+    - www.example.com
   expires_at: <%= 3.hours.since.to_s(:db) %>

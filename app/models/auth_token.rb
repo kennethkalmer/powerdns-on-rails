@@ -4,6 +4,8 @@
 # 
 # A token has a default permission, either allow or deny, and then specifies
 # additional restrictions/relaxations towards specific RR's in the domain.
+# 
+# TODO: Document this
 #
 class AuthToken < ActiveRecord::Base
   
@@ -41,7 +43,7 @@ class AuthToken < ActiveRecord::Base
     self.token = t
     
     # Default policies
-    @permissions = { 
+    self.permissions ||= { 
       'policy' => 'deny', 
       'new' => false, 
       'remove' => false,
@@ -55,49 +57,49 @@ class AuthToken < ActiveRecord::Base
   def policy=( val )
     raise "Invalid policy" unless val == :allow || val == :deny
     
-    @permissions['policy'] = val.to_s
+    self.permissions['policy'] = val.to_s
   end
   
   # Return the default policy
   def policy
-    @permissions['policy'].to_sym
+    self.permissions['policy'].to_sym
   end
   
   # Are new RR's allowed (defaults to +false+)
   def allow_new_records?
-    @permissions['new']
+    self.permissions['new']
   end
   
   def allow_new_records=( bool )
-    @permissions['new'] = bool
+    self.permissions['new'] = bool
   end
   
   # Can RR's be removed (defaults to +false+)
   def remove_records?
-    @permissions['remove']
+    self.permissions['remove']
   end
   
   def remove_records=( bool )
-    @permissions['remove'] = bool
+    self.permissions['remove'] = bool
   end
   
   # Allow the change of the specific RR. Can take an instance of #Record or just
   # the name of the RR (with/without the domain name)
   def can_change( record )
     name = get_name_from_param( record )
-    @permissions['allowed'] << name
+    self.permissions['allowed'] << name
   end
   
   # Protect the RR from change. Can take an instance of #Record or just the name
   # of the RR (with/without the domain name)
   def protect( record )
     name = get_name_from_param( record )
-    @permissions['protected'] << name
+    self.permissions['protected'] << name
   end
   
   # Protect all RR's of the provided type
   def protect_type( type )
-    @permissions['protected_types'] << type.to_s
+    self.permissions['protected_types'] << type.to_s
   end
   
   # Walk the permission tree to see if the record can be changed. Can take an
@@ -119,16 +121,27 @@ class AuthToken < ActiveRecord::Base
     return false if type == 'NS' || type == 'SOA'
     
     # Type protected?
-    return false if @permissions['protected_types'].include?( type )
+    return false if self.permissions['protected_types'].include?( type )
     
     # RR protected?
-    return false if @permissions['protected'].include?( name )
+    return false if self.permissions['protected'].include?( name )
     
     # Allowed?
-    return true if @permissions['allowed'].include?( name )
+    return true if self.permissions['allowed'].include?( name )
     
     # Default policy
-    return @permissions['policy'] == 'allow'
+    return self.permissions['policy'] == 'allow'
+  end
+  
+  # Walk the permission tree to see if the record can be removed. Can take an
+  # instance of #Record, or just the name of the RR (with/without the domain
+  # name)
+  def can_remove?( record )
+    return false unless can_change?( record )
+    
+    return false if !self.permissions['remove']
+    
+    true
   end
   
   # Force the token to expire

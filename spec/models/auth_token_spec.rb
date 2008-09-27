@@ -25,6 +25,9 @@ describe AuthToken, "when new" do
   end
   
   it "should require the permissions hash" do
+    @auth_token.permissions.should_not be_nil
+    
+    @auth_token.permissions = nil
     @auth_token.should have(1).error_on(:permissions)
   end
   
@@ -86,6 +89,10 @@ describe AuthToken, "and permissions" do
   it "should allow for removing RR's" do
     @auth_token.remove_records = true
     @auth_token.remove_records?.should be_true
+    
+    @auth_token.can_remove?( records(:example_com_a) ).should be_false
+    @auth_token.can_change( records(:example_com_a) )
+    @auth_token.can_remove?( records(:example_com_a) ).should be_true
   end
   
   it "should allow for setting permissions to edit specific RR's (AR)" do
@@ -121,19 +128,23 @@ describe AuthToken, "and permissions" do
   
   it "should always protect NS records" do
     @auth_token.policy = :allow
+    @auth_token.remove_records = true
     @auth_token.can_change( records(:example_com_ns_ns1) )
     @auth_token.can_change?( records(:example_com_ns_ns2) ).should be_false
+    @auth_token.can_remove?( records(:example_com_ns_ns2) ).should be_false
   end
   
   it "should always protect SOA records" do
     @auth_token.policy = :allow
+    @auth_token.remove_records = true
     @auth_token.can_change( records(:example_com_soa) )
     @auth_token.can_change?( records(:example_com_soa) ).should be_false
+    @auth_token.can_remove?( records(:example_com_soa) ).should be_false
   end
 end
 
 describe AuthToken, "and authentication" do
-  fixtures :auth_tokens
+  fixtures :auth_tokens, :records, :domains
   
   before(:each) do
     @auth_token = auth_tokens(:token_example_com)
@@ -157,5 +168,9 @@ describe AuthToken, "and authentication" do
   it "should correctly report the 'token' role" do
     @auth_token.has_role?('token').should be_true
     @auth_token.has_role?('admin').should be_false
+  end
+  
+  it "should correctly report permissions (deserialized)" do
+    @auth_token.can_change?( records(:example_com_a) ).should be_true
   end
 end

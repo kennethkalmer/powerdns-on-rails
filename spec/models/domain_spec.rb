@@ -141,7 +141,7 @@ describe Domain, "when deleting" do
   
   it "should delete its records as well" do
     @domain = domains(:example_com)
-    lambda { @domain.destroy }.should change(Record, :count).by(-8)
+    lambda { @domain.destroy }.should change(Record, :count).by(-@domain.records.size)
     
   end
 end
