@@ -4,7 +4,7 @@ require File.dirname(__FILE__) + '/../spec_helper'
 # Then, you can remove it from this and the units test.
 include AuthenticatedTestHelper
 
-describe SessionsController do
+describe SessionsController, "and users" do
   fixtures :users
 
   it 'logins and redirects' do
@@ -71,4 +71,36 @@ describe SessionsController do
   def cookie_for(user)
     auth_token users(user).remember_token
   end
+end
+
+describe SessionsController, "and auth tokens" do
+  fixtures :auth_tokens, :domains
+  
+  it 'accepts and redirects' do
+    post :token, :token => '5zuld3g9dv76yosy'
+    session[:token_id].should_not be_nil
+    controller.send(:token_user?).should be_true
+    response.should be_redirect
+    response.should redirect_to( domain_path( domains(:example_com) ) )
+  end
+  
+  it 'fails login and does not redirect' do
+    post :token, :token => 'bad_token'
+    session[:token_id].should be_nil
+    response.should be_success
+  end
+
+  it 'logs out' do
+    tokenize_as(:token_example_com)
+    get :destroy
+    session[:token_id].should be_nil
+    response.should render_template('destroy')
+  end
+
+  it 'fails expired cookie login' do
+    auth_tokens(:token_example_com).update_attribute :expires_at, 5.minutes.ago
+    get :new
+    controller.send(:token_user?).should_not be_true
+  end
+  
 end

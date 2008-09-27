@@ -118,7 +118,7 @@ module RoleRequirementSystem
     end
     
     def check_roles       
-      return access_denied unless self.class.user_authorized_for?(current_user, params, binding)
+      return access_denied unless self.class.user_authorized_for?(current_user || current_token, params, binding)
       
       true
     end

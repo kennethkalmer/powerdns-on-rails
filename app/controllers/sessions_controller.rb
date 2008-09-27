@@ -20,12 +20,26 @@ class SessionsController < ApplicationController
       render :action => 'new'
     end
   end
+  
+  def token
+    self.current_token = AuthToken.authenticate( params[:token] )
+    if token_user?
+      redirect_to( domain_path( current_token.domain ) )
+    end
+  end
 
   def destroy
-    self.current_user.forget_me if logged_in?
-    cookies.delete :auth_token
+    if logged_in?
+      self.current_user.forget_me 
+
+      cookies.delete :auth_token
+      reset_session
+      flash[:notice] = "You have been logged out."
+      redirect_back_or_default('/')
+      return
+    end
+    
+    self.current_token.expire if self.current_token
     reset_session
-    flash[:notice] = "You have been logged out."
-    redirect_back_or_default('/')
   end
 end

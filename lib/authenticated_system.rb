@@ -17,6 +17,22 @@ module AuthenticatedSystem
       session[:user_id] = new_user ? new_user.id : nil
       @current_user = new_user || false
     end
+    
+    # The current token
+    def current_token
+      @current_token ||= (token_from_session) unless @current_token == false
+    end
+    
+    # Store the given token id in the session
+    def current_token=(new_token)
+      session[:token_id] = new_token ? new_token.id : nil
+      @current_token = new_token || false
+    end
+    
+    # Returns true or false if the user is a token
+    def token_user?
+      !!current_token
+    end
 
     # Check if the user is authorized
     #
@@ -31,7 +47,7 @@ module AuthenticatedSystem
     #    current_user.login != "bob"
     #  end
     def authorized?
-      logged_in?
+      logged_in? || token_user?
     end
 
     # Filter method to enforce a login requirement.
@@ -86,15 +102,20 @@ module AuthenticatedSystem
       session[:return_to] = nil
     end
 
-    # Inclusion hook to make #current_user and #logged_in?
+    # Inclusion hook to make #current_user, #current_token and #logged_in?
     # available as ActionView helper methods.
     def self.included(base)
-      base.send :helper_method, :current_user, :logged_in?
+      base.send :helper_method, :current_user, :logged_in?, :current_token
     end
 
     # Called from #current_user.  First attempt to login by the user id stored in the session.
     def login_from_session
       self.current_user = User.find_by_id(session[:user_id]) if session[:user_id]
+    end
+    
+    # Called from #token_user.
+    def token_from_session
+      self.current_token = AuthToken.find_by_id(session[:token_id]) if session[:token_id]
     end
 
     # Called from #current_user.  Now, attempt to login by basic authentication information.
