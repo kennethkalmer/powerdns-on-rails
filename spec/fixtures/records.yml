@@ -45,7 +45,7 @@ example_com_mx:
   domain: example_com
   ttl: 86400
   type: MX
-  name: @
+  name: ''
   prio: 10
   content: mail.example.com
 example_com_a_mail:
@@ -96,7 +96,7 @@ example_net_mx:
   domain: example_net
   ttl: 86400
   type: MX
-  name: @
+  name: ''
   prio: 10
   content: mail.example.net
 example_net_a_mail:

@@ -9,6 +9,8 @@ token_example_com:
     protected: []
     protected_types: []
     allowed:
-    - example.com
-    - www.example.com
+    - - example.com
+      - *
+    - - www.example.com
+      - *
   expires_at: <%= 3.hours.since.to_s(:db) %>

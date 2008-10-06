@@ -34,13 +34,15 @@ class AuthTokensController < ApplicationController
     
     if params[:records] && params[:records].size > 0
       params[:records].each do |r|
-        @auth_token.can_change( r )
+        name, type = r.split(':')
+        @auth_token.can_change( name, type || '*' )
       end
     end
     
     if params[:protect] && params[:protect].size > 0
       params[:protect].each do |r|
-        @auth_token.protect( r )
+        name, type = r.split(':')
+        @auth_token.protect( name, type || '*' )
       end
     end
     

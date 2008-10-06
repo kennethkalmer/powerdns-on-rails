@@ -86,16 +86,16 @@ class AuthToken < ActiveRecord::Base
   
   # Allow the change of the specific RR. Can take an instance of #Record or just
   # the name of the RR (with/without the domain name)
-  def can_change( record )
-    name = get_name_from_param( record )
-    self.permissions['allowed'] << name
+  def can_change( record, type = '*' )
+    name, type = get_name_and_type_from_param( record, type )
+    self.permissions['allowed'] << [ name, type ]
   end
   
   # Protect the RR from change. Can take an instance of #Record or just the name
   # of the RR (with/without the domain name)
-  def protect( record )
-    name = get_name_from_param( record )
-    self.permissions['protected'] << name
+  def protect( record, type = '*' )
+    name, type = get_name_and_type_from_param( record, type )
+    self.permissions['protected'] << [ name, type ]
   end
   
   # Protect all RR's of the provided type
@@ -106,18 +106,8 @@ class AuthToken < ActiveRecord::Base
   # Walk the permission tree to see if the record can be changed. Can take an
   # instance of #Record, or just the name of the RR (with/without the domain
   # name)
-  def can_change?( record )
-    name = get_name_from_param( record )
-    
-    type = case record
-    when Record
-      record.class.to_s
-    else
-      # SOA & NS records are always prevented, so don't look them up
-      type = self.domain.records.find(
-        :first, :conditions => ['name = ? AND type NOT IN ("SOA","NS")', name]
-      ).class.to_s
-    end
+  def can_change?( record, type = '*' )
+    name, type = get_name_and_type_from_param( record, type )
     
     # NS records?
     return false if type == 'NS' || type == 'SOA'
@@ -126,10 +116,14 @@ class AuthToken < ActiveRecord::Base
     return false if self.permissions['protected_types'].include?( type )
     
     # RR protected?
-    return false if self.permissions['protected'].include?( name )
+    return false if self.permissions['protected'].detect do |r| 
+      r[0] == name && (r[1] == type || r[1] == '*' || type == '*')
+    end
     
     # Allowed?
-    return true if self.permissions['allowed'].include?( name )
+    return true if self.permissions['allowed'].detect do |r| 
+      r[0] == name && (r[1] == type || r[1] == '*' || type == '*')
+    end
     
     # Default policy
     return self.permissions['policy'] == 'allow'
@@ -138,8 +132,8 @@ class AuthToken < ActiveRecord::Base
   # Walk the permission tree to see if the record can be removed. Can take an
   # instance of #Record, or just the name of the RR (with/without the domain
   # name)
-  def can_remove?( record )
-    return false unless can_change?( record )
+  def can_remove?( record, type = '*' )
+    return false unless can_change?( record, type )
     
     return false if !self.permissions['remove']
     
@@ -147,8 +141,8 @@ class AuthToken < ActiveRecord::Base
   end
   
   # Can this record be added?
-  def can_add?( record )
-    return false unless can_change?( record )
+  def can_add?( record, type = '*' )
+    return false unless can_change?( record, type )
     
     return false if !self.permissions['new']
     
@@ -180,10 +174,20 @@ class AuthToken < ActiveRecord::Base
   
   private
   
-  def get_name_from_param( record )
-    name = record.is_a?( Record ) ? record.name : record
+  def get_name_and_type_from_param( record, type = nil )
+    name, type = 
+      case record
+      when Record:
+        [ record.name, record.class.to_s ]
+      else
+        type = type.nil? ? '*' : type
+        [ record, type ]
+      end
+    
     name += '.' + self.domain.name unless self.domain.nil? || name =~ /#{self.domain.name}$/
-    name
+    name.gsub!(/^\./,'') # Strip leading dots off
+    
+    return name, type
   end
   
   def validate #:nodoc:

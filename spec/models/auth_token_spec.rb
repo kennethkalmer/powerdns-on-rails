@@ -42,6 +42,49 @@ describe AuthToken, "when new" do
   
 end
 
+describe AuthToken, "internals" do
+  fixtures :records, :domains
+  
+  before(:each) do
+    @auth_token = AuthToken.new( :domain => domains(:example_com) )
+  end
+  
+  it "should extract the name and RR class from Record objects" do
+    name, type = @auth_token.send(:get_name_and_type_from_param, records(:example_com_a) )
+    name.should eql('example.com')
+    type.should eql('A')
+  end
+  
+  it "should correctly set the name and RR class from string input" do
+    name, type = @auth_token.send(:get_name_and_type_from_param, 'example.com', 'A' )
+    name.should eql('example.com')
+    type.should eql('A')
+  end
+  
+  it "should correctly set the name and wildcard RR from string input" do
+    name, type = @auth_token.send(:get_name_and_type_from_param, 'example.com' )
+    name.should eql('example.com')
+    type.should eql('*')
+    
+    name, type = @auth_token.send(:get_name_and_type_from_param, 'example.com', nil )
+    name.should eql('example.com')
+    type.should eql('*')
+  end
+  
+  it "should append the domain name to string records missing it" do
+    name, type = @auth_token.send(:get_name_and_type_from_param, 'mail', nil )
+    name.should eql('mail.example.com')
+    type.should eql('*')
+  end
+  
+  it 'should take the domain name exactly if given a blank name string' do
+    name, type = @auth_token.send(:get_name_and_type_from_param, '')
+    name.should eql('example.com')
+    type.should eql('*')
+  end
+  
+end
+
 describe AuthToken, "and permissions" do
   fixtures :users, :domains, :records
   
@@ -91,22 +134,31 @@ describe AuthToken, "and permissions" do
     @auth_token.remove_records?.should be_true
     
     @auth_token.can_remove?( records(:example_com_a) ).should be_false
+    @auth_token.can_remove?( 'example.com', 'A' ).should be_false
+    
     @auth_token.can_change( records(:example_com_a) )
+    
     @auth_token.can_remove?( records(:example_com_a) ).should be_true
+    @auth_token.can_remove?( 'example.com', 'A' ).should be_true
   end
   
   it "should allow for setting permissions to edit specific RR's (AR)" do
     @auth_token.can_change( records(:example_com_a) )
+    
     @auth_token.can_change?( 'example.com' ).should be_true
+    @auth_token.can_change?( 'example.com', 'MX' ).should be_false
+    
     @auth_token.can_change?( records(:example_com_a) ).should be_true
-    @auth_token.can_change?( records(:example_com_a_mail) ).should be_false
+    @auth_token.can_change?( records(:example_com_mx) ).should be_false
   end
   
   it "should allow for setting permissions to edit specific RR's (name)" do
     @auth_token.can_change( 'mail.example.com' )
+    
     @auth_token.can_change?( 'mail.example.com' ).should be_true
-    @auth_token.can_change?( records(:example_com_a) ).should be_false
     @auth_token.can_change?( records(:example_com_a_mail) ).should be_true
+    
+    @auth_token.can_change?( records(:example_com_a) ).should be_false
   end
   
   it "should allow for protecting certain RR's" do
@@ -115,6 +167,11 @@ describe AuthToken, "and permissions" do
     @auth_token.protect( records(:example_com_mx) )
     
     @auth_token.can_change?( records(:example_com_a) ).should be_true
+    @auth_token.can_change?( 'example.com', 'A' ).should be_true
+
+    @auth_token.can_change?( records(:example_com_mx) ).should be_false
+    @auth_token.can_change?( 'example.com', 'MX' ).should be_false
+    
     @auth_token.can_change?( records(:example_com_a_mail) ).should be_false
   end
   

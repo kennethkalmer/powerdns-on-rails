@@ -52,10 +52,14 @@ describe AuthTokensController do
     end
     
     it "with protected records" do
-      post :create, @params.merge(:protect => ['example.com', 'www.example.com'])
+      post :create, @params.merge(
+        :protect => ['example.com:A', 'www.example.com'],
+        :policy => 'allow'
+      )
       
       assigns[:auth_token].should_not be_nil
       assigns[:auth_token].can_change?( records(:example_com_a) ).should be_false
+      assigns[:auth_token].can_change?( records(:example_com_mx) ).should be_true
       assigns[:auth_token].can_change?( records(:example_com_a_www) ).should be_false
     end
     
@@ -66,10 +70,11 @@ describe AuthTokensController do
     end
     
     it "with allowed records" do
-      post :create, @params.merge(:records => ['www.example.com'])
+      post :create, @params.merge(:records => ['example.com'])
       
-      assigns[:auth_token].can_change?( records(:example_com_a_www) ).should be_true
-      assigns[:auth_token].can_change?( records(:example_com_a) ).should be_false
+      assigns[:auth_token].can_change?( records(:example_com_a_www) ).should be_false
+      assigns[:auth_token].can_change?( records(:example_com_a) ).should be_true
+      assigns[:auth_token].can_change?( records(:example_com_mx) ).should be_true
     end
     
   end
