@@ -19,6 +19,13 @@ class RecordsController < ApplicationController
     end
     
     if @record.save
+      # Give the token the right to undo what it just did
+      if current_token
+        current_token.can_change @record
+        current_token.remove_records = true
+        current_token.save
+      end
+      
       flash.now[:info] = "Record created!"
     else
       flash.now[:error] = "Record not created!"

@@ -99,11 +99,13 @@ describe RecordsController, ", users, and SOA records" do
 end
 
 describe RecordsController, "and tokens" do
-  fixtures :auth_tokens, :domains, :records
+  fixtures :auth_tokens, :domains, :records, :users
   
   before( :each ) do
     @domain = domains( :example_com )
-    @token = AuthToken.new( :domain => @domain )
+    @token = AuthToken.new( 
+      :domain => @domain, :expires_at => 1.hour.since, :user => users(:admin)
+    )
   end
   
   it "should not be allowed to touch the SOA record" do
@@ -179,6 +181,10 @@ describe RecordsController, "and tokens" do
     
     assigns[:domain].should_not be_nil
     assigns[:record].should_not be_nil
+    
+    # Ensure the token han been updated
+    @token.can_change?( 'test', 'A' ).should be_true
+    @token.can_remove?( 'test', 'A' ).should be_true
   end
   
   it "should not create if not allowed" do

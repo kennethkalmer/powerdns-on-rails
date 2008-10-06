@@ -51,6 +51,7 @@ class AuthTokensController < ApplicationController
         <token>
           <expires>#{@auth_token.expires_at}</expires>
           <auth_token>#{@auth_token.token}</auth_token>
+          <url>#{token_url( :token => @auth_token.token )}</url>
         </token>
       EOF
     else

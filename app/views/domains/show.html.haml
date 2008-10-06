@@ -52,8 +52,9 @@
       %td Domain
       %td= @domain.name
       %td
-        = link_to prototip_info_icon('report_magnify.png', 'audits'), audits_path(:action => :domain, :id => @domain)
-        = link_to prototip_info_icon('database_delete.png', 'delete-zone'), domain_path( @domain ), :method => :delete, :confirm => "Are you sure you want to remove #{@domain.name}?"
+        - if current_user
+          = link_to prototip_info_icon('report_magnify.png', 'audits'), audits_path(:action => :domain, :id => @domain)
+          = link_to prototip_info_icon('database_delete.png', 'delete-zone'), domain_path( @domain ), :method => :delete, :confirm => "Are you sure you want to remove #{@domain.name}?"
     - if current_user && current_user.admin?
       %tr
         %td Owner
@@ -68,20 +69,20 @@
               = f.collection_select "user_id", @users, :id, :login, :include_blank => true
               = submit_tag "Save"
         %td= link_to_function prototip_info_icon('user_edit.png', 'change-owner'), "changeOwner()"
-    %tr
-      %td{ :valign => 'top' } Notes
-      %td{ :colspan => 2 }
-        #note-row
-          = @domain.notes
-          %br
-          = link_to_function prototip_info_icon('note_edit.png', 'note-edit'), "showNote()"
+      %tr
+        %td{ :valign => 'top' } Notes
+        %td{ :colspan => 2 }
+          #note-row
+            = @domain.notes
+            %br
+            = link_to_function prototip_info_icon('note_edit.png', 'note-edit'), "showNote()"
 
-        #note{ :style => "display: none;" }
-          - remote_form_for( :domain, @domain, :url => formatted_update_note_domain_path( @domain, :js ), :html => { :method => :put } ) do |f|
-            = f.text_area :notes, :rows => 5, :cols => 17
-            %br/
-            = link_to_function "Cancel", "hideNote()"
-            = submit_tag "Update note"
+          #note{ :style => "display: none;" }
+            - remote_form_for( :domain, @domain, :url => formatted_update_note_domain_path( @domain, :js ), :html => { :method => :put } ) do |f|
+              = f.text_area :notes, :rows => 5, :cols => 17
+              %br/
+              = link_to_function "Cancel", "hideNote()"
+              = submit_tag "Update note"
 
 #domain-soa.padded
   %h2.underline
@@ -113,7 +114,7 @@
         %tr
           %td Type
           %td
-            = f.select( :type, RecordTemplate.record_types.map{ |t| [t,t] } - [["SOA", "SOA"]])
+            = select_record_type( f )
             = observe_field "record_type", :function => "toggleRecordFields(element,value)"
         %tr
           %td Host

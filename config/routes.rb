@@ -47,6 +47,7 @@ ActionController::Routing::Routes.draw do |map|
   
   # AuthTokens
   map.resources :auth_tokens
+  map.token '/token/:token', :controller => 'sessions', :action => 'token'
   
   # Authentication routes
   map.resources :users, :member => { :suspend   => :put,

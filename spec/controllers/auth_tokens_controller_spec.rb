@@ -21,6 +21,14 @@ describe AuthTokensController do
     response.code.should eql("404")
   end
   
+  it "bail cleanly on invalid requests" do
+    login_as(:token_user)
+    
+    post :create, :domain => 'example.com'
+    
+    response.should have_tag('error')
+  end
+  
   describe "generating tokens" do
     
     before(:each) do
@@ -33,6 +41,12 @@ describe AuthTokensController do
     it "with allow_new set" do
       post :create, @params.merge(:allow_new => 'true')
 
+      response.should have_tag('token') do
+        with_tag('expires')
+        with_tag('auth_token')
+        with_tag('url')
+      end
+      
       assigns[:auth_token].should_not be_nil
       assigns[:auth_token].domain.should eql( domains(:example_com) )
       assigns[:auth_token].should be_allow_new_records
@@ -41,12 +55,24 @@ describe AuthTokensController do
     it "with remove set" do
       post :create, @params.merge(:remove => 'true', :records => ['www.example.com'])
       
+      response.should have_tag('token') do
+        with_tag('expires')
+        with_tag('auth_token')
+        with_tag('url')
+      end
+      
       assigns[:auth_token].remove_records?.should be_true
       assigns[:auth_token].can_remove?( records(:example_com_a_www) ).should be_true
     end
     
     it "with policy set" do
       post :create, @params.merge(:policy => 'allow')
+      
+      response.should have_tag('token') do
+        with_tag('expires')
+        with_tag('auth_token')
+        with_tag('url')
+      end
       
       assigns[:auth_token].policy.should eql(:allow)
     end
@@ -56,6 +82,12 @@ describe AuthTokensController do
         :protect => ['example.com:A', 'www.example.com'],
         :policy => 'allow'
       )
+      
+      response.should have_tag('token') do
+        with_tag('expires')
+        with_tag('auth_token')
+        with_tag('url')
+      end
       
       assigns[:auth_token].should_not be_nil
       assigns[:auth_token].can_change?( records(:example_com_a) ).should be_false

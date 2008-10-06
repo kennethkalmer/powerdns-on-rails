@@ -135,7 +135,7 @@ class AuthToken < ActiveRecord::Base
   def can_remove?( record, type = '*' )
     return false unless can_change?( record, type )
     
-    return false if !self.permissions['remove']
+    return false if !remove_records?
     
     true
   end
@@ -144,7 +144,7 @@ class AuthToken < ActiveRecord::Base
   def can_add?( record, type = '*' )
     return false unless can_change?( record, type )
     
-    return false if !self.permissions['new']
+    return false if !allow_new_records?
     
     true
   end
