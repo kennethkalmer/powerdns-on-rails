@@ -7,14 +7,17 @@ class RecordTemplate < ActiveRecord::Base
   validates_associated :zone_template
   validates_presence_of :record_type
   
-  @@record_types = ['A', 'CNAME', 'MX', 'NS', 'SOA', 'TXT']
-  cattr_reader :record_types
-  
   before_save :update_soa_content
   
   # We need to cope with the SOA convenience
   SOA::SOA_FIELDS.each do |f|
     attr_accessor f
+  end
+  
+  class << self
+    def record_types
+      Record.record_types
+    end
   end
   
   # Convert our +content+ field into convenience variables

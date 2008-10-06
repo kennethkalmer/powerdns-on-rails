@@ -10,12 +10,14 @@ class RecordsController < ApplicationController
   end
   
   def create
-    if current_token && !current_token.allow_new_records?
+    @record = @domain.send( "#{params[:record][:type].downcase}_records".to_sym ).new( params[:record] )
+    
+    if current_token && !current_token.allow_new_records? && 
+        !current_token.can_add?( @record )
       render :text => 'Token not authorized', :status => 403
       return
     end
     
-    @record = @domain.send( "#{params[:record][:type].downcase}_records".to_sym ).new( params[:record] )
     if @record.save
       flash.now[:info] = "Record created!"
     else
@@ -47,8 +49,7 @@ class RecordsController < ApplicationController
   def destroy
     @record = @domain.records.find( params[:id] )
     
-    if current_token && !current_token.remove_records? && 
-        !current_token.can_change?( @record )
+    if current_token && !current_token.can_remove?( @record )
       render :text => 'Token not authorized', :status => 403
       return
     end
@@ -59,6 +60,11 @@ class RecordsController < ApplicationController
   
   # Non-CRUD methods
   def update_soa
+    if current_token
+      render :text => 'Token not authorized', :status => 403
+      return
+    end
+    
     @domain.soa_record.update_attributes( params[:soa] )
     if @domain.soa_record.valid?
       flash.now[:info] = "SOA record updated!"

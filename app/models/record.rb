@@ -25,6 +25,10 @@ class Record < ActiveRecord::Base
   before_save :update_change_date
   after_save  :update_soa_serial
   
+  # Known record types
+  @@record_types = ['A', 'CNAME', 'MX', 'NS', 'SOA', 'TXT']
+  cattr_reader :record_types
+  
   class << self
     
     # Restrict the SOA serial number updates to just one during the execution

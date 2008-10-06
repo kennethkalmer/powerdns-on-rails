@@ -97,14 +97,14 @@ describe AuthToken, "and permissions" do
   
   it "should allow for setting permissions to edit specific RR's (AR)" do
     @auth_token.can_change( records(:example_com_a) )
-    @auth_token.can_change?( 'example.com' )
+    @auth_token.can_change?( 'example.com' ).should be_true
     @auth_token.can_change?( records(:example_com_a) ).should be_true
     @auth_token.can_change?( records(:example_com_a_mail) ).should be_false
   end
   
   it "should allow for setting permissions to edit specific RR's (name)" do
     @auth_token.can_change( 'mail.example.com' )
-    @auth_token.can_change?( 'mail.example.com' )
+    @auth_token.can_change?( 'mail.example.com' ).should be_true
     @auth_token.can_change?( records(:example_com_a) ).should be_false
     @auth_token.can_change?( records(:example_com_a_mail) ).should be_true
   end
@@ -126,6 +126,21 @@ describe AuthToken, "and permissions" do
     @auth_token.can_change?( records(:example_com_mx) ).should be_true
   end
   
+  it "should prevent removing RR's by type" do
+    @auth_token.policy = :allow
+    @auth_token.protect_type 'MX'
+    
+    @auth_token.can_remove?( records(:example_com_mx) ).should be_false
+  end
+  
+  it "should prevent adding RR's by type" do
+    @auth_token.policy = :allow
+    @auth_token.allow_new_records = true
+    @auth_token.protect_type 'MX'
+    
+    @auth_token.can_add?( MX.new( :name => '', :domain => domains(:example_com) ) ).should be_false
+  end
+  
   it "should always protect NS records" do
     @auth_token.policy = :allow
     @auth_token.remove_records = true
@@ -140,6 +155,16 @@ describe AuthToken, "and permissions" do
     @auth_token.can_change( records(:example_com_soa) )
     @auth_token.can_change?( records(:example_com_soa) ).should be_false
     @auth_token.can_remove?( records(:example_com_soa) ).should be_false
+  end
+  
+  it "should provide a list of new RR types allowed" do
+    @auth_token.new_types.should be_empty
+    
+    @auth_token.allow_new_records = true
+    @auth_token.new_types.include?('MX').should be_true
+    
+    @auth_token.protect_type 'MX'
+    @auth_token.new_types.include?('MX').should be_false
   end
 end
 

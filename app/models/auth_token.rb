@@ -55,9 +55,10 @@ class AuthToken < ActiveRecord::Base
   
   # Set the default policy of the token
   def policy=( val )
-    raise "Invalid policy" unless val == :allow || val == :deny
+    val = val.to_s
+    raise "Invalid policy" unless val == "allow" || val == "deny"
     
-    self.permissions['policy'] = val.to_s
+    self.permissions['policy'] = val
   end
   
   # Return the default policy
@@ -112,8 +113,9 @@ class AuthToken < ActiveRecord::Base
     when Record
       record.class.to_s
     else
+      # SOA & NS records are always prevented, so don't look them up
       type = self.domain.records.find(
-        :first, :conditions => ['name = ?', name]
+        :first, :conditions => ['name = ? AND type NOT IN ("SOA","NS")', name]
       ).class.to_s
     end
     
@@ -142,6 +144,24 @@ class AuthToken < ActiveRecord::Base
     return false if !self.permissions['remove']
     
     true
+  end
+  
+  # Can this record be added?
+  def can_add?( record )
+    return false unless can_change?( record )
+    
+    return false if !self.permissions['new']
+    
+    true
+  end
+  
+  # If the user can add new records, this will return a string array of the new
+  # RR types the user can add
+  def new_types
+    return [] unless allow_new_records?
+    
+    # build our list
+    Record.record_types - %w{ SOA NS } - self.permissions['protected_types']
   end
   
   # Force the token to expire
