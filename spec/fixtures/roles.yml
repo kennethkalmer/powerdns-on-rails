@@ -2,3 +2,5 @@ admin_role:
   name: admin
 owner_role:
   name: owner
+auth_token:
+  name: auth_token

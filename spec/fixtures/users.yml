@@ -27,3 +27,10 @@ api_client:
   crypted_password: 00742970dc9e6319f8019fd54864d3ea740f04b1 # test
   state: active
   roles: admin_role
+token_user:
+  login: token
+  email: token@example.com
+  salt: 7e3041ebc2fc05a40c60028e2c4901a81035d3cd
+  crypted_password: 00742970dc9e6319f8019fd54864d3ea740f04b1 # test
+  state: active
+  roles: auth_token

@@ -45,6 +45,9 @@ ActionController::Routing::Routes.draw do |map|
   # Audits
   map.audits '/audits/:action/:id', :controller => 'audits', :action => 'index'
   
+  # AuthTokens
+  map.resources :auth_tokens
+  
   # Authentication routes
   map.resources :users, :member => { :suspend   => :put,
                                      :unsuspend => :put,

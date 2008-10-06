@@ -5,6 +5,9 @@ end
 Role.seed( :name ) do |s|
   s.name = 'owner'
 end
+Role.seed( :name ) do |s|
+  s.name = 'auth_token'
+end
 
 # An admin
 User.seed( :login ) do |s|
