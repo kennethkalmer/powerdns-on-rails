@@ -119,4 +119,10 @@ class Domain < ActiveRecord::Base
     soa.serial = serial unless serial.nil? # Optional
     soa.save
   end
+  
+  def attach_errors(e)
+    e.message.split(":")[1].split(",").uniq.each do |m|
+      self.errors.add(m , '')
+    end
+  end
 end

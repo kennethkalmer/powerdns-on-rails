@@ -34,7 +34,7 @@ class DomainsController < ApplicationController
       begin
         @domain = @zone_template.build( params[:domain][:name] )
       rescue ActiveRecord::RecordInvalid => e
-        @domain = attach_errors(@domain , e)
+        @domain.attach_errors(e)
       end
     end
     @domain.user = current_user unless current_user.has_role?( 'admin' )
@@ -92,11 +92,5 @@ class DomainsController < ApplicationController
   def restrict_token_movements
     redirect_to domain_path( current_token.domain ) if current_token
   end
-  
-  def attach_errors(domain , e)
-    e.message.split(":")[1].split(",").uniq.each do |m|
-      domain.errors.add(m , '')
-    end
-    domain
-  end
+
 end
