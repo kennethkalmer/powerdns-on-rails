@@ -99,6 +99,10 @@ a img {
     border: none;
 }
 
+.center {
+	text-align: center;
+}
+
 .flash-info, .flash-error, .flash-warning, .errorExplanation, .generic-warning {
     padding: 5px;
     padding-left: 30px;

@@ -42,6 +42,21 @@
     caching time - the time a NAME ERROR = NXDOMAIN record is cached. The 
     maximum value allowed by BIND 9 for this parameter is 3 hours (10800 
     seconds).
+  #delete-reset
+    Do not delete this domain.
+
+#warning-message.center.flash-warning{ :style => 'display: none' }
+  This domain has an owner! Please make sure that you want to delete it.
+  
+  %br
+  %br
+  Yes I am sure I want to delete this domain.
+  = link_to prototip_info_icon('database_delete.png', 'delete-zone'), domain_path( @domain ),  :method => :delete, :confirm => "Are you sure you want to remove #{@domain.name}?"                
+  %br
+  or
+  %br
+  No I don't want to delete this domain.
+  = link_to_function prototip_info_icon('cancel.png', 'delete-reset'), "deleteDomain();" 
 
 %h1.underline
   = @domain.name
@@ -54,7 +69,10 @@
       %td
         - if current_user
           = link_to prototip_info_icon('report_magnify.png', 'audits'), audits_path(:action => :domain, :id => @domain)
-          = link_to prototip_info_icon('database_delete.png', 'delete-zone'), domain_path( @domain ), :method => :delete, :confirm => "Are you sure you want to remove #{@domain.name}?"
+          - if @domain.user
+            = link_to_function prototip_info_icon('database_delete.png', 'delete-zone'), "deleteDomain();" , :id => "delete-link-buffer"
+        - else
+          = link_to prototip_info_icon('database_delete.png', 'delete-zone'), domain_path( @domain ), :method => :delete, :confirm => "Are you sure you want to remove #{@domain.name}?"            
     - if current_user && current_user.admin?
       %tr
         %td Owner
@@ -198,4 +216,9 @@
   function changeOwner() {
     $('owner-info').toggle();
     $('owner-edit').toggle();
+  }
+  
+  function deleteDomain() {
+    $('warning-message').toggle();
+    $('delete-link-buffer').toggle();
   }
