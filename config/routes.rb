@@ -44,6 +44,7 @@ ActionController::Routing::Routes.draw do |map|
   
   # Audits
   map.audits '/audits/:action/:id', :controller => 'audits', :action => 'index'
+  map.reports '/reports/:action/:id' , :controller => 'reports' , :action => 'index'
   
   # AuthTokens
   map.resources :auth_tokens

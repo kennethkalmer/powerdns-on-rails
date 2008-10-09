@@ -59,6 +59,20 @@ class User < ActiveRecord::Base
     def encrypt(password, salt)
       Digest::SHA1.hexdigest("--#{salt}--#{password}--")
     end
+    
+    # For our lookup purposes
+    def search( params, page )
+      paginate :per_page => 50, :page => page, 
+        :conditions => ['login LIKE ?', "%#{params.chomp}%"]
+    end
+    
+    # Users with User role
+    def find_owners(page)
+      r = Role.find_by_name("owner")
+      users = r.users.collect {|u| u.id }.join(',')
+      paginate :per_page => 50, :page => page, 
+        :conditions => "id IN (#{ users })"
+    end
   end
 
   # Encrypts the password with the user salt
@@ -120,6 +134,10 @@ class User < ActiveRecord::Base
     else
       value
     end
+  end
+  
+  def <=>(user)
+    user.login <=> self.login 
   end
   
   protected
