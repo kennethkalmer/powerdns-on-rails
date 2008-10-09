@@ -1,0 +1,14 @@
+%h1.underline= "Results for \"#{params[:q]}\""
+%br/
+
+- if @results.empty?
+  %strong No domains found
+- else
+  %table
+    %th Login 
+    %th Domains
+    %th Email
+    %th Role
+    = render :partial => 'user', :collection => @results
+
+  = will_paginate @results

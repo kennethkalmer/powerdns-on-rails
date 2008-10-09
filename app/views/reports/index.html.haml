@@ -1,0 +1,17 @@
+%h2.underline User Reports
+
+#search-user-bar
+  - form_tag( { :controller => :reports, :action => :results }, { :method => :get } ) do
+    = text_field_tag :q
+    = submit_tag "Search"
+    
+#users
+  %br
+  %br
+  %table
+    %th Login 
+    %th Domains
+    %th Email
+    = render :partial => 'user', :collection => @users
+    
+= will_paginate @users

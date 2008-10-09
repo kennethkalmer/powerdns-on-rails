@@ -1,0 +1,13 @@
+%h2.underline
+  Report for 
+  = @user.login
+
+%br
+
+#domains
+  %b 
+    Domains (
+    = @user.domains.count
+    )
+  %br
+  = render :partial => '/domains/domain' , :collection => @user.domains
