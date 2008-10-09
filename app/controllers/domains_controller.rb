@@ -29,10 +29,13 @@ class DomainsController < ApplicationController
     @zone_template = ZoneTemplate.find(params[:domain][:zone_template_id]) unless params[:domain][:zone_template_id].blank?
     @zone_template ||= ZoneTemplate.find_by_name(params[:domain][:zone_template_name]) unless params[:domain][:zone_template_name].blank?
     
+    @domain = Domain.new( params[:domain] )
     unless @zone_template.nil?
-      @domain = @zone_template.build( params[:domain][:name] )
-    else
-      @domain = Domain.new( params[:domain] )
+      begin
+        @domain = @zone_template.build( params[:domain][:name] )
+      rescue ActiveRecord::RecordInvalid => e
+        @domain.errors.add(e)
+      end
     end
     @domain.user = current_user unless current_user.has_role?( 'admin' )
 
