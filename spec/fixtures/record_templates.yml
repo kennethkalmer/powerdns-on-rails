@@ -1,22 +1,21 @@
-# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
 
 east_coast_soa:
   zone_template: east_coast_dc
   ttl: 86400
   record_type: SOA
-  name:
+  name: ''
   content: ns1.%ZONE% east-coast@example.com 0 10800 7200 604800 3600
 east_coast_ns_ns1:
   zone_template: east_coast_dc
   ttl: 86400
   record_type: NS
-  name: 
+  name: ''
   content: ns1.%ZONE%
 east_coast_ns_ns2:
   zone_template: east_coast_dc
   ttl: 86400
   record_type: NS
-  name: 
+  name: ''
   content: ns2.%ZONE%
 east_coast_a_ns1:
   zone_template: east_coast_dc
@@ -34,7 +33,7 @@ east_coast_a:
   zone_template: east_coast_dc
   ttl: 86400
   record_type: A
-  name: 
+  name: ''
   content: 10.0.0.3
 east_coast_mx:
   zone_template: east_coast_dc

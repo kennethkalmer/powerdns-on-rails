@@ -40,7 +40,7 @@ class DomainsController < ApplicationController
     @domain.user = current_user unless current_user.has_role?( 'admin' )
 
     respond_to do |format|
-      if @domain.errors.empty? && @domain.save
+      if @domain.save
         format.html { 
           flash[:info] = "Domain created"
           redirect_to domain_path( @domain ) 
