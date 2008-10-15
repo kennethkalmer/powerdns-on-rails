@@ -16,6 +16,7 @@ describe "/templates/form" do
   
   it "should render without a list of users" do
     assigns[:zone_template] = ZoneTemplate.new
+    assigns[:users] = []
     
     render "/templates/form"
     
