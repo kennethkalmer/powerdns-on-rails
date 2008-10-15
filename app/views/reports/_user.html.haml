@@ -1,7 +1,4 @@
-%div{ :style => "display: none;" }
-
 %tr
   %td= link_to user.login, :action => :view , :id => user
-  %td.center
-    = user.domains.count
+  %td.right= user.domains.count
   %td= user.email

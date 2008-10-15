@@ -100,7 +100,13 @@ a img {
 }
 
 .center {
-	text-align: center;
+    text-align: center;
+}
+.right {
+    text-align: right;
+}
+.left {
+    text-align: left;
 }
 
 .flash-info, .flash-error, .flash-warning, .errorExplanation, .generic-warning {

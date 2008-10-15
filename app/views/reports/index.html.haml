@@ -1,17 +1,28 @@
 %h2.underline User Reports
 
-#search-user-bar
+#search-user-bar.padded
   - form_tag( { :controller => :reports, :action => :results }, { :method => :get } ) do
     = text_field_tag :q
-    = submit_tag "Search"
+    = submit_tag "Search users"
     
-#users
-  %br
-  %br
-  %table
-    %th Login 
-    %th Domains
-    %th Email
+#users.padded
+  %table.grid
+    %tr
+      %th.left Login 
+      %th.right Domains
+      %th.left Email
     = render :partial => 'user', :collection => @users
-    
+    %tr
+      %td{ :colspan => 3 } &nbsp;
+    %tr
+      %td
+        %em System Domains
+      %td.right= @system_domains
+      %td &nbsp;
+    %tr
+      %td
+        %em Total Domains
+      %td.right= @total_domains
+      %td &nbsp;
+
 = will_paginate @users

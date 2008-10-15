@@ -1,13 +1,7 @@
 %h2.underline
-  Report for 
   = @user.login
+  has
+  = pluralize @user.domains.count, 'domain'
 
-%br
-
-#domains
-  %b 
-    Domains (
-    = @user.domains.count
-    )
-  %br
+#domains.padded
   = render :partial => '/domains/domain' , :collection => @user.domains
