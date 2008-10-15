@@ -21,6 +21,10 @@ class Domain < ActiveRecord::Base
   has_many :a_records,     :class_name => 'A'
   has_many :txt_records,   :class_name => 'TXT'
   has_many :cname_records, :class_name => 'CNAME'
+  has_one  :loc_record,    :class_name => 'LOC'
+  has_many :aaaa_records,  :class_name => 'AAAA'
+  has_many :spf_records,   :class_name => 'SPF'
+  has_many :srv_records,   :class_name => 'SRV'
   
   validates_presence_of :name
   validates_uniqueness_of :name

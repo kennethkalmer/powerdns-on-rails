@@ -1,6 +1,7 @@
 # See #A
 
 # = IPv4 Address Record (A)
+# 
 # Defined in RFC 1035. Forward maps a host name to IPv4 address. The only 
 # parameter is an IP address in dotted decimal format. The IP address in not 
 # terminated with a '.' (dot). Valid host name format (a.k.a 'label' in DNS 

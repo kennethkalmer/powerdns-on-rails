@@ -26,7 +26,7 @@ class Record < ActiveRecord::Base
   after_save  :update_soa_serial
   
   # Known record types
-  @@record_types = ['A', 'CNAME', 'MX', 'NS', 'SOA', 'TXT']
+  @@record_types = ['A', 'AAAA', 'CNAME', 'LOC', 'MX', 'NS', 'PTR', 'SOA', 'SPF', 'SRV', 'TXT']
   cattr_reader :record_types
   
   class << self
