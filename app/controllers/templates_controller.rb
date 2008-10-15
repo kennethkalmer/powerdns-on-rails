@@ -28,7 +28,7 @@ class TemplatesController < ApplicationController
   
   def edit
     @zone_template = ZoneTemplate.find(params[:id])
-    @users = User.find(:all).select{ |u| u.has_role?('owner') } if current_user.admin?
+    @users = User.active_owners if current_user.admin?
     render :action => :form
   end
   

@@ -49,6 +49,13 @@
   %tr
     %td TTL
     %td= @zone_template.ttl
+  %tr
+    %td Owner
+    %td
+      - if @zone_template.user
+        = @zone_template.user.login
+      - else
+        \-
 
 %p &nbsp;
 
