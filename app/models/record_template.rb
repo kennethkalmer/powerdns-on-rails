@@ -86,7 +86,7 @@ class RecordTemplate < ActiveRecord::Base
   # model without any duplication of rules. This allows us to simply extend the
   # appropriate record and gain those validations in the templates
   def validate #:nodoc:
-    unless self.record_type.nil?
+    unless self.record_type.blank?
       record = build
       record.errors.each do |k,v|
         # skip associations we don't have, validations we don't care about
