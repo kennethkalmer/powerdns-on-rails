@@ -33,11 +33,11 @@ ActiveRecord::Schema.define(:version => 10) do
   create_table "auth_tokens", :force => true do |t|
     t.integer  "domain_id"
     t.integer  "user_id"
-    t.string   "token",       :null => false
-    t.text     "permissions", :null => false
+    t.string   "token",       :default => "", :null => false
+    t.text     "permissions", :default => "", :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.datetime "expires_at",  :null => false
+    t.datetime "expires_at",                  :null => false
   end
 
   create_table "domains", :force => true do |t|
@@ -60,22 +60,22 @@ ActiveRecord::Schema.define(:version => 10) do
   create_table "record_templates", :force => true do |t|
     t.integer  "zone_template_id"
     t.string   "name"
-    t.string   "record_type",      :null => false
-    t.string   "content",          :null => false
-    t.integer  "ttl",              :null => false
+    t.string   "record_type",      :default => "", :null => false
+    t.string   "content",          :default => "", :null => false
+    t.integer  "ttl",                              :null => false
     t.integer  "prio"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
   create_table "records", :force => true do |t|
-    t.integer  "domain_id",   :null => false
-    t.string   "name",        :null => false
-    t.string   "type",        :null => false
-    t.string   "content",     :null => false
-    t.integer  "ttl",         :null => false
+    t.integer  "domain_id",                   :null => false
+    t.string   "name",        :default => "", :null => false
+    t.string   "type",        :default => "", :null => false
+    t.string   "content",     :default => "", :null => false
+    t.integer  "ttl",                         :null => false
     t.integer  "prio"
-    t.integer  "change_date", :null => false
+    t.integer  "change_date",                 :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
