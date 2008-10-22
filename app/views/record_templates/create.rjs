@@ -1,4 +1,5 @@
-if @record_template.errors.empty? 
+if !@record_template.new_record?
+  page.call 'resetRecordForm'
   page.hide('record-form-div')
   page.insert_html(:bottom, 'record-table', { :partial => 'templates/record_template', :object => @record_template })
 
