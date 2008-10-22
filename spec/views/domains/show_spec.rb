@@ -19,7 +19,7 @@ describe "domain/show", "for all users" do
   end
 end
 
-describe "domain/show", "for admins" do
+describe "domain/show", "for admins and domains without owners" do
   fixtures :all
   
   before(:each) do
@@ -42,6 +42,30 @@ describe "domain/show", "for admins" do
   
   it "should have a form for adding new records" do
     response.should have_tag( "div#record-form-div" )
+  end
+  
+  it "should have not have an additional warnings for removing" do
+    response.should_not have_tag('div#warning-message')
+    response.should_not have_tag('a[onclick*=deleteDomain]')
+  end
+end
+
+describe "domain/show", "for admins and domains with owners" do
+  fixtures :all
+  
+  before(:each) do
+    template.stubs(:current_user).returns( users(:admin) )
+    @domain = domains(:example_net)
+    assigns[:domain] = @domain
+    assigns[:record] = @domain.records.new
+    assigns[:users] = User.active_owners
+    
+    render "/domains/show"
+  end
+  
+  it "should have have an additional warnings for removing" do
+    response.should have_tag('div#warning-message')
+    response.should have_tag('a[onclick*=deleteDomain]')
   end
 end
 
@@ -67,6 +91,11 @@ describe "domain/show", "for owners" do
   
   it "should have a form for adding new records" do
     response.should have_tag( "div#record-form-div" )
+  end
+  
+  it "should have not have an additional warnings for removing" do
+    response.should_not have_tag('div#warning-message')
+    response.should_not have_tag('a[onclick*=deleteDomain]')
   end
 end
 
@@ -105,4 +134,3 @@ describe "domain/show", "for token users" do
     response.should have_tag( "div#record-form-div" )
   end
 end
- 

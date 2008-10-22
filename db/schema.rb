@@ -34,7 +34,7 @@ ActiveRecord::Schema.define(:version => 10) do
     t.integer  "domain_id"
     t.integer  "user_id"
     t.string   "token",       :default => "", :null => false
-    t.text     "permissions", :default => "", :null => false
+    t.text     "permissions",                 :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
     t.datetime "expires_at",                  :null => false
