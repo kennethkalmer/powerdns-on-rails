@@ -3,17 +3,16 @@ require File.dirname(__FILE__) + '/../spec_helper'
 describe AuditsHelper, "display_hash" do
   
   it "should handle a blank changes hash" do
-    result = display_hash( nil )
-    result.should eql('')
+    helper.display_hash( nil ).should eql('')
   end
   
   it "should have a way to display the changes hash with blank stipped" do
-    result = display_hash( 'key' => 'value', :blank => nil )
+    result = helper.display_hash( 'key' => 'value', :blank => nil )
     result.should eql("<em>key</em>: value")
   end
   
   it "should seperate items in the change hash with breaks" do
-    result = display_hash( 'one' => 'one', 'two' => 'two' )
+    result = helper.display_hash( 'one' => 'one', 'two' => 'two' )
     result.should eql("<em>two</em>: two<br /><em>one</em>: one")
   end
   
@@ -30,7 +29,7 @@ describe AuditsHelper, "link_to_domain_audit" do
       :user => users(:admin)
     )
     
-    results = link_to_domain_audit( audit )
+    results = helper.link_to_domain_audit( audit )
     
     results.should match(/1 create by admin/)
   end
@@ -43,7 +42,7 @@ describe AuditsHelper, "link_to_domain_audit" do
       :user => 'admin'
     )
     
-    results = link_to_domain_audit( audit )
+    results = helper.link_to_domain_audit( audit )
     
     results.should match(/1 create by admin/)
   end
@@ -57,7 +56,7 @@ describe AuditsHelper, "link_to_domain_audit" do
       :changes => { 'name' => 'example.net' }
     )
     
-    results = link_to_domain_audit( audit )
+    results = helper.link_to_domain_audit( audit )
     
     results.should match(/1 destroy by admin/)
   end
@@ -71,7 +70,7 @@ describe AuditsHelper, "link_to_domain_audit" do
       :changes => { 'name' => 'example.net' }
     )
     
-    results = link_to_domain_audit( audit )
+    results = helper.link_to_domain_audit( audit )
     
     results.should match(/1 destroy by admin/)
   end
@@ -91,7 +90,7 @@ describe AuditsHelper, "link_to_record_audit" do
       :changes => { 'type' => 'A', 'name' => 'example.com' }
     )
     
-    result = link_to_record_audit( audit )
+    result = helper.link_to_record_audit( audit )
     result.should match(/A \(example\.com\) 1 create by admin/)
   end
   
@@ -105,7 +104,7 @@ describe AuditsHelper, "link_to_record_audit" do
       :changes => { 'type' => 'A', 'name' => 'example.com' }
     )
     
-    result = link_to_record_audit( audit )
+    result = helper.link_to_record_audit( audit )
     result.should match(/A \(example\.com\) 1 create by admin/)
   end
   
@@ -119,7 +118,7 @@ describe AuditsHelper, "link_to_record_audit" do
       :changes => { 'type' => 'A', 'name' => 'local.example.com' }
     )
     
-    result = link_to_record_audit( audit )
+    result = helper.link_to_record_audit( audit )
     result.should match(/A \(local\.example\.com\) 1 destroy by admin/)
   end
   
@@ -133,7 +132,7 @@ describe AuditsHelper, "link_to_record_audit" do
       :changes => { 'type' => 'A', 'name' => 'local.example.com' }
     )
     
-    result = link_to_record_audit( audit )
+    result = helper.link_to_record_audit( audit )
     result.should match(/A \(local\.example\.com\) 1 destroy by admin/)
   end
   
@@ -147,7 +146,7 @@ describe AuditsHelper, "link_to_record_audit" do
       :changes => { 'name' => 'example.com' }
     )
     
-    result = link_to_record_audit( audit )
+    result = helper.link_to_record_audit( audit )
     result.should match(/A \(example\.com\) 1 create by admin/)
   end
   
@@ -161,7 +160,7 @@ describe AuditsHelper, "link_to_record_audit" do
       :changes => { 'name' => 'local.example.com' }
     )
     
-    result = link_to_record_audit( audit )
+    result = helper.link_to_record_audit( audit )
     result.should match(/\[UNKNOWN\] \(local\.example\.com\) 1 destroy by admin/)
   end
   

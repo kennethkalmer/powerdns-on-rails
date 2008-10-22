@@ -11,7 +11,14 @@
       %th.left Login 
       %th.right Domains
       %th.left Email
-    = render :partial => 'user', :collection => @users
+    - if @users
+      = render :partial => 'user', :collection => @users
+    - else
+      %tr
+        %td
+          %em No user domains
+        %td.right 0
+        %td -
     %tr
       %td{ :colspan => 3 } &nbsp;
     %tr
@@ -25,4 +32,4 @@
       %td.right= @total_domains
       %td &nbsp;
 
-= will_paginate @users
+= will_paginate @users if @users

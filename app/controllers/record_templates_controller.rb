@@ -1,6 +1,6 @@
 class RecordTemplatesController < ApplicationController
   
-  require_role "admin"
+  require_role ["admin", "owner"]
   
   def create
     @record_template = RecordTemplate.new(params[:record_template])

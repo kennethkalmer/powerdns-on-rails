@@ -32,9 +32,9 @@ module Spec
             ]
             err = StringIO.new
             out = StringIO.new
-            options = ::Spec::Runner::OptionParser.parse(args, err, out)
-            Spec::Runner::CommandLine.run(options)
 
+            run_with ::Spec::Runner::OptionParser.parse(args, err, out)
+              
             yield(out.string)
           end          
         end
@@ -50,10 +50,10 @@ module Spec
         #       Spec::Runner::CommandLine.run(
         #         ::Spec::Runner::OptionParser.parse(args, err, out)
         #       )
-        #
+        # 
         #       seconds = /\d+\.\d+ seconds/
         #       html = out.string.gsub seconds, 'x seconds'
-        #
+        # 
         #       File.open(expected_file, 'w') {|io| io.write(html)}
         #     end
         #   end

@@ -70,8 +70,10 @@ class User < ActiveRecord::Base
     def find_owners(page)
       r = Role.find_by_name("owner", :select => :id)
       users = r.users.collect {|u| u.id }.join(',')
-      paginate :per_page => 50, :page => page, 
-        :conditions => "id IN (#{ users })"
+      
+      users.size == 0 ? nil : 
+        paginate( :per_page => 50, :page => page, 
+        :conditions => "id IN (#{ users })", :order => 'login' )
     end
   end
 
