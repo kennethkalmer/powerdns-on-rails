@@ -26,22 +26,21 @@ module CollectiveIdea #:nodoc:
         #    audit User, :only => [:create, :edit, :destroy]
         #
         def audit(*models)
-          options = models.last.is_a?(Hash) ? models.pop : {}
+          options = models.extract_options!
           parents = options.delete(:parents) || {}
           models.each do |clazz|
             clazz.send :acts_as_audited, :parent => parents[clazz]
             # disable ActiveRecord callbacks, which are replaced by the AuditSweeper
             clazz.send :disable_auditing_callbacks
+            clazz.add_observer(AuditSweeper.instance)
           end
-          AuditSweeper.class_eval do
-            observe *models
-          end
+
           class_eval do
             cache_sweeper :audit_sweeper, options
           end
         end
       end
-      
+
     end
   end
 end
@@ -59,7 +58,7 @@ class AuditSweeper < ActionController::Caching::Sweeper #:nodoc:
   def before_update(record)
     record.send(:audit_update, current_user)
   end
-  
+
   def current_user
     controller.send :current_user if controller.respond_to?(:current_user)
   end
