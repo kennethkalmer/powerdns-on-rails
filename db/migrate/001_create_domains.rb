@@ -7,7 +7,7 @@ class CreateDomains < ActiveRecord::Migration
       t.string :type, :default => 'NATIVE'
       t.integer :notified_serial
       t.string :account
-      t.integer :ttl, :integer, :allow_null => false, :default => 86400
+      t.integer :ttl, :allow_null => false, :default => 86400
 
       t.timestamps
     end
