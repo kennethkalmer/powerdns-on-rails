@@ -73,7 +73,11 @@ class DomainsController < ApplicationController
   def destroy
     @domain = Domain.find( params[:id] )
     @domain.destroy
-    redirect_to :action => 'index'
+
+    respond_to do |format|
+      format.html { redirect_to :action => 'index' }
+      format.xml { render :xml => @domain, :status => :no_content }
+    end
   end
   
   # Non-CRUD methods

@@ -141,6 +141,18 @@ describe DomainsController, "should handle a REST client" do
     
     response.should have_tag( 'errors' )
   end
+
+  it "removing zones" do
+    domain = domains(:example_com)
+
+    delete :destroy, :id => domain.id, :format => "xml"
+
+    response.code.should == "204"
+
+    lambda {
+      domain.reload
+    }.should raise_error(ActiveRecord::RecordNotFound)
+  end
 end
 
 describe DomainsController, "and auth tokens" do
