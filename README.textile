@@ -1,4 +1,15 @@
-== PowerDNS on Rails
+h1. PowerDNS on Rails
+
+PowerDNS on Rails is a Ruby on Rails application made to manage "PowerDNS":http://www.powerdns.com
+installations using the generic MySQL/PostgreSQL backends.
+
+More information:
+
+* The README (this file)
+* "Home page":http://www.opensourcery.co.za/powerdns-on-rails
+* "Bug tracker":http://kennethkalmer.lighthouseapp.com/projects/11831-powerdns-on-rails
+
+h2.
 
 The PowerDNS on Rails README is located in doc/README_FOR_APP, other supporting
 documents are also located in doc/
@@ -7,7 +18,7 @@ PowerDNS on Rails is written in Ruby, using the Ruby on Rails framework. All
 external dependencies have been bundled inside this project to ease the 
 installation and use of the code by system administrators.
 
-== Features (current and planned)
+h2. Features (current and planned)
 
 * RESTful architecture to support a rich UI and API's
 * Multi-user support (admins, owners, API clients)
@@ -17,7 +28,7 @@ installation and use of the code by system administrators.
 * DNS Insight
 * Full audit record of all changes
 
-== Overview
+h2. Overview
 
 PowerDNS on Rails is a split from the BIND DLZ on Rails project.
 
@@ -39,7 +50,7 @@ split the project off to use our existing PowerDNS infrastructure.  Using Rails
 REST API in a single go. We have a lot of integration needs, and this was our 
 main driver.
 
-== PowerDNS Information
+h2. PowerDNS Information
 
 The PowerDNS project can be found at http://www.powerdns.com. The documentation
 is in-depth on that site, I won't repeat anything here unless its related to 
@@ -49,7 +60,7 @@ It is however worth noting that this interface excepts the "Generic MySQL and
 PgSQL backend" to be used, as per 
 http://doc.powerdns.com/generic-mypgsql-backends.html
 
-== Database Structure
+h2. Database Structure
 
 PowerDNS does not allow you to alter the database schema at all, and you're 
 forced to use at least one set database table. It can however handle additions
@@ -57,12 +68,12 @@ to the table without problems.
 
 We also add additional table to accomodate users, templates, etc.
 
-== Migration to PowerDNS
+h2. Migration to PowerDNS
 
 PowerDNS does provide a suite of migration tools, and they're all covered in the
 official documentation.
 
-== Testing
+h2. Testing
 
 PowerDNS on Rails is built using extensive RSpec suites, often termed "Behaviour
 Driven Development". It is critical for a core service like DNS to be reliable

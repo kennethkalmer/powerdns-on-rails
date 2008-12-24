@@ -3,20 +3,16 @@
 Simple list of things to do by version. This is not authorative, the real list
 will be maintained at the LightHouse tracker.
 
-http://kennethkalmer.lighthouseapp.com/projects/11831-bind-dlz-on-rails/
+http://kennethkalmer.lighthouseapp.com/projects/11831-powerdns-on-rails/
 
-== 0.1
-
+* Github project page
 * Basic database structure                  [ done ]
 * Multiple users (admins or owners)         [ in progress ]
 * Solid models and model specs              [ continuous ]
 * Documentation                             [ continuous ]
-* Configuration samples for bind-dlz
+* Configuration samples for powerdns
 * Zone/Record Templates                     [ done ]
 * Basic API client
-
-== 0.2
-
 * User management                           [ moving target ]
 * DNS Insight                               [ started ]
 * API improvements                          [ moving target ]
@@ -24,9 +20,6 @@ http://kennethkalmer.lighthouseapp.com/projects/11831-bind-dlz-on-rails/
   * mod_passenger installation
   * simple git clone and future git pull's
 * Import scripts for standard zone files and PowerDNS
-* Authentication tokens for one-time access
-
-== 0.3
-
+* Authentication tokens for one-time access [ complete ]
 * Flexible model support?
-* Statistics (import bind logs)
+* Statistics (import pdns logs)
