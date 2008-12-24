@@ -47,7 +47,7 @@ class AuthTokensController < ApplicationController
     end
     
     if @auth_token.save
-      render :status => 200, :text => <<-EOF
+      render :status => 200, :xml => <<-EOF
         <token>
           <expires>#{@auth_token.expires_at}</expires>
           <auth_token>#{@auth_token.token}</auth_token>
@@ -55,7 +55,7 @@ class AuthTokensController < ApplicationController
         </token>
       EOF
     else
-      render :status => 500, :text => <<-EOF
+      render :status => 500, :xml => <<-EOF
         <error>
           #{@auth_token.errors.to_xml}
         </error>
