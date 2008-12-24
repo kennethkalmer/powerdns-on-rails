@@ -35,7 +35,7 @@ describe AuthTokensController do
       login_as(:token_user)
       
       @domain = domains(:example_com)
-      @params = { :domain => @domain.name, :expires_at => 1.hour.since.to_s }
+      @params = { :domain => @domain.name, :expires_at => 1.hour.since.to_s(:rfc822) }
     end
     
     it "with allow_new set" do
