@@ -19,8 +19,12 @@ class UsersController < ApplicationController
     @user = User.new( params[:user] )
     if @user.save
       # add our roles
-      @user.roles << if @user.admin
-        Role.find_by_name('admin')
+      @user.roles << if @user.admin?
+        r = [ Role.find_by_name('admin') ]
+        if params[:token_user] && params[:token_user] == "1"
+          r << Role.find_by_name('auth_token')
+        end
+        r
       else
         Role.find_by_name('owner')
       end
@@ -38,11 +42,18 @@ class UsersController < ApplicationController
   end
   
   def update
+    # strip out blank params
+    params[:user].delete_if { |k,v| v.blank? }
+    
     if @user.update_attributes( params[:user] )
       # update our roles
       @user.roles.clear
       @user.roles << if @user.admin
-        Role.find_by_name('admin')
+        r = [ Role.find_by_name('admin') ]
+        if params[:token_user] && params[:token_user] == "1"
+          r << Role.find_by_name('auth_token')
+        end
+        r
       else
         Role.find_by_name('owner')
       end

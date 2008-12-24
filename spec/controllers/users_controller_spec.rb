@@ -37,7 +37,87 @@ describe UsersController do
       response.should render_template( 'users/form' )
       assigns[:user].should_not be_nil
     end
+
+    it "should create a new administrator" do
+      post :create, :user => {
+          :login => 'someone',
+          :email => 'someone@example.com',
+          :password => 'secret',
+          :password_confirmation => 'secret',
+          :admin => 'true'
+        }
+
+      assigns[:user].should be_an_admin
+
+      response.should be_redirect
+      response.should redirect_to( user_path( assigns[:user] ) )
+    end
+
+    it 'should create a new administrator with token privs' do
+      post :create, :user => {
+          :login => 'someone',
+          :email => 'someone@example.com',
+          :password => 'secret',
+          :password_confirmation => 'secret',
+          :admin => 'true'
+        },
+        :token_user => '1'
+
+      assigns[:user].should be_an_admin
+      assigns[:user].has_role?('auth_token').should be_true
+
+      response.should be_redirect
+      response.should redirect_to( user_path( assigns[:user] ) )
+    end
+
+    it "should create a new owner" do
+      post :create, :user => {
+          :login => 'someone',
+          :email => 'someone@example.com',
+          :password => 'secret',
+          :password_confirmation => 'secret',
+          :admin => 'false'
+        }
+
+      assigns[:user].should_not be_an_admin
+
+      response.should be_redirect
+      response.should redirect_to( user_path( assigns[:user] ) )
+    end
+
+    it 'should create a new owner ignoring token privs' do
+      post :create, :user => {
+          :login => 'someone',
+          :email => 'someone@example.com',
+          :password => 'secret',
+          :password_confirmation => 'secret',
+          :admin => 'false'
+        },
+        :token_user => '1'
+
+      assigns[:user].should_not be_an_admin
+      assigns[:user].has_role?('auth_token').should be_false
+
+      response.should be_redirect
+      response.should redirect_to( user_path( assigns[:user] ) )
+    end
     
+    it 'should update a user without password changes' do
+      user = users(:quentin)
+      
+      lambda {
+        post :update, :id => user.id, :user => {
+            :email => 'new@example.com',
+            :password => '',
+            :password_confirmation => ''
+          }
+        user.reload
+      }.should change( user, :email )
+      
+      response.should be_redirect
+      response.should redirect_to( user_path( user ) )
+    end
+
     it 'should be able to suspend users' do
       @user = users(:quentin)
       User.stubs(:find).with('1').returns(@user)

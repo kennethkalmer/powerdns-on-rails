@@ -6,6 +6,10 @@
     This user has access to all PowerDNS on Rails facilities.
   #domain-owner
     This user can only change aspects of his domain.
+  #token-user-help
+    Only has effect if the user is an admin. This allows the user to generate
+    authentication tokens for temporary access to manage a specific domain.
+    Useful only where PowerDNS on Rails' API features are used.
 
 - form_for( @user ) do |f|
   = error_messages_for( :user )
@@ -18,10 +22,14 @@
       %td Email address
       %td= f.text_field :email
     %tr
-      %td Password
-      %td= f.password_field :password
+      %td.top Password
+      %td
+        = f.password_field :password
+        - unless @user.new_record?
+          %br
+          %em Leave blank to keep current password
     %tr
-      %td Password (Again)
+      %td.top Password (Again)
       %td= f.password_field :password_confirmation
     %tr
       %td.top Role
@@ -33,6 +41,10 @@
         = f.radio_button :admin, false
         Domain Owner
         = prototip_help_icon('domain-owner')
+        %br
+        = check_box_tag 'token_user'
+        Manage authentication tokens
+        = prototip_help_icon('token-user-help')
     %tr
       %td &nbsp;
       %td &nbsp;

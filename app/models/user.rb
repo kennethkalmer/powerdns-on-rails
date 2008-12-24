@@ -12,7 +12,9 @@ class User < ActiveRecord::Base
   validates_length_of       :login,    :within => 3..40
   validates_length_of       :email,    :within => 3..100
   validates_uniqueness_of   :login, :email, :case_sensitive => false
+  
   before_save :encrypt_password
+  after_destroy :persist_audits
   
   # prevents a user from submitting a crafted form that bypasses activation
   # anything else you want your user to change should be added here.
@@ -40,8 +42,6 @@ class User < ActiveRecord::Base
     transitions :from => [:suspended, :active], :to => :deleted
   end
   
-  after_destroy :persist_audits
-
   class << self
     
     # Returns a list of active owners for the domain
