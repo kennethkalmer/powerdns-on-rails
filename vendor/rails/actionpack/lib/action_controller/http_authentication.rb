@@ -70,7 +70,7 @@ module ActionController
     #  
     # On shared hosts, Apache sometimes doesn't pass authentication headers to
     # FCGI instances. If your environment matches this description and you cannot
-    # authenticate, try this rule in public/.htaccess (replace the plain one):
+    # authenticate, try this rule in your Apache setup:
     # 
     #   RewriteRule ^(.*)$ dispatch.fcgi [E=X-HTTP_AUTHORIZATION:%{HTTP:Authorization},QSA,L]
     module Basic
@@ -117,7 +117,7 @@ module ActionController
 
       def authentication_request(controller, realm)
         controller.headers["WWW-Authenticate"] = %(Basic realm="#{realm.gsub(/"/, "")}")
-        controller.send! :render, :text => "HTTP Basic: Access denied.\n", :status => :unauthorized
+        controller.__send__ :render, :text => "HTTP Basic: Access denied.\n", :status => :unauthorized
       end
     end
   end

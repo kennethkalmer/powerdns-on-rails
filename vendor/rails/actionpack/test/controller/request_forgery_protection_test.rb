@@ -1,4 +1,4 @@
-require File.dirname(__FILE__) + '/../abstract_unit'
+require 'abstract_unit'
 require 'digest/sha1'
 
 ActionController::Routing::Routes.draw do |map|
@@ -50,6 +50,14 @@ class CsrfCookieMonsterController < ActionController::Base
   protect_from_forgery :only => :index
 end
 
+# sessions are turned off
+class SessionOffController < ActionController::Base
+  protect_from_forgery :secret => 'foobar'
+  session :off
+  def rescue_action(e) raise e end
+  include RequestForgeryProtectionActions
+end
+
 class FreeCookieController < CsrfCookieMonsterController
   self.allow_forgery_protection = false
   
@@ -69,53 +77,121 @@ module RequestForgeryProtectionTests
     ActionController::Base.request_forgery_protection_token = nil
   end
   
+
   def test_should_render_form_with_token_tag
-    get :index
-    assert_select 'form>div>input[name=?][value=?]', 'authenticity_token', @token
+     get :index
+     assert_select 'form>div>input[name=?][value=?]', 'authenticity_token', @token
+   end
+
+   def test_should_render_button_to_with_token_tag
+     get :show_button
+     assert_select 'form>div>input[name=?][value=?]', 'authenticity_token', @token
+   end
+
+   def test_should_render_remote_form_with_only_one_token_parameter
+     get :remote_form
+     assert_equal 1, @response.body.scan(@token).size
+   end
+
+   def test_should_allow_get
+     get :index
+     assert_response :success
+   end
+
+   def test_should_allow_post_without_token_on_unsafe_action
+     post :unsafe
+     assert_response :success
+   end
+
+  def test_should_not_allow_html_post_without_token
+    @request.env['CONTENT_TYPE'] = Mime::URL_ENCODED_FORM.to_s
+    assert_raises(ActionController::InvalidAuthenticityToken) { post :index, :format => :html }
   end
   
-  def test_should_render_button_to_with_token_tag
-    get :show_button
-    assert_select 'form>div>input[name=?][value=?]', 'authenticity_token', @token
+  def test_should_not_allow_html_put_without_token
+    @request.env['CONTENT_TYPE'] = Mime::URL_ENCODED_FORM.to_s
+    assert_raises(ActionController::InvalidAuthenticityToken) { put :index, :format => :html }
+  end
+  
+  def test_should_not_allow_html_delete_without_token
+    @request.env['CONTENT_TYPE'] = Mime::URL_ENCODED_FORM.to_s
+    assert_raises(ActionController::InvalidAuthenticityToken) { delete :index, :format => :html }
   end
 
-  def test_should_render_remote_form_with_only_one_token_parameter
-    get :remote_form
-    assert_equal 1, @response.body.scan(@token).size
+  def test_should_allow_api_formatted_post_without_token
+    assert_nothing_raised do
+      post :index, :format => 'xml'
+    end
   end
 
-  def test_should_allow_get
-    get :index
-    assert_response :success
+  def test_should_not_allow_api_formatted_put_without_token
+    assert_nothing_raised do
+      put :index, :format => 'xml'
+    end
+  end
+
+  def test_should_allow_api_formatted_delete_without_token
+    assert_nothing_raised do
+      delete :index, :format => 'xml'
+    end
+  end
+
+  def test_should_not_allow_api_formatted_post_sent_as_url_encoded_form_without_token
+    assert_raises(ActionController::InvalidAuthenticityToken) do
+      @request.env['CONTENT_TYPE'] = Mime::URL_ENCODED_FORM.to_s
+      post :index, :format => 'xml'
+    end
+  end
+
+  def test_should_not_allow_api_formatted_put_sent_as_url_encoded_form_without_token
+    assert_raises(ActionController::InvalidAuthenticityToken) do
+      @request.env['CONTENT_TYPE'] = Mime::URL_ENCODED_FORM.to_s
+      put :index, :format => 'xml'
+    end
+  end
+
+  def test_should_not_allow_api_formatted_delete_sent_as_url_encoded_form_without_token
+    assert_raises(ActionController::InvalidAuthenticityToken) do
+      @request.env['CONTENT_TYPE'] = Mime::URL_ENCODED_FORM.to_s
+      delete :index, :format => 'xml'
+    end
+  end
+
+  def test_should_not_allow_api_formatted_post_sent_as_multipart_form_without_token
+    assert_raises(ActionController::InvalidAuthenticityToken) do
+      @request.env['CONTENT_TYPE'] = Mime::MULTIPART_FORM.to_s
+      post :index, :format => 'xml'
+    end
+  end
+
+  def test_should_not_allow_api_formatted_put_sent_as_multipart_form_without_token
+    assert_raises(ActionController::InvalidAuthenticityToken) do
+      @request.env['CONTENT_TYPE'] = Mime::MULTIPART_FORM.to_s
+      put :index, :format => 'xml'
+    end
+  end
+
+  def test_should_not_allow_api_formatted_delete_sent_as_multipart_form_without_token
+    assert_raises(ActionController::InvalidAuthenticityToken) do
+      @request.env['CONTENT_TYPE'] = Mime::MULTIPART_FORM.to_s
+      delete :index, :format => 'xml'
+    end
+  end
+
+  def test_should_allow_xhr_post_without_token
+    assert_nothing_raised { xhr :post, :index }
+  end
+  def test_should_not_allow_xhr_post_with_html_without_token
+    @request.env['CONTENT_TYPE'] = Mime::URL_ENCODED_FORM.to_s
+    assert_raise(ActionController::InvalidAuthenticityToken) { xhr :post, :index }
   end
   
-  def test_should_allow_post_without_token_on_unsafe_action
-    post :unsafe
-    assert_response :success
+  def test_should_allow_xhr_put_without_token
+    assert_nothing_raised { xhr :put, :index }
   end
   
-  def test_should_not_allow_post_without_token
-    assert_raises(ActionController::InvalidAuthenticityToken) { post :index }
-  end
-  
-  def test_should_not_allow_put_without_token
-    assert_raises(ActionController::InvalidAuthenticityToken) { put :index }
-  end
-  
-  def test_should_not_allow_delete_without_token
-    assert_raises(ActionController::InvalidAuthenticityToken) { delete :index }
-  end
-  
-  def test_should_not_allow_xhr_post_without_token
-    assert_raises(ActionController::InvalidAuthenticityToken) { xhr :post, :index }
-  end
-  
-  def test_should_not_allow_xhr_put_without_token
-    assert_raises(ActionController::InvalidAuthenticityToken) { xhr :put, :index }
-  end
-  
-  def test_should_not_allow_xhr_delete_without_token
-    assert_raises(ActionController::InvalidAuthenticityToken) { xhr :delete, :index }
+  def test_should_allow_xhr_delete_without_token
+    assert_nothing_raised { xhr :delete, :index }
   end
   
   def test_should_allow_post_with_token
@@ -134,16 +210,19 @@ module RequestForgeryProtectionTests
   end
   
   def test_should_allow_post_with_xml
+    @request.env['CONTENT_TYPE'] = Mime::XML.to_s
     post :index, :format => 'xml'
     assert_response :success
   end
   
   def test_should_allow_put_with_xml
+    @request.env['CONTENT_TYPE'] = Mime::XML.to_s
     put :index, :format => 'xml'
     assert_response :success
   end
   
   def test_should_allow_delete_with_xml
+    @request.env['CONTENT_TYPE'] = Mime::XML.to_s
     delete :index, :format => 'xml'
     assert_response :success
   end
@@ -156,6 +235,7 @@ class RequestForgeryProtectionControllerTest < Test::Unit::TestCase
   def setup
     @controller = RequestForgeryProtectionController.new
     @request    = ActionController::TestRequest.new
+    @request.format = :html
     @response   = ActionController::TestResponse.new
     class << @request.session
       def session_id() '123' end
@@ -177,11 +257,11 @@ class RequestForgeryProtectionWithoutSecretControllerTest < Test::Unit::TestCase
     ActionController::Base.request_forgery_protection_token = :authenticity_token
   end
   
-  def test_should_raise_error_without_secret
-    assert_raises ActionController::InvalidAuthenticityToken do
-      get :index
-    end
-  end
+  # def test_should_raise_error_without_secret
+  #   assert_raises ActionController::InvalidAuthenticityToken do
+  #     get :index
+  #   end
+  # end
 end
 
 class CsrfCookieMonsterControllerTest < Test::Unit::TestCase
@@ -223,4 +303,25 @@ class FreeCookieControllerTest < Test::Unit::TestCase
       assert_nothing_raised { send(method, :index)}
     end
   end
+end
+
+class SessionOffControllerTest < Test::Unit::TestCase
+  def setup
+    @controller = SessionOffController.new
+    @request    = ActionController::TestRequest.new
+    @response   = ActionController::TestResponse.new
+    @token      = OpenSSL::HMAC.hexdigest(OpenSSL::Digest::Digest.new('SHA1'), 'abc', '123')
+  end
+
+  # TODO: Rewrite this test.
+  # This test was passing but for the wrong reason.
+  # Sessions aren't really being turned off, so an exception was raised
+  # because sessions weren't on - not because the token didn't match.
+  #
+  # def test_should_raise_correct_exception
+  #   @request.session = {} # session(:off) doesn't appear to work with controller tests
+  #   assert_raises(ActionController::InvalidAuthenticityToken) do
+  #     post :index, :authenticity_token => @token, :format => :html
+  #   end
+  # end
 end

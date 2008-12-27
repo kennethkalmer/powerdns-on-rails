@@ -1,4 +1,4 @@
-require File.dirname(__FILE__) + '/../abstract_unit'
+require 'abstract_unit'
 
 # FIXME: crashes Ruby 1.9
 class FilterTest < Test::Unit::TestCase
@@ -111,15 +111,15 @@ class FilterTest < Test::Unit::TestCase
   end
 
   class OnlyConditionProcController < ConditionalFilterController
-    before_filter(:only => :show) {|c| c.assigns["ran_proc_filter"] = true }
+    before_filter(:only => :show) {|c| c.instance_variable_set(:"@ran_proc_filter", true) }
   end
 
   class ExceptConditionProcController < ConditionalFilterController
-    before_filter(:except => :show_without_filter) {|c| c.assigns["ran_proc_filter"] = true }
+    before_filter(:except => :show_without_filter) {|c| c.instance_variable_set(:"@ran_proc_filter", true) }
   end
 
   class ConditionalClassFilter
-    def self.filter(controller) controller.assigns["ran_class_filter"] = true end
+    def self.filter(controller) controller.instance_variable_set(:"@ran_class_filter", true) end
   end
 
   class OnlyConditionClassController < ConditionalFilterController
@@ -131,7 +131,12 @@ class FilterTest < Test::Unit::TestCase
   end
 
   class AnomolousYetValidConditionController < ConditionalFilterController
-    before_filter(ConditionalClassFilter, :ensure_login, Proc.new {|c| c.assigns["ran_proc_filter1"] = true }, :except => :show_without_filter) { |c| c.assigns["ran_proc_filter2"] = true}
+    before_filter(ConditionalClassFilter, :ensure_login, Proc.new {|c| c.instance_variable_set(:"@ran_proc_filter1", true)}, :except => :show_without_filter) { |c| c.instance_variable_set(:"@ran_proc_filter2", true)}
+  end
+
+  class ConditionalOptionsFilter < ConditionalFilterController
+    before_filter :ensure_login, :if => Proc.new { |c| true }
+    before_filter :clean_up_tmp, :if => Proc.new { |c| false }
   end
 
   class EmptyFilterChainController < TestController
@@ -150,6 +155,30 @@ class FilterTest < Test::Unit::TestCase
       def wonderful_life
         @ran_filter ||= []
         @ran_filter << "wonderful_life"
+      end
+  end
+
+  class SkippingAndLimitedController < TestController
+    skip_before_filter :ensure_login
+    before_filter :ensure_login, :only => :index
+
+    def index
+      render :text => 'ok'
+    end
+    
+    def public
+    end
+  end
+  
+  class SkippingAndReorderingController < TestController
+    skip_before_filter :ensure_login
+    before_filter :find_record
+    before_filter :ensure_login
+
+    private
+      def find_record
+        @ran_filter ||= []
+        @ran_filter << "find_record"
       end
   end
 
@@ -196,16 +225,16 @@ class FilterTest < Test::Unit::TestCase
   end
 
   class ProcController < PrependingController
-    before_filter(proc { |c| c.assigns["ran_proc_filter"] = true })
+    before_filter(proc { |c| c.instance_variable_set(:"@ran_proc_filter", true) })
   end
 
   class ImplicitProcController < PrependingController
-    before_filter { |c| c.assigns["ran_proc_filter"] = true }
+    before_filter { |c| c.instance_variable_set(:"@ran_proc_filter", true) }
   end
 
   class AuditFilter
     def self.filter(controller)
-      controller.assigns["was_audited"] = true
+      controller.instance_variable_set(:"@was_audited", true)
     end
   end
 
@@ -213,12 +242,12 @@ class FilterTest < Test::Unit::TestCase
     def before(controller)
       @execution_log = "before"
       controller.class.execution_log << " before aroundfilter " if controller.respond_to? :execution_log
-      controller.assigns["before_ran"] = true
+      controller.instance_variable_set(:"@before_ran", true)
     end
 
     def after(controller)
-      controller.assigns["execution_log"] = @execution_log + " and after"
-      controller.assigns["after_ran"] = true
+      controller.instance_variable_set(:"@execution_log", @execution_log + " and after")
+      controller.instance_variable_set(:"@after_ran", true)
       controller.class.execution_log << " after aroundfilter " if controller.respond_to? :execution_log
     end
   end
@@ -335,7 +364,7 @@ class FilterTest < Test::Unit::TestCase
       begin
         yield
       rescue ErrorToRescue => ex
-        controller.send! :render, :text => "I rescued this: #{ex.inspect}"
+        controller.__send__ :render, :text => "I rescued this: #{ex.inspect}"
       end
     end
   end
@@ -466,6 +495,11 @@ class FilterTest < Test::Unit::TestCase
     assert !response.template.assigns["ran_proc_filter2"]
   end
 
+  def test_running_conditional_options
+    response = test_process(ConditionalOptionsFilter)
+    assert_equal %w( ensure_login ), response.template.assigns["ran_filter"]
+  end
+
   def test_running_collection_condition_filters
     assert_equal %w( ensure_login ), test_process(ConditionalCollectionFilterController).template.assigns["ran_filter"]
     assert_equal nil, test_process(ConditionalCollectionFilterController, "show_without_filter").template.assigns["ran_filter"]
@@ -497,13 +531,6 @@ class FilterTest < Test::Unit::TestCase
   def test_running_before_and_after_condition_filters
     assert_equal %w( ensure_login clean_up_tmp), test_process(BeforeAndAfterConditionController).template.assigns["ran_filter"]
     assert_equal nil, test_process(BeforeAndAfterConditionController, "show_without_filter").template.assigns["ran_filter"]
-  end
-
-  def test_bad_filter
-    bad_filter_controller = Class.new(ActionController::Base)
-    assert_raises(ActionController::ActionControllerError) do
-      bad_filter_controller.before_filter 2
-    end
   end
 
   def test_around_filter
@@ -561,6 +588,15 @@ class FilterTest < Test::Unit::TestCase
     assert_equal 3, PrependingBeforeAndAfterController.filter_chain.length
     response = test_process(PrependingBeforeAndAfterController)
     assert_equal %w( before_all between_before_all_and_after_all after_all ), response.template.assigns["ran_filter"]
+  end
+  
+  def test_skipping_and_limiting_controller
+    assert_equal %w( ensure_login ), test_process(SkippingAndLimitedController, "index").template.assigns["ran_filter"]
+    assert_nil test_process(SkippingAndLimitedController, "public").template.assigns["ran_filter"]
+  end
+
+  def test_skipping_and_reordering_controller
+    assert_equal %w( find_record ensure_login ), test_process(SkippingAndReorderingController, "index").template.assigns["ran_filter"]
   end
 
   def test_conditional_skipping_of_filters
@@ -690,9 +726,9 @@ end
 
 class ControllerWithProcFilter < PostsController
   around_filter(:only => :no_raise) do |c,b|
-    c.assigns['before'] = true
+    c.instance_variable_set(:"@before", true)
     b.call
-    c.assigns['after'] = true
+    c.instance_variable_set(:"@after", true)
   end
 end
 
@@ -744,14 +780,6 @@ class YieldingAroundFiltersTest < Test::Unit::TestCase
     assert_equal 3, ControllerWithSymbolAsFilter.filter_chain.size
     assert_equal 6, ControllerWithNestedFilters.filter_chain.size
     assert_equal 4, ControllerWithAllTypesOfFilters.filter_chain.size
-  end
-
-  def test_wrong_filter_type
-    assert_raise ArgumentError do
-      Class.new PostsController do
-        around_filter lambda { yield }
-      end
-    end
   end
 
   def test_base

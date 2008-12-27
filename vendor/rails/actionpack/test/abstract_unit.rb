@@ -1,5 +1,5 @@
 $:.unshift(File.dirname(__FILE__) + '/../lib')
-$:.unshift(File.dirname(__FILE__) + '/../../activesupport/lib/active_support')
+$:.unshift(File.dirname(__FILE__) + '/../../activesupport/lib')
 $:.unshift(File.dirname(__FILE__) + '/fixtures/helpers')
 
 require 'yaml'
@@ -8,6 +8,7 @@ require 'test/unit'
 require 'action_controller'
 require 'action_controller/cgi_ext'
 require 'action_controller/test_process'
+require 'action_view/test_case'
 
 begin
   require 'ruby-debug'
@@ -19,9 +20,11 @@ end
 ActiveSupport::Deprecation.debug = true
 
 ActionController::Base.logger = nil
-ActionController::Base.ignore_missing_templates = false
 ActionController::Routing::Routes.reload rescue nil
 
+FIXTURE_LOAD_PATH = File.join(File.dirname(__FILE__), 'fixtures')
+ActionView::PathSet::Path.eager_load_templates!
+ActionController::Base.view_paths = FIXTURE_LOAD_PATH
 
 # Wrap tests that use Mocha and skip if unavailable.
 def uses_mocha(test_name)

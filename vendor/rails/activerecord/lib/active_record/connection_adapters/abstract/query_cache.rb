@@ -4,7 +4,6 @@ module ActiveRecord
       class << self
         def included(base)
           base.class_eval do
-            attr_accessor :query_cache_enabled
             alias_method_chain :columns, :query_cache
             alias_method_chain :select_all, :query_cache
           end
@@ -26,6 +25,8 @@ module ActiveRecord
         end
       end
 
+      attr_reader :query_cache, :query_cache_enabled
+
       # Enable the query cache within the block.
       def cache
         old, @query_cache_enabled = @query_cache_enabled, true
@@ -44,6 +45,12 @@ module ActiveRecord
         @query_cache_enabled = old
       end
 
+      # Clears the query cache.
+      #
+      # One reason you may wish to call this method explicitly is between queries
+      # that ask the database to randomize results. Otherwise the cache would see
+      # the same SQL query and repeatedly return the same result each time, silently
+      # undermining the randomness you were expecting.
       def clear_query_cache
         @query_cache.clear if @query_cache
       end

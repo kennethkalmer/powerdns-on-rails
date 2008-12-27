@@ -3,7 +3,7 @@ require 'action_controller/session/cookie_store'
 
 module ActionController #:nodoc:
   class Base
-    # Process a request extracted from an CGI object and return a response. Pass false as <tt>session_options</tt> to disable
+    # Process a request extracted from a CGI object and return a response. Pass false as <tt>session_options</tt> to disable
     # sessions (large performance increase if sessions are not needed). The <tt>session_options</tt> are the same as for CGI::Session:
     #
     # * <tt>:database_manager</tt> - standard options are CGI::Session::FileStore, CGI::Session::MemoryStore, and CGI::Session::PStore
@@ -15,9 +15,9 @@ module ActionController #:nodoc:
     # * <tt>:new_session</tt> - if true, force creation of a new session.  If not set, a new session is only created if none currently
     #   exists.  If false, a new session is never created, and if none currently exists and the +session_id+ option is not set,
     #   an ArgumentError is raised.
-    # * <tt>:session_expires</tt> - the time the current session expires, as a +Time+ object.  If not set, the session will continue
+    # * <tt>:session_expires</tt> - the time the current session expires, as a Time object.  If not set, the session will continue
     #   indefinitely.
-    # * <tt>:session_domain</tt> -  the hostname domain for which this session is valid. If not set, defaults to the hostname of the
+    # * <tt>:session_domain</tt> - the hostname domain for which this session is valid. If not set, defaults to the hostname of the
     #   server.
     # * <tt>:session_secure</tt> - if +true+, this session will only work over HTTPS.
     # * <tt>:session_path</tt> - the path for which this session applies.  Defaults to the directory of the CGI script.
@@ -34,20 +34,22 @@ module ActionController #:nodoc:
 
   class CgiRequest < AbstractRequest #:nodoc:
     attr_accessor :cgi, :session_options
-    class SessionFixationAttempt < StandardError; end #:nodoc:
+    class SessionFixationAttempt < StandardError #:nodoc:
+    end
 
     DEFAULT_SESSION_OPTIONS = {
       :database_manager => CGI::Session::CookieStore, # store data in cookie
       :prefix           => "ruby_sess.",    # prefix session file names
       :session_path     => "/",             # available to all paths in app
       :session_key      => "_session_id",
-      :cookie_only      => true
-    } unless const_defined?(:DEFAULT_SESSION_OPTIONS)
+      :cookie_only      => true,
+      :session_http_only=> true
+    }
 
     def initialize(cgi, session_options = {})
       @cgi = cgi
       @session_options = session_options
-      @env = @cgi.send!(:env_table)
+      @env = @cgi.__send__(:env_table)
       super()
     end
 
@@ -60,50 +62,12 @@ module ActionController #:nodoc:
       end
     end
 
-    # The request body is an IO input stream. If the RAW_POST_DATA environment
-    # variable is already set, wrap it in a StringIO.
-    def body
-      if raw_post = env['RAW_POST_DATA']
-        StringIO.new(raw_post)
-      else
-        @cgi.stdinput
-      end
-    end
-
-    def query_parameters
-      @query_parameters ||= self.class.parse_query_parameters(query_string)
-    end
-
-    def request_parameters
-      @request_parameters ||= parse_formatted_request_parameters
+    def body_stream #:nodoc:
+      @cgi.stdinput
     end
 
     def cookies
       @cgi.cookies.freeze
-    end
-
-    def host_with_port_without_standard_port_handling
-      if forwarded = env["HTTP_X_FORWARDED_HOST"]
-        forwarded.split(/,\s?/).last
-      elsif http_host = env['HTTP_HOST']
-        http_host
-      elsif server_name = env['SERVER_NAME']
-        server_name
-      else
-        "#{env['SERVER_ADDR']}:#{env['SERVER_PORT']}"
-      end
-    end
-
-    def host
-      host_with_port_without_standard_port_handling.sub(/:\d+$/, '')
-    end
-
-    def port
-      if host_with_port_without_standard_port_handling =~ /:(\d+)$/
-        $1.to_i
-      else
-        standard_port
-      end
     end
 
     def session
@@ -144,7 +108,7 @@ module ActionController #:nodoc:
     end
 
     def method_missing(method_id, *arguments)
-      @cgi.send!(method_id, *arguments) rescue super
+      @cgi.__send__(method_id, *arguments) rescue super
     end
 
     private
@@ -201,7 +165,7 @@ end_msg
       begin
         output.write(@cgi.header(@headers))
 
-        if @cgi.send!(:env_table)['REQUEST_METHOD'] == 'HEAD'
+        if @cgi.__send__(:env_table)['REQUEST_METHOD'] == 'HEAD'
           return
         elsif @body.respond_to?(:call)
           # Flush the output now in case the @body Proc uses

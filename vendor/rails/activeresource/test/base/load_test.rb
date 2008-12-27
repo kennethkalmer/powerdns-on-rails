@@ -1,4 +1,4 @@
-require "#{File.dirname(__FILE__)}/../abstract_unit"
+require 'abstract_unit'
 require "fixtures/person"
 require "fixtures/street_address"
 
@@ -84,7 +84,7 @@ class BaseLoadTest < Test::Unit::TestCase
   end
 
   def test_load_collection_with_unknown_resource
-    Person.send!(:remove_const, :Address) if Person.const_defined?(:Address)
+    Person.__send__(:remove_const, :Address) if Person.const_defined?(:Address)
     assert !Person.const_defined?(:Address), "Address shouldn't exist until autocreated"
     addresses = silence_warnings { @person.load(:addresses => @addresses).addresses }
     assert Person.const_defined?(:Address), "Address should have been autocreated"
@@ -100,7 +100,7 @@ class BaseLoadTest < Test::Unit::TestCase
   end
 
   def test_load_collection_with_single_unknown_resource
-    Person.send!(:remove_const, :Address) if Person.const_defined?(:Address)
+    Person.__send__(:remove_const, :Address) if Person.const_defined?(:Address)
     assert !Person.const_defined?(:Address), "Address shouldn't exist until autocreated"
     addresses = silence_warnings { @person.load(:addresses => [ @first_address ]).addresses }
     assert Person.const_defined?(:Address), "Address should have been autocreated"

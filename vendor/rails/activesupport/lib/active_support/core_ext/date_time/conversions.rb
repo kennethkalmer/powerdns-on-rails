@@ -3,16 +3,21 @@ module ActiveSupport #:nodoc:
     module DateTime #:nodoc:
       # Converting datetimes to formatted strings, dates, and times.
       module Conversions
-        def self.included(base) #:nodoc:
+        def self.append_features(base) #:nodoc:
           base.class_eval do
-            alias_method :to_datetime_default_s, :to_s
-            alias_method :to_s, :to_formatted_s
             alias_method :default_inspect, :inspect
-            alias_method :inspect, :readable_inspect
+            alias_method :to_default_s, :to_s unless (instance_methods(false) & [:to_s, 'to_s']).empty?
 
             # Ruby 1.9 has DateTime#to_time which internally relies on Time. We define our own #to_time which allows
             # DateTimes outside the range of what can be created with Time.
-            remove_method :to_time if base.instance_methods.include?(:to_time)
+            remove_method :to_time if instance_methods.include?(:to_time)
+          end
+
+          super
+
+          base.class_eval do
+            alias_method :to_s, :to_formatted_s
+            alias_method :inspect, :readable_inspect
           end
         end
 
@@ -41,17 +46,19 @@ module ActiveSupport #:nodoc:
         #   Time::DATE_FORMATS[:month_and_year] = "%B %Y"
         #   Time::DATE_FORMATS[:short_ordinal] = lambda { |time| time.strftime("%B #{time.day.ordinalize}") }
         def to_formatted_s(format = :default)
-          if formatter = ::Time::DATE_FORMATS[format]
-            if formatter.respond_to?(:call)
-              formatter.call(self).to_s
-            else
-              strftime(formatter)
-            end
-          else
-            to_datetime_default_s
-          end
+          return to_default_s unless formatter = ::Time::DATE_FORMATS[format]
+          formatter.respond_to?(:call) ? formatter.call(self).to_s : strftime(formatter)
         end
 
+        # Returns the +utc_offset+ as an +HH:MM formatted string. Examples:
+        #
+        #   datetime = DateTime.civil(2000, 1, 1, 0, 0, 0, Rational(-6, 24))
+        #   datetime.formatted_offset         # => "-06:00"
+        #   datetime.formatted_offset(false)  # => "-0600"
+        def formatted_offset(colon = true, alternate_utc_string = nil)
+          utc? && alternate_utc_string || utc_offset.to_utc_offset_s(colon)
+        end
+        
         # Overrides the default inspect method with a human readable one, e.g., "Mon, 21 Feb 2005 14:30:00 +0000"
         def readable_inspect
           to_s(:rfc822)
@@ -77,6 +84,12 @@ module ActiveSupport #:nodoc:
         def xmlschema
           strftime("%Y-%m-%dT%H:%M:%S%Z")
         end if RUBY_VERSION < '1.9'
+        
+        # Converts self to a floating-point number of seconds since the Unix epoch 
+        def to_f
+          days_since_unix_epoch = self - ::DateTime.civil(1970)
+          (days_since_unix_epoch * 86_400).to_f
+        end
       end
     end
   end
