@@ -1,4 +1,4 @@
-require "#{File.dirname(__FILE__)}/abstract_unit"
+require 'abstract_unit'
 
 class ConnectionTest < Test::Unit::TestCase
   ResponseCodeStub = Struct.new(:code)
@@ -27,6 +27,7 @@ class ConnectionTest < Test::Unit::TestCase
       mock.delete "/people/2.xml", @header, nil, 200
       mock.post   "/people.xml",   {}, nil, 201, 'Location' => '/people/5.xml'
       mock.post   "/members.xml",  {}, @header, 201, 'Location' => '/people/6.xml'
+      mock.head   "/people/1.xml", {}, nil, 200
     end
   end
 
@@ -100,9 +101,20 @@ class ConnectionTest < Test::Unit::TestCase
     assert_equal site, @conn.site
   end
 
+  def test_timeout_accessor
+    @conn.timeout = 5
+    assert_equal 5, @conn.timeout
+  end
+
   def test_get
     matz = @conn.get("/people/1.xml")
     assert_equal "Matz", matz["name"]
+  end
+
+  def test_head
+    response = @conn.head("/people/1.xml")
+    assert response.body.blank?
+    assert_equal 200, response.code
   end
 
   def test_get_with_header
@@ -156,6 +168,23 @@ class ConnectionTest < Test::Unit::TestCase
     assert_equal 200, response.code
   end
 
+  uses_mocha('test_timeout, test_accept_http_header') do
+    def test_timeout
+      @http = mock('new Net::HTTP')
+      @conn.expects(:http).returns(@http)
+      @http.expects(:get).raises(Timeout::Error, 'execution expired')
+      assert_raise(ActiveResource::TimeoutError) { @conn.get('/people_timeout.xml') }
+    end
+
+    def test_accept_http_header
+      @http = mock('new Net::HTTP')
+      @conn.expects(:http).returns(@http)
+      path = '/people/1.xml'
+      @http.expects(:get).with(path,  {'Accept' => 'application/xhtml+xml'}).returns(ActiveResource::Response.new(@matz, 200, {'Content-Type' => 'text/xhtml'}))
+      assert_nothing_raised(Mocha::ExpectationError) { @conn.get(path, {'Accept' => 'application/xhtml+xml'}) }
+    end
+  end
+
   protected
     def assert_response_raises(klass, code)
       assert_raise(klass, "Expected response code #{code} to raise #{klass}") do
@@ -164,6 +193,6 @@ class ConnectionTest < Test::Unit::TestCase
     end
 
     def handle_response(response)
-      @conn.send!(:handle_response, response)
+      @conn.__send__(:handle_response, response)
     end
 end

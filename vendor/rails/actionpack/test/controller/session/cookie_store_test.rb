@@ -1,4 +1,4 @@
-require "#{File.dirname(__FILE__)}/../../abstract_unit"
+require 'abstract_unit'
 require 'action_controller/cgi_process'
 require 'action_controller/cgi_ext'
 
@@ -36,14 +36,18 @@ class CookieStoreTest < Test::Unit::TestCase
       'session_key' => '_myapp_session',
       'secret' => 'Keep it secret; keep it safe.',
       'no_cookies' => true,
-      'no_hidden' => true }
+      'no_hidden' => true,
+      'session_http_only' => true
+       }
   end
 
   def self.cookies
     { :empty => ['BAgw--0686dcaccc01040f4bd4f35fe160afe9bc04c330', {}],
       :a_one => ['BAh7BiIGYWkG--5689059497d7f122a7119f171aef81dcfd807fec', { 'a' => 1 }],
       :typical => ['BAh7ByIMdXNlcl9pZGkBeyIKZmxhc2h7BiILbm90aWNlIgxIZXkgbm93--9d20154623b9eeea05c62ab819be0e2483238759', { 'user_id' => 123, 'flash' => { 'notice' => 'Hey now' }}],
-      :flashed => ['BAh7ByIMdXNlcl9pZGkBeyIKZmxhc2h7AA%3D%3D--bf9785a666d3c4ac09f7fe3353496b437546cfbf', { 'user_id' => 123, 'flash' => {} }] }
+      :flashed => ['BAh7ByIMdXNlcl9pZGkBeyIKZmxhc2h7AA==--bf9785a666d3c4ac09f7fe3353496b437546cfbf', { 'user_id' => 123, 'flash' => {} }],
+      :double_escaped => [CGI.escape('BAh7ByIMdXNlcl9pZGkBeyIKZmxhc2h7AA%3D%3D--bf9785a666d3c4ac09f7fe3353496b437546cfbf'), { 'user_id' => 123, 'flash' => {} }] }
+
   end
 
   def setup
@@ -101,6 +105,15 @@ class CookieStoreTest < Test::Unit::TestCase
     end
   end
 
+  def test_restores_double_encoded_cookies
+    set_cookie! cookie_value(:double_escaped)
+    new_session do |session|
+      session.dbman.restore
+      assert_equal session["user_id"], 123
+      assert_equal session["flash"], {}
+    end
+  end
+
   def test_close_doesnt_write_cookie_if_data_is_blank
     new_session do |session|
       assert_no_cookies session
@@ -138,6 +151,48 @@ class CookieStoreTest < Test::Unit::TestCase
       assert_equal 1, session.cgi.output_cookies.size
       cookie = session.cgi.output_cookies.first
       assert_cookie cookie, cookie_value(:flashed)
+      assert_http_only_cookie cookie
+      assert_secure_cookie cookie, false
+    end
+  end
+
+  def test_writes_non_secure_cookie_by_default
+    set_cookie! cookie_value(:typical)
+    new_session do |session|
+      session['flash'] = {}
+      session.close
+      cookie = session.cgi.output_cookies.first
+      assert_secure_cookie cookie,false
+    end
+  end
+
+  def test_writes_secure_cookie
+    set_cookie! cookie_value(:typical)
+    new_session('session_secure'=>true) do |session|
+      session['flash'] = {}
+      session.close
+      cookie = session.cgi.output_cookies.first
+      assert_secure_cookie cookie
+    end
+  end
+
+  def test_http_only_cookie_by_default
+    set_cookie! cookie_value(:typical)
+    new_session do |session|
+      session['flash'] = {}
+      session.close
+      cookie = session.cgi.output_cookies.first
+      assert_http_only_cookie cookie
+    end
+  end
+
+  def test_overides_http_only_cookie
+    set_cookie! cookie_value(:typical)
+    new_session('session_http_only'=>false) do |session|
+      session['flash'] = {}
+      session.close
+      cookie = session.cgi.output_cookies.first
+      assert_http_only_cookie cookie, false
     end
   end
 
@@ -175,7 +230,7 @@ class CookieStoreTest < Test::Unit::TestCase
     def assert_cookie_deleted(session, message = 'Expected session deletion cookie to be set')
       assert_equal 1, session.cgi.output_cookies.size
       cookie = session.cgi.output_cookies.first
-      assert_cookie cookie, nil, 1.year.ago.to_date, message
+      assert_cookie cookie, nil, 1.year.ago.to_date, "#{message}: #{cookie.name} => #{cookie.value}"
     end
 
     def assert_cookie(cookie, value = nil, expires = nil, message = nil)
@@ -184,6 +239,13 @@ class CookieStoreTest < Test::Unit::TestCase
       assert_equal expires, cookie.expires ? cookie.expires.to_date : cookie.expires, message
     end
 
+    def assert_secure_cookie(cookie,value=true)
+      assert cookie.secure==value
+    end
+
+    def assert_http_only_cookie(cookie,value=true)
+      assert cookie.http_only==value
+    end
 
     def cookies(*which)
       self.class.cookies.values_at(*which)
@@ -204,6 +266,7 @@ class CookieStoreTest < Test::Unit::TestCase
 
         @options = self.class.default_session_options.merge(options)
         session = CGI::Session.new(cgi, @options)
+        ObjectSpace.undefine_finalizer(session)
 
         assert_nil cgi.output_hidden, "Output hidden params should be empty: #{cgi.output_hidden.inspect}"
         assert_nil cgi.output_cookies, "Output cookies should be empty: #{cgi.output_cookies.inspect}"
@@ -241,6 +304,7 @@ class CookieStoreWithMD5DigestTest < CookieStoreTest
     { :empty => ['BAgw--0415cc0be9579b14afc22ee2d341aa21', {}],
       :a_one => ['BAh7BiIGYWkG--5a0ed962089cc6600ff44168a5d59bc8', { 'a' => 1 }],
       :typical => ['BAh7ByIMdXNlcl9pZGkBeyIKZmxhc2h7BiILbm90aWNlIgxIZXkgbm93--f426763f6ef435b3738b493600db8d64', { 'user_id' => 123, 'flash' => { 'notice' => 'Hey now' }}],
-      :flashed => ['BAh7ByIMdXNlcl9pZGkBeyIKZmxhc2h7AA%3D%3D--0af9156650dab044a53a91a4ddec2c51', { 'user_id' => 123, 'flash' => {} }] }
+      :flashed => ['BAh7ByIMdXNlcl9pZGkBeyIKZmxhc2h7AA==--0af9156650dab044a53a91a4ddec2c51', { 'user_id' => 123, 'flash' => {} }],
+      :double_escaped => [CGI.escape('BAh7ByIMdXNlcl9pZGkBeyIKZmxhc2h7AA%3D%3D--0af9156650dab044a53a91a4ddec2c51'), { 'user_id' => 123, 'flash' => {} }] }
   end
 end

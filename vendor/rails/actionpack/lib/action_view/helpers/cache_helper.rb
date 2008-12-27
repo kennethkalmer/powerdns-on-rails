@@ -31,8 +31,8 @@ module ActionView
       #      <%= render :partial => "topics", :collection => @topic_list %>
       #      <i>Topics listed alphabetically</i>
       #    <% end %>
-      def cache(name = {}, &block)
-        @controller.cache_erb_fragment(block, name)
+      def cache(name = {}, options = nil, &block)
+        @controller.fragment_for(output_buffer, name, options, &block)
       end
     end
   end

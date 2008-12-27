@@ -1,15 +1,20 @@
 require 'abstract_unit'
 require 'testing_sandbox'
 
-class TextHelperTest < Test::Unit::TestCase
-  include ActionView::Helpers::TextHelper
-  include ActionView::Helpers::TagHelper
+class TextHelperTest < ActionView::TestCase
+  tests ActionView::Helpers::TextHelper
   include TestingSandbox
 
   def setup
     # This simulates the fact that instance variables are reset every time
     # a view is rendered.  The cycle helper depends on this behavior.
     @_cycles = nil if (defined? @_cycles)
+  end
+
+  def test_concat
+    self.output_buffer = 'foo'
+    assert_equal 'foobar', concat('bar')
+    assert_equal 'foobar', output_buffer
   end
 
   def test_simple_format
@@ -24,11 +29,14 @@ class TextHelperTest < Test::Unit::TestCase
 
     text = "A\r\n  \nB\n\n\r\n\t\nC\nD".freeze
     assert_equal "<p>A\n<br />  \n<br />B</p>\n\n<p>\t\n<br />C\n<br />D</p>", simple_format(text)
+
+     assert_equal %q(<p class="test">This is a classy test</p>), simple_format("This is a classy test", :class => 'test')
+     assert_equal %Q(<p class="test">para 1</p>\n\n<p class="test">para 2</p>), simple_format("para 1\n\npara 2", :class => 'test')
   end
 
   def test_truncate
-    assert_equal "Hello World!", truncate("Hello World!", 12)
-    assert_equal "Hello Wor...", truncate("Hello World!!", 12)
+    assert_equal "Hello World!", truncate("Hello World!", :length => 12)
+    assert_equal "Hello Wor...", truncate("Hello World!!", :length => 12)
   end
 
   def test_truncate_should_use_default_length_of_30
@@ -36,23 +44,29 @@ class TextHelperTest < Test::Unit::TestCase
     assert_equal str[0...27] + "...", truncate(str)
   end
 
+  def test_truncate_with_options_hash
+    assert_equal "This is a string that wil[...]", truncate("This is a string that will go longer then the default truncate length of 30", :omission => "[...]")
+    assert_equal "Hello W...", truncate("Hello World!", :length => 10)
+    assert_equal "Hello[...]", truncate("Hello World!", :omission => "[...]", :length => 10)
+  end
+
   if RUBY_VERSION < '1.9.0'
     def test_truncate_multibyte
       with_kcode 'none' do
-        assert_equal "\354\225\210\353\205\225\355...", truncate("\354\225\210\353\205\225\355\225\230\354\204\270\354\232\224", 10) 
+        assert_equal "\354\225\210\353\205\225\355...", truncate("\354\225\210\353\205\225\355\225\230\354\204\270\354\232\224", :length => 10)
       end
       with_kcode 'u' do
         assert_equal "\354\225\204\353\246\254\353\236\221 \354\225\204\353\246\254 ...",
-          truncate("\354\225\204\353\246\254\353\236\221 \354\225\204\353\246\254 \354\225\204\353\235\274\353\246\254\354\230\244", 10)
+          truncate("\354\225\204\353\246\254\353\236\221 \354\225\204\353\246\254 \354\225\204\353\235\274\353\246\254\354\230\244", :length => 10)
       end
     end
   else
     def test_truncate_multibyte
       assert_equal "\354\225\210\353\205\225\355...",
-        truncate("\354\225\210\353\205\225\355\225\230\354\204\270\354\232\224", 10)
+        truncate("\354\225\210\353\205\225\355\225\230\354\204\270\354\232\224", :length => 10)
 
       assert_equal "\354\225\204\353\246\254\353\236\221 \354\225\204\353\246\254 ...".force_encoding('UTF-8'),
-        truncate("\354\225\204\353\246\254\353\236\221 \354\225\204\353\246\254 \354\225\204\353\235\274\353\246\254\354\230\244".force_encoding('UTF-8'), 10)
+        truncate("\354\225\204\353\246\254\353\236\221 \354\225\204\353\246\254 \354\225\204\353\235\274\353\246\254\354\230\244".force_encoding('UTF-8'), :length => 10)
     end
   end
 
@@ -71,7 +85,7 @@ class TextHelperTest < Test::Unit::TestCase
       "This is a <b>beautiful</b> morning, but also a <b>beautiful</b> day",
       highlight("This is a beautiful morning, but also a beautiful day", "beautiful", '<b>\1</b>')
     )
-    
+
     assert_equal(
       "This text is not changed because we supplied an empty phrase",
       highlight("This text is not changed because we supplied an empty phrase", nil)
@@ -80,7 +94,7 @@ class TextHelperTest < Test::Unit::TestCase
     assert_equal '   ', highlight('   ', 'blank text is returned verbatim')
   end
 
-  def test_highlighter_with_regexp
+  def test_highlight_with_regexp
     assert_equal(
       "This is a <strong class=\"highlight\">beautiful!</strong> morning",
       highlight("This is a beautiful! morning", "beautiful!")
@@ -97,35 +111,69 @@ class TextHelperTest < Test::Unit::TestCase
     )
   end
 
-  def test_highlighting_multiple_phrases_in_one_pass
+  def test_highlight_with_multiple_phrases_in_one_pass
     assert_equal %(<em>wow</em> <em>em</em>), highlight('wow em', %w(wow em), '<em>\1</em>')
   end
 
+  def test_highlight_with_options_hash
+    assert_equal(
+      "This is a <b>beautiful</b> morning, but also a <b>beautiful</b> day",
+      highlight("This is a beautiful morning, but also a beautiful day", "beautiful", :highlighter => '<b>\1</b>')
+    )
+  end
+
   def test_excerpt
-    assert_equal("...is a beautiful morni...", excerpt("This is a beautiful morning", "beautiful", 5))
+    assert_equal("...is a beautiful morn...", excerpt("This is a beautiful morning", "beautiful", 5))
     assert_equal("This is a...", excerpt("This is a beautiful morning", "this", 5))
     assert_equal("...iful morning", excerpt("This is a beautiful morning", "morning", 5))
     assert_nil excerpt("This is a beautiful morning", "day")
   end
 
+  def test_excerpt_in_borderline_cases
+    assert_equal("", excerpt("", "", 0))
+    assert_equal("a", excerpt("a", "a", 0))
+    assert_equal("...b...", excerpt("abc", "b", 0))
+    assert_equal("abc", excerpt("abc", "b", 1))
+    assert_equal("abc...", excerpt("abcd", "b", 1))
+    assert_equal("...abc", excerpt("zabc", "b", 1))
+    assert_equal("...abc...", excerpt("zabcd", "b", 1))
+    assert_equal("zabcd", excerpt("zabcd", "b", 2))
+
+    # excerpt strips the resulting string before ap-/prepending excerpt_string.
+    # whether this behavior is meaningful when excerpt_string is not to be
+    # appended is questionable.
+    assert_equal("zabcd", excerpt("  zabcd  ", "b", 4))
+    assert_equal("...abc...", excerpt("z  abc  d", "b", 1))
+  end
+
   def test_excerpt_with_regex
-    assert_equal('...is a beautiful! morn...', excerpt('This is a beautiful! morning', 'beautiful', 5))
-    assert_equal('...is a beautiful? morn...', excerpt('This is a beautiful? morning', 'beautiful', 5))
+    assert_equal('...is a beautiful! mor...', excerpt('This is a beautiful! morning', 'beautiful', 5))
+    assert_equal('...is a beautiful? mor...', excerpt('This is a beautiful? morning', 'beautiful', 5))
+  end
+
+  def test_excerpt_with_options_hash
+    assert_equal("...is a beautiful morn...", excerpt("This is a beautiful morning", "beautiful", :radius => 5))
+    assert_equal("[...]is a beautiful morn[...]", excerpt("This is a beautiful morning", "beautiful", :omission => "[...]",:radius => 5))
+    assert_equal(
+      "This is the ultimate supercalifragilisticexpialidoceous very looooooooooooooooooong looooooooooooong beautiful morning with amazing sunshine and awesome tempera[...]",
+      excerpt("This is the ultimate supercalifragilisticexpialidoceous very looooooooooooooooooong looooooooooooong beautiful morning with amazing sunshine and awesome temperatures. So what are you gonna do about it?", "very",
+      :omission => "[...]")
+    )
   end
 
   if RUBY_VERSION < '1.9'
     def test_excerpt_with_utf8
       with_kcode('u') do
-        assert_equal("...ﬃciency could not be h...", excerpt("That's why eﬃciency could not be helped", 'could', 8))
+        assert_equal("...\357\254\203ciency could not be...", excerpt("That's why e\357\254\203ciency could not be helped", 'could', 8))
       end
       with_kcode('none') do
-        assert_equal("...\203ciency could not be h...", excerpt("That's why eﬃciency could not be helped", 'could', 8))
+        assert_equal("...\203ciency could not be...", excerpt("That's why e\357\254\203ciency could not be helped", 'could', 8))
       end
     end
   else
     def test_excerpt_with_utf8
-      assert_equal("...ﬃciency could not be h...".force_encoding('UTF-8'), excerpt("That's why eﬃciency could not be helped".force_encoding('UTF-8'), 'could', 8))
-      assert_equal("...\203ciency could not be h...", excerpt("That's why eﬃciency could not be helped", 'could', 8))
+      assert_equal("...\357\254\203ciency could not be...".force_encoding('UTF-8'), excerpt("That's why e\357\254\203ciency could not be helped".force_encoding('UTF-8'), 'could', 8))
+      assert_equal("...\203ciency could not be...", excerpt("That's why e\357\254\203ciency could not be helped", 'could', 8))
     end
   end
 
@@ -135,6 +183,10 @@ class TextHelperTest < Test::Unit::TestCase
 
   def test_word_wrap_with_extra_newlines
     assert_equal("my very very\nvery long\nstring\n\nwith another\nline", word_wrap("my very very very long string\n\nwith another line", 15))
+  end
+
+  def test_word_wrap_with_options_hash
+    assert_equal("my very very\nvery long\nstring", word_wrap("my very very very long string", :line_width => 15))
   end
 
   def test_pluralization
@@ -147,18 +199,9 @@ class TextHelperTest < Test::Unit::TestCase
     assert_equal("2 counters", pluralize(2, "count", "counters"))
     assert_equal("0 counters", pluralize(nil, "count", "counters"))
     assert_equal("2 people", pluralize(2, "person"))
-    assert_equal("10 buffaloes", pluralize(10, "buffalo")) 
-  end
-
-  uses_mocha("should_just_add_s_for_pluralize_without_inflector_loaded") do
-    def test_should_just_add_s_for_pluralize_without_inflector_loaded
-      Object.expects(:const_defined?).with("Inflector").times(4).returns(false)
-      assert_equal("1 count", pluralize(1, "count"))
-      assert_equal("2 persons", pluralize(2, "person"))
-      assert_equal("2 personss", pluralize("2", "persons"))
-      assert_equal("2 counts", pluralize(2, "count"))
-      assert_equal("10 buffalos", pluralize(10, "buffalo"))
-    end
+    assert_equal("10 buffaloes", pluralize(10, "buffalo"))
+    assert_equal("1 berry", pluralize(1, "berry"))
+    assert_equal("12 berries", pluralize(12, "berry"))
   end
 
   def test_auto_link_parsing
@@ -176,6 +219,9 @@ class TextHelperTest < Test::Unit::TestCase
               http://en.wikipedia.org/wiki/Wikipedia:Today%27s_featured_picture_%28animation%29/January_20%2C_2007
               http://www.mail-archive.com/rails@lists.rubyonrails.org/
               http://www.amazon.com/Testing-Equal-Sign-In-Path/ref=pd_bbs_sr_1?ie=UTF8&s=books&qid=1198861734&sr=8-1
+              http://en.wikipedia.org/wiki/Sprite_(computer_graphics)
+              http://en.wikipedia.org/wiki/Texas_hold'em
+              https://www.google.com/doku.php?id=gps:resource:scs:start
             )
 
     urls.each do |url|
@@ -252,6 +298,8 @@ class TextHelperTest < Test::Unit::TestCase
     assert_equal email2_result, auto_link(email2_raw)
     assert_equal '', auto_link(nil)
     assert_equal '', auto_link('')
+    assert_equal "#{link_result} #{link_result} #{link_result}", auto_link("#{link_raw} #{link_raw} #{link_raw}")
+    assert_equal '<a href="http://www.rubyonrails.com">Ruby On Rails</a>', auto_link('<a href="http://www.rubyonrails.com">Ruby On Rails</a>')
   end
 
   def test_auto_link_at_eol
@@ -265,7 +313,13 @@ class TextHelperTest < Test::Unit::TestCase
     url = "http://api.rubyonrails.com/Foo.html"
     email = "fantabulous@shiznadel.ic"
 
-    assert_equal %(<p><a href="#{url}">#{url[0...7]}...</a><br /><a href="mailto:#{email}">#{email[0...7]}...</a><br /></p>), auto_link("<p>#{url}<br />#{email}<br /></p>") { |url| truncate(url, 10) }
+    assert_equal %(<p><a href="#{url}">#{url[0...7]}...</a><br /><a href="mailto:#{email}">#{email[0...7]}...</a><br /></p>), auto_link("<p>#{url}<br />#{email}<br /></p>") { |url| truncate(url, :length => 10) }
+  end
+
+  def test_auto_link_with_options_hash
+    assert_equal 'Welcome to my new blog at <a href="http://www.myblog.com/" class="menu" target="_blank">http://www.myblog.com/</a>. Please e-mail me at <a href="mailto:me@email.com">me@email.com</a>.',
+      auto_link("Welcome to my new blog at http://www.myblog.com/. Please e-mail me at me@email.com.",
+                :link => :all, :html => { :class => "menu", :target => "_blank" })
   end
 
   def test_cycle_class
@@ -279,7 +333,7 @@ class TextHelperTest < Test::Unit::TestCase
     assert_equal("2", value.to_s)
     assert_equal("3", value.to_s)
   end
-  
+
   def test_cycle_class_with_no_arguments
     assert_raise(ArgumentError) { value = Cycle.new() }
   end
@@ -292,11 +346,11 @@ class TextHelperTest < Test::Unit::TestCase
     assert_equal("2", cycle("one", 2, "3"))
     assert_equal("3", cycle("one", 2, "3"))
   end
-  
+
   def test_cycle_with_no_arguments
     assert_raise(ArgumentError) { value = cycle() }
   end
-  
+
   def test_cycle_resets_with_new_values
     assert_equal("even", cycle("even", "odd"))
     assert_equal("odd", cycle("even", "odd"))
@@ -306,7 +360,7 @@ class TextHelperTest < Test::Unit::TestCase
     assert_equal("3", cycle(1, 2, 3))
     assert_equal("1", cycle(1, 2, 3))
   end
-  
+
   def test_named_cycles
     assert_equal("1", cycle(1, 2, 3, :name => "numbers"))
     assert_equal("red", cycle("red", "blue", :name => "colors"))
@@ -315,24 +369,58 @@ class TextHelperTest < Test::Unit::TestCase
     assert_equal("3", cycle(1, 2, 3, :name => "numbers"))
     assert_equal("red", cycle("red", "blue", :name => "colors"))
   end
-  
+
+  def test_current_cycle_with_default_name
+    cycle("even","odd")
+    assert_equal "even", current_cycle
+    cycle("even","odd")
+    assert_equal "odd", current_cycle
+    cycle("even","odd")
+    assert_equal "even", current_cycle
+  end
+
+  def test_current_cycle_with_named_cycles
+    cycle("red", "blue", :name => "colors")
+    assert_equal "red", current_cycle("colors")
+    cycle("red", "blue", :name => "colors")
+    assert_equal "blue", current_cycle("colors")
+    cycle("red", "blue", :name => "colors")
+    assert_equal "red", current_cycle("colors")
+  end
+
+  def test_current_cycle_safe_call
+    assert_nothing_raised { current_cycle }
+    assert_nothing_raised { current_cycle("colors") }
+  end
+
+  def test_current_cycle_with_more_than_two_names
+    cycle(1,2,3)
+    assert_equal "1", current_cycle
+    cycle(1,2,3)
+    assert_equal "2", current_cycle
+    cycle(1,2,3)
+    assert_equal "3", current_cycle
+    cycle(1,2,3)
+    assert_equal "1", current_cycle
+  end
+
   def test_default_named_cycle
     assert_equal("1", cycle(1, 2, 3))
     assert_equal("2", cycle(1, 2, 3, :name => "default"))
     assert_equal("3", cycle(1, 2, 3))
   end
-  
+
   def test_reset_cycle
     assert_equal("1", cycle(1, 2, 3))
     assert_equal("2", cycle(1, 2, 3))
     reset_cycle
     assert_equal("1", cycle(1, 2, 3))
   end
-  
+
   def test_reset_unknown_cycle
     reset_cycle("colors")
   end
-  
+
   def test_recet_named_cycle
     assert_equal("1", cycle(1, 2, 3, :name => "numbers"))
     assert_equal("red", cycle("red", "blue", :name => "colors"))
@@ -342,7 +430,7 @@ class TextHelperTest < Test::Unit::TestCase
     assert_equal("2", cycle(1, 2, 3, :name => "numbers"))
     assert_equal("red", cycle("red", "blue", :name => "colors"))
   end
-  
+
   def test_cycle_no_instance_variable_clashes
     @cycles = %w{Specialized Fuji Giant}
     assert_equal("red", cycle("red", "blue"))

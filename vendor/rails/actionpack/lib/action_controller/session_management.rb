@@ -16,9 +16,11 @@ module ActionController #:nodoc:
     end
 
     module ClassMethods
-      # Set the session store to be used for keeping the session data between requests. By default, sessions are stored
-      # in browser cookies (:cookie_store), but you can also specify one of the other included stores
-      # (:active_record_store, :p_store, drb_store, :mem_cache_store, or :memory_store) or your own custom class.
+      # Set the session store to be used for keeping the session data between requests.
+      # By default, sessions are stored in browser cookies (<tt>:cookie_store</tt>),
+      # but you can also specify one of the other included stores (<tt>:active_record_store</tt>,
+      # <tt>:p_store</tt>, <tt>:drb_store</tt>, <tt>:mem_cache_store</tt>, or
+      # <tt>:memory_store</tt>) or your own custom class.
       def session_store=(store)
         ActionController::CgiRequest::DEFAULT_SESSION_OPTIONS[:database_manager] =
           store.is_a?(Symbol) ? CGI::Session.const_get(store == :drb_store ? "DRbStore" : store.to_s.camelize) : store
@@ -58,6 +60,10 @@ module ActionController #:nodoc:
       #   # the session will only work over HTTPS, but only for the foo action
       #   session :only => :foo, :session_secure => true
       #
+      #   # the session by default uses HttpOnly sessions for security reasons.
+      #   # this can be switched off.
+      #   session :only => :foo, :session_http_only => false
+      #
       #   # the session will only be disabled for 'foo', and only if it is
       #   # requested as a web service
       #   session :off, :only => :foo,
@@ -67,11 +73,16 @@ module ActionController #:nodoc:
       #   session :off, 
       #     :if => Proc.new { |req| !(req.format.html? || req.format.js?) }
       #
+      #   # turn the session back on, useful when it was turned off in the
+      #   # application controller, and you need it on in another controller
+      #   session :on
+      #
       # All session options described for ActionController::Base.process_cgi
       # are valid arguments.
       def session(*args)
         options = args.extract_options!
 
+        options[:disabled] = false if args.delete(:on)
         options[:disabled] = true if !args.empty?
         options[:only] = [*options[:only]].map { |o| o.to_s } if options[:only]
         options[:except] = [*options[:except]].map { |o| o.to_s } if options[:except]
@@ -79,14 +90,14 @@ module ActionController #:nodoc:
           raise ArgumentError, "only one of either :only or :except are allowed"
         end
 
-        write_inheritable_array("session_options", [options])
+        write_inheritable_array(:session_options, [options])
       end
 
       # So we can declare session options in the Rails initializer.
       alias_method :session=, :session
 
       def cached_session_options #:nodoc:
-        @session_options ||= read_inheritable_attribute("session_options") || []
+        @session_options ||= read_inheritable_attribute(:session_options) || []
       end
 
       def session_options_for(request, action) #:nodoc:

@@ -1,12 +1,12 @@
 require 'rbconfig'
 require 'digest/md5' 
-require 'rails_generator/secret_key_generator'
+require 'active_support/secure_random'
 
 class AppGenerator < Rails::Generator::Base
   DEFAULT_SHEBANG = File.join(Config::CONFIG['bindir'],
                               Config::CONFIG['ruby_install_name'])
 
-  DATABASES = %w(mysql oracle postgresql sqlite2 sqlite3 frontbase)
+  DATABASES = %w(mysql oracle postgresql sqlite2 sqlite3 frontbase ibm_db)
   DEFAULT_DATABASE = 'sqlite3'
 
   default_options   :db => (ENV["RAILS_DEFAULT_DATABASE"] || DEFAULT_DATABASE),
@@ -36,7 +36,7 @@ class AppGenerator < Rails::Generator::Base
     md5 << @app_name
 
     # Do our best to generate a secure secret key for CookieStore
-    secret = Rails::SecretKeyGenerator.new(@app_name).generate_secret
+    secret = ActiveSupport::SecureRandom.hex(64)
 
     record do |m|
       # Root directory and all subdirectories.
@@ -51,18 +51,22 @@ class AppGenerator < Rails::Generator::Base
       m.template "helpers/application.rb",        "app/controllers/application.rb", :assigns => { :app_name => @app_name, :app_secret => md5.hexdigest }
       m.template "helpers/application_helper.rb", "app/helpers/application_helper.rb"
       m.template "helpers/test_helper.rb",        "test/test_helper.rb"
+      m.template "helpers/performance_test.rb",   "test/performance/browsing_test.rb"
 
-      # database.yml and .htaccess
+      # database.yml and routes.rb
       m.template "configs/databases/#{options[:db]}.yml", "config/database.yml", :assigns => {
         :app_name => @app_name,
         :socket   => options[:db] == "mysql" ? mysql_socket_location : nil
       }
-      m.template "configs/routes.rb",     "config/routes.rb"
-      m.template "configs/apache.conf",   "public/.htaccess"
+      m.template "configs/routes.rb", "config/routes.rb"
 
       # Initializers
       m.template "configs/initializers/inflections.rb", "config/initializers/inflections.rb"
-      m.template "configs/initializers/mime_types.rb",  "config/initializers/mime_types.rb"
+      m.template "configs/initializers/mime_types.rb", "config/initializers/mime_types.rb"
+      m.template "configs/initializers/new_rails_defaults.rb", "config/initializers/new_rails_defaults.rb"
+
+      # Locale
+      m.template "configs/locales/en.yml", "config/locales/en.yml"
 
       # Environments
       m.file "environments/boot.rb",    "config/boot.rb"
@@ -72,7 +76,7 @@ class AppGenerator < Rails::Generator::Base
       m.file "environments/test.rb",        "config/environments/test.rb"
 
       # Scripts
-      %w( about console destroy generate performance/benchmarker performance/profiler performance/request process/reaper process/spawner process/inspector runner server plugin ).each do |file|
+      %w( about console dbconsole destroy generate performance/benchmarker performance/profiler performance/request process/reaper process/spawner process/inspector runner server plugin ).each do |file|
         m.file "bin/#{file}", "script/#{file}", script_options
       end
 
@@ -142,6 +146,7 @@ class AppGenerator < Rails::Generator::Base
     app/views/layouts
     config/environments
     config/initializers
+    config/locales
     db
     doc
     lib
@@ -155,8 +160,7 @@ class AppGenerator < Rails::Generator::Base
     test/fixtures
     test/functional
     test/integration
-    test/mocks/development
-    test/mocks/test
+    test/performance
     test/unit
     vendor
     vendor/plugins

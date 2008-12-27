@@ -1,4 +1,4 @@
-require File.dirname(__FILE__) + '/../abstract_unit'
+require 'abstract_unit'
 
 class Article
   attr_reader :id
@@ -10,16 +10,16 @@ class Article
   end
 end
 
-class Comment < Article
+class Response < Article
   def post_id; 1 end
 end
 
 class Tag < Article
-  def comment_id; 1 end
+  def response_id; 1 end
 end
 
 # TODO: test nested models
-class Comment::Nested < Comment; end
+class Response::Nested < Response; end
 
 uses_mocha 'polymorphic URL helpers' do
   class PolymorphicRoutesTest < Test::Unit::TestCase
@@ -28,7 +28,7 @@ uses_mocha 'polymorphic URL helpers' do
 
     def setup
       @article = Article.new
-      @comment = Comment.new
+      @response = Response.new
     end
   
     def test_with_record
@@ -60,27 +60,50 @@ uses_mocha 'polymorphic URL helpers' do
       edit_polymorphic_url(@article)
     end
 
+    def test_url_helper_prefixed_with_edit_with_url_options
+      @article.save
+      expects(:edit_article_url).with(@article, :param1 => '10')
+      edit_polymorphic_url(@article, :param1 => '10')
+    end
+
+    def test_url_helper_with_url_options
+      @article.save
+      expects(:article_url).with(@article, :param1 => '10')
+      polymorphic_url(@article, :param1 => '10')
+    end
+
     def test_formatted_url_helper
       expects(:formatted_article_url).with(@article, :pdf)
       formatted_polymorphic_url([@article, :pdf])
     end
 
-    # TODO: should this work?
-    def xtest_format_option
+    def test_format_option
       @article.save
-      expects(:article_url).with(@article, :format => :pdf)
+      expects(:formatted_article_url).with(@article, :pdf)
       polymorphic_url(@article, :format => :pdf)
     end
 
+    def test_format_option_with_url_options
+      @article.save
+      expects(:formatted_article_url).with(@article, :pdf, :param1 => '10')
+      polymorphic_url(@article, :format => :pdf, :param1 => '10')
+    end
+
+    def test_id_and_format_option
+      @article.save
+      expects(:article_url).with(:id => @article, :format => :pdf)
+      polymorphic_url(:id => @article, :format => :pdf)
+    end
+
     def test_with_nested
-      @comment.save
-      expects(:article_comment_url).with(@article, @comment)
-      polymorphic_url([@article, @comment])
+      @response.save
+      expects(:article_response_url).with(@article, @response)
+      polymorphic_url([@article, @response])
     end
 
     def test_with_nested_unsaved
-      expects(:article_comments_url).with(@article)
-      polymorphic_url([@article, @comment])
+      expects(:article_responses_url).with(@article)
+      polymorphic_url([@article, @response])
     end
 
     def test_new_with_array_and_namespace
@@ -97,20 +120,70 @@ uses_mocha 'polymorphic URL helpers' do
       @article.save
       expects(:admin_article_url).with(@article)
       polymorphic_url([:admin, @article])
-      expects(:admin_article_comments_url).with(@article)
-      polymorphic_url([:admin, @article, @comment])
+      expects(:admin_article_responses_url).with(@article)
+      polymorphic_url([:admin, @article, @response])
     end
 
     def test_nested_with_array_and_namespace
-      @comment.save
-      expects(:admin_article_comment_url).with(@article, @comment)
-      polymorphic_url([:admin, @article, @comment])
+      @response.save
+      expects(:admin_article_response_url).with(@article, @response)
+      polymorphic_url([:admin, @article, @response])
 
       # a ridiculously long named route tests correct ordering of namespaces and nesting:
       @tag = Tag.new
       @tag.save
-      expects(:site_admin_article_comment_tag_url).with(@article, @comment, @tag)
-      polymorphic_url([:site, :admin, @article, @comment, @tag])
+      expects(:site_admin_article_response_tag_url).with(@article, @response, @tag)
+      polymorphic_url([:site, :admin, @article, @response, @tag])
+    end
+
+    def test_nesting_with_array_ending_in_singleton_resource
+      expects(:article_response_url).with(@article)
+      polymorphic_url([@article, :response])
+    end
+
+    def test_nesting_with_array_containing_singleton_resource
+      @tag = Tag.new
+      @tag.save
+      expects(:article_response_tag_url).with(@article, @tag)
+      polymorphic_url([@article, :response, @tag])
+    end
+
+    def test_nesting_with_array_containing_namespace_and_singleton_resource
+      @tag = Tag.new
+      @tag.save
+      expects(:admin_article_response_tag_url).with(@article, @tag)
+      polymorphic_url([:admin, @article, :response, @tag])
+    end
+
+    def test_nesting_with_array_containing_singleton_resource_and_format
+      @tag = Tag.new
+      @tag.save
+      expects(:formatted_article_response_tag_url).with(@article, @tag, :pdf)
+      formatted_polymorphic_url([@article, :response, @tag, :pdf])
+    end
+
+    def test_nesting_with_array_containing_singleton_resource_and_format_option
+      @tag = Tag.new
+      @tag.save
+      expects(:formatted_article_response_tag_url).with(@article, @tag, :pdf)
+      polymorphic_url([@article, :response, @tag], :format => :pdf)
+    end
+
+    def test_nesting_with_array_containing_nil
+      expects(:article_response_url).with(@article)
+      polymorphic_url([@article, nil, :response])
+    end
+
+    def test_with_array_containing_single_object
+      @article.save
+      expects(:article_url).with(@article)
+      polymorphic_url([nil, @article])
+    end
+
+    def test_with_array_containing_single_name
+      @article.save
+      expects(:articles_url)
+      polymorphic_url([:articles])
     end
 
     # TODO: Needs to be updated to correctly know about whether the object is in a hash or not
@@ -125,5 +198,12 @@ uses_mocha 'polymorphic URL helpers' do
       polymorphic_path(@article, :action => :new)
     end
 
+    def test_polymorphic_path_does_not_modify_arguments
+      expects(:admin_article_responses_url).with(@article)
+      path = [:admin, @article, @response]
+      assert_no_difference 'path.size' do
+        polymorphic_url(path)
+      end
+    end
   end
 end

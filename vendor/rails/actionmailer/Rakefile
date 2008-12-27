@@ -5,7 +5,6 @@ require 'rake/rdoctask'
 require 'rake/packagetask'
 require 'rake/gempackagetask'
 require 'rake/contrib/sshpublisher'
-require 'rake/contrib/rubyforgepublisher'
 require File.join(File.dirname(__FILE__), 'lib', 'action_mailer', 'version')
 
 PKG_BUILD     = ENV['PKG_BUILD'] ? '.' + ENV['PKG_BUILD'] : ''
@@ -36,7 +35,7 @@ Rake::RDocTask.new { |rdoc|
   rdoc.title    = "Action Mailer -- Easy email delivery and testing"
   rdoc.options << '--line-numbers' << '--inline-source' << '-A cattr_accessor=object'
   rdoc.options << '--charset' << 'utf-8'
-  rdoc.template = "#{ENV['template']}.rb" if ENV['template']
+  rdoc.template = ENV['template'] ? "#{ENV['template']}.rb" : '../doc/template/horo'
   rdoc.rdoc_files.include('README', 'CHANGELOG')
   rdoc.rdoc_files.include('lib/action_mailer.rb')
   rdoc.rdoc_files.include('lib/action_mailer/*.rb')
@@ -56,7 +55,7 @@ spec = Gem::Specification.new do |s|
   s.rubyforge_project = "actionmailer"
   s.homepage = "http://www.rubyonrails.org"
 
-  s.add_dependency('actionpack', '= 2.0.5' + PKG_BUILD)
+  s.add_dependency('actionpack', '= 2.2.2' + PKG_BUILD)
 
   s.has_rdoc = true
   s.requirements << 'none'
@@ -77,18 +76,19 @@ end
 
 desc "Publish the API documentation"
 task :pgem => [:package] do 
-  Rake::SshFilePublisher.new("david@greed.loudthinking.com", "/u/sites/gems/gems", "pkg", "#{PKG_FILE_NAME}.gem").upload
-  `ssh david@greed.loudthinking.com '/u/sites/gems/gemupdate.sh'`
+  Rake::SshFilePublisher.new("gems.rubyonrails.org", "/u/sites/gems/gems", "pkg", "#{PKG_FILE_NAME}.gem").upload
+  `ssh gems.rubyonrails.org '/u/sites/gems/gemupdate.sh'`
 end
 
 desc "Publish the API documentation"
 task :pdoc => [:rdoc] do 
-  Rake::SshDirPublisher.new("davidhh@wrath.rubyonrails.org", "public_html/am", "doc").upload
+  Rake::SshDirPublisher.new("wrath.rubyonrails.org", "public_html/am", "doc").upload
 end
 
 desc "Publish the release files to RubyForge."
 task :release => [ :package ] do
   require 'rubyforge'
+  require 'rake/contrib/rubyforgepublisher'
 
   packages = %w( gem tgz zip ).collect{ |ext| "pkg/#{PKG_NAME}-#{PKG_VERSION}.#{ext}" }
 
