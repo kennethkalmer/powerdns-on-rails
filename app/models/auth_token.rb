@@ -43,14 +43,14 @@ class AuthToken < ActiveRecord::Base
     self.token = t
     
     # Default policies
-    self.permissions ||= { 
+    self.permissions = { 
       'policy' => 'deny', 
       'new' => false, 
       'remove' => false,
       'allowed' => [],
       'protected' => [],
       'protected_types' => []
-    }
+    } if self.permissions.blank?
   end
   
   # Set the default policy of the token
