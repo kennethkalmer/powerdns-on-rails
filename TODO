@@ -8,8 +8,9 @@ http://kennethkalmer.lighthouseapp.com/projects/11831-powerdns-on-rails/
 * Github project page
 * Basic database structure                  [ done ]
 * Multiple users (admins or owners)         [ in progress ]
+  (remove roles model and persist roles in users table)
 * Solid models and model specs              [ continuous ]
-* Documentation                             [ continuous ]
+* Documentation (becoming urgent)           [ continuous ]
 * Configuration samples for powerdns
 * Zone/Record Templates                     [ done ]
 * Basic API client

@@ -9,7 +9,7 @@ More information:
 * "Home page":http://www.opensourcery.co.za/powerdns-on-rails
 * "Bug tracker":http://kennethkalmer.lighthouseapp.com/projects/11831-powerdns-on-rails
 
-h2.
+h2. Overview
 
 The PowerDNS on Rails README is located in doc/README_FOR_APP, other supporting
 documents are also located in doc/
@@ -82,3 +82,4 @@ and that all changes are correct and won't impact services offered to clients.
 Apart from the extensive programmatic tests, we'll be implementing tests that
 actually seed a DNS database and use BIND's dig utility to query a configured
 PowerDNS installation.
+
