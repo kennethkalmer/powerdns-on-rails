@@ -31,6 +31,9 @@ Rails::Initializer.run do |config|
   # config.gem "aws-s3", :lib => "aws/s3"
   config.gem 'haml', :version => '2.0.5'
   config.gem 'mocha', :version => '0.9.3'
+  # and just for the record...
+  #config.gem 'rspec', :version => '1.1.11', :lib => 'spec'
+  #config.gem 'rspec-rails', :version => '1.1.11', :lib => 'spec/rails'
 
   # Only load the plugins named here, in the order given. By default, all plugins 
   # in vendor/plugins are loaded in alphabetical order.
