@@ -57,7 +57,7 @@ CREATE TABLE `macro_steps` (
   `content` varchar(255) default NULL,
   `ttl` int(11) default NULL,
   `prio` int(11) default NULL,
-  `order` int(11) default NULL,
+  `position` int(11) default NULL,
   `active` tinyint(1) default '1',
   `note` varchar(255) default NULL,
   `created_at` datetime default NULL,

@@ -82,8 +82,8 @@ describe MacroStep, "when created" do
       )                    
   end
 
-  it "should have a order" do
-    @macro_step.order.should_not be_blank
+  it "should have a position" do
+    @macro_step.position.should_not be_blank
   end
   
   

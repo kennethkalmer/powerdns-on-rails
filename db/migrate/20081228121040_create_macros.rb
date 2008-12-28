@@ -11,7 +11,7 @@ class CreateMacros < ActiveRecord::Migration
     create_table :macro_steps do |t|
       t.references :macro
       t.string :action, :record_type, :name, :content
-      t.integer :ttl, :prio, :order
+      t.integer :ttl, :prio, :position
       t.boolean :active, :default => true
       t.string :note
       
