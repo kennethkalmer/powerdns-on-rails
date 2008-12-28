@@ -27,6 +27,7 @@ class Macro < ActiveRecord::Base
   validates_presence_of :name
   validates_uniqueness_of :name
 
-  has_many :macro_steps
+  has_many :macro_steps, :dependent => :destroy
+  belongs_to :user
 end
 

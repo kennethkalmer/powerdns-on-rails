@@ -36,3 +36,4 @@ module PrototipHelper
     end
   end
 end
+

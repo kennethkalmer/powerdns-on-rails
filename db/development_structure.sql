@@ -69,7 +69,7 @@ CREATE TABLE `macros` (
   `id` int(11) NOT NULL auto_increment,
   `name` varchar(255) default NULL,
   `description` varchar(255) default NULL,
-  `owner_id` int(11) default NULL,
+  `user_id` int(11) default NULL,
   `active` tinyint(1) default '0',
   `created_at` datetime default NULL,
   `updated_at` datetime default NULL,

@@ -29,7 +29,7 @@ Rails::Initializer.run do |config|
   # config.gem "hpricot", :version => '0.6', :source => "http://code.whytheluckystiff.net"
   # config.gem "sqlite3-ruby", :lib => "sqlite3"
   # config.gem "aws-s3", :lib => "aws/s3"
-  config.gem 'haml', :version => '2.0.5'
+  config.gem 'haml', :version => '2.0.6'
   config.gem 'mocha', :version => '0.9.3'
   config.gem 'thoughtbot-factory_girl', :lib => 'factory_girl', :source => 'http://gems.github.com'
   # and just for the record...

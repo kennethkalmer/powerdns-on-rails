@@ -2,7 +2,7 @@ class CreateMacros < ActiveRecord::Migration
   def self.up
     create_table :macros do |t|
       t.string :name, :description
-      t.references :owner
+      t.references :user
       t.boolean :active, :default => false
       
       t.timestamps

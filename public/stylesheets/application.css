@@ -109,13 +109,13 @@ a img {
     text-align: left;
 }
 
-.flash-info, .flash-error, .flash-warning, .errorExplanation, .generic-warning {
+.flash-notice, .flash-info, .flash-error, .flash-warning, .errorExplanation, .generic-warning {
     padding: 5px;
     padding-left: 30px;
     background-position: 5px 5px;
     background-repeat: no-repeat;
 }
-.flash-info {
+.flash-info, .flash-notice {
     border: 1px solid #97FF97;
     background-color: #DFD;
     background-image: url(/images/accept.png);
