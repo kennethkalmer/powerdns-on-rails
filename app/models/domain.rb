@@ -10,6 +10,8 @@
 # * It specifies a default $TTL
 # 
 class Domain < ActiveRecord::Base
+
+  scope_user
   
   belongs_to :user
   
@@ -45,54 +47,6 @@ class Domain < ActiveRecord::Base
   
   # Helper attributes for API clients and forms (keep it RESTful)
   attr_accessor :zone_template_id, :zone_template_name
-  
-  class << self
-    
-    # Convenient scoped finder method that restricts lookups to the specified
-    # :user. If the user has an admin role, the scoping is discarded totally,
-    # since an admin _is a admin_.
-    #
-    # Example:
-    # 
-    #   Domain.find(:all) # Normal behavior
-    #   Domain.find(:all, :user => user_instance) # Will scope lookups to the user
-    #
-    def find_with_scope( *args )
-      options = args.extract_options!
-      user = options.delete( :user )
-      
-      unless user.nil? || user.has_role?( 'admin' )
-        with_scope( :find => { :conditions => [ 'user_id = ?', user.id ] } ) do
-          find_without_scope( *args << options )
-        end
-      else
-        find_without_scope( *args << options )
-      end
-    end
-    alias_method_chain :find, :scope
-    
-    # Paginated find with scope. See #find.
-    def paginate_with_scope( *args, &block )
-      options = args.pop
-      user = options.delete( :user )
-      
-      unless user.nil? || user.has_role?( 'admin' )
-        with_scope( :find => { :conditions => [ 'user_id = ?', user.id ] } ) do
-          paginate_without_scope( *args << options, &block )
-        end
-      else
-        paginate_without_scope( *args << options, &block )
-      end
-    end
-    alias_method_chain :paginate, :scope
-    
-    # For our lookup purposes
-    def search( params, page, user = nil )
-      paginate :per_page => 5, :page => page, 
-        :conditions => ['name LIKE ?', "%#{params.chomp}%"],
-        :user => user
-    end
-  end
   
   # return the records, excluding the SOA record
   def records_without_soa

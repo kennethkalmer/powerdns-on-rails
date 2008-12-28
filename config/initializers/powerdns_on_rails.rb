@@ -1,0 +1,1 @@
+require 'scoped_finders'
