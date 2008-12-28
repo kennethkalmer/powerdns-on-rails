@@ -51,6 +51,12 @@ class Audit < ActiveRecord::Base
       auditable_id, auditable_type, version])
   end
   
+  def peers
+    self.class.find(:all, :order => 'version',
+      :conditions => ['auditable_id = ? and auditable_type = ? and version <> ?',
+      auditable_id, auditable_type, version])
+  end
+  
   def self.reconstruct_attributes(audits)
     changes = {}
     result = audits.collect do |audit|

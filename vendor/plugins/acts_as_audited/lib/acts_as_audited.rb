@@ -218,7 +218,7 @@ module CollectiveIdea #:nodoc:
         end
 
         def audit_destroy(user = nil)
-          write_audit(:action => 'destroy', :auditable_parent => auditable_parent, :user => user)
+          write_audit(:action => 'destroy', :auditable_parent => auditable_parent, :changes => audited_attributes, :user => user)
         end
       
         def write_audit(attrs)
