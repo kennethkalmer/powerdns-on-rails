@@ -270,8 +270,8 @@ HAML
   end
   
   def test_string_interpolation_should_be_esaped
-    assert_equal("<p>4&amp;3</p>\n", render("%p== #{2+2}&#{2+1}", :escape_html => true))
-    assert_equal("<p>4&3</p>\n", render("%p== #{2+2}&#{2+1}", :escape_html => false))
+    assert_equal("<p>4&amp;3</p>\n", render("%p== \#{2+2}&\#{2+1}", :escape_html => true))
+    assert_equal("<p>4&3</p>\n", render("%p== \#{2+2}&\#{2+1}", :escape_html => false))
   end
 
   def test_escaped_inline_string_interpolation
@@ -333,6 +333,31 @@ HAML
     assert_equal("<div id='foo' />\n", render("#foo{:yes => 'no', :call => a_function() }/", :suppress_eval => true))
     assert_equal("<div />\n", render("%div[1]/", :suppress_eval => true))
     assert_equal("", render(":ruby\n  Kernel.puts 'hello'", :suppress_eval => true))
+  end
+
+  def test_doctypes
+    assert_equal('<!DOCTYPE html>',
+      render('!!!', :format => :html5).strip)
+    assert_equal('<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">',
+      render('!!! strict').strip)
+    assert_equal('<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Frameset//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-frameset.dtd">',
+      render('!!! frameset').strip)
+    assert_equal('<!DOCTYPE html PUBLIC "-//WAPFORUM//DTD XHTML Mobile 1.2//EN" "http://www.openmobilealliance.org/tech/DTD/xhtml-mobile12.dtd">',
+      render('!!! mobile').strip)
+    assert_equal('<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML Basic 1.1//EN" "http://www.w3.org/TR/xhtml-basic/xhtml-basic11.dtd">',
+      render('!!! basic').strip)
+    assert_equal('<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">',
+      render('!!! transitional').strip)
+    assert_equal('<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">',
+      render('!!!').strip)
+    assert_equal('<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">',
+      render('!!! strict', :format => :html4).strip)
+    assert_equal('<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Frameset//EN" "http://www.w3.org/TR/html4/frameset.dtd">',
+      render('!!! frameset', :format => :html4).strip)
+    assert_equal('<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">',
+      render('!!! transitional', :format => :html4).strip)
+    assert_equal('<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">',
+      render('!!!', :format => :html4).strip)
   end
 
   def test_attr_wrapper
