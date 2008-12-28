@@ -1,5 +1,5 @@
 # This file is auto-generated from the current state of the database. Instead of editing this file, 
-# please use the migrations feature of ActiveRecord to incrementally modify your database, and
+# please use the migrations feature of Active Record to incrementally modify your database, and
 # then regenerate this schema definition.
 #
 # Note that this schema.rb definition is the authoritative source for your database schema. If you need
@@ -27,8 +27,8 @@ ActiveRecord::Schema.define(:version => 10) do
 
   add_index "audits", ["auditable_id", "auditable_type"], :name => "auditable_index"
   add_index "audits", ["auditable_parent_id", "auditable_parent_type"], :name => "auditable_parent_index"
-  add_index "audits", ["user_id", "user_type"], :name => "user_index"
   add_index "audits", ["created_at"], :name => "index_audits_on_created_at"
+  add_index "audits", ["user_id", "user_type"], :name => "user_index"
 
   create_table "auth_tokens", :force => true do |t|
     t.integer  "domain_id"
@@ -81,8 +81,8 @@ ActiveRecord::Schema.define(:version => 10) do
   end
 
   add_index "records", ["domain_id"], :name => "index_records_on_domain_id"
-  add_index "records", ["name"], :name => "index_records_on_name"
   add_index "records", ["name", "type"], :name => "index_records_on_name_and_type"
+  add_index "records", ["name"], :name => "index_records_on_name"
 
   create_table "roles", :force => true do |t|
     t.string "name"
