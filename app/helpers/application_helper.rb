@@ -23,4 +23,17 @@ module ApplicationHelper
   def dns_book( text, link )
     link_to text, "http://www.zytrax.com/books/dns/#{link}", :target => '_blank'
   end
+
+  # Add a cancel link for shared forms. Looks at the provided object and either
+  # creates a link to the index or show actions.
+  def link_to_cancel( object )
+    path = object.class.name.tableize
+    path = if object.new_record?
+             send( path.pluralize + '_path' )
+           else
+             send( path.singularize + '_path', object )
+           end
+    link_to "Cancel", path
+  end
+  
 end
