@@ -85,7 +85,7 @@
 = link_to_function 'New Record Template', "displayRecordForm()"
 
 #record-form-div{ :style => 'display:none' }
-  - remote_form_for( :record_template, @record_template, :url => record_template_path( @record_template, :format => 'js' ), :html => { :id => 'record-form' } ) do |f|
+  - remote_form_for( @record_template, :html => { :id => 'record-form' } ) do |f|
     = hidden_field( :zone_template, :id )
     %table.grid
       %tr

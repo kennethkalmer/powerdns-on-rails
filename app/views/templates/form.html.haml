@@ -23,5 +23,5 @@
         %td &nbsp;
         %td= f.collection_select :user_id, @users, :id, :login, :include_blank => true
     %tr
-      %td= link_to 'Cancel', zone_templates_path
+      %td= link_to_cancel @zone_template
       %td= submit_tag 'Save'
