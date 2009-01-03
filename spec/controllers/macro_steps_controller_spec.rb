@@ -39,6 +39,19 @@ describe MacroStepsController do
     response.should render_template('macro_steps/create')
   end
 
+  it "should position a valid step correctly" do
+    post :create, :macro_id => @macro.id,
+    :macro_step => {                     
+      :action => 'create',               
+      :record_type => 'A',               
+      :name => 'www',                    
+      :content => '127.0.0.1',           
+      :position => '1'                   
+    }, :format => 'js'
+
+    assigns[:macro_step].position.should == 1
+  end
+
   it "should not create an invalid step" do
     lambda {
       post :create, :macro_id => @macro.id,
@@ -69,6 +82,15 @@ describe MacroStepsController do
       }, :format => 'js'
 
     response.should render_template('macro_steps/update')
+  end
+
+  it "should re-position existing steps" do
+    Factory(:macro_step_create, :macro => @macro)
+    
+    put :update, :macro_id => @macro.id, :id => @step.id,
+    :macro_step => { :position => '2' }
+
+    @step.reload.position.should == 2
   end
 
   it "should remove selected steps when asked" do

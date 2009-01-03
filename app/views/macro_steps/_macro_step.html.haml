@@ -15,7 +15,7 @@
       %div[ macro_step, :error ]
       %table.gridwide
         %tr
-          %td{ :width => 50 }= macro_step.position
+          %td{ :width => 50 }= f.text_field :position, :size => 3
           %td{ :width => 90 }= f.select :action, MacroStep.valid_actions.map { |a| [ a.humanize, a ] }
           %td{ :width => 80 }= f.select :record_type, Macro.record_types.map { |t| [t,t] }
           %td{ :width => 220 }= f.text_field :name, :size => 15

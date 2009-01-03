@@ -58,6 +58,9 @@
     = f.hidden_field( :macro_id )
     %table.grid
       %tr
+        %td Position
+        %td= f.text_field :position, :size => 5
+      %tr
         %td Action
         %td= f.select :action, MacroStep.valid_actions.map { |a| [ a.humanize, a ] }
       %tr

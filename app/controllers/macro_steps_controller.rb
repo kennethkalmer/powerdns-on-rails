@@ -12,12 +12,20 @@ class MacroStepsController < ApplicationController
   public
   
   def create
+    position = params[:macro_step].delete(:position)
     @macro_step = @macro.macro_steps.create( params[:macro_step] )
+
+    
+    @macro_step.insert_at( position ) if position && !@macro_step.new_record?
   end
 
   def update
+    position = params[:macro_step].delete(:position)
+    
     @macro_step = @macro.macro_steps.find( params[:id] )
     @macro_step.update_attributes( params[:macro_step] )
+
+    @macro_step.insert_at( position ) if position
   end
 
   def destroy
