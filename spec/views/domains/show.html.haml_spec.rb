@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../../spec_helper'
 
-describe "domain/show", "for all users" do
+describe "domain/show.html.haml", "for all users" do
   fixtures :all
   
   before(:each) do
@@ -10,7 +10,7 @@ describe "domain/show", "for all users" do
     assigns[:record] = @domain.records.new
     assigns[:users] = User.active_owners
     
-    render "/domains/show", :layout => true
+    render "/domains/show.html.haml", :layout => true
   end
   
   it "should have the domain name in the title and dominant on the page" do
@@ -19,7 +19,7 @@ describe "domain/show", "for all users" do
   end
 end
 
-describe "domain/show", "for admins and domains without owners" do
+describe "domain/show.html.haml", "for admins and domains without owners" do
   fixtures :all
   
   before(:each) do
@@ -29,7 +29,7 @@ describe "domain/show", "for admins and domains without owners" do
     assigns[:record] = @domain.records.new
     assigns[:users] = User.active_owners
     
-    render "/domains/show"
+    render "/domains/show.html.haml"
   end
   
   it "should display the owner" do
@@ -60,7 +60,7 @@ describe "domain/show", "for admins and domains with owners" do
     assigns[:record] = @domain.records.new
     assigns[:users] = User.active_owners
     
-    render "/domains/show"
+    render "/domains/show.html.haml"
   end
   
   it "should have have an additional warnings for removing" do
@@ -69,7 +69,7 @@ describe "domain/show", "for admins and domains with owners" do
   end
 end
 
-describe "domain/show", "for owners" do
+describe "domain/show.html.haml", "for owners" do
   fixtures :all
   
   before(:each) do
@@ -78,7 +78,7 @@ describe "domain/show", "for owners" do
     assigns[:domain] = @domain
     assigns[:record] = @domain.records.new
     
-    render "/domains/show"
+    render "/domains/show.html.haml"
   end
   
   it "should display the owner" do
@@ -99,7 +99,7 @@ describe "domain/show", "for owners" do
   end
 end
 
-describe "domain/show", "for token users" do
+describe "domain/show.html.haml", "for token users" do
   fixtures :auth_tokens, :domains, :records
   
   before(:each) do
@@ -110,7 +110,7 @@ describe "domain/show", "for token users" do
   
   it "should not offer to edit the SOA" do
     template.stubs(:current_token).returns( auth_tokens(:token_example_com) )
-    render "domains/show"
+    render "domains/show.html.haml"
     
     response.should_not have_tag( "a[onclick^=showSOAEdit]")
     response.should_not have_tag( "div#soa-edit-form" )
@@ -118,7 +118,7 @@ describe "domain/show", "for token users" do
   
   it "should only allow new record if permitted (FALSE)" do
     template.stubs(:current_token).returns( auth_tokens(:token_example_com) )
-    render "domains/show"
+    render "domains/show.html.haml"
     
     response.should_not have_tag( "div#record-form-div" )
   end
@@ -129,7 +129,7 @@ describe "domain/show", "for token users" do
     )
     token.allow_new_records=( true )
     template.stubs(:current_token).returns( token )
-    render "domains/show"
+    render "domains/show.html.haml"
     
     response.should have_tag( "div#record-form-div" )
   end

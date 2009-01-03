@@ -15,6 +15,8 @@
     Permantly remove this domain from the system
   #audits
     Views the audits/history for this domain
+  #macro
+    Select a macro and run it against this domain
   #change-owner
     Change or remove the owner of this domain
   #help-primary-ns
@@ -70,6 +72,7 @@
       %td
         - if current_user
           = link_to prototip_info_icon('report_magnify.png', 'audits'), audits_path(:action => :domain, :id => @domain)
+          = link_to prototip_info_icon('brick_go.png', 'macro'), apply_macro_domain_path( @domain )
           - if current_user.admin? && @domain.user
             = link_to_function prototip_info_icon('database_delete.png', 'delete-zone'), "deleteDomain();" , :id => "delete-link-buffer"
           - else

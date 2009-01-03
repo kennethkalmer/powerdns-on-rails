@@ -97,6 +97,35 @@ describe DomainsController do
   end
 end
 
+describe DomainsController, "and macros" do
+  fixtures :all
+
+  before(:each) do
+    login_as(:admin)
+
+    @macro = Factory(:macro)
+    @domain = domains(:example_com)
+  end
+
+  it "should have a selection for the user" do
+    get :apply_macro, :id => @domain.id
+
+    assigns[:domain].should_not be_nil
+    assigns[:macros].should_not be_empty
+
+    response.should render_template('domains/apply_macro')
+  end
+  
+  it "should apply the selected macro" do
+    post :apply_macro, :id => @domain.id, :macro_id => @macro.id
+
+    flash[:notice].should_not be_blank
+    response.should be_redirect
+    response.should redirect_to( domain_path( @domain ) )
+  end
+  
+end
+
 describe DomainsController, "should handle a REST client" do
   fixtures :all
   

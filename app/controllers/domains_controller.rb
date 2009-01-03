@@ -90,6 +90,35 @@ class DomainsController < ApplicationController
     @domain = Domain.find( params[:id] )
     @domain.update_attribute :user_id, params[:domain][:user_id]
   end
+
+  # GET: list of macros to apply
+  # POST: apply selected macro
+  def apply_macro
+    @domain = Domain.find( params[:id], :user => current_user )
+    
+    if request.get?
+      @macros = Macro.find(:all, :user => current_user)
+
+      respond_to do |format|
+        format.html
+        format.xml { render :xml => @macros }
+      end
+      
+    else
+      @macro = Macro.find( params[:macro_id], :user => current_user )
+      @macro.apply_to( @domain )
+
+      respond_to do |format|
+        format.html {
+          flash[:notice] = "Macro applied to domain"
+          redirect_to domain_path(@domain)
+        }
+        format.xml { render :xml => @domain.reload, :status => :accepted, :location => domain_path(@domain) }
+      end
+      
+    end
+    
+  end
   
   private
   

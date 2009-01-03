@@ -40,16 +40,18 @@ class Macro < ActiveRecord::Base
 
   # Apply the macro instance to the provided domain
   def apply_to( domain )
-    macro_steps.each do |step|
+    Record.batch do
+      macro_steps.each do |step|
 
-      if step.action == 'create'
-        macro_create( domain, step )
-      elsif step.action == 'update'
-        macro_change( domain, step )
-      elsif step.action == 'remove'
-        macro_remove( domain, step )
-      else
-        raise ArgumentError, "Cannot process action: #{step.action} (#{step.inspect})"
+        if step.action == 'create'
+          macro_create( domain, step )
+        elsif step.action == 'update'
+          macro_change( domain, step )
+        elsif step.action == 'remove'
+          macro_remove( domain, step )
+        else
+          raise ArgumentError, "Cannot process action: #{step.action} (#{step.inspect})"
+        end
       end
     end
   end
