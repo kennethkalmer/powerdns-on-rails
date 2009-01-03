@@ -40,6 +40,7 @@ class MacroStep < ActiveRecord::Base
 
     record.errors.each do |k,v|
       next if k == "domain_id" || k == "ttl"
+      next if k == "content" || k == "prio" unless content_required?
 
       self.errors.add( k, v )
     end unless record.valid?

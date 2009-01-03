@@ -72,6 +72,23 @@ describe MacroStep, "when new" do
   
 end
 
+describe MacroStep, "for removing records" do
+  before(:each) do
+    @macro_step = MacroStep.new
+    @macro_step.action = 'remove'
+  end
+
+  it "should not require content" do
+    @macro_step.should have(:no).errors_on(:content)
+  end
+  
+  it "should not require prio on MX" do
+    @macro_step.record_type = 'MX'
+    @macro_step.should have(:no).errors_on(:prio)
+  end
+  
+end
+
 describe MacroStep, "when created" do
   before(:each) do
     @macro = Factory(:macro)

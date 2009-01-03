@@ -11,7 +11,7 @@ Factory.define(:macro_step_create, :class => MacroStep) do |f|
 end
 
 Factory.define(:macro_step_change, :class => MacroStep) do |f|
-  f.action 'change'
+  f.action 'update'
   f.record_type 'A'
   f.name 'www'
   f.content '127.1.1.1'
@@ -21,6 +21,5 @@ Factory.define(:macro_step_remove, :class => MacroStep) do |f|
   f.action 'remove'
   f.record_type 'A'
   f.name 'ftp'
-  f.content ''
 end
 
