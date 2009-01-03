@@ -44,8 +44,8 @@ describe MacroStep, "when new" do
     @macro_step.should have(1).error_on(:record_type)
   end
   
-  it "should require a record name" do
-    @macro_step.should have(1).error_on(:name)
+  it "should not require a record name" do
+    @macro_step.should have(:no).errors_on(:name)
   end
 
   it "should require content" do
@@ -87,8 +87,7 @@ describe MacroStep, "when created" do
 
   it "should have a position" do
     @macro_step.position.should_not be_blank
-  end
-  
+  end  
   
 end
 
