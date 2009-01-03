@@ -1,0 +1,12 @@
+# Did we fail or succeed?
+if @macro_step.new_record?
+  # fail!
+  page.insert_html :top, 'record-form', error_messages_for( :macro_step )
+  page.call 'showflash', 'error', "Could not create step"
+else
+  page.call 'resetRecordForm'
+  page.hide 'record-form-div'
+  page.insert_html :bottom, 'steps-table', :partial => @macro_step
+
+  page.call 'showflash', 'info', "Macro step created"
+end

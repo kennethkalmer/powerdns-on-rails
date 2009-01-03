@@ -1,8 +1,11 @@
 class MacroStep < ActiveRecord::Base
 
+  @@valid_actions = %w{ create update remove }
+  cattr_reader :valid_actions
+  
   validates_presence_of :macro_id, :name, :content
-  validates_inclusion_of :action, :in => %w{ create update remove}
-  validates_inclusion_of :record_type, :in => Record.record_types
+  validates_inclusion_of :action, :in => self.valid_actions
+  validates_inclusion_of :record_type, :in => Macro.record_types
 
   belongs_to :macro
 
@@ -35,7 +38,7 @@ class MacroStep < ActiveRecord::Base
     record = build
 
     record.errors.each do |k,v|
-      next if k == "domain_id"
+      next if k == "domain_id" || k == "ttl"
 
       self.errors.add( k, v )
     end unless record.valid?

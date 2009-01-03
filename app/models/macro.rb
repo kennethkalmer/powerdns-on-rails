@@ -29,5 +29,14 @@ class Macro < ActiveRecord::Base
 
   has_many :macro_steps, :dependent => :destroy
   belongs_to :user
+
+  class << self
+
+    def record_types
+      Record.record_types - ['SOA']
+    end
+    
+  end
+  
 end
 

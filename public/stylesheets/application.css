@@ -148,14 +148,14 @@ a img {
     margin-left: -25px;
 }
 
-input {
+input, textarea {
     border: 1px solid #555;
     padding: 2px;
 }
 .fieldWithErrors input {
     border: 1px solid #F66;
 }
-input.nb {
+input.nb, textarea.nb {
     border: none;
 }
 

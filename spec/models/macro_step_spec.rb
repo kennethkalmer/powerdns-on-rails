@@ -33,11 +33,14 @@ describe MacroStep, "when new" do
 
   it "should only accept valid record types" do
     Record.record_types.each do |known_record_type|
+      # We don't apply macro's to SOA records
+      next if known_record_type == 'SOA'
+      
       @macro_step.record_type = known_record_type
       @macro_step.should have(:no).errors_on(:record_type)
     end
 
-    @macro_step.record_type = 'Foo'
+    @macro_step.record_type = 'SOA'
     @macro_step.should have(1).error_on(:record_type)
   end
   

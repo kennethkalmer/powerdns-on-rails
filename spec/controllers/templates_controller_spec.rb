@@ -22,6 +22,16 @@ describe TemplatesController, "and admins" do
     assigns[:users].should_not be_empty
     assigns[:users].each { |u| u.has_role?('owner').should be_true }
   end
+
+  it "should have a detailed view of a template" do
+    get :show, :id => zone_templates(:east_coast_dc)
+
+    assigns[:zone_template].should_not be_nil
+    assigns[:record_template].should be_a_new_record
+
+    response.should render_template('templates/show')
+  end
+  
 end
 
 describe TemplatesController, "and users" do

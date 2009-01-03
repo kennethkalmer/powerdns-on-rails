@@ -1,0 +1,108 @@
+%div{ :style => "display:none" }
+  #new-step
+    Add a new step to the macro
+  #edit-macro
+    Update this macro's information
+  #delete-macro
+    Remove this macro
+  #edit-step
+    Update this steps' information
+  #delete-step
+    Remove this step from the macro
+
+%h1.underline
+  = @macro.name
+  &nbsp;
+  - link_to edit_macro_path( @macro ) do
+    = prototip_info_icon( 'brick_edit.png', 'edit-macro' )
+
+%table.grid
+  %tr
+    %td Name
+    %td &nbsp;
+    %td= @macro.name
+  %tr
+    %td.top Description
+    %td &nbsp;
+    %td= @macro.description
+  %tr
+    %td Owner
+    %td &nbsp;
+    %td= @macro.user.nil? ? '-' : @macro.user.login
+  %tr
+    %td Active
+    %td &nbsp;
+    %td= @macro.active? ? 'Yes' : 'No'
+
+%p &nbsp;
+
+%h1.underline Macro Steps
+
+%table#steps-table.gridwide
+  %tr
+    %td.small Position
+    %td.small Action
+    %td.small Type
+    %td.small Name
+    %td.small Priority
+    %td.small Content
+  = render :partial => @macro.macro_steps
+
+%p &nbsp;
+
+= link_to_function prototip_info_icon('table_add.png', 'new-step'), "displayRecordForm()"
+= link_to_function "New Macro Step", "displayRecordForm()"
+
+#record-form-div{ :style => 'display:none' }
+  - remote_form_for( [@macro, @macro_step], :html => { :id => 'record-form' } ) do |f|
+    = f.hidden_field( :macro_id )
+    %table.grid
+      %tr
+        %td Action
+        %td= f.select :action, MacroStep.valid_actions.map { |a| [ a.humanize, a ] }
+      %tr
+        %td Type
+        %td
+          = f.select :record_type, Macro.record_types.map { |t| [t,t] }
+          = observe_field "macro_step_record_type", :function => 'toggleRecordFields(element,value);'
+      %tr
+        %td Host
+        %td= f.text_field :name
+      %tr.rt-mx{ :style => 'display :none' }
+        %td Priority
+        %td= f.text_field :prio, :size => 6
+      %tr
+        %td Data
+        %td= f.text_field :content
+      %tr
+        %td.right= link_to_function 'Cancel', "hideAll()"
+        %td= submit_tag 'Save'
+
+:javascript
+  // Blatantly copied from record templates, needs to be unified
+  function hideAll() {
+    $('record-form-div').hide();
+  }
+  function displayRecordForm() {
+    $('record-form-div').show();
+  }
+  function editRecordTemplate(i){
+    $('show_macro_step_' + i).hide();
+    $('edit_macro_step_' + i).show();
+  }
+  function hideRecordTemplate(i) {
+    $('show_macro_step_' + i).show();
+    $('edit_macro_step_' + i).hide();
+  }
+  function toggleRecordFields(e,v){
+    t = 'rt-' + v.toLowerCase();
+    $('record-form-div').select('tr').each(function(r){
+      if(r.className && r.className != t)
+        r.hide();
+      else
+        r.show();
+    });
+  }
+  function resetRecordForm() {
+    $('record-form').reset();
+  }

@@ -1,0 +1,28 @@
+%tr[ macro_step, :marker ]
+%tr[ macro_step, :show ]
+  %td{ :width => 50 }= macro_step.position
+  %td{ :width => 90 }= macro_step.action
+  %td{ :width => 80 }= macro_step.record_type
+  %td{ :width => 230 }= macro_step.name
+  %td{ :width => 30 }= macro_step.prio
+  %td{ :width => 230 }= macro_step.content
+  %td{ :width => 36 }
+    = link_to_function prototip_info_icon('table_edit.png', 'edit-step'), "editRecordTemplate(#{macro_step.id})"
+    = link_to prototip_info_icon('table_delete.png', 'delete-step'), macro_macro_step_path(@macro, macro_step), :method => :delete, :confirm => "Are you sure you want to remove this step?"
+%tr[ macro_step, :edit ]{ :style => 'display: none' }
+  %td{ :colspan => 7 }
+    - remote_form_for( [@macro, macro_step] ) do |f|
+      %div[ macro_step, :error ]
+      %table.gridwide
+        %tr
+          %td{ :width => 50 }= macro_step.position
+          %td{ :width => 90 }= f.select :action, MacroStep.valid_actions.map { |a| [ a.humanize, a ] }
+          %td{ :width => 80 }= f.select :record_type, Macro.record_types.map { |t| [t,t] }
+          %td{ :width => 220 }= f.text_field :name, :size => 15
+          %td{ :width => 30 }
+            - if macro_step.record_type == 'MX'
+              = f.text_field :prio, :size => 2
+          %td{ :width => 220 }= f.text_field :content, :size => 15
+          %td{ :width => 40 }
+            = image_submit_tag "table_save.png", { :class => 'nb' }
+            = link_to_function image_tag('cancel.png'), "hideRecordTemplate(#{macro_step.id})"

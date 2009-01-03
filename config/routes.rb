@@ -41,6 +41,11 @@ ActionController::Routing::Routes.draw do |map|
   # RESTful templates
   map.resources :zone_templates, :controller => 'templates'
   map.resources :record_templates
+
+  # RESTful macros
+  map.resources :macros do |macro|
+    macro.resources :macro_steps
+  end
   
   # Audits
   map.audits '/audits/:action/:id', :controller => 'audits', :action => 'index'

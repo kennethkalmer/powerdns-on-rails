@@ -1,0 +1,39 @@
+%h1.underline
+  = @macro.new_record? ? "New Macro" : "Update Macro"
+
+%div{ :style => "display:none" }
+  #macro-name
+    Descriptive name for the macro
+  #macro-active
+    Macros are disabled by default, and it's recommended you keep them
+    inactive until you're comfortable they perform correctly
+
+- form_for( @macro ) do |f|
+  = error_messages_for :macro
+
+  %table
+    %tr
+      %td Name
+      %td &nbsp;
+      %td
+        = f.text_field :name
+        = prototip_help_icon('macro-name')
+    %tr
+      %td.top Description
+      %td &nbsp;
+      %td= f.text_area :description, :size => '35x2'
+    - unless @users.nil? || @users.empty?
+      %tr
+        %td Owner
+        %td &nbsp;
+        %td= f.collection_select :user_id, @users, :id, :login, :include_blank => true
+    %tr
+      %td Active
+      %td &nbsp;
+      %td
+        = f.check_box :active
+        = prototip_help_icon('macro-active')
+    %tr
+      %td.right= link_to_cancel @macro
+      %td &nbsp;
+      %td= submit_tag 'Save'
