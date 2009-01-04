@@ -86,6 +86,11 @@ class SOA < Record
       save
     end
   end
+
+  # Nicer representation of the domain as XML
+  def to_xml(options = {}, &block)
+    to_xml_without_cleanup(:methods => SOA_FIELDS)
+  end
   
   def before_update #:nodoc:
     update_serial unless @serial_updated

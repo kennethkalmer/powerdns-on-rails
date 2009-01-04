@@ -16,8 +16,13 @@ class DomainsController < ApplicationController
     else
       @domain = Domain.find( current_token.domain_id, :include => :records )
     end
-    
-    @record = @domain.records.new
+
+    respond_to do |format|
+      format.html {
+        @record = @domain.records.new
+      }
+      format.xml { render :xml => @domain }
+    end
   end
   
   def new

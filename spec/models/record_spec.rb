@@ -180,3 +180,16 @@ describe Record, "when loaded" do
     @record.shortname.should be_blank
   end
 end
+
+describe Record, "when serializing to XML" do
+  fixtures :all
+
+  before(:each) do
+    @record = records(:example_com_a)
+  end
+
+  it "should have a root tag of the record type" do
+    @record.to_xml.should have_tag('a')
+  end
+  
+end

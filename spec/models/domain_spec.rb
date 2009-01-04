@@ -161,3 +161,23 @@ describe Domain, "when searching" do
     Domain.search('exa', 1).should_not be_empty
   end
 end
+
+describe Domain, "when serializing to XML" do
+  fixtures :all
+
+  before(:each) do
+    @domain = domains(:example_com)
+  end
+
+  it "should not show the user_id" do
+    xml = @domain.to_xml
+    xml.should_not have_tag('user-id')
+    xml.should_not have_tag('user_id')
+  end
+  
+  it "should have the records included" do
+    xml = @domain.to_xml
+    xml.should have_tag('records')
+  end
+  
+end

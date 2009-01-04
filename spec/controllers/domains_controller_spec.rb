@@ -127,6 +127,8 @@ describe DomainsController, "should handle a REST client" do
   
   before(:each) do
     authorize_as(:api_client)
+
+    @domain = domains(:example_com)
   end
   
   it "creating a new zone without a template" do
@@ -168,16 +170,42 @@ describe DomainsController, "should handle a REST client" do
   end
 
   it "removing zones" do
-    domain = domains(:example_com)
-
-    delete :destroy, :id => domain.id, :format => "xml"
+    delete :destroy, :id => @domain.id, :format => "xml"
 
     response.code.should == "204"
 
     lambda {
-      domain.reload
+      @domain.reload
     }.should raise_error(ActiveRecord::RecordNotFound)
   end
+
+  it "viewing a zone" do
+    get :show, :id => @domain.id, :format => 'xml'
+
+    response.should have_tag('domain') do
+      with_tag 'records'
+    end
+  end
+  
+  it "getting a list of macros to apply" do
+    Factory(:macro)
+    
+    get :apply_macro, :id => @domain.id, :format => 'xml'
+
+    response.should have_tag('macros') do
+      with_tag('macro')
+    end
+  end
+  
+  it "applying a macro to a domain" do
+    macro = Factory(:macro)
+
+    post :apply_macro, :id => @domain.id, :macro_id => macro.id, :format => 'xml'
+
+    response.code.should == "202"
+    response.should have_tag('domain')
+  end
+  
 end
 
 describe DomainsController, "and auth tokens" do

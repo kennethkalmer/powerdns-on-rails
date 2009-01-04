@@ -193,3 +193,28 @@ describe SOA, "and serial numbers" do
     @soa.serial.to_s.should eql( date_segment + '03' )
   end
 end
+
+describe SOA, "when serializing to XML" do
+  fixtures :all
+
+  before(:each) do
+    @soa = records(:example_com_soa)
+  end
+
+  it "should make an soa tag" do
+    @soa.to_xml.should have_tag('soa')
+  end
+  
+  it "should have the custom soa attributes present" do
+    xml = @soa.to_xml
+    
+    xml.should have_tag('primary-ns')
+    xml.should have_tag('contact')
+    xml.should have_tag('serial')
+    xml.should have_tag('minimum')
+    xml.should have_tag('expire')
+    xml.should have_tag('refresh')
+    xml.should have_tag('retry')
+  end
+  
+end
