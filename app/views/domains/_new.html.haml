@@ -1,4 +1,4 @@
-/ These div's contain the help information.
+/ These divs contain the help information.
 %div{ :style => 'display: none' }
   #help-domain
     This is the fully qualified domain name (FQDN) of the domain.
@@ -6,7 +6,7 @@
     This is the fully qualified domain name (FQDN) of the primary name server
     of the domain.
   #help-contact
-    The primary contact of the domain, usualy the DNS administrator's email
+    The primary contact of the domain, usualy the DNS administrator email
     address would be entered here.
   #help-refresh
     Indicates the time when the slave will try to refresh the zone from the 
@@ -41,9 +41,14 @@
       %td= prototip_help_icon('help-domain')
     %tr
       %td Zone Template
-      %td= f.collection_select( :zone_template_id, @zone_templates, :id, :name, :include_blank => true )
+      %td
+        - if @zone_templates.size > 0
+          = f.collection_select( :zone_template_id, @zone_templates, :id, :name, :include_blank => true )
+          = observe_field :domain_zone_template_id, :function =>"if(value == \"\") $('no-template-input').show(); else $('no-template-input').hide()", :on => 'select'
+        - else
+          %em== #{link_to "Create Zone Templates", new_zone_template_path} for easier management of new domains
       %td &nbsp;
-    = observe_field :domain_zone_template_id, :function =>"if(value == \"\") $('no-template-input').show(); else $('no-template-input').hide()", :on => 'select'
+    
     
   #no-template-input
     %table.grid
@@ -82,6 +87,6 @@
         %td &nbsp;
   %table.grid
     %tr
-      %td.right{:width => "300"}= link_to "Cancel", domains_path
+      %td.right{:width => "300"}= link_to_cancel @domain
       %td= submit_tag "Save"
       %td &nbsp;

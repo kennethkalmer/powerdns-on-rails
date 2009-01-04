@@ -71,11 +71,7 @@ describe DomainsController, "when creating" do
     response.should redirect_to( domain_path( assigns[:domain] ) )
     flash[:info].should_not be_nil
   end
-  
-  it "should offer to create templates if none are found" do
-    pending "Move to view specs"
-  end
-  
+    
 end
 
 describe DomainsController do
