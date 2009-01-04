@@ -1,0 +1,35 @@
+h1. Conventions
+
+Just like its framework, PowerDNS on Rails follows a strict convention over configuration approach. Based on our experience, and scouring the internet, we've made certain assumptions that might, or might not, fit into how you run your own DNS servers. As the projet progresses (or demand increases) these will become more configurable with time.
+
+h2. Automatic Serial Numbers
+
+PowerDNS on Rails supports two modes of automatic serial number generation.
+
+h3. PowerDNS automatic serial numbers
+
+NOTE: "Read this page":http://doc.powerdns.com/generic-mypgsql-backends.html
+
+Allthough PowerDNS supports automatic serial number generation on some backends, the "Generic MySQL and PgSQL backend" does not support automatic serial number generation!
+
+h3. PowerDNS on Rails automatic serial numbers
+
+Serial numbers are automatically generated when changes are made to RR's. During batch updates, the serial number is only updated once, and NOT once for every individual change.
+
+The format of the automatic serial number follows various best-practise guidelines available online, and looks like this:
+
+  YYYYMMDDNN
+
+Where YYYYMMDD should be self explanatory. NN is the change number for the day in question. The obvious limitation here is running a "roll-your-own" dyndns.org using PowerDNS on Rails.
+
+When Rails 2.1 is released we expect to be able to track "dirt objects". This means we will not update data in the database (including serial numbers) unless the data actually changed. This will keep the increments under control and make a dyndns.org style service more practical.
+
+We'll also build in configuration support for setting the length of the increment value, so actively changing zones can be handled more easily. We also plan for implementing serial modes, (ie the current one, or explicit sequences).
+
+h2. $TTL Support for RR's
+
+Each zone has a TTL column (which defaults on database level to 86400). When any RR's are created without an explicit TTL, the TTL from the parent zone will be pulled in. This gives reliable behaviour to administrators familiar with the $TTL setting.
+
+h2. $ORIGIN
+
+The zone record is the $ORIGIN. The default host of any RR is '@', this is set in the database schema as well, just like the $TTL.

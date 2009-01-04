@@ -1,14 +1,11 @@
-= PowerDNS on Rails TODO
+h1. PowerDNS on Rails TODO
 
-Simple list of things to do by version. This is not authorative, the real list
-will be maintained at the LightHouse tracker.
+Simple list of things to do by version. This is not authorative, the real list will be maintained at the LightHouse tracker.
 
 http://kennethkalmer.lighthouseapp.com/projects/11831-powerdns-on-rails/
 
-== Not Started / In Progress
+h2. Not Started / In Progress
 
-* Configurable macros
-* Github project page
 * Multiple users (admins or owners)
   (remove roles model and persist roles in users table)
 * Solid models and model specs
@@ -24,8 +21,10 @@ http://kennethkalmer.lighthouseapp.com/projects/11831-powerdns-on-rails/
 * Flexible model support?
 * Statistics (import pdns logs)
 
-== Completed
+h2. Completed
 
+* Github project page
+* Configurable macros
 * Basic database structure
 * Zone/Record Templates
 * Authentication tokens for one-time access

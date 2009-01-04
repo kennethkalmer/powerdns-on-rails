@@ -1,85 +1,64 @@
 h1. PowerDNS on Rails
 
-PowerDNS on Rails is a Ruby on Rails application made to manage "PowerDNS":http://www.powerdns.com
-installations using the generic MySQL/PostgreSQL backends.
+PowerDNS on Rails is a Ruby on Rails application made to manage "PowerDNS":http://www.powerdns.com installations using the generic MySQL/PostgreSQL backends.
 
 More information:
 
 * The README (this file)
-* "Home page":http://www.opensourcery.co.za/powerdns-on-rails
+* "Home page":http://kennethkalmer.github.com/powerdns-on-rails
 * "Bug tracker":http://kennethkalmer.lighthouseapp.com/projects/11831-powerdns-on-rails
 
-h2. Overview
+h2. Quick Installation
 
-The PowerDNS on Rails README is located in doc/README_FOR_APP, other supporting
-documents are also located in doc/
+# $ git clone git://github.com/kennethkalmer/powerdns-on-rails.git
+# $ cd powerdns-on-rails
+# Review config/database.yml and modify as needed
+# $ rake db:migrate
+# $ rake db:seed
+# $ ruby script/server
+# Point your browser to http://localhost:3000
+# Login with 'admin' and 'secret'
 
-PowerDNS on Rails is written in Ruby, using the Ruby on Rails framework. All
-external dependencies have been bundled inside this project to ease the 
-installation and use of the code by system administrators.
+*Note on versions:* PowerDNS on Rails is version-less, and the master branch will always have stable useable code.
 
 h2. Features (current and planned)
 
-* RESTful architecture to support a rich UI and API's
+* RESTful architecture to support rich UI and API access
 * Multi-user support (admins, owners, API clients)
 * CLI clients to show integration capabilities
 * Conversion and import tools
 * Zone/Record Templates
 * DNS Insight
 * Full audit record of all changes
+* Macros for easy bulk updating of domains
 
 h2. Overview
 
-PowerDNS on Rails is a split from the BIND DLZ on Rails project.
+PowerDNS is a reliable alternative to BIND and sports a flexible, feature rich design and support for various backends, including MySQL and PostgreSQL. This simplifies the management of thousands of zones, and provides added redundancy (by way of database replication) and opens the doors for web frontends that ease this even more.
 
-PowerDNS is a reliable alternative to BIND and sports a flexible, feature rich
-design and support for various backends, including MySQL and PostgreSQL. This 
-simplifies the management of thousands of zones, and provides added redundancy 
-(by way of database replication) and opens the doors for web frontends that ease
-this even more.
+PowerDNS on Rails is built based on our experience of managing thousands of DNS records through various (often crude) techniques, that included building zone files from databases via cron, and implementing PowerDNS for its database backends.
 
-PowerDNS on Rails is built based on our experience of managing thousands of DNS
-records through various (often crude) techniques, that included building zone
-files from databases via cron, and implementing PowerDNS for its database
-backends.
-
-We first built BIND DLZ on Rails that allowed us to migrate back to BIND using
-a MySQL 5.0 backend, but after several failed production runs we decided to
-split the project off to use our existing PowerDNS infrastructure.  Using Rails 
-2 for a interface just makes sense because we can build a rich interface and an
-REST API in a single go. We have a lot of integration needs, and this was our 
-main driver.
+We first built BIND DLZ on Rails that allowed us to migrate back to BIND using a MySQL 5.0 backend, but after several failed production runs we decided to split the project off to use our existing PowerDNS infrastructure.  Using Rails 2 for a interface just makes sense because we can build a rich interface and an REST API in a single go. We have a lot of integration needs, and this was our main driver.
 
 h2. PowerDNS Information
 
-The PowerDNS project can be found at http://www.powerdns.com. The documentation
-is in-depth on that site, I won't repeat anything here unless its related to 
-this project specifically.
+The PowerDNS project can be found at http://www.powerdns.com. The documentation is in-depth on that site, I won't repeat anything here unless its related to this project specifically.
 
-It is however worth noting that this interface excepts the "Generic MySQL and
-PgSQL backend" to be used, as per 
-http://doc.powerdns.com/generic-mypgsql-backends.html
+It is however worth noting that this interface excepts the "Generic MySQL and PgSQL backend" to be used, as per http://doc.powerdns.com/generic-mypgsql-backends.html
 
 h2. Database Structure
 
-PowerDNS does not allow you to alter the database schema at all, and you're 
-forced to use at least one set database table. It can however handle additions
-to the table without problems.
+PowerDNS does not allow you to alter the database schema at all, and you're forced to use at least one set database table. It can however handle additions to the table without problems.
 
-We also add additional table to accomodate users, templates, etc.
+We also add several additional tables to accomodate users, templates, macros and other features.
 
 h2. Migration to PowerDNS
 
-PowerDNS does provide a suite of migration tools, and they're all covered in the
-official documentation.
+PowerDNS does provide a suite of migration tools, and they're all covered in the official documentation.
 
 h2. Testing
 
-PowerDNS on Rails is built using extensive RSpec suites, often termed "Behaviour
-Driven Development". It is critical for a core service like DNS to be reliable
-and that all changes are correct and won't impact services offered to clients.
+PowerDNS on Rails is built using extensive RSpec suites, often termed "Behaviour Driven Development". It is critical for a core service like DNS to be reliable and that all changes are correct and won't impact services offered to clients.
 
-Apart from the extensive programmatic tests, we'll be implementing tests that
-actually seed a DNS database and use BIND's dig utility to query a configured
-PowerDNS installation.
+Apart from the extensive programmatic tests, we'll be implementing tests that actually seed a DNS database and use BIND's dig utility to query a configured PowerDNS installation.
 
