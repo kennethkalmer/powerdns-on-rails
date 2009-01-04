@@ -16,7 +16,7 @@ CREATE TABLE `audits` (
   KEY `auditable_parent_index` (`auditable_parent_id`,`auditable_parent_type`),
   KEY `user_index` (`user_id`,`user_type`),
   KEY `index_audits_on_created_at` (`created_at`)
-) ENGINE=InnoDB AUTO_INCREMENT=346 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=352 DEFAULT CHARSET=utf8;
 
 CREATE TABLE `auth_tokens` (
   `id` int(11) NOT NULL auto_increment,
@@ -63,7 +63,7 @@ CREATE TABLE `macro_steps` (
   `created_at` datetime default NULL,
   `updated_at` datetime default NULL,
   PRIMARY KEY  (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8;
 
 CREATE TABLE `macros` (
   `id` int(11) NOT NULL auto_increment,
@@ -74,7 +74,7 @@ CREATE TABLE `macros` (
   `created_at` datetime default NULL,
   `updated_at` datetime default NULL,
   PRIMARY KEY  (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
 CREATE TABLE `record_templates` (
   `id` int(11) NOT NULL auto_increment,
@@ -87,7 +87,7 @@ CREATE TABLE `record_templates` (
   `created_at` datetime default NULL,
   `updated_at` datetime default NULL,
   PRIMARY KEY  (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=utf8;
 
 CREATE TABLE `records` (
   `id` int(11) NOT NULL auto_increment,
@@ -104,7 +104,7 @@ CREATE TABLE `records` (
   KEY `index_records_on_domain_id` (`domain_id`),
   KEY `index_records_on_name` (`name`),
   KEY `index_records_on_name_and_type` (`name`,`type`)
-) ENGINE=InnoDB AUTO_INCREMENT=227 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=233 DEFAULT CHARSET=utf8;
 
 CREATE TABLE `roles` (
   `id` int(11) NOT NULL auto_increment,

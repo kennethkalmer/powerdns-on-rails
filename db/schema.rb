@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 10) do
+ActiveRecord::Schema.define(:version => 20081228121040) do
 
   create_table "audits", :force => true do |t|
     t.integer  "auditable_id"
@@ -56,6 +56,30 @@ ActiveRecord::Schema.define(:version => 10) do
   end
 
   add_index "domains", ["name"], :name => "index_domains_on_name"
+
+  create_table "macro_steps", :force => true do |t|
+    t.integer  "macro_id"
+    t.string   "action"
+    t.string   "record_type"
+    t.string   "name"
+    t.string   "content"
+    t.integer  "ttl"
+    t.integer  "prio"
+    t.integer  "position"
+    t.boolean  "active",      :default => true
+    t.string   "note"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "macros", :force => true do |t|
+    t.string   "name"
+    t.string   "description"
+    t.integer  "user_id"
+    t.boolean  "active",      :default => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "record_templates", :force => true do |t|
     t.integer  "zone_template_id"
