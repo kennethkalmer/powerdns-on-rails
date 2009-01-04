@@ -1,0 +1,38 @@
+---
+layout: default
+title: PowerDNS on Rails
+---
+
+PowerDNS on Rails is a "Ruby on Rails":http://www.rubyonrails.com based web application for managing your PowerDNS databases, through the PowerDNS generic MySQL/PostgreSQL backend.
+
+h2. Installation
+
+To install via Git:
+
+# $ git clone git://github.com/kennethkalmer/powerdns-on-rails.git
+# $ cd powerdns-on-rails
+# Review _config/database.yml_ and modify as needed
+# $ rake db:migrate
+# $ rake db:seed
+# $ ruby script/server
+# Point your browser to http://localhost:3000
+# Login with 'admin' and 'secret'
+
+h2. Overview
+
+PowerDNS on Rails aims to provide a simple web based management platform for PowerDNS systems using the generic MySQL/PostgreSQL backend provided by PowerDNS.
+
+PowerDNS's features include:
+
+* Zone Templates, useful for adding new zones
+* Macros, useful for predefining changes and applying them selectively to zones
+* Multiple users and admin/owner roles
+* Basic reporting
+* Integrated searching
+* Audit history of domain/RR changes
+* Ever growing support for a variety of RR types
+* RESTful API for integration into other systems
+
+h2. Sponsors
+
+PowerDNS on Rails development is sponsored by "ISP in a Box":http://www.ispinabox.co.za in form of using company time and resources to build and maintain the project. PowerDNS powers the DNS infrastructure for ISP in a Box.
