@@ -26,7 +26,7 @@ html>body #wrapper {
 
 #header {
 	position: relative;
-	background-image: url(/images/top-background.png);
+	background-image: url(/powerdns-on-rails/images/top-background.png);
         background-repeat: repeat-x;
 	height: 80px;
         padding-left: 20px;
