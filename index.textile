@@ -18,6 +18,8 @@ To install via Git:
 # Point your browser to http://localhost:3000
 # Login with 'admin' and 'secret'
 
+*Note on versions:* I don't really believe this project should have version numbers, it will stay at 1 forever. The "master" branch of the public repo will always be stable and fully functional. Github provides RSS feeds for repository activity, and I announce new features and updates on "my blog":http://www.opensourcery.co.za/ and the "PowerDNS mail list":http://mailman.powerdns.com/pipermail/pdns-users/
+
 h2. Overview
 
 PowerDNS on Rails aims to provide a simple web based management platform for PowerDNS systems using the generic MySQL/PostgreSQL backend provided by PowerDNS.
