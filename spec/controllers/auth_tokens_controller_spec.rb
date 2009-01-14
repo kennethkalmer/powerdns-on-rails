@@ -13,10 +13,18 @@ describe AuthTokensController do
     response.code.should eql("401")
   end
   
+  it "should bail cleanly on missing auth_token" do
+    login_as(:token_user)
+
+    post :create
+
+    response.code.should eql("422")
+  end
+  
   it "should bail cleanly on missing domains" do
     login_as(:token_user)
     
-    post :create, :domain => 'example.org'
+    post :create, :auth_token => { :domain => 'example.org' }
     
     response.code.should eql("404")
   end
@@ -24,7 +32,7 @@ describe AuthTokensController do
   it "bail cleanly on invalid requests" do
     login_as(:token_user)
     
-    post :create, :domain => 'example.com'
+    post :create, :auth_token => { :domain => 'example.com' }
     
     response.should have_tag('error')
   end
@@ -39,7 +47,7 @@ describe AuthTokensController do
     end
     
     it "with allow_new set" do
-      post :create, @params.merge(:allow_new => 'true')
+      post :create, :auth_token => @params.merge(:allow_new => 'true')
 
       response.should have_tag('token') do
         with_tag('expires')
@@ -53,7 +61,7 @@ describe AuthTokensController do
     end
     
     it "with remove set" do
-      post :create, @params.merge(:remove => 'true', :records => ['www.example.com'])
+      post :create, :auth_token => @params.merge(:remove => 'true', :record => ['www.example.com'])
       
       response.should have_tag('token') do
         with_tag('expires')
@@ -66,7 +74,7 @@ describe AuthTokensController do
     end
     
     it "with policy set" do
-      post :create, @params.merge(:policy => 'allow')
+      post :create, :auth_token => @params.merge(:policy => 'allow')
       
       response.should have_tag('token') do
         with_tag('expires')
@@ -78,7 +86,7 @@ describe AuthTokensController do
     end
     
     it "with protected records" do
-      post :create, @params.merge(
+      post :create, :auth_token => @params.merge(
         :protect => ['example.com:A', 'www.example.com'],
         :policy => 'allow'
       )
@@ -96,13 +104,13 @@ describe AuthTokensController do
     end
     
     it "with protected record types" do
-      post :create, @params.merge(:policy => 'allow', :protect_types => ['MX'])
+      post :create, :auth_token => @params.merge(:policy => 'allow', :protect_type => ['MX'])
       
       assigns[:auth_token].can_change?( records(:example_com_mx) ).should be_false
     end
     
     it "with allowed records" do
-      post :create, @params.merge(:records => ['example.com'])
+      post :create, :auth_token => @params.merge(:record => ['example.com'])
       
       assigns[:auth_token].can_change?( records(:example_com_a_www) ).should be_false
       assigns[:auth_token].can_change?( records(:example_com_a) ).should be_true

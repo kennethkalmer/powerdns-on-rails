@@ -2,17 +2,55 @@ class AuthTokensController < ApplicationController
   
   require_role 'auth_token'
   
-  # Only create tokens
+  # Create a new #AuthToken. See #AuthToken for the finer details on
+  # how authentication tokens work.
+  #
+  # Expects an XML POST to /auth_token.xml with the following
+  # information:
+  #
+  #   <auth_token>
+  #     <domain>name</domain>
+  #     <expires_at>RFC822 timestamp</expires_at>
+  #     <policy>token policy</policy>
+  #     <!-- record tag for each record -->
+  #     <record>...</record>
+  #     <record>...</record>
+  #     <!-- protect_type tag for each type to be protected -->
+  #     <protect_type>...</protect_type>
+  #     <protect_type>...</protect_type>
+  #     <!-- protect tag for each record to protect -->
+  #     <protect>...</protect>
+  #   </auth_token>
+  #
+  # Returns the following when successful:
+  #
+  #   <auth_token>
+  #     <url>...</url>
+  #     <token>...</token>
+  #     <expires>...</expires>
+  #   </auth_token>
+  #
+  # Or on failure:
+  #
+  #   <error>Message</error>
+  #
   def create
+    if params[:auth_token].blank?
+      render :status => 422, :xml => <<-EOS
+<error>Missing parameter auth-token</error>
+EOS
+      return false
+    end
+    
     # Get our domain
-    domain = Domain.find_by_name( params[:domain] )
+    domain = Domain.find_by_name( params[:auth_token][:domain] )
     if domain.nil?
       render :text => 'Domain not found', :status => 404
       return
     end
     
     # expiry time
-    t = Time.parse( params[:expires_at] || '' )
+    t = Time.parse( params[:auth_token][:expires_at] || '' )
     
     # Our new token
     @auth_token = AuthToken.new( 
@@ -22,25 +60,25 @@ class AuthTokensController < ApplicationController
     )
     
     # Build our token from here on
-    @auth_token.policy = params[:policy] unless params[:policy].blank?
-    @auth_token.allow_new_records = ( params[:allow_new] == "true" ) unless params[:allow_new].blank?
-    @auth_token.remove_records = ( params[:remove] == "true" ) unless params[:remove].blank?
+    @auth_token.policy = params[:auth_token][:policy] unless params[:auth_token][:policy].blank?
+    @auth_token.allow_new_records = ( params[:auth_token][:allow_new] == "true" ) unless params[:auth_token][:allow_new].blank?
+    @auth_token.remove_records = ( params[:auth_token][:remove] == "true" ) unless params[:auth_token][:remove].blank?
     
-    if params[:protect_types] && params[:protect_types].size > 0
-      params[:protect_types].each do |t|
+    if params[:auth_token][:protect_type] && params[:auth_token][:protect_type].size > 0
+      params[:auth_token][:protect_type].each do |t|
         @auth_token.protect_type( t )
       end
     end
     
-    if params[:records] && params[:records].size > 0
-      params[:records].each do |r|
+    if params[:auth_token][:record] && params[:auth_token][:record].size > 0
+      params[:auth_token][:record].each do |r|
         name, type = r.split(':')
         @auth_token.can_change( name, type || '*' )
       end
     end
     
-    if params[:protect] && params[:protect].size > 0
-      params[:protect].each do |r|
+    if params[:auth_token][:protect] && params[:auth_token][:protect].size > 0
+      params[:auth_token][:protect].each do |r|
         name, type = r.split(':')
         @auth_token.protect( name, type || '*' )
       end
