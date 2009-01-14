@@ -62,6 +62,10 @@ describe "domain/show", "for admins and domains with owners" do
     
     render "/domains/show.html.haml"
   end
+
+  it "should offer to remove the domain" do
+    response.should have_tag( "a img[id$=delete-zone]" )
+  end
   
   it "should have have an additional warnings for removing" do
     response.should have_tag('div#warning-message')
@@ -93,6 +97,10 @@ describe "domain/show.html.haml", "for owners" do
     response.should have_tag( "div#record-form-div" )
   end
   
+  it "should offer to remove the domain" do
+    response.should have_tag( "a img[id$=delete-zone]" )
+  end
+  
   it "should have not have an additional warnings for removing" do
     response.should_not have_tag('div#warning-message')
     response.should_not have_tag('a[onclick*=deleteDomain]')
@@ -106,6 +114,13 @@ describe "domain/show.html.haml", "for token users" do
     @domain = domains(:example_com)
     assigns[:domain] = @domain
     assigns[:record] = @domain.records.new
+  end
+
+  it "should not offer to remove the domain" do
+    template.stubs(:current_token).returns( auth_tokens(:token_example_com) )
+    render "domains/show.html.haml"
+
+    response.should_not have_tag( "a img[id$=delete-zone]" )
   end
   
   it "should not offer to edit the SOA" do

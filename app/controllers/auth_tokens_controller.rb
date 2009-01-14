@@ -12,6 +12,8 @@ class AuthTokensController < ApplicationController
   #     <domain>name</domain>
   #     <expires_at>RFC822 timestamp</expires_at>
   #     <policy>token policy</policy>
+  #     <allow_new>true/false</allow_new>
+  #     <remove>true</false>
   #     <!-- record tag for each record -->
   #     <record>...</record>
   #     <record>...</record>
