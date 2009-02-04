@@ -13,7 +13,10 @@ module AuditsHelper
   def link_to_record_audit( audit )
     caption = audit.changes['type']
     caption ||= (audit.auditable.nil? ? '[UNKNOWN]' : audit.auditable.class.to_s )
-    caption += " (#{audit.changes['name']})" unless audit.changes['name'].nil?
+    unless audit.changes['name'].nil?
+      name = audit.changes['name'].is_a?( Array ) ? audit.changes['name'].pop : audit.changes['name']
+      caption += " (#{name})"
+    end
     caption += " #{audit.version} #{audit.action} by "
     caption += (audit.user.is_a?( User ) ? audit.user.login : audit.username)
     link_to_function caption, "toggleRecordAudit(#{audit.id})"
@@ -21,7 +24,17 @@ module AuditsHelper
   
   def display_hash( hash )
     hash ||= {}
-    hash.map { |k,v| v ? "<em>#{k}</em>: #{v}" : nil }.compact.join('<br />')
+    hash.map do |k,v|
+      if v.nil?
+        nil # strip out non-values
+      else
+        if v.is_a?( Array )
+          v = "From <em>#{v.shift}</em> to <em>#{v.shift}</em>"
+        end
+        
+        "<em>#{k}</em>: #{v}"
+      end
+    end.compact.join('<br />')
   end
   
   def sort_audits_by_date( collection )
