@@ -30,6 +30,9 @@ class Domain < ActiveRecord::Base
   
   validates_presence_of :name
   validates_uniqueness_of :name
+  validates_inclusion_of :type, :in => %w( NATIVE MASTER SLAVE )
+  validates_presence_of :master, :if => Proc.new { |d| d.slave? }
+  validates_format_of :master, :if => Proc.new { |d| d.slave? }, :with => /^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/
   
   # Disable single table inheritence (STI)
   set_inheritance_column 'not_used_here'
@@ -39,7 +42,7 @@ class Domain < ActiveRecord::Base
   SOA_FIELDS = [ :primary_ns, :contact, :refresh, :retry, :expire, :minimum ]
   SOA_FIELDS.each do |f|
     attr_accessor f
-    validates_presence_of f, :on => :create
+    validates_presence_of f, :on => :create, :if => Proc.new { |d| !d.slave? }
   end
   
   # Serial is optional, but will be passed to the SOA too
@@ -47,6 +50,11 @@ class Domain < ActiveRecord::Base
   
   # Helper attributes for API clients and forms (keep it RESTful)
   attr_accessor :zone_template_id, :zone_template_name
+  
+  # Are we a slave domain
+  def slave?
+    self.type == 'SLAVE'
+  end
   
   # return the records, excluding the SOA record
   def records_without_soa

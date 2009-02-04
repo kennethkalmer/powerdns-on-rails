@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
-describe Domain, "when new" do
+describe "New MASTER/NATIVE", Domain do
   fixtures :all
   
   before(:each) do
@@ -26,6 +26,29 @@ describe Domain, "when new" do
   
   it "should be NATIVE by default" do
     @domain.type.should eql('NATIVE')
+  end
+
+  it "should not require a MASTER" do
+    @domain.should have(:no).errors_on(:master)
+  end
+end
+
+describe "New SLAVE", Domain do
+  before(:each) do
+    @domain = Domain.new( :type => 'SLAVE' )
+  end
+
+  it "should require a master address" do
+    # Format and missing
+    @domain.should have(2).error_on(:master)
+  end
+
+  it "should require a valid master address" do
+    @domain.master = 'foo'
+    @domain.should have(1).error_on(:master)
+
+    @domain.master = '127.0.0.1'
+    @domain.should have(:no).errors_on(:master)
   end
 end
 
