@@ -199,7 +199,7 @@ namespace :migrate do
           :adapter => db_adapter,
           :database => db_name,
           :host => db_host,
-          :port => db_port,
+          :port => db_port.to_i,
           :username => db_username,
           :password => db_password
         }
