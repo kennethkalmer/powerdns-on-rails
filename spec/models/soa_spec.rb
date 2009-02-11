@@ -184,13 +184,11 @@ describe SOA, "and serial numbers" do
     date_segment = Time.now.strftime( "%Y%m%d" )
     
     @soa.update_serial!
-    @soa.serial.to_s.should eql( date_segment + '01' )
-    
-    @soa.update_serial!
-    @soa.serial.to_s.should eql( date_segment + '02' )
-    
-    @soa.update_serial!
-    @soa.serial.to_s.should eql( date_segment + '03' )
+    @soa.serial.to_s.should eql( date_segment + '00' )
+
+    10.times { @soa.update_serial! }
+
+    @soa.serial.to_s.should eql( date_segment + '10' )
   end
 end
 

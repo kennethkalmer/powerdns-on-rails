@@ -88,7 +88,7 @@ describe Record, "during updates" do
     # Our serial should have move just one position, not three
     @soa.reload
     @soa.serial.should_not be( serial )
-    @soa.serial.to_s.should eql( Time.now.strftime( "%Y%m%d" ) + '01' )
+    @soa.serial.to_s.should eql( Time.now.strftime( "%Y%m%d" ) + '00' )
   end
   
 end

@@ -64,7 +64,7 @@ class SOA < Record
 
     date_serial = Time.now.strftime( "%Y%m%d00" ).to_i
 
-    self.serial = if date_serial > self.serial 
+    self.serial = if self.serial.nil? || date_serial > self.serial 
         date_serial
     else
        self.serial + 1
