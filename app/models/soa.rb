@@ -62,16 +62,14 @@ class SOA < Record
     
     @serial_updated = true
 
-    date_segment = Time.now.strftime( "%Y%m%d" )
+    date_serial = Time.now.strftime( "%Y%m%d00" ).to_i
 
-    # Same day change?
-    increment = if date_segment == self.serial.to_s[0,8]
-      increment = self.serial.to_s[9,2].succ
+    self.serial = if date_serial > self.serial 
+        date_serial
     else
-      "01"
+       self.serial + 1
     end
 
-    self.serial = ( date_segment + increment.rjust(2, "0") ).to_i
   end
   
   # Same as #update_serial and saves the record
