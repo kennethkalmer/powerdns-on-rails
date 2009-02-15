@@ -87,6 +87,8 @@ class Domain < ActiveRecord::Base
   
   # Setup an SOA if we have the requirements
   def after_create #:nodoc:
+    return if self.slave?
+    
     soa = SOA.new( :domain => self )
     SOA_FIELDS.each do |f|
       soa.send( "#{f}=", send( f ) )

@@ -50,6 +50,10 @@ describe "New SLAVE", Domain do
     @domain.master = '127.0.0.1'
     @domain.should have(:no).errors_on(:master)
   end
+
+  it "should not bail out on missing SOA fields" do
+    @domain.should have(:no).errors_on( :primary_ns )
+  end
 end
 
 describe Domain, "when loaded" do
@@ -137,7 +141,7 @@ describe Domain, "with scoped finders" do
   end
 end
 
-describe Domain, "when created" do
+describe "NATIVE/MASTER", Domain, "when created" do
   fixtures :all
   
   before(:each) do
@@ -156,6 +160,22 @@ describe Domain, "when created" do
     @domain.save.should be_true
     @domain.soa_record.should_not be_nil
     @domain.soa_record.primary_ns.should eql('ns1.example.org')
+  end
+end
+
+describe "SLAVE", Domain, "when created" do
+  fixtures :all
+
+  before(:each) do
+    @domain = Domain.new( :type => 'SLAVE' )
+  end
+
+  it "should create with SOA requirements or SOA record" do
+    @domain.name = 'example.org'
+    @domain.master = '127.0.0.1'
+
+    @domain.save.should be_true
+    @domain.soa_record.should be_nil
   end
 end
 

@@ -51,10 +51,9 @@ describe DomainsController, "when creating" do
   end
   
   it "should build from a zone template if selected" do
-    @zone_template = zone_templates(:east_coast_dc)
-    ZoneTemplate.stubs(:find).with('1').returns(@zone_template)
+    zone_template = zone_templates(:east_coast_dc)
     
-    post 'create', :domain => { :name => 'example.org', :zone_template_id => "1" }
+    post 'create', :domain => { :name => 'example.org', :zone_template_id => zone_template.id }
     
     assigns[:domain].should_not be_nil
     response.should be_redirect
@@ -70,6 +69,22 @@ describe DomainsController, "when creating" do
     response.should be_redirect
     response.should redirect_to( domain_path( assigns[:domain] ) )
     flash[:info].should_not be_nil
+  end
+
+  it "should ignore the zone template if a slave is created" do
+    zone_template = zone_templates(:east_coast_dc)
+    
+    post 'create', :domain => {
+      :name => 'example.org',
+      :type => 'SLAVE',
+      :master => '127.0.0.1',
+      :zone_template_id => zone_template.id
+    }
+
+    assigns[:domain].should be_slave
+    assigns[:domain].soa_record.should be_nil
+
+    response.should be_redirect
   end
     
 end
