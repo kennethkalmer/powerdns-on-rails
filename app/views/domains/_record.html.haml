@@ -1,7 +1,7 @@
 - unless record.domain.slave?
   %div{ :style => "display: none;" } 
     %div{ :id => "record-template-edit-#{record.id}" }
-      Edit this record's details
+      Edit this record
     %div{ :id => "record-template-delete-#{record.id}" }
       Delete this record
 
@@ -31,7 +31,7 @@
                 %td{ :width => 50 }= f.text_field :ttl, :size => 3
                 %td{ :width => 30 }= record.type
                 %td{ :width => 30 }
-                  - if record.is_a?( MX )
+                  - if record.supports_prio?
                     = f.text_field :prio, :size => 2
                   - else
                     &nbsp;

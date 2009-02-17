@@ -33,6 +33,10 @@ describe Record, "when new" do
   it "should require a name" do
     @record.should have(1).error_on(:name)
   end
+
+  it "should not support priorities by default" do
+    @record.supports_prio?.should be_false
+  end
   
 end
 

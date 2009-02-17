@@ -2,7 +2,8 @@ class RecordsController < ApplicationController
   
   require_role [ "admin", "owner" ], :unless => "token_user?"
   
-  before_filter :get_zone
+  before_filter :load_domain
+  before_filter :load_record, :except => [ :new, :create ]
   before_filter :restrict_token_movements, :except => [:create, :update, :destroy]
   
   def new
@@ -25,16 +26,7 @@ class RecordsController < ApplicationController
         current_token.remove_records = true
         current_token.save
       end
-      
-      flash.now[:info] = "Record created!"
-    else
-      flash.now[:error] = "Record not created!"
-      render :action => :new
     end
-  end
-  
-  def edit
-    @record = @domain.records.find( params[:id] )
   end
   
   def update
@@ -54,8 +46,6 @@ class RecordsController < ApplicationController
   end
   
   def destroy
-    @record = @domain.records.find( params[:id] )
-    
     if current_token && !current_token.can_remove?( @record )
       render :text => 'Token not authorized', :status => 403
       return
@@ -80,15 +70,19 @@ class RecordsController < ApplicationController
     end
   end
   
-  private
+  protected
   
-  def get_zone
+  def load_domain
     @domain = Domain.find(params[:domain_id], :user => current_user)
     
     if current_token && @domain != current_token.domain
       render :text => 'Token not authorized', :status => 403
       return false
     end
+  end
+
+  def load_record
+    @record = @domain.records.find( params[:id] )
   end
   
   def restrict_token_movements

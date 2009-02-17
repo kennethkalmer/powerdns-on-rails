@@ -89,6 +89,12 @@ class Record < ActiveRecord::Base
   def audit_destroy(user = nil)
     write_audit(:action => 'destroy', :auditable_parent => auditable_parent, :changes => audited_attributes, :user => user)
   end
+
+  # By default records don't support priorities. Those who do can overwrite
+  # this in their own classes.
+  def supports_prio?
+    false
+  end
   
   private
   

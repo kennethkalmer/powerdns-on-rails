@@ -18,5 +18,9 @@ class SRV < Record
     :greater_than_or_equal_to => 0
   )
   validates_presence_of :content
-
+  
+  # We support priorities
+  def supports_prio?
+    true
+  end
 end

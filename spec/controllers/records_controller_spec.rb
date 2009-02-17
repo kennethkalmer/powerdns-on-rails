@@ -33,7 +33,7 @@ describe RecordsController, ", users, and non-SOA records" do
     
     post :create, :domain_id => @domain.id, :record => params
     
-    response.should render_template( 'new' )
+    response.should render_template( 'records/create' )
   end
   
   it "should update when valid" do
@@ -48,7 +48,7 @@ describe RecordsController, ", users, and non-SOA records" do
     
     put :update, :id => record.id, :domain_id => @domain.id, :record => params
     
-    response.should render_template("update")
+    response.should render_template("records/update")
   end
   
   it "shouldn't update when invalid" do

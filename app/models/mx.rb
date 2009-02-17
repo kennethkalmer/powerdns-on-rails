@@ -24,4 +24,8 @@ class MX < Record
     validate_without_mx
   end
   alias_method_chain :validate, :mx
+
+  def supports_prio?
+    true
+  end
 end

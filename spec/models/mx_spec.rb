@@ -35,5 +35,9 @@ describe MX, "when new" do
     @mx.content = "127.0.0.1"
     @mx.should have(1).error_on(:content)
   end
+
+  it "should support  priorities" do
+    @mx.supports_prio?.should be_true
+  end
   
 end

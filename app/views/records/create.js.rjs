@@ -2,8 +2,8 @@ if @record.errors.empty?
   page.call 'resetRecordForm'
   page.hide('record-form-div')
   page.insert_html( :bottom, 'record-table', { :partial => '/domains/record', :object => @record } )
-  page.call 'showflash', 'info', flash[:info]
+  page.call 'showflash', 'info', "Record created"
 else
   page.insert_html( :top, 'record-form', error_messages_for( :record ) ) 
-  page.call 'showflash', 'error', flash[:error]
+  page.call 'showflash', 'error', "Could not create record"
 end
