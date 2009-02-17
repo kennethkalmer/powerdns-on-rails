@@ -67,7 +67,7 @@ describe RecordsController, ", users, and non-SOA records" do
     }.should_not change( record, :content )
     
     response.should_not be_redirect
-    response.should render_template( "edit" )
+    response.should render_template( "records/update" )
   end
   
   it "should destroy when requested to do so" do

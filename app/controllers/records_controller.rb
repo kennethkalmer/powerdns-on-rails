@@ -3,12 +3,8 @@ class RecordsController < ApplicationController
   require_role [ "admin", "owner" ], :unless => "token_user?"
   
   before_filter :load_domain
-  before_filter :load_record, :except => [ :new, :create ]
+  before_filter :load_record, :except => [ :create ]
   before_filter :restrict_token_movements, :except => [:create, :update, :destroy]
-  
-  def new
-    @record = @domain.records.new
-  end
   
   def create
     @record = @domain.send( "#{params[:record][:type].downcase}_records".to_sym ).new( params[:record] )
@@ -37,12 +33,7 @@ class RecordsController < ApplicationController
       return
     end
     
-    if @record.update_attributes( params[:record] )
-      flash.now[:info] = "Record udpated!"
-    else
-      flash.now[:error] = "Record not updated!"
-      render :action => :edit
-    end
+    @record.update_attributes( params[:record] )
   end
   
   def destroy
@@ -52,7 +43,11 @@ class RecordsController < ApplicationController
     end
     
     @record.destroy
-    redirect_to domain_path( @domain )
+
+    respond_to do |format|
+      format.html { redirect_to domain_path( @domain ) }
+      format.xml { head :ok }
+    end
   end
   
   # Non-CRUD methods
