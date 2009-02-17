@@ -110,7 +110,7 @@
           #note{ :style => "display: none;" }
             - remote_form_for( :domain, @domain, :url => formatted_update_note_domain_path( @domain, :js ), :html => { :method => :put } ) do |f|
               = f.text_area :notes, :rows => 5, :cols => 17
-              %br/
+              %br
               = link_to_function "Cancel", "hideNote()"
               = submit_tag "Update note"
 
@@ -191,55 +191,55 @@
               = link_to_function "Cancel", "hideRecordForm()"
               = submit_tag "Create"
 
-  :javascript
-    function editRecord(id, type) {
-      $('show_' + type + '_' + id).hide();
-      $('edit_' + type + '_' + id).show();
-    }
-    function hideRecord(id, type) {
-      $('edit_' + type + '_' + id).hide();
-      $('show_' + type + '_' + id).show();
-    }
-    function displayRecordForm() {
-      $('record-form-div').show();
-    }
-    function hideRecordForm() {
-      $('record-form-div').hide();
-    }
-    function resetRecordForm() {
-      $('record-form').reset();
-    }
-    function toggleRecordFields(e,v){
-      t = 'rt-' + v.toLowerCase();
-      $('record-form-div').select('tr').each(function(r){
-        if(r.className && r.className != t)
-          r.hide();
-        else
-          r.show();
-      });
-    }
-    function showNote() {
-      $('note-row').hide();
-      $('note').show();
-    }
-    function hideNote() {
-      $('note').hide();
-      $('note-row').show();
-    }
-    function showSOAEdit() {
-      $('soa-form').hide();
-      $('soa-edit-form').show();
-    }
-    function showSOAForm() {
-      $('soa-edit-form').hide();
-      $('soa-form').show();
-    }
-    function changeOwner() {
-      $('owner-info').toggle();
-      $('owner-edit').toggle();
-    }
-    
-    function deleteDomain() {
-      $('warning-message').toggle();
-      $('delete-link-buffer').toggle();
-    }
+:javascript
+  function editRecord(id, type) {
+    $('show_' + type + '_' + id).hide();
+    $('edit_' + type + '_' + id).show();
+  }
+  function hideRecord(id, type) {
+    $('edit_' + type + '_' + id).hide();
+    $('show_' + type + '_' + id).show();
+  }
+  function displayRecordForm() {
+    $('record-form-div').show();
+  }
+  function hideRecordForm() {
+    $('record-form-div').hide();
+  }
+  function resetRecordForm() {
+    $('record-form').reset();
+  }
+  function toggleRecordFields(e,v){
+    t = 'rt-' + v.toLowerCase();
+    $('record-form-div').select('tr').each(function(r){
+      if(r.className && r.className != t)
+        r.hide();
+      else
+        r.show();
+    });
+  }
+  function showNote() {
+    $('note-row').hide();
+    $('note').show();
+  }
+  function hideNote() {
+    $('note').hide();
+    $('note-row').show();
+  }
+  function showSOAEdit() {
+    $('soa-form').hide();
+    $('soa-edit-form').show();
+  }
+  function showSOAForm() {
+    $('soa-edit-form').hide();
+    $('soa-form').show();
+  }
+  function changeOwner() {
+    $('owner-info').toggle();
+    $('owner-edit').toggle();
+  }
+  
+  function deleteDomain() {
+    $('warning-message').toggle();
+    $('delete-link-buffer').toggle();
+  }

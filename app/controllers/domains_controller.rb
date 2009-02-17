@@ -4,17 +4,32 @@ class DomainsController < ApplicationController
   
   # Keep token users in line
   before_filter :restrict_token_movements, :except => :show
+
+  before_filter :load_domain, :except => [ :index, :new, :create ]
+
+  protected
+
+  def load_domain
+    if current_user
+      @domain = Domain.find( params[:id], :user => current_user )
+    else
+      @domain = Domain.find( current_token.domain_id, :include => :records )
+    end
+  end
+  
+  def restrict_token_movements
+    redirect_to domain_path( current_token.domain ) if current_token
+  end
+  
+  public
   
   def index
     @domains = Domain.paginate :page => params[:page], :user => current_user, :order => 'name'
   end
   
   def show
-    if current_user
-      @domain = Domain.find( params[:id], :user => current_user, :include => :records )
-      @users = User.active_owners if current_user.admin?
-    else
-      @domain = Domain.find( current_token.domain_id, :include => :records )
+    if current_user && current_user.admin?
+      @users = User.active_owners
     end
 
     respond_to do |format|
@@ -65,22 +80,7 @@ class DomainsController < ApplicationController
     end
   end
   
-  def edit
-    @domain = Domain.find( params[:id] )
-  end
-  
-  def update
-    @domain = Domain.find( params[:id] )
-    if @domain.update_attributes( params[:domain] )
-      flash[:info] = "Domain was updated!"
-      redirect_to domain_path(@domain)
-    else
-      render :action => 'edit'
-    end
-  end
-  
   def destroy
-    @domain = Domain.find( params[:id] )
     @domain.destroy
 
     respond_to do |format|
@@ -91,20 +91,16 @@ class DomainsController < ApplicationController
   
   # Non-CRUD methods
   def update_note
-    @domain = Domain.find( params[:id] )
     @domain.update_attribute( :notes, params[:domain][:notes] )
   end
   
   def change_owner
-    @domain = Domain.find( params[:id] )
     @domain.update_attribute :user_id, params[:domain][:user_id]
   end
 
   # GET: list of macros to apply
   # POST: apply selected macro
   def apply_macro
-    @domain = Domain.find( params[:id], :user => current_user )
-    
     if request.get?
       @macros = Macro.find(:all, :user => current_user)
 
@@ -129,10 +125,4 @@ class DomainsController < ApplicationController
     
   end
   
-  private
-  
-  def restrict_token_movements
-    redirect_to domain_path( current_token.domain ) if current_token
-  end
-
 end
