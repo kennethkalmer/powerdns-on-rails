@@ -78,6 +78,12 @@
           - elsif !current_token
             = link_to prototip_info_icon('database_delete.png', 'delete-zone'), domain_path( @domain ), :method => :delete, :confirm => "Are you sure you want to remove #{@domain.name}?"
 
+    - if @domain.slave?
+      %tr
+        %td Master server
+        %td= @domain.master
+        %td &nbsp;
+
     - if current_user && current_user.admin?
       %tr
         %td Owner
@@ -113,7 +119,11 @@
     &nbsp;
     - if current_user
       = link_to_function prototip_info_icon('database_edit.png', 'soa-record-edit'), "showSOAEdit()"
-  = render :partial => '/domains/soa_record', :object => @domain.soa_record
+  - if @domain.soa_record.nil?
+    %p
+      %em SOA record yet propagated from master server
+  - else
+    = render :partial => '/domains/soa_record', :object => @domain.soa_record
 
 #domain-records.padded
   %h2.underline Domain RR's
@@ -130,103 +140,104 @@
 = link_to_function prototip_info_icon('database_add.png', 'record-template-new'), "displayRecordForm()"
 = link_to_function "New record", "displayRecordForm()"
 
-- if current_user || current_token.allow_new_records?
-  #record-form-div{ :style => "display: none;" }
-    - remote_form_for( :record, @record, :url => formatted_domain_records_path( @domain, :js ), :html => { :id => 'record-form' } ) do |f|
-      %table
-        %tr
-          %td Type
-          %td
-            = select_record_type( f )
-            = observe_field "record_type", :function => "toggleRecordFields(element,value)"
-        %tr
-          %td Host
-          %td= f.text_field :name
-        %tr
-          %td TTL
-          %td= f.text_field :ttl, :size => 6
-        %tr.rt-mx{ :style => 'display :none' }
-          %td Priority
-          %td= f.text_field :prio, :size => 6
-        %tr.rt-srv{ :style => 'display :none' }
-          %td Priority
-          %td= f.text_field :prio, :size => 6
-        %tr
-          %td Data
-          %td= f.text_field :content
-        %tr.rt-soa{ :style => 'display :none' }
-          %td Primary Name Server
-          %td= f.text_field :primary_ns
-        %tr.rt-soa{ :style => 'display :none' }
-          %td Contact
-          %td= f.text_field :contact
-        %tr.rt-soa{ :style => 'display :none' }
-          %td Refresh
-          %td= f.text_field :refresh, :size => 6
-        %tr.rt-soa{ :style => 'display :none' }
-          %td Retry
-          %td= f.text_field :retry, :size => 6
-        %tr.rt-soa{ :style => 'display :none' }
-          %td Expire
-          %td= f.text_field :expire, :size => 6
-        %tr.rt-soa{ :style => 'display :none' }
-          %td Minimum
-          %td= f.text_field :minimum, :size => 6
-        %tr
-          %td &nbsp;
-          %td
-            = link_to_function "Cancel", "hideRecordForm()"
-            = submit_tag "Create"
+- unless @domain.slave?
+  - if current_user || current_token.allow_new_records?
+    #record-form-div{ :style => "display: none;" }
+      - remote_form_for( :record, @record, :url => formatted_domain_records_path( @domain, :js ), :html => { :id => 'record-form' } ) do |f|
+        %table
+          %tr
+            %td Type
+            %td
+              = select_record_type( f )
+              = observe_field "record_type", :function => "toggleRecordFields(element,value)"
+          %tr
+            %td Host
+            %td= f.text_field :name
+          %tr
+            %td TTL
+            %td= f.text_field :ttl, :size => 6
+          %tr.rt-mx{ :style => 'display :none' }
+            %td Priority
+            %td= f.text_field :prio, :size => 6
+          %tr.rt-srv{ :style => 'display :none' }
+            %td Priority
+            %td= f.text_field :prio, :size => 6
+          %tr
+            %td Data
+            %td= f.text_field :content
+          %tr.rt-soa{ :style => 'display :none' }
+            %td Primary Name Server
+            %td= f.text_field :primary_ns
+          %tr.rt-soa{ :style => 'display :none' }
+            %td Contact
+            %td= f.text_field :contact
+          %tr.rt-soa{ :style => 'display :none' }
+            %td Refresh
+            %td= f.text_field :refresh, :size => 6
+          %tr.rt-soa{ :style => 'display :none' }
+            %td Retry
+            %td= f.text_field :retry, :size => 6
+          %tr.rt-soa{ :style => 'display :none' }
+            %td Expire
+            %td= f.text_field :expire, :size => 6
+          %tr.rt-soa{ :style => 'display :none' }
+            %td Minimum
+            %td= f.text_field :minimum, :size => 6
+          %tr
+            %td &nbsp;
+            %td
+              = link_to_function "Cancel", "hideRecordForm()"
+              = submit_tag "Create"
 
-:javascript
-  function editRecord(id, type) {
-    $('show_' + type + '_' + id).hide();
-    $('edit_' + type + '_' + id).show();
-  }
-  function hideRecord(id, type) {
-    $('edit_' + type + '_' + id).hide();
-    $('show_' + type + '_' + id).show();
-  }
-  function displayRecordForm() {
-    $('record-form-div').show();
-  }
-  function hideRecordForm() {
-    $('record-form-div').hide();
-  }
-  function resetRecordForm() {
-    $('record-form').reset();
-  }
-  function toggleRecordFields(e,v){
-    t = 'rt-' + v.toLowerCase();
-    $('record-form-div').select('tr').each(function(r){
-      if(r.className && r.className != t)
-        r.hide();
-      else
-        r.show();
-    });
-  }
-  function showNote() {
-    $('note-row').hide();
-    $('note').show();
-  }
-  function hideNote() {
-    $('note').hide();
-    $('note-row').show();
-  }
-  function showSOAEdit() {
-    $('soa-form').hide();
-    $('soa-edit-form').show();
-  }
-  function showSOAForm() {
-    $('soa-edit-form').hide();
-    $('soa-form').show();
-  }
-  function changeOwner() {
-    $('owner-info').toggle();
-    $('owner-edit').toggle();
-  }
-  
-  function deleteDomain() {
-    $('warning-message').toggle();
-    $('delete-link-buffer').toggle();
-  }
+  :javascript
+    function editRecord(id, type) {
+      $('show_' + type + '_' + id).hide();
+      $('edit_' + type + '_' + id).show();
+    }
+    function hideRecord(id, type) {
+      $('edit_' + type + '_' + id).hide();
+      $('show_' + type + '_' + id).show();
+    }
+    function displayRecordForm() {
+      $('record-form-div').show();
+    }
+    function hideRecordForm() {
+      $('record-form-div').hide();
+    }
+    function resetRecordForm() {
+      $('record-form').reset();
+    }
+    function toggleRecordFields(e,v){
+      t = 'rt-' + v.toLowerCase();
+      $('record-form-div').select('tr').each(function(r){
+        if(r.className && r.className != t)
+          r.hide();
+        else
+          r.show();
+      });
+    }
+    function showNote() {
+      $('note-row').hide();
+      $('note').show();
+    }
+    function hideNote() {
+      $('note').hide();
+      $('note-row').show();
+    }
+    function showSOAEdit() {
+      $('soa-form').hide();
+      $('soa-edit-form').show();
+    }
+    function showSOAForm() {
+      $('soa-edit-form').hide();
+      $('soa-form').show();
+    }
+    function changeOwner() {
+      $('owner-info').toggle();
+      $('owner-edit').toggle();
+    }
+    
+    function deleteDomain() {
+      $('warning-message').toggle();
+      $('delete-link-buffer').toggle();
+    }

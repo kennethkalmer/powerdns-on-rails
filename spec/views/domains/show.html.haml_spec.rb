@@ -107,6 +107,38 @@ describe "domain/show.html.haml", "for owners" do
   end
 end
 
+describe "domain/show.html.haml", "for SLAVE domains" do
+  fixtures :all
+
+  before(:each) do
+    template.stubs(:current_user).returns( users(:admin) )
+    @domain = domains(:slave_example_com)
+    assigns[:domain] = @domain
+    assigns[:users] = User.active_owners
+
+    render "domains/show.html.haml"
+  end
+
+  it "should show the master address" do
+    response.should have_tag('table.grid') do
+      with_tag "td", "Master server"
+      with_tag "td", @domain.master
+    end
+  end
+
+  it "should not allow for changing the SOA" do
+    response.should_not have_tag( "div#soa-edit-form" )
+  end
+  
+  it "should not have a form for adding new records" do
+    response.should_not have_tag( "div#record-form-div" )
+  end
+  
+  it "should offer to remove the domain" do
+    response.should have_tag( "a img[id$=delete-zone]" )
+  end
+end
+
 describe "domain/show.html.haml", "for token users" do
   fixtures :auth_tokens, :domains, :records
   

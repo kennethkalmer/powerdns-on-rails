@@ -79,7 +79,7 @@ class Record < ActiveRecord::Base
   end
   
   def update_soa_serial #:nodoc:
-    unless self.type == 'SOA' || @serial_updated 
+    unless self.type == 'SOA' || @serial_updated || self.domain.slave?
       self.domain.soa_record.update_serial!
       @serial_updated = true
     end

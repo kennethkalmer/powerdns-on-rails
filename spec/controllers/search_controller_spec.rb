@@ -29,10 +29,10 @@ describe SearchController do
   end
   
   it "should redirect to the domain page if only one result is found" do
-    get :results, :q => 'example.com'
+    get :results, :q => 'slave-example.com'
     
     response.should be_redirect
-    response.should redirect_to( domain_path( domains(:example_com) ) )
+    response.should redirect_to( domain_path( domains(:slave_example_com) ) )
   end
 
 end

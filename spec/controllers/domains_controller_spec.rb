@@ -12,7 +12,7 @@ describe DomainsController, "index" do
     
     response.should render_template('domains/index')
     assigns[:domains].should_not be_empty
-    assigns[:domains].size.should be(2)
+    assigns[:domains].size.should be(Domain.count)
   end
   
   it "should restrict zones for owners" do

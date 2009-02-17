@@ -21,8 +21,8 @@ describe ReportsController, "index" do
     get 'index'
     
     response.should render_template('reports/index')
-    assigns[:total_domains].should be(2)
-    assigns[:system_domains].should be(1)
+    assigns[:total_domains].should be(Domain.count)
+    assigns[:system_domains].should be(2)
   end
 end
 

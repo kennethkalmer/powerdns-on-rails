@@ -42,6 +42,45 @@ describe "domains/_record", "for a user" do
   end
 end
 
+describe "domains/_record", "for a SLAVE domain" do
+  fixtures :domains, :users, :records
+  
+  before(:each) do
+    template.stubs(:current_user).returns( users(:admin) )
+    domain = domains(:slave_example_com)
+    @record = domain.a_records.create( :name => 'foo', :content => '127.0.0.1' )
+    render :partial => 'domains/record', :object => @record
+  end
+  
+  it "should not have tooltips ready" do
+    response.should_not have_tag("div#record-template-edit-#{@record.id}")
+    response.should_not have_tag("div#record-template-delete-#{@record.id}")
+  end
+  
+  it "should have a row with the record details" do
+    response.should have_tag("tr#show_a_#{@record.id}") do
+      with_tag("td", "") # shortname
+      with_tag("td", "") # ttl
+      with_tag("td", "A") # type
+      with_tag("td", "") # prio
+      with_tag("td", "foo")
+    end
+  end
+  
+  it "should not have a row for editing record details" do
+    response.should_not have_tag("tr#edit_ns_#{@record.id}") do
+      with_tag("td[colspan=7]") do
+        with_tag("form")
+      end
+    end
+  end
+  
+  it "should not have links to edit/remove the record" do
+    response.should_not have_tag("a[onclick^=editRecord]")
+    response.should_not have_tag("a > img[src*=database_delete]")
+  end
+end
+
 describe "domains/_record", "for a token" do
   fixtures :auth_tokens, :records, :domains
   
