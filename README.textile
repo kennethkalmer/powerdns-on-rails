@@ -31,6 +31,7 @@ h2. Features (current and planned)
 * DNS Insight
 * Full audit record of all changes
 * Macros for easy bulk updating of domains
+* Support for PowerDNS MASTER, NATIVE & SLAVE record types
 
 h2. Overview
 
