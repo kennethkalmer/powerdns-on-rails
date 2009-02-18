@@ -26,11 +26,11 @@ class AuthTokensController < ApplicationController
   #
   # Returns the following when successful:
   #
-  #   <auth_token>
+  #   <token>
   #     <url>...</url>
-  #     <token>...</token>
+  #     <auth_token>...</auth_token>
   #     <expires>...</expires>
-  #   </auth_token>
+  #   </token>
   #
   # Or on failure:
   #
