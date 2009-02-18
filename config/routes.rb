@@ -52,7 +52,7 @@ ActionController::Routing::Routes.draw do |map|
   map.reports '/reports/:action/:id' , :controller => 'reports' , :action => 'index'
   
   # AuthTokens
-  map.resources :auth_tokens
+  map.resource :auth_token
   map.token '/token/:token', :controller => 'sessions', :action => 'token'
   
   # Authentication routes

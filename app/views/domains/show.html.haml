@@ -143,11 +143,10 @@
     = render :partial => 'record', :collection => @domain.records_without_soa
 
 - unless @domain.slave?
-
-  = link_to_function prototip_info_icon('database_add.png', 'record-template-new'), "displayRecordForm()"
-  = link_to_function "New record", "displayRecordForm()"
-
   - if current_user || current_token.allow_new_records?
+    = link_to_function prototip_info_icon('database_add.png', 'record-template-new'), "displayRecordForm()"
+    = link_to_function "New record", "displayRecordForm()"
+
     #record-form-div{ :style => "display: none;" }
       - remote_form_for( :record, @record, :url => formatted_domain_records_path( @domain, :js ), :html => { :id => 'record-form' } ) do |f|
         %table

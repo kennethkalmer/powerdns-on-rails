@@ -1,0 +1,12 @@
+<!-- 
+To make useable example tokens, please seed the database with 'rake db:seed'
+and then run 'rake tokens'. All the generated tokens are saved in tmp/ as
+token_*.xml
+-->
+<auth_token>
+      <domain>example.com</domain>
+      <expires_at><%= (Time.now + 2.hours) %></expires_at>
+      <policy>deny</policy>
+      <allow_new>false</allow_new>
+      <remove>false</remove>
+</auth_token>
