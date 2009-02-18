@@ -78,6 +78,10 @@
             = link_to_function prototip_info_icon('database_delete.png', 'delete-zone'), "deleteDomain();" , :id => "delete-link-buffer"
           - elsif !current_token
             = link_to prototip_info_icon('database_delete.png', 'delete-zone'), domain_path( @domain ), :method => :delete, :confirm => "Are you sure you want to remove #{@domain.name}?"
+    %tr
+      %td Type
+      %td= @domain.type.humanize
+      %td &nbsp;
 
     - if @domain.slave?
       %tr
