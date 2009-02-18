@@ -32,6 +32,16 @@ class SOA < Record
       instance_variable_get("@#{soa_entry}")
     end
   end
+
+  # Treat contact specially, replacing the first period with an @ if
+  # no @'s are present
+  def contact=( email )
+    if !email.nil? && email.index('@').nil?
+      email.sub!('.', '@')
+    end
+
+    @contact = email
+  end
   
   # Convert our +content+ field into convenience variables
   def after_initialize 
