@@ -166,9 +166,10 @@ class User < ActiveRecord::Base
     end
     
     def persist_audits
+      quoted_login = ActiveRecord::Base.connection.quote(self.login)
       Audit.update_all( 
-        "username = \"#{self.login}\"", 
-        [ 'user_type = ? AND user_id = ?', self.class.class_name, self.id ] 
-      )
+                       "username = #{quoted_login}", 
+                       [ 'user_type = ? AND user_id = ?', self.class.class_name, self.id ] 
+                       )
     end
 end
