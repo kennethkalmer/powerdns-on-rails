@@ -8,19 +8,31 @@ describe RecordsController, ", users, and non-SOA records" do
     
     @domain = domains( :example_com )
   end
-  
-  it "should create when valid" do
-    params = {
-      'name' => '',
-      'ttl' => '86400',
-      'type' => 'NS',
-      'content' => 'n3.example.com'
-    }
+
+  # Test adding various records
+  [
+   { :name => '', :ttl => '86400', :type => 'NS', :content => 'ns3.example.com' },
+   { :name => '', :ttl => '86400', :type => 'A', :content => '127.0.0.1' },
+   { :name => '', :ttl => '86400', :type => 'MX', :content => 'mail.example.com', :prio => '10' },
+   { :name => 'foo', :ttl => '86400', :type => 'CNAME', :content => 'bar.example.com' },
+   { :name => '', :ttl => '86400', :type => 'AAAA', :content => '::1' },
+   { :name => '', :ttl => '86400', :type => 'TXT', :content => 'Hello world' },
+   { :name => '166.188.77.208.in-addr.arpa.', :type => 'PTR', :content => 'www.example.com' },
+   # TODO: Test these
+   { :type => 'SPF', :pending => true },
+   { :type => 'LOC', :pending => true },
+   { :type => 'SPF', :pending => true }
+  ].each do |record|
+    it "should create a #{record[:type]} record when valid" do
+      pending "Still need test for #{record[:type]}" if record.delete(:pending)
+      
+      lambda {
+        post :create, :domain_id => @domain.id, :record => record
+      }.should change( @domain.records, :count ).by(1)
     
-    post :create, :domain_id => @domain.id, :record => params
-    
-    assigns[:domain].should_not be_nil
-    assigns[:record].should_not be_nil
+      assigns[:domain].should_not be_nil
+      assigns[:record].should_not be_nil
+    end
   end
   
   it "shouldn't save when invalid" do

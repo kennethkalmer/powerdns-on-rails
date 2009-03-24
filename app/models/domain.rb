@@ -27,6 +27,7 @@ class Domain < ActiveRecord::Base
   has_many :aaaa_records,  :class_name => 'AAAA'
   has_many :spf_records,   :class_name => 'SPF'
   has_many :srv_records,   :class_name => 'SRV'
+  has_many :ptr_records,   :class_name => 'PTR'
   
   validates_presence_of :name
   validates_uniqueness_of :name
