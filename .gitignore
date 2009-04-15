@@ -1,3 +1,4 @@
 nbproject
 *.log
 doc/api*
+config/database.yml
