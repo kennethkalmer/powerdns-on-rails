@@ -97,7 +97,7 @@ class SOA < Record
 
   # Nicer representation of the domain as XML
   def to_xml(options = {}, &block)
-    to_xml_without_cleanup(:methods => SOA_FIELDS)
+    to_xml_without_cleanup options.merge(:methods => SOA_FIELDS)
   end
   
   def before_update #:nodoc:
