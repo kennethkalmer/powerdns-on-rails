@@ -24,7 +24,15 @@ class DomainsController < ApplicationController
   public
   
   def index
-    @domains = Domain.paginate :page => params[:page], :user => current_user, :order => 'name'
+    respond_to do |wants|
+      wants.html do
+        @domains = Domain.paginate :page => params[:page], :user => current_user, :order => 'name'
+      end
+      wants.xml do
+        @domains = Domain.find(:all, :user => current_user, :order => 'name')
+        render :xml => @domains
+      end
+    end
   end
   
   def show
