@@ -31,7 +31,7 @@ class Domain < ActiveRecord::Base
   
   validates_presence_of :name
   validates_uniqueness_of :name
-  validates_inclusion_of :type, :in => %w( NATIVE MASTER SLAVE )
+  validates_inclusion_of :type, :in => %w(NATIVE MASTER SLAVE), :message => "must be one of NATIVE, MASTER, or SLAVE"
   validates_presence_of :master, :if => Proc.new { |d| d.slave? }
   validates_format_of :master, :if => Proc.new { |d| d.slave? }, :with => /^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/
   
