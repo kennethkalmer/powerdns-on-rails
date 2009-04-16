@@ -88,6 +88,30 @@ class DomainsController < ApplicationController
     end
   end
   
+  def edit
+    @zone_templates = ZoneTemplate.find(:all, :require_soa => true, :user => current_user)
+  end
+  
+  def update
+    if @domain.update_attributes(params[:domain])
+      respond_to do |wants|
+        wants.html do
+          flash[:info] = "Domain updated"
+          redirect_to domain_path(@domain)
+        end
+        wants.xml { render :xml => @domain, :location => domain_url(@domain) }
+      end
+    else
+      respond_to do |wants|
+        wants.html do
+          @zone_templates = ZoneTemplate.find(:all, :require_soa => true, :user => current_user)
+          render :action => "edit"
+        end
+        wants.xml { render :xml => @domain.errors, :status => :unprocessable_entity }
+      end
+    end
+  end
+  
   def destroy
     @domain.destroy
 

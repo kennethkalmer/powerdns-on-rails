@@ -71,6 +71,7 @@
       %td= @domain.name
       %td
         - if current_user
+          = link_to prototip_info_icon('table_edit.png', 'zone-edit'), edit_domain_path(@domain)
           = link_to prototip_info_icon('report_magnify.png', 'audits'), audits_path(:action => :domain, :id => @domain)
           - unless @domain.slave?
             = link_to prototip_info_icon('brick_go.png', 'macro'), apply_macro_domain_path( @domain )
