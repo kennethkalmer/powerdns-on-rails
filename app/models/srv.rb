@@ -13,10 +13,9 @@
 #
 class SRV < Record
 
-  validates_numericality_of(
-    :prio,
+  validates_numericality_of :prio,
     :greater_than_or_equal_to => 0
-  )
+  
   validates_presence_of :content
   
   # We support priorities

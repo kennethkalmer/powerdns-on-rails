@@ -9,15 +9,14 @@
 class SOA < Record
   
   validates_presence_of :primary_ns, :content, :name
-  validates_numericality_of(
-    :serial, :refresh, :retry, :expire,
+  
+  validates_numericality_of :serial, :refresh, :retry, :expire,
     :greater_than_or_equal_to => 0
-  )
-  validates_numericality_of( # RFC2308
-    :minimum, 
+  
+  validates_numericality_of :minimum, # RFC2308
     :greater_than_or_equal_to => 0,
     :less_than_or_equal_to => 10800
-  )
+  
   validates_uniqueness_of :domain_id
   validates_format_of :contact, :with => /^[a-zA-Z0-9\-\.]+@[a-zA-Z0-9-]+\.[a-zA-Z.]{2,6}/
   

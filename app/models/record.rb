@@ -10,11 +10,9 @@ class Record < ActiveRecord::Base
   belongs_to :domain
 
   validates_presence_of :domain_id, :name
-  validates_numericality_of( 
-    :ttl,
+  validates_numericality_of :ttl,
     :greater_than_or_equal_to => 0, 
     :only_integer => true
-  )
   
   class_inheritable_accessor :batch_soa_updates
   

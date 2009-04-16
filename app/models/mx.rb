@@ -8,12 +8,11 @@
 #
 class MX < Record
   
-  validates_numericality_of(
-    :prio,
+  validates_numericality_of :prio,
     :greater_than_or_equal_to => 0,
     :less_than_or_equal_to => 65535,
     :only_integer => true
-  )
+  
   validates_presence_of :content
   
   # Only accept valid IPv4 addresses
