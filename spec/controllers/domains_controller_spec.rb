@@ -24,6 +24,15 @@ describe DomainsController, "index" do
     assigns[:domains].should_not be_empty
     assigns[:domains].size.should be(1)
   end
+
+  it "should display all zones as XML" do
+    login_as(:admin)
+
+    get :index, :format => 'xml'
+    
+    assigns[:domains].should_not be_empty
+    response.should have_tag('domains')
+  end
 end
 
 describe DomainsController, "when creating" do
