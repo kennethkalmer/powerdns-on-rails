@@ -1,5 +1,20 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
+describe "New 'untyped'", Domain do
+  before(:each) do
+    @domain = Domain.new
+  end
+
+  it "should be NATIVE by default" do
+    @domain.type.should == 'NATIVE'
+  end
+
+  it "should not accept rubbish types" do
+    @domain.type = 'DOMINANCE'
+    @domain.should have(1).error_on(:type)
+  end
+end
+
 describe "New MASTER/NATIVE", Domain do
   fixtures :all
   
@@ -7,10 +22,6 @@ describe "New MASTER/NATIVE", Domain do
     @domain = Domain.new
   end
 
-  it "should be invalid by default" do
-    @domain.should_not be_valid
-  end
-  
   it "should require a name" do
     @domain.should have(1).error_on(:name)
   end
@@ -36,11 +47,11 @@ end
 describe "New SLAVE", Domain do
   before(:each) do
     @domain = Domain.new( :type => 'SLAVE' )
+    @domain.should be_slave
   end
 
   it "should require a master address" do
-    # Format and missing
-    @domain.should have(2).error_on(:master)
+    @domain.should have(1).error_on(:master)
   end
 
   it "should require a valid master address" do
@@ -96,6 +107,19 @@ describe Domain, "when loaded" do
   
   it "should not complain about missing SOA fields" do
     @domain.should have(:no).errors_on(:primary_ns)
+  end
+
+  it "should include records in default #to_xml calls" do
+    xml = @domain.to_xml
+
+    xml.should have_tag('name', @domain.name)
+    xml.should have_tag('records')
+  end
+
+  it "should preserve original options passed to #to_xml" do
+    xml = @domain.to_xml :skip_instruct => true
+
+    xml.should_not match(/<\?xml/)
   end
 end
 

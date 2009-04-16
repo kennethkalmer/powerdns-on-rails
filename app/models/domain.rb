@@ -67,7 +67,7 @@ class Domain < ActiveRecord::Base
 
   # Nicer representation of the domain as XML
   def to_xml_with_cleanup(options = {}, &block)
-    to_xml_without_cleanup options.merge(:include => [:records], :except => [:user_id])
+    to_xml_without_cleanup options.merge(:include => [:records], :except => [:user_id], &block)
   end
   alias_method_chain :to_xml, :cleanup
   

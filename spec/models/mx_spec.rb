@@ -36,7 +36,12 @@ describe MX, "when new" do
     @mx.should have(1).error_on(:content)
   end
 
-  it "should support  priorities" do
+  it "should not accept spaces in content" do
+    @mx.content = 'spaced out.com'
+    @mx.should have(1).error_on(:content)
+  end
+
+  it "should support priorities" do
     @mx.supports_prio?.should be_true
   end
   

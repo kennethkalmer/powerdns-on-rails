@@ -165,3 +165,46 @@ describe AuditsHelper, "link_to_record_audit" do
   end
   
 end
+
+describe AuditsHelper, "audit_user" do
+  fixtures :all
+
+  it "should display user logins if present" do
+    audit = Audit.new(
+      :auditable => nil,
+      :auditable_parent => domains(:example_com),
+      :action => 'destroy',
+      :version => 1,
+      :user => users(:admin),
+      :changes => { 'name' => 'local.example.com' }
+    )
+
+    helper.audit_user( audit ).should == users(:admin).login
+  end
+
+  it "should display usernames if present" do
+    audit = Audit.new(
+      :auditable => nil,
+      :auditable_parent => domains(:example_com),
+      :action => 'destroy',
+      :version => 1,
+      :username => 'foo',
+      :changes => { 'name' => 'local.example.com' }
+    )
+
+    helper.audit_user( audit ).should == 'foo'
+  end
+
+  it "should not bork on missing user information" do
+    audit = Audit.new(
+      :auditable => nil,
+      :auditable_parent => domains(:example_com),
+      :action => 'destroy',
+      :version => 1,
+      :changes => { 'name' => 'local.example.com' }
+    )
+
+
+    helper.audit_user( audit ).should == 'UNKNOWN'
+  end
+end

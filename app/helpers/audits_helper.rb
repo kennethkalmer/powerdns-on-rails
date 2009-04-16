@@ -6,7 +6,7 @@ module AuditsHelper
   
   def link_to_domain_audit( audit )
     caption = "#{audit.version} #{audit.action} by "
-    caption << (audit.user.is_a?( User ) ? audit.user.login : audit.username)
+    caption << audit_user( audit )
     link_to_function caption, "toggleDomainAudit(#{audit.id})"
   end
   
@@ -18,7 +18,7 @@ module AuditsHelper
       caption += " (#{name})"
     end
     caption += " #{audit.version} #{audit.action} by "
-    caption += (audit.user.is_a?( User ) ? audit.user.login : audit.username)
+    caption += audit_user( audit )
     link_to_function caption, "toggleRecordAudit(#{audit.id})"
   end
   
@@ -39,6 +39,14 @@ module AuditsHelper
   
   def sort_audits_by_date( collection )
     collection.sort_by(&:created_at).reverse
+  end
+
+  def audit_user( audit )
+    if audit.user.is_a?( User )
+      audit.user.login
+    else
+      audit.username || 'UNKNOWN'
+    end
   end
   
 end

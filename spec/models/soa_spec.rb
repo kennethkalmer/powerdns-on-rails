@@ -223,4 +223,8 @@ describe SOA, "when serializing to XML" do
     xml.should have_tag('retry')
   end
   
+  it "should preserve original #to_xml options" do
+    xml = @soa.to_xml :skip_instruct => true
+    xml.should_not match(/<\?xml/)
+  end
 end

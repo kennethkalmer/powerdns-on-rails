@@ -59,7 +59,7 @@ class Record < ActiveRecord::Base
 
   # Nicer representation of the domain as XML
   def to_xml_with_cleanup(options = {}, &block)
-    to_xml_without_cleanup(options)
+    to_xml_without_cleanup(options, &block)
   end
   alias_method_chain :to_xml, :cleanup
   

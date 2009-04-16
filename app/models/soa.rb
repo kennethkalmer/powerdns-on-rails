@@ -8,7 +8,8 @@
 # 
 class SOA < Record
   
-  validates_presence_of :primary_ns, :content, :name
+  validates_presence_of :primary_ns, :content, :name, :serial, :refresh, :retry,
+    :expire, :minimum
   
   validates_numericality_of :serial, :refresh, :retry, :expire,
     :allow_blank => true,

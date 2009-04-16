@@ -1,10 +1,11 @@
 require File.dirname(__FILE__) + '/../../spec_helper'
 
 describe "/search/results" do 
+  fixtures :users, :roles
   
   before(:each) do
-    @admin = User.new
-    @admin.stubs(:has_role?).with('admin').returns(true)
+    @admin = users(:admin)
+    template.stubs(:current_user).returns(@admin)
   end
   
   it "should handle no results" do
