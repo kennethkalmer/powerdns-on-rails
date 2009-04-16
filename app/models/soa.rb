@@ -11,9 +11,11 @@ class SOA < Record
   validates_presence_of :primary_ns, :content, :name
   
   validates_numericality_of :serial, :refresh, :retry, :expire,
+    :allow_blank => true,
     :greater_than_or_equal_to => 0
   
   validates_numericality_of :minimum, # RFC2308
+    :allow_blank => true,
     :greater_than_or_equal_to => 0,
     :less_than_or_equal_to => 10800
   
