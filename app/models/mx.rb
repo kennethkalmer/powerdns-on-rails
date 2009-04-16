@@ -14,6 +14,9 @@ class MX < Record
     :only_integer => true
   
   validates_presence_of :content
+  validates_format_of :content,
+    :allow_blank => true,
+    :with => /\A\S+\Z/
   
   # Only accept valid IPv4 addresses
   def validate_with_mx
