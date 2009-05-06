@@ -53,6 +53,7 @@
 = link_to_function prototip_info_icon('table_add.png', 'new-step'), "displayRecordForm()"
 = link_to_function "New Macro Step", "displayRecordForm()"
 
+#record-form-error{ :style => 'display:none' }
 #record-form-div{ :style => 'display:none' }
   - remote_form_for( [@macro, @macro_step], :html => { :id => 'record-form' } ) do |f|
     = f.hidden_field( :macro_id )
