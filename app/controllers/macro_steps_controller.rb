@@ -28,7 +28,11 @@ class MacroStepsController < ApplicationController
     
     @macro_step.insert_at( position ) if position && !@macro_step.new_record?
 
-    @macro.save
+    if @macro.save
+      flash[:info] = 'Macro step created'
+    else
+      flash[:error] = 'Could not create step'
+    end
   end
 
   def update
