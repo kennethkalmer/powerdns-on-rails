@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20081228121040) do
+ActiveRecord::Schema.define(:version => 20090505124622) do
 
   create_table "audits", :force => true do |t|
     t.integer  "auditable_id"
@@ -64,7 +64,7 @@ ActiveRecord::Schema.define(:version => 20081228121040) do
     t.string   "content"
     t.integer  "ttl"
     t.integer  "prio"
-    t.integer  "position"
+    t.integer  "position",                      :null => false
     t.boolean  "active",      :default => true
     t.string   "note"
     t.datetime "created_at"
