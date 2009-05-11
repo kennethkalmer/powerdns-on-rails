@@ -5,10 +5,10 @@ if @macro_step.errors.empty?
   page.remove "edit_macro_step_#{@macro_step.id}"
   page.replace "marker_macro_step_#{@macro_step.id}", :partial => @macro_step
   page.visual_effect(:highlight, "show_macro_step_#{@macro_step.id}")
-  page.call 'showflash', 'info', "Macro step updated"
+  page.call 'showflash', 'info', t(:message_macro_step_updated)
   page.show 'refresh-note'
 
 else
   page.replace_html "error_macro_step_#{@macro_step.id}", error_messages_for(:macro_step)
-  page.call 'showflash', 'error', "Could not update macro step"
+  page.call 'showflash', 'error', t(:message_macro_step_cannot_update)
 end

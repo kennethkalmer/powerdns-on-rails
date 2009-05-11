@@ -2,8 +2,8 @@ if @record.errors.empty?
   page.remove "show_#{@record.type.downcase}_#{@record.id}", "edit_#{@record.type.downcase}_#{@record.id}"
   page.replace "marker_#{@record.type.downcase}_#{@record.id}", :partial => "/domains/record", :object => @record
   page.visual_effect( :highlight, "show_#{@record.type.downcase}_#{@record.id}" )
-  page.call 'showflash', 'info', "Record updated"
+  page.call 'showflash', 'info', t(:message_record_updated)
 else
-  page.call 'showflash', 'error', "Update failed"
+  page.call 'showflash', 'error', t(:message_record_update_fail)
 end
   

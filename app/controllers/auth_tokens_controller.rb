@@ -39,7 +39,7 @@ class AuthTokensController < ApplicationController
   def create
     if params[:auth_token].blank?
       render :status => 422, :xml => <<-EOS
-<error>Missing parameter auth-token</error>
+<error>#{t(:message_token_missing_parametr)}</error>
 EOS
       return false
     end
@@ -47,7 +47,7 @@ EOS
     # Get our domain
     domain = Domain.find_by_name( params[:auth_token][:domain] )
     if domain.nil?
-      render :text => 'Domain not found', :status => 404
+      render :text => t(:message_domain_not_found), :status => 404
       return
     end
     

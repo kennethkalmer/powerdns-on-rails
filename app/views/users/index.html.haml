@@ -1,12 +1,11 @@
-#new-user{ :style => 'display: none' }
-  Add a new user to PowerDNS on Rails
+#new-user{ :style => 'display: none' }= t :help_user_add
 
-%h2.underline Users
+%h2.underline= t :title_users
 
 %table.gridwide
   %tr
     %td{ :colspan => 5 }
       = link_to prototip_info_icon('user_add.png', 'new-user'), new_user_path
-      = link_to 'New user', new_user_path
+      = link_to t(:label_user_create), new_user_path
   = render :partial => 'user', :collection => @users
 

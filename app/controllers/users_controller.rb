@@ -29,7 +29,7 @@ class UsersController < ApplicationController
         Role.find_by_name('owner')
       end
       
-      flash[:info] = "User created"
+      flash[:info] = t(:message_user_created)
       redirect_to user_path( @user )
       return
     end
@@ -58,7 +58,7 @@ class UsersController < ApplicationController
         Role.find_by_name('owner')
       end
       
-      flash[:info] = "User updated"
+      flash[:info] = t(:message_user_updated)
       redirect_to user_path( @user )
       return
     end
@@ -70,7 +70,7 @@ class UsersController < ApplicationController
     self.current_user = params[:activation_code].blank? ? false : User.find_by_activation_code(params[:activation_code])
     if logged_in? && !current_user.active?
       current_user.activate!
-      flash[:notice] = "Account activated!"
+      flash[:notice] = t(:message_user_activated)
     end
     redirect_back_or_default('/')
   end

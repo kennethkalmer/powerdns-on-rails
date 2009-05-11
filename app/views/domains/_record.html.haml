@@ -1,9 +1,7 @@
 - unless record.domain.slave?
   %div{ :style => "display: none;" } 
-    %div{ :id => "record-template-edit-#{record.id}" }
-      Edit this record
-    %div{ :id => "record-template-delete-#{record.id}" }
-      Delete this record
+    %div{ :id => "record-template-edit-#{record.id}" }= t :label_domain_edit_record 
+    %div{ :id => "record-template-delete-#{record.id}" }= t :label_domain_delete_record 
 
 %tr[ record, :marker ]
 %tr[ record, :show ]
@@ -17,7 +15,7 @@
       - if current_user || current_token.can_change?( record )
         = link_to_function prototip_info_icon('database_edit.png', "record-template-edit-#{record.id}"), "editRecord(#{record.id}, '#{record.type.downcase}')"
       - if current_user || current_token.can_remove?( record )
-        = link_to prototip_info_icon('database_delete.png', "record-template-delete-#{record.id}"), domain_record_path( record.domain, record ), :method => :delete, :confirm => "Are you sure?"
+        = link_to prototip_info_icon('database_delete.png', "record-template-delete-#{record.id}"), domain_record_path( record.domain, record ), :method => :delete, :confirm => t(:confirm_domain_delte_record)
 
 - unless record.domain.slave?
   - if current_user || current_token.can_change?( record )

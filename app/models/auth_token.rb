@@ -196,7 +196,7 @@ class AuthToken < ActiveRecord::Base
   
   def ensure_future_expiry! #:nodoc:
     if self.expires_at && self.expires_at <= Time.now
-      errors.add(:expires_at, 'should be in the future') 
+      errors.add(:expires_at, I18n.t(:message_domain_expiry_error)) 
     end
   end
 end

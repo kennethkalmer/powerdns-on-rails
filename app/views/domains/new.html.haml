@@ -1,8 +1,8 @@
-%h1.underline New zone
+%h1.underline= t :title_domain_new_zone
 
 = render :partial => 'new'
 
 %p &nbsp;
 
 %p
-  = dns_book "More information on SOA records", "ch8/soa.html"
+  = dns_book t(:label_domain_more_soa_info), t(:link_to_soa_help)

@@ -8,7 +8,7 @@
   %td{ :width => 230 }= macro_step.content
   %td{ :width => 36 }
     = link_to_function prototip_info_icon('table_edit.png', 'edit-step'), "editRecordTemplate(#{macro_step.id})"
-    = link_to prototip_info_icon('table_delete.png', 'delete-step'), macro_macro_step_path(@macro, macro_step), :method => :delete, :confirm => "Are you sure you want to remove this step?"
+    = link_to prototip_info_icon('table_delete.png', 'delete-step'), macro_macro_step_path(@macro, macro_step), :method => :delete, :confirm => t(:confirm_macro_step_delte)
 %tr[ macro_step, :edit ]{ :style => 'display: none' }
   %td{ :colspan => 7 }
     - remote_form_for( [@macro, macro_step] ) do |f|

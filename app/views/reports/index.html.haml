@@ -1,34 +1,34 @@
-%h2.underline User Reports
+%h2.underline= t :title_user_reports
 
 #search-user-bar.padded
   - form_tag( { :controller => :reports, :action => :results }, { :method => :get } ) do
     = text_field_tag :q
-    = submit_tag "Search users"
+    = submit_tag t(:label_user_search)
     
 #users.padded
   %table.grid
     %tr
-      %th.left Login 
-      %th.right Domains
-      %th.left Email
+      %th.left= t :label_user_login 
+      %th.right= t :label_user_domains
+      %th.left= t :label_user_email
     - if @users
       = render :partial => 'user', :collection => @users
     - else
       %tr
         %td
-          %em No user domains
+          %em= t :message_user_no_domains
         %td.right 0
         %td -
     %tr
       %td{ :colspan => 3 } &nbsp;
     %tr
       %td
-        %em System Domains
+        %em= t :label_report_system_domains
       %td.right= @system_domains
       %td &nbsp;
     %tr
       %td
-        %em Total Domains
+        %em= t :label_report_total_domains
       %td.right= @total_domains
       %td &nbsp;
 

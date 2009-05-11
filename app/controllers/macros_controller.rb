@@ -28,7 +28,7 @@ class MacrosController < ApplicationController
   public
   
   def destroy
-    flash[:notice] = "Macro removed"
+    flash[:notice] = t(:message_macro_removed)
     redirect_to macros_path
   end
   

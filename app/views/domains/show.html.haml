@@ -1,64 +1,35 @@
 - @page_title = @domain.name
 
 %div{ :style => "display: none;" }
-  #record-template-new
-    Create a new record for this domain
-  #soa-record-edit
-    Edit the SOA record's details
-  #zone-edit
-    Edit this domain's details
-  #note-new
-    Adds a note with miscellaneous info to the domain
-  #note-edit
-    Edit the domains's current note
-  #delete-zone
-    Permantly remove this domain from the system
-  #audits
-    Views the audits/history for this domain
-  #macro
-    Select a macro and run it against this domain
-  #change-owner
-    Change or remove the owner of this domain
-  #help-primary-ns
-    This is the fully qualified domain name (FQDN) of the primary name server
-    of the domain.
-  #help-contact
-    The primary contact of the domain, usualy the DNS administrator's email
-    address would be entered here.
-  #help-refresh
-    Indicates the time when the slave will try to refresh the zone from the 
-    master. RFC 1912 recommends 1200 to 43200 seconds, low (1200) if the data is
-    volatile or 43200 (12 hours) if it's not. If you are using NOTIFY you can 
-    set for much higher values e.g. 1 or more days > 86400.
-  #help-retry
-    It defines the time between retries if the slave (secondary) fails to 
-    contact the master when refresh (above) has expired. Typical values would be
-    180 (3 minutes) to 900 (15 minutes) or higher.
-  #help-expire
-    Indicates when the zone data is no longer authoritative. Applies to Slaves 
-    or Secondaries servers only. BIND9 slaves stop responding to queries for the
-    zone when this time has expired and no contact has been made with the 
-    master.
-  #help-minimum
-    RFC 2308 (implemented by BIND 9) redefined this value to be the negative 
-    caching time - the time a NAME ERROR = NXDOMAIN record is cached. The 
-    maximum value allowed by BIND 9 for this parameter is 3 hours (10800 
-    seconds).
-  #delete-reset
-    Do not delete this domain.
+  #record-template-new=t :help_record_template_new
+  #soa-record-edit=t :help_soa_record_edit
+  #zone-edit=t :help_zone_edit
+  #note-new=t :note_new
+  #note-edit=t :note_edit
+  #delete-zone=t :help_delete_zone
+  #audits=t :help_audits
+  #macro=t :help_macro
+  #change-owner=t :help_change_owner
+  #help-primary-ns=t :help_domain_primary_ns
+  #help-contact=t :help_domain_contact
+  #help-refresh=t :help_domain_refresh
+  #help-retry=t :help_domain_retry
+  #help-expire=t :help_domain_expire
+  #help-minimum=t :help_domain_minimum
+  #delete-reset=t :help_delete_reset
 
 - if current_user && current_user.admin? && @domain.user
   #warning-message.flash-warning{ :style => 'display: none' }
-    This domain has an owner! Please make sure that you want to delete it.
+    = t :warning_this_domain_has_owner
 
     %br
     %br
-    Yes I am sure I want to delete this domain.
-    = link_to prototip_info_icon('database_delete.png', 'delete-zone'), domain_path( @domain ),  :method => :delete, :confirm => "Are you sure you want to remove #{@domain.name}?"                
+    = t :warning_this_domain_has_owner
+    = link_to prototip_info_icon('database_delete.png', 'delete-zone'), domain_path( @domain ),  :method => :delete, :confirm => t(:confirm_domain_delete, :domain => @domain.name)                
     %br
     or
     %br
-    No I don't want to delete this domain.
+    = t :confirm_delete_this_domain
     = link_to_function prototip_info_icon('cancel.png', 'delete-reset'), "deleteDomain();" 
 
 %h1.underline
@@ -67,7 +38,7 @@
 #domain-name.padded
   %table.grid
     %tr
-      %td Domain
+      %td= t :label_domain_name
       %td= @domain.name
       %td
         - if current_user
@@ -78,21 +49,21 @@
           - if current_user.admin? && @domain.user
             = link_to_function prototip_info_icon('database_delete.png', 'delete-zone'), "deleteDomain();" , :id => "delete-link-buffer"
           - elsif !current_token
-            = link_to prototip_info_icon('database_delete.png', 'delete-zone'), domain_path( @domain ), :method => :delete, :confirm => "Are you sure you want to remove #{@domain.name}?"
+            = link_to prototip_info_icon('database_delete.png', 'delete-zone'), domain_path( @domain ), :method => :delete, :confirm => t(:confirm_domain_delete, :domain => @domain.name)
     %tr
-      %td Type
+      %td=t :label_domain_type
       %td= @domain.type.humanize
       %td &nbsp;
 
     - if @domain.slave?
       %tr
-        %td Master server
+        %td= t :label_domain_master_server
         %td= @domain.master
         %td &nbsp;
 
     - if current_user && current_user.admin?
       %tr
-        %td Owner
+        %td=t :label_domain_owner
         %td
           #owner-info
             - if @domain.user
@@ -102,10 +73,10 @@
           #owner-edit{ :style => 'display: none' }
             - remote_form_for( :domain, @domain, :url => formatted_change_owner_domain_path( @domain, :js ), :html => { :method => :put } ) do |f|
               = f.collection_select "user_id", @users, :id, :login, :include_blank => true
-              = submit_tag "Save"
+              = submit_tag(t(:generic_save))
         %td= link_to_function prototip_info_icon('user_edit.png', 'change-owner'), "changeOwner()"
       %tr
-        %td{ :valign => 'top' } Notes
+        %td{ :valign => 'top' }=t :label_domain_notes
         %td{ :colspan => 2 }
           #note-row
             = @domain.notes
@@ -116,84 +87,84 @@
             - remote_form_for( :domain, @domain, :url => formatted_update_note_domain_path( @domain, :js ), :html => { :method => :put } ) do |f|
               = f.text_area :notes, :rows => 5, :cols => 17
               %br
-              = link_to_function "Cancel", "hideNote()"
-              = submit_tag "Update note"
+              = link_to_function t(:generic_cancel), "hideNote()"
+              = submit_tag(t(:generic_update))
 
 #domain-soa.padded
   %h2.underline
-    SOA Record
+    = t :title_soa_record
     &nbsp;
     - if current_user
       = link_to_function prototip_info_icon('database_edit.png', 'soa-record-edit'), "showSOAEdit()"
   - if @domain.soa_record.nil?
     %p
-      %em SOA record yet propagated from master server
+      %em= t :label_soa_record_yet_propagated_from_master
   - else
     = render :partial => '/domains/soa_record', :object => @domain.soa_record
 
 #domain-records.padded
-  %h2.underline Domain RR's
+  %h2.underline= t :title_domian_rrs
   %table.gridwide#record-table
     %tr
-      %td.small Hostname
-      %td.small TTL
-      %td.small Type
-      %td.small Priority
-      %td.small Data
+      %td.small= t :label_domain_record_host
+      %td.small= t :label_domain_record_ttl
+      %td.small= t :label_domain_record_type
+      %td.small= t :label_domain_record_priority
+      %td.small= t :label_domain_record_data
       %td &nbsp;
     = render :partial => 'record', :collection => @domain.records_without_soa
 
 - unless @domain.slave?
   - if current_user || current_token.allow_new_records?
     = link_to_function prototip_info_icon('database_add.png', 'record-template-new'), "displayRecordForm()"
-    = link_to_function "New record", "displayRecordForm()"
+    = link_to_function t(:label_domain_record_new), "displayRecordForm()"
 
     #record-form-div{ :style => "display: none;" }
       - remote_form_for( :record, @record, :url => formatted_domain_records_path( @domain, :js ), :html => { :id => 'record-form' } ) do |f|
         %table
           %tr
-            %td Type
+            %td= t :label_domain_record_type
             %td
               = select_record_type( f )
               = observe_field "record_type", :function => "toggleRecordFields(element,value)"
           %tr
-            %td Host
+            %td= t :label_domain_record_host
             %td= f.text_field :name
           %tr
-            %td TTL
+            %td= t :label_domain_record_ttl
             %td= f.text_field :ttl, :size => 6
           %tr.rt-mx{ :style => 'display :none' }
-            %td Priority
+            %td= t :label_domain_record_priority
             %td= f.text_field :prio, :size => 6
           %tr.rt-srv{ :style => 'display :none' }
-            %td Priority
+            %td= t :label_domain_record_priority
             %td= f.text_field :prio, :size => 6
           %tr
-            %td Data
+            %td= t :label_domain_record_data
             %td= f.text_field :content
           %tr.rt-soa{ :style => 'display :none' }
-            %td Primary Name Server
+            %td= t :label_primary_name_server
             %td= f.text_field :primary_ns
           %tr.rt-soa{ :style => 'display :none' }
-            %td Contact
+            %td= t :label_domain_contact
             %td= f.text_field :contact
           %tr.rt-soa{ :style => 'display :none' }
-            %td Refresh
+            %td= t :label_domain_refresh
             %td= f.text_field :refresh, :size => 6
           %tr.rt-soa{ :style => 'display :none' }
-            %td Retry
+            %td= t :label_domain_retry
             %td= f.text_field :retry, :size => 6
           %tr.rt-soa{ :style => 'display :none' }
-            %td Expire
+            %td= t :label_domain_expire
             %td= f.text_field :expire, :size => 6
           %tr.rt-soa{ :style => 'display :none' }
-            %td Minimum
+            %td= t :label_domain_minimum
             %td= f.text_field :minimum, :size => 6
           %tr
             %td &nbsp;
             %td
-              = link_to_function "Cancel", "hideRecordForm()"
-              = submit_tag "Create"
+              = link_to_function(t(:generic_cancel), "hideRecordForm()")
+              = submit_tag(t :generic_create)
 
 :javascript
   function editRecord(id, type) {

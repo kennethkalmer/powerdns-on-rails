@@ -1,8 +1,8 @@
-Your account has been created.
+<%= t :text_user_mailer_account_created%>
 
-  Username: <%= @user.login %>
-  Password: <%= @user.password %>
+  <%= t :label_user_name %>: <%= @user.login %>
+  <%= t :label_user_password %>: <%= @user.password %>
 
-Visit this url to activate your account:
+<%= t :text_user_mailer_visit_url_to_activate_account %>
 
   <%= @url %>

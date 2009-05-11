@@ -1,16 +1,15 @@
 %h1.underline 
-  Details for 
-  = @user.login
+  = t(:title_user_detail_for, :user => @user.login)
 
 %table.grid
   %tr
-    %td Login
+    %td= t :label_user_name
     %td= @user.login
   %tr
-    %td Email
+    %td= t :label_user_email
     %td= @user.email
   %tr
-    %td Role
+    %td= t :label_user_role
     %td= @user.roles.map(&:name).map(&:humanize).to_sentence
   %tr
     %td &nbsp;
@@ -19,11 +18,11 @@
     %td &nbsp;
     %td
       = link_to image_tag('user_edit.png'), edit_user_path( @user )
-      = link_to "Change", edit_user_path( @user )
+      = link_to t(:generic_change), edit_user_path( @user )
       &nbsp;&nbsp;&nbsp;
-      = link_to image_tag('user_delete.png'), user_path( @user ), :method => :delete, :confirm => 'Are you sure you want to remove this user?'
-      = link_to "Remove", user_path( @user ), :method => :delete, :confirm => 'Are you sure you want to remove this user?'
+      = link_to image_tag('user_delete.png'), user_path( @user ), :method => :delete, :confirm => t(:confirm_user_remove)
+      = link_to t(:generic_remove), user_path( @user ), :method => :delete, :confirm => t(:confirm_user_remove)
       - unless @user.admin?
         &nbsp;&nbsp;&nbsp;
         = link_to image_tag('help.png') , :controller => :reports , :action => :view , :id => @user
-        = link_to "More Detail" , :controller => :reports , :action => :view , :id => @user
+        = link_to t(:label_user_detail) , :controller => :reports , :action => :view , :id => @user

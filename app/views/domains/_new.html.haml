@@ -1,104 +1,79 @@
 / These divs contain the help information.
 %div{ :style => 'display: none' }
-  #help-domain
-    This is the fully qualified domain name (FQDN) of the domain.
-  #help-primary-ns
-    This is the fully qualified domain name (FQDN) of the primary name server
-    of the domain.
-  #help-contact
-    The primary contact of the domain, usualy the DNS administrator email
-    address would be entered here.
-  #help-refresh
-    Indicates the time when the slave will try to refresh the zone from the 
-    master. RFC 1912 recommends 1200 to 43200 seconds, low (1200) if the data is
-    volatile or 43200 (12 hours) if it's not. If you are using NOTIFY you can 
-    set for much higher values e.g. 1 or more days > 86400.
-  #help-retry
-    It defines the time between retries if the slave (secondary) fails to 
-    contact the master when refresh (above) has expired. Typical values would be
-    180 (3 minutes) to 900 (15 minutes) or higher.
-  #help-expire
-    Indicates when the zone data is no longer authoritative. Applies to Slaves 
-    or Secondaries servers only. BIND9 slaves stop responding to queries for the
-    zone when this time has expired and no contact has been made with the 
-    master.
-  #help-minimum
-    RFC 2308 (implemented by BIND 9) redefined this value to be the negative 
-    caching time - the time a NAME ERROR = NXDOMAIN record is cached. The 
-    maximum value allowed by BIND 9 for this parameter is 3 hours (10800 
-    seconds).
-  #help-type
-    PowerDNS supports NATIVE, MASTER and SLAVE domain types. NATIVE domains will
-    cause PowerDNS to keep quiet on changes, MASTER will have PowerDNS notify the
-    slaves when changes are made to the records, and SLAVE will create a
-    read-only domain where PowerDNS will pull changes from the specified master
-    server.
-  #help-master
-    The IP address of the authorative (or master) DNS server for this domain.
+  #help-domain=t :help_domain_fqdn
+  #help-primary-ns=t :help_domain_primary_ns
+  #help-contact=t :help_domain_contact
+  #help-refresh=t :help_domain_refresh
+  #help-retry=t :help_domain_retry
+  #help-expire=t :help_domain_expire
+  #help-minimum=t :help_domain_minimum
+  #help-type=t :help_domain_type
+  #help-master=t :help_domain_master
 
-%p
-  Create a new domain by entering the Start of Authority (SOA) information below:
+%p=t :label_create_new_domain_note
 
 - form_for(@domain) do |f|
   = error_messages_for :domain
   %p &nbsp;
   %table.grid
     %tr
-      %td{:width => "300"} Domain name
+      %td{:width => "300"}=t :label_domain_name
       %td= f.text_field :name
       %td= prototip_help_icon('help-domain')
     %tr
-      %td Type
+      %td=t :label_domain_type
       %td
         = f.select :type, ['NATIVE','MASTER','SLAVE']
         = observe_field :domain_type, :function => "if(value == \"SLAVE\") { $('master-address').show(); $('zone-templates').hide(); $('no-template-input').hide(); } else { $('master-address').hide(); $('zone-templates').show(); $('no-template-input').show(); }"
       %td= prototip_help_icon('help-type')
     %tr#master-address{ :style => 'display: none' }
-      %td Master Address
+      %td=t :label_domain_master_address
       %td= f.text_field :master
       %td= prototip_help_icon('help-master')
     %tr#zone-templates
-      %td Zone Template
+      %td=t :label_domain_zone_template
       %td
         - if @zone_templates.size > 0
           = f.collection_select( :zone_template_id, @zone_templates, :id, :name, :include_blank => true )
           = observe_field :domain_zone_template_id, :function =>"if(value == \"\") $('no-template-input').show(); else $('no-template-input').hide()", :on => 'select'
         - else
-          %em== #{link_to "Create Zone Templates", new_zone_template_path} for easier management of new domains
+          %em
+            =link_to((t :label_create_zone_templates), new_zone_template_path)
+            =t :label_zone_for_eazy_management
       %td &nbsp;
     
     
   #no-template-input
     %table.grid
       %tr
-        %td{:width => "300"} Primary name server
+        %td{:width => "300"}=t :label_domain_primary_name_server
         %td= f.text_field :primary_ns
         %td= prototip_help_icon('help-primary-ns')
       %tr
-        %td Contact
+        %td=t :label_domain_contact
         %td= f.text_field :contact
         %td= prototip_help_icon('help-contact')
       %tr
-        %td Refresh
+        %td=t :label_domain_refresh
         %td
           = f.text_field :refresh, :size => 6
           = prototip_help_icon('help-refresh')
         %td &nbsp;
 
       %tr
-        %td Retry
+        %td= t :label_domain_retry
         %td
           = f.text_field :retry, :size => 6
           = prototip_help_icon('help-retry')
         %td &nbsp;
       %tr
-        %td Expire
+        %td= t :label_domain_expire
         %td
           = f.text_field :expire, :size => 6
           = prototip_help_icon('help-expire')
         %td &nbsp;
       %tr
-        %td Minimum
+        %td= t :label_domain_minimum
         %td
           = f.text_field :minimum, :size => 6
           = prototip_help_icon('help-minimum')
@@ -106,5 +81,5 @@
   %table.grid
     %tr
       %td.right{:width => "300"}= link_to_cancel @domain
-      %td= submit_tag "Save"
+      %td= submit_tag((t :generic_save))
       %td &nbsp;

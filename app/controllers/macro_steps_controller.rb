@@ -32,7 +32,7 @@ class MacroStepsController < ApplicationController
     @macro_step = @macro.macro_steps.find( params[:id] )
     @macro_step.destroy
 
-    flash[:info] = "Macro step removed"
+    flash[:info] = t :message_macro_step_removed
     redirect_to macro_path( @macro )
   end
   
