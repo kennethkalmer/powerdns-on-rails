@@ -33,8 +33,6 @@
 
 %h1.underline=t :title_macro_steps
 
-#refresh-note.flash-notice{:style => 'display:none'}=t :message_macro_pleas_refres_for_position
-
 %table#steps-table.gridwide
   %tr
     %td.small=t :label_macro_step_position
@@ -50,6 +48,7 @@
 = link_to_function prototip_info_icon('table_add.png', 'new-step'), "displayRecordForm()"
 = link_to_function t(:label_macro_step_create_new), "displayRecordForm()"
 
+#record-form-error{ :style => 'display:none' }
 #record-form-div{ :style => 'display:none' }
   - remote_form_for( [@macro, @macro_step], :html => { :id => 'record-form' } ) do |f|
     = f.hidden_field( :macro_id )
@@ -82,6 +81,7 @@
   // Blatantly copied from record templates, needs to be unified
   function hideAll() {
     $('record-form-div').hide();
+    $('record-form-error').hide();
   }
   function displayRecordForm() {
     $('record-form-div').show();

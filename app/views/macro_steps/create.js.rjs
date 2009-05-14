@@ -1,14 +1,14 @@
 # Did we fail or succeed?
 if @macro_step.new_record?
   # fail!
-  page.insert_html :top, 'record-form', error_messages_for( :macro_step )
-  page.call 'showflash', 'error', t(:message_macro_step_cannot_create)
+#  page.insert_html :top, 'record-form-div', error_messages_for( :macro_step )
+  page.replace_html 'record-form-error', error_messages_for(:macro_step)
+  page.show 'record-form-error'
+  page.call 'showflash', 'error', flash[:error]
 else
   page.call 'resetRecordForm'
   page.hide 'record-form-div'
   page.insert_html :bottom, 'steps-table', :partial => @macro_step
 
-  page.call 'showflash', 'info', t(:message_macro_step_created)
-
-  page.show 'refresh-note'
+  page.call 'showflash', 'info', flash[:info]
 end

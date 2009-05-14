@@ -12,11 +12,27 @@ class MacroStepsController < ApplicationController
   public
 
   def create
-    position = params[:macro_step].delete(:position)
+    # Check for any previous macro steps
+    if @macro.macro_steps.any?
+      # Check for the parameter
+      unless params[:macro_step][:position].blank?
+        position = params[:macro_step].delete(:position)
+      else
+        position = @macro.macro_steps.last.position + 1
+      end
+    else
+      position = '1'
+    end
+
     @macro_step = @macro.macro_steps.create( params[:macro_step] )
-
-
+    
     @macro_step.insert_at( position ) if position && !@macro_step.new_record?
+
+    if @macro.save
+      flash.now[:info] = t(:message_macro_step_created)
+    else
+      flash.now[:error] = t(:message_macro_step_cannot_create)
+    end
   end
 
   def update
