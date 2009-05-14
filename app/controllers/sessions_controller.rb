@@ -1,8 +1,8 @@
-# This controller handles the login/logout function of the site.  
+# This controller handles the login/logout function of the site.
 class SessionsController < ApplicationController
 
   skip_before_filter :login_required, :except => [ :destroy ]
-  
+
   # render new.rhtml
   def new
   end
@@ -20,7 +20,7 @@ class SessionsController < ApplicationController
       render :action => 'new'
     end
   end
-  
+
   def token
     self.current_token = AuthToken.authenticate( params[:token] )
     if token_user?
@@ -30,16 +30,15 @@ class SessionsController < ApplicationController
 
   def destroy
     if logged_in?
-      self.current_user.forget_me 
+      self.current_user.forget_me
 
       cookies.delete :auth_token
-      reset_session
-      flash[:notice] = "You have been logged out."
-      redirect_back_or_default( session_path )
-      return
     end
-    
+
     self.current_token.expire if self.current_token
     reset_session
+
+    flash[:notice] = "You have been logged out."
+    redirect_back_or_default( session_path )
   end
 end

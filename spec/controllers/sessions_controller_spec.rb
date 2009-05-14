@@ -12,7 +12,7 @@ describe SessionsController, "and users" do
     session[:user_id].should_not be_nil
     response.should be_redirect
   end
-  
+
   it 'fails login and does not redirect' do
     post :create, :login => 'quentin', :password => 'bad password'
     session[:user_id].should be_nil
@@ -30,7 +30,7 @@ describe SessionsController, "and users" do
     post :create, :login => 'quentin', :password => 'test', :remember_me => "1"
     response.cookies["auth_token"].should_not be_nil
   end
-  
+
   it 'does not remember me' do
     post :create, :login => 'quentin', :password => 'test', :remember_me => "0"
     response.cookies["auth_token"].should be_nil
@@ -39,7 +39,7 @@ describe SessionsController, "and users" do
   it 'deletes token on logout' do
     login_as :quentin
     get :destroy
-    response.cookies["auth_token"].should == []
+    response.cookies["auth_token"].should be_nil
   end
 
   it 'logs in with cookie' do
@@ -48,7 +48,7 @@ describe SessionsController, "and users" do
     get :new
     controller.send(:logged_in?).should be_true
   end
-  
+
   it 'fails expired cookie login' do
     users(:quentin).remember_me
     users(:quentin).update_attribute :remember_token_expires_at, 5.minutes.ago
@@ -56,7 +56,7 @@ describe SessionsController, "and users" do
     get :new
     controller.send(:logged_in?).should_not be_true
   end
-  
+
   it 'fails cookie login' do
     users(:quentin).remember_me
     request.cookies["auth_token"] = auth_token('invalid_auth_token')
@@ -67,7 +67,7 @@ describe SessionsController, "and users" do
   def auth_token(token)
     CGI::Cookie.new('name' => 'auth_token', 'value' => token)
   end
-    
+
   def cookie_for(user)
     auth_token users(user).remember_token
   end
@@ -75,7 +75,7 @@ end
 
 describe SessionsController, "and auth tokens" do
   fixtures :auth_tokens, :domains
-  
+
   it 'accepts and redirects' do
     post :token, :token => '5zuld3g9dv76yosy'
     session[:token_id].should_not be_nil
@@ -83,7 +83,7 @@ describe SessionsController, "and auth tokens" do
     response.should be_redirect
     response.should redirect_to( domain_path( domains(:example_com) ) )
   end
-  
+
   it 'fails login and does not redirect' do
     post :token, :token => 'bad_token'
     session[:token_id].should be_nil
@@ -94,7 +94,7 @@ describe SessionsController, "and auth tokens" do
     tokenize_as(:token_example_com)
     get :destroy
     session[:token_id].should be_nil
-    response.should render_template('destroy')
+    response.should redirect_to( session_path )
   end
 
   it 'fails expired cookie login' do
@@ -102,5 +102,5 @@ describe SessionsController, "and auth tokens" do
     get :new
     controller.send(:token_user?).should_not be_true
   end
-  
+
 end
