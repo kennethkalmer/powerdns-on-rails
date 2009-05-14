@@ -20,7 +20,7 @@
 
 - if current_user
   #soa-edit-form{ :style => "display: none;" }
-    - remote_form_for( @domain.soa_record, :url => formatted_update_soa_record_path( @domain.soa_record, :js, :domain_id => @domain.id ), :html => { :method => :put } ) do |f|
+    - remote_form_for( @domain.soa_record, :url => update_soa_record_path( @domain.soa_record, :format => :js, :domain_id => @domain.id ), :html => { :method => :put } ) do |f|
       %table.grid
         %tr
           %td Primary name server

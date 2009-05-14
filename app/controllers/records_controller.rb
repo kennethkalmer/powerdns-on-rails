@@ -1,20 +1,20 @@
 class RecordsController < ApplicationController
-  
+
   require_role [ "admin", "owner" ], :unless => "token_user?"
-  
+
   before_filter :load_domain
   before_filter :load_record, :except => [ :create ]
   before_filter :restrict_token_movements, :except => [:create, :update, :destroy]
-  
+
   def create
     @record = @domain.send( "#{params[:record][:type].downcase}_records".to_sym ).new( params[:record] )
-    
-    if current_token && !current_token.allow_new_records? && 
+
+    if current_token && !current_token.allow_new_records? &&
         !current_token.can_add?( @record )
       render :text => 'Token not authorized', :status => 403
       return
     end
-    
+
     if @record.save
       # Give the token the right to undo what it just did
       if current_token
@@ -23,25 +23,33 @@ class RecordsController < ApplicationController
         current_token.save
       end
     end
+
+    respond_to do |wants|
+      wants.js
+    end
   end
-  
+
   def update
     @record = @domain.records.find( params[:id] )
-    
+
     if current_token && !current_token.can_change?( @record )
       render :text => 'Token not authorized', :status => 403
       return
     end
-    
+
     @record.update_attributes( params[:record] )
+
+    respond_to do |wants|
+      wants.js
+    end
   end
-  
+
   def destroy
     if current_token && !current_token.can_remove?( @record )
       render :text => 'Token not authorized', :status => 403
       return
     end
-    
+
     @record.destroy
 
     respond_to do |format|
@@ -49,27 +57,31 @@ class RecordsController < ApplicationController
       format.xml { head :ok }
     end
   end
-  
+
   # Non-CRUD methods
   def update_soa
     if current_token
       render :text => 'Token not authorized', :status => 403
       return
     end
-    
+
     @domain.soa_record.update_attributes( params[:soa] )
     if @domain.soa_record.valid?
       flash.now[:info] = "SOA record updated!"
     else
       flash.now[:error] = "SOA record not updated!"
     end
+
+    respond_to do |wants|
+      wants.js
+    end
   end
-  
+
   protected
-  
+
   def load_domain
     @domain = Domain.find(params[:domain_id], :user => current_user)
-    
+
     if current_token && @domain != current_token.domain
       render :text => 'Token not authorized', :status => 403
       return false
@@ -79,10 +91,10 @@ class RecordsController < ApplicationController
   def load_record
     @record = @domain.records.find( params[:id] )
   end
-  
+
   def restrict_token_movements
     return unless current_token
-    
+
     render :text => 'Token not authorized', :status => 403
     return false
   end

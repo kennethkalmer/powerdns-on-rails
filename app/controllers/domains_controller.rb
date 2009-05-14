@@ -1,7 +1,7 @@
 class DomainsController < ApplicationController
-  
+
   require_role [ "admin", "owner" ], :unless => "token_user?"
-  
+
   # Keep token users in line
   before_filter :restrict_token_movements, :except => :show
 
@@ -16,13 +16,13 @@ class DomainsController < ApplicationController
       @domain = Domain.find( current_token.domain_id, :include => :records )
     end
   end
-  
+
   def restrict_token_movements
     redirect_to domain_path( current_token.domain ) if current_token
   end
-  
+
   public
-  
+
   def index
     respond_to do |wants|
       wants.html do
@@ -34,7 +34,7 @@ class DomainsController < ApplicationController
       end
     end
   end
-  
+
   def show
     if current_user && current_user.admin?
       @users = User.active_owners
@@ -47,19 +47,19 @@ class DomainsController < ApplicationController
       format.xml { render :xml => @domain }
     end
   end
-  
+
   def new
     @domain = Domain.new
     @zone_templates = ZoneTemplate.find( :all, :require_soa => true, :user => current_user )
   end
-  
+
   def create
     @domain = Domain.new( params[:domain] )
 
     unless @domain.slave?
       @zone_template = ZoneTemplate.find(params[:domain][:zone_template_id]) unless params[:domain][:zone_template_id].blank?
       @zone_template ||= ZoneTemplate.find_by_name(params[:domain][:zone_template_name]) unless params[:domain][:zone_template_name].blank?
-    
+
       unless @zone_template.nil?
         begin
           @domain = @zone_template.build( params[:domain][:name] )
@@ -68,14 +68,14 @@ class DomainsController < ApplicationController
         end
       end
     end
-    
+
     @domain.user = current_user unless current_user.has_role?( 'admin' )
 
     respond_to do |format|
       if @domain.save
-        format.html { 
+        format.html {
           flash[:info] = "Domain created"
-          redirect_to domain_path( @domain ) 
+          redirect_to domain_path( @domain )
         }
         format.xml { render :xml => @domain, :status => :created, :location => domain_url( @domain ) }
       else
@@ -87,11 +87,11 @@ class DomainsController < ApplicationController
       end
     end
   end
-  
+
   def edit
     @zone_templates = ZoneTemplate.find(:all, :require_soa => true, :user => current_user)
   end
-  
+
   def update
     if @domain.update_attributes(params[:domain])
       respond_to do |wants|
@@ -111,7 +111,7 @@ class DomainsController < ApplicationController
       end
     end
   end
-  
+
   def destroy
     @domain.destroy
 
@@ -120,14 +120,18 @@ class DomainsController < ApplicationController
       format.xml { render :xml => @domain, :status => :no_content }
     end
   end
-  
+
   # Non-CRUD methods
   def update_note
     @domain.update_attribute( :notes, params[:domain][:notes] )
   end
-  
+
   def change_owner
     @domain.update_attribute :user_id, params[:domain][:user_id]
+
+    respond_to do |wants|
+      wants.js
+    end
   end
 
   # GET: list of macros to apply
@@ -140,7 +144,7 @@ class DomainsController < ApplicationController
         format.html
         format.xml { render :xml => @macros }
       end
-      
+
     else
       @macro = Macro.find( params[:macro_id], :user => current_user )
       @macro.apply_to( @domain )
@@ -152,9 +156,9 @@ class DomainsController < ApplicationController
         }
         format.xml { render :xml => @domain.reload, :status => :accepted, :location => domain_path(@domain) }
       end
-      
+
     end
-    
+
   end
-  
+
 end
