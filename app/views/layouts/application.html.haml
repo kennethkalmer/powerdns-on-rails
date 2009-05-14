@@ -7,13 +7,13 @@
   %body
     #Container
       #Header
-        %h1 
+        %h1
           =t :layout_main_title
       - if current_user
         #search-bar{:style => "display: inline; float: right;"}
           - form_tag( { :controller => :search, :action => :results }, { :method => :get } ) do
             = text_field_tag :q
-            = submit_tag(t :generic_search)
+            = submit_tag( t(:generic_search) )
         #Nav
           %ul
             %li= link_to((t :layout_menu_home), root_url)
@@ -23,7 +23,7 @@
             - if current_user.admin?
               %li= link_to((t :layout_menu_logs), audits_path)
               %li= link_to((t :layout_menu_users), users_path)
-              %li= link_to((t :layout_menu_reports), reports_path) 
+              %li= link_to((t :layout_menu_reports), reports_path)
             %li= link_to((t :layout_menu_logout), logout_path)
 
       #Body

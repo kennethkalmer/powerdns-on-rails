@@ -25,12 +25,12 @@
     %br
     %br
     = t :warning_this_domain_has_owner
-    = link_to prototip_info_icon('database_delete.png', 'delete-zone'), domain_path( @domain ),  :method => :delete, :confirm => t(:confirm_domain_delete, :domain => @domain.name)                
+    = link_to prototip_info_icon('database_delete.png', 'delete-zone'), domain_path( @domain ),  :method => :delete, :confirm => t(:confirm_domain_delete, :domain => @domain.name)
     %br
     or
     %br
     = t :confirm_delete_this_domain
-    = link_to_function prototip_info_icon('cancel.png', 'delete-reset'), "deleteDomain();" 
+    = link_to_function prototip_info_icon('cancel.png', 'delete-reset'), "deleteDomain();"
 
 %h1.underline
   = @domain.name
@@ -164,7 +164,7 @@
             %td &nbsp;
             %td
               = link_to_function(t(:generic_cancel), "hideRecordForm()")
-              = submit_tag(t :generic_create)
+              = submit_tag(t(:generic_create))
 
 :javascript
   function editRecord(id, type) {
@@ -213,7 +213,7 @@
     $('owner-info').toggle();
     $('owner-edit').toggle();
   }
-  
+
   function deleteDomain() {
     $('warning-message').toggle();
     $('delete-link-buffer').toggle();
