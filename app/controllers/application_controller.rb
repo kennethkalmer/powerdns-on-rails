@@ -9,7 +9,7 @@ class ApplicationController < ActionController::Base
   # You can move this into a different controller, if you wish.  This module
   # gives you the require_role helpers, and others.
   include RoleRequirementSystem
-  
+
   # Enable audits
   audit Domain, Record, :parents => { Record => :domain }
   Record.configure_audits
@@ -19,9 +19,9 @@ class ApplicationController < ActionController::Base
   # See ActionController::RequestForgeryProtection for details Uncomment the
   # :secret if you're not using the cookie session store
   protect_from_forgery # :secret => 'dc25a2ea6f551d9218bcb5f35625ed5e'
-  
+
   # All pages require a login...
   before_filter :login_required
-  
+
   protected
 end

@@ -1,10 +1,5 @@
 # You'll need to configure this file for the appropriate environment before
-# you run PowerDNS on Rails. In a production environment, please ensure you
-# change the session_key and session_secret values as well, or risk having your
-# sessions hijacked and system compromized.
-# 
-# For more information visit the following link:
-# http://groups.google.com/group/rubyonrails-core/browse_thread/thread/4d43c1fa2485f3e3?hl=en
+# you run PowerDNS on Rails.
 
 # MySQL development
 development:
@@ -13,8 +8,6 @@ development:
   host: localhost
   username: root
   password:
-  session_key: powerdns-on-rails
-  session_secret: 66eo7n4q549cbtj3ckhoerk9p55ndqlj8rw3lmujz1oapvwsqj9g5d7y2q9c416b
 
 # Warning: The database defined as 'test' will be erased and
 # re-generated from your development database when you run 'rake'.
@@ -25,8 +18,6 @@ test:
   host: localhost
   username: root
   password:
-  session_key: powerdns-on-rails
-  session_secret: 3buztwu7ui3f22rmmzrokb1pd4tzbo1kf3iqrlm4o98vfujg7z4usww4jfbu8zwl
 
 production:
   adapter: mysql
@@ -34,5 +25,3 @@ production:
   host: localhost
   username: root
   password: dont-use-root-here
-  session_key: powerdns-on-rails
-  session_secret: k76uz8mgi52jshrb61vwjnvwhdwa9lmd1l2s98h1u6ni1anlhtaaor6it5m6jmlo
