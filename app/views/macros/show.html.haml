@@ -1,14 +1,9 @@
 %div{ :style => "display:none" }
-  #new-step
-    Add a new step to the macro
-  #edit-macro
-    Update this macro's information
-  #delete-macro
-    Remove this macro
-  #edit-step
-    Update this steps' information
-  #delete-step
-    Remove this step from the macro
+  #new-step=t :help_macro_step_new
+  #edit-macro=t :help_macro_edit
+  #delete-macro=t :help_macro_delete
+  #edit-step=t :help_macro_step_edit
+  #delete-step=t :help_macro_step_delete
 
 %h1.underline
   = @macro.name
@@ -18,71 +13,70 @@
 
 %table.grid
   %tr
-    %td Name
+    %td= t :label_macro_name
     %td &nbsp;
     %td= @macro.name
   %tr
-    %td.top Description
+    %td.top= t :label_macro_description
     %td &nbsp;
     %td= @macro.description
   %tr
-    %td Owner
+    %td= t :label_macro_owner
     %td &nbsp;
     %td= @macro.user.nil? ? '-' : @macro.user.login
   %tr
-    %td Active
+    %td= t :label_macro_active
     %td &nbsp;
-    %td= @macro.active? ? 'Yes' : 'No'
+    %td= @macro.active? ? t(:generic_yes) : t(:generic_no)
 
 %p &nbsp;
 
-%h1.underline Macro Steps
+%h1.underline=t :title_macro_steps
 
-#refresh-note.flash-notice{:style => 'display:none'}
-  You'll need to refresh the page to see position number updates
+#refresh-note.flash-notice{:style => 'display:none'}=t :message_macro_pleas_refres_for_position
 
 %table#steps-table.gridwide
   %tr
-    %td.small Position
-    %td.small Action
-    %td.small Type
-    %td.small Name
-    %td.small Priority
-    %td.small Content
+    %td.small=t :label_macro_step_position
+    %td.small=t :label_macro_step_action
+    %td.small=t :label_macro_step_type
+    %td.small=t :label_macro_step_name
+    %td.small=t :label_macro_step_priority
+    %td.small=t :label_macro_step_content
   = render :partial => @macro.macro_steps
 
 %p &nbsp;
 
 = link_to_function prototip_info_icon('table_add.png', 'new-step'), "displayRecordForm()"
-= link_to_function "New Macro Step", "displayRecordForm()"
+= link_to_function t(:label_macro_step_create_new), "displayRecordForm()"
 
 #record-form-div{ :style => 'display:none' }
   - remote_form_for( [@macro, @macro_step], :html => { :id => 'record-form' } ) do |f|
     = f.hidden_field( :macro_id )
     %table.grid
       %tr
-        %td Position
+        %td= t :label_macro_step_position
         %td= f.text_field :position, :size => 5
       %tr
-        %td Action
+        %td= t :label_macro_step_action
         %td= f.select :action, MacroStep.valid_actions.map { |a| [ a.humanize, a ] }
       %tr
-        %td Type
+        %td= t :label_domain_record_type
         %td
           = f.select :record_type, Macro.record_types.map { |t| [t,t] }
           = observe_field "macro_step_record_type", :function => 'toggleRecordFields(element,value);'
       %tr
-        %td Host
+        %td= t :label_domain_record_host
         %td= f.text_field :name
       %tr.rt-mx{ :style => 'display :none' }
-        %td Priority
+        %td= t :label_domain_record_priority
         %td= f.text_field :prio, :size => 6
       %tr
-        %td Data
+        %td= t :label_domain_record_data
         %td= f.text_field :content
       %tr
-        %td.right= link_to_function 'Cancel', "hideAll()"
-        %td= submit_tag 'Save'
+        %td.right= link_to_function t(:generic_cancel), "hideAll()"
+        %td= submit_tag t(:generic_save)
 
 :javascript
   // Blatantly copied from record templates, needs to be unified

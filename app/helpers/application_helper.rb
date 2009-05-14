@@ -3,7 +3,7 @@ module ApplicationHelper
 
   # Outputs a page title with +@page_title+ appended
   def page_title
-    title = "PowerDNS on Rails"
+    title = t(:layout_main_title)
     title << ' - ' + @page_title unless @page_title.nil?
     title
   end

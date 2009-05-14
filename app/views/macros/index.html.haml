@@ -1,14 +1,12 @@
 %div{ :style => "display: none" }
-  #new-macro
-    Add a new macro
-  #delete-macro
-    Remvoe the macro
+  #new-macro= t :help_macro_new
+  #delete-macro= t :help_macro_delete
 
 %ul.start
   %li
     - link_to new_macro_path do
       = prototip_info_icon('brick_add.png', 'new-macro')
-    = link_to "Add new macro", new_macro_path
+    = link_to t(:label_macro_add), new_macro_path
 
 %h1.underline Macros
 
@@ -16,4 +14,4 @@
   %table
     = render :partial => @macros
 - else
-  %em You currently don't have any macros defined.
+  %em= t :message_macro_not_defined

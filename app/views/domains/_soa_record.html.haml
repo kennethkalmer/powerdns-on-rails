@@ -1,21 +1,21 @@
 %table#soa-form.grid
   %tr
-    %td Primary name server
+    %td= t :label_domain_primary_name_server
     %td= soa_record.primary_ns
   %tr
-    %td Contact
+    %td= t :label_domain_contact
     %td= soa_record.contact
   %tr
-    %td Refresh
+    %td= t :label_domain_refresh
     %td= soa_record.refresh
   %tr
-    %td Retry
+    %td= t :label_domain_retry
     %td= soa_record.retry
   %tr
-    %td Expire
+    %td= t :label_domain_expire
     %td= soa_record.expire
   %tr
-    %td Minimum
+    %td= t :label_domain_minimum
     %td= soa_record.minimum
 
 - if current_user
@@ -23,38 +23,38 @@
     - remote_form_for( @domain.soa_record, :url => update_soa_record_path( @domain.soa_record, :format => :js, :domain_id => @domain.id ), :html => { :method => :put } ) do |f|
       %table.grid
         %tr
-          %td Primary name server
+          %td= t :label_domain_primary_name_server
           %td= f.text_field :primary_ns
           %td= prototip_help_icon('help-primary-ns')
         %tr
-          %td Contact
+          %td= t :label_domain_contact
           %td= f.text_field :contact
           %td= prototip_help_icon('help-contact')
         %tr
-          %td Refresh
+          %td= t :label_domain_refresh
           %td
             = f.text_field :refresh, :size => 6
             = prototip_help_icon('help-refresh')
           %td &nbsp;
         %tr
-          %td Retry
+          %td= t :label_domain_retry
           %td
             = f.text_field :retry, :size => 6
             = prototip_help_icon('help-retry')
           %td &nbsp;
         %tr
-          %td Expire
+          %td= t :label_domain_expire
           %td
             = f.text_field :expire, :size => 6
             = prototip_help_icon('help-expire') 
           %td &nbsp;
         %tr
-          %td Minimum
+          %td= t :label_domain_minimum
           %td
             = f.text_field :minimum, :size => 6
             = prototip_help_icon('help-minimum')
           %td &nbsp;
         %tr
-          %td.right= link_to_function "Cancel", "showSOAForm()"
-          %td= submit_tag "Update"
+          %td.right= link_to_function t(:generic_cancel), "showSOAForm()"
+          %td= submit_tag t(:generic_update)
           %td &nbsp;

@@ -1,5 +1,4 @@
-%h1
-  Please login to continue
+%h1= t :title_session_login_to_continue
 .flash-warning
   - form_tag session_path do
     %table
@@ -19,6 +18,6 @@
         %td
           &nbsp;
         %td
-          = submit_tag 'Log in'
+          = submit_tag t(:label_session_log_in)
           &nbsp;
-          .right{:style => "display: inline"}= link_to "Forgot my password"
+          .right{:style => "display: inline"}= link_to t(:label_session_forgot_password)

@@ -7,7 +7,7 @@ module PrototipHelper
     html << javascript_tag( :defer => 'defer' ) do
       <<-EOF
         new Tip('proto-#{dom_id}', $('#{dom_id}'), {
-        title: 'Quick Help',
+        title: '#{t(:title_helper_quick_help)}',
         stem: 'leftTop',
         delay: true,
         hideAfter: 2,
@@ -24,7 +24,7 @@ module PrototipHelper
     html << javascript_tag( :defer => 'defer' ) do
       <<-EOF
         new Tip( 'proto-info-#{dom_id}', $('#{dom_id}'), {
-        title: 'Quick Info',
+        title: '#{t(:title_helper_quick_info)}',
         delay: false,
         hideAfter: 2,
         hook: { tip: 'leftMiddle', mouse: true },

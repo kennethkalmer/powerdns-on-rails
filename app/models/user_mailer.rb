@@ -1,7 +1,7 @@
 class UserMailer < ActionMailer::Base
   def signup_notification(user)
     setup_email(user)
-    @subject    += 'Please activate your new account'
+    @subject    += I18n.t(:message_user_activate_account)
   
     @body[:url]  = "http://YOURSITE/activate/#{user.activation_code}"
   
@@ -9,7 +9,7 @@ class UserMailer < ActionMailer::Base
   
   def activation(user)
     setup_email(user)
-    @subject    += 'Your account has been activated!'
+    @subject    += I18n.t(:message_user_activated)
     @body[:url]  = "http://YOURSITE/"
   end
   

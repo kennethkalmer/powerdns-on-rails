@@ -11,7 +11,7 @@ class RecordsController < ApplicationController
 
     if current_token && !current_token.allow_new_records? &&
         !current_token.can_add?( @record )
-      render :text => 'Token not authorized', :status => 403
+      render :text => t(:message_token_not_authorized), :status => 403
       return
     end
 
@@ -33,7 +33,7 @@ class RecordsController < ApplicationController
     @record = @domain.records.find( params[:id] )
 
     if current_token && !current_token.can_change?( @record )
-      render :text => 'Token not authorized', :status => 403
+      render :text => t(:message_token_not_authorized), :status => 403
       return
     end
 
@@ -46,7 +46,7 @@ class RecordsController < ApplicationController
 
   def destroy
     if current_token && !current_token.can_remove?( @record )
-      render :text => 'Token not authorized', :status => 403
+      render :text => t(:message_token_not_authorized), :status => 403
       return
     end
 
@@ -61,15 +61,15 @@ class RecordsController < ApplicationController
   # Non-CRUD methods
   def update_soa
     if current_token
-      render :text => 'Token not authorized', :status => 403
+      render :text => t(:message_token_not_authorized), :status => 403
       return
     end
 
     @domain.soa_record.update_attributes( params[:soa] )
     if @domain.soa_record.valid?
-      flash.now[:info] = "SOA record updated!"
+      flash.now[:info] = t(:message_record_soa_updated)
     else
-      flash.now[:error] = "SOA record not updated!"
+      flash.now[:error] = t(:message_record_soa_not_updated)
     end
 
     respond_to do |wants|
@@ -83,7 +83,7 @@ class RecordsController < ApplicationController
     @domain = Domain.find(params[:domain_id], :user => current_user)
 
     if current_token && @domain != current_token.domain
-      render :text => 'Token not authorized', :status => 403
+      render :text => t(:message_token_not_authorized), :status => 403
       return false
     end
   end
@@ -94,8 +94,8 @@ class RecordsController < ApplicationController
 
   def restrict_token_movements
     return unless current_token
-
-    render :text => 'Token not authorized', :status => 403
+    
+    render :text => t(:message_token_not_authorized), :status => 403
     return false
   end
 end

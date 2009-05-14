@@ -73,9 +73,9 @@ class DomainsController < ApplicationController
 
     respond_to do |format|
       if @domain.save
-        format.html {
-          flash[:info] = "Domain created"
-          redirect_to domain_path( @domain )
+        format.html { 
+          flash[:info] = t(:message_domain_created)
+          redirect_to domain_path( @domain ) 
         }
         format.xml { render :xml => @domain, :status => :created, :location => domain_url( @domain ) }
       else
@@ -96,7 +96,7 @@ class DomainsController < ApplicationController
     if @domain.update_attributes(params[:domain])
       respond_to do |wants|
         wants.html do
-          flash[:info] = "Domain updated"
+          flash[:info] = t(:message_domain_updated)
           redirect_to domain_path(@domain)
         end
         wants.xml { render :xml => @domain, :location => domain_url(@domain) }
@@ -151,7 +151,7 @@ class DomainsController < ApplicationController
 
       respond_to do |format|
         format.html {
-          flash[:notice] = "Macro applied to domain"
+          flash[:notice] = t(:message_domain_macro_applied)
           redirect_to domain_path(@domain)
         }
         format.xml { render :xml => @domain.reload, :status => :accepted, :location => domain_path(@domain) }

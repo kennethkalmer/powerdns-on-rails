@@ -1,14 +1,14 @@
-%h1.underline= "Results for \"#{params[:q]}\""
+%h1.underline= t :title_report_result_for, :who => params[:q]
 %br/
 
 - if @results.empty?
-  %strong No users found
+  %strong= t :message_user_not_found
 - else
   %table
-    %th Login 
-    %th Domains
-    %th Email
-    %th Role
+    %th= t :label_user_login
+    %th= t :label_user_domains
+    %th= t :label_user_email
+    %th= t :label_user_role
     = render :partial => 'user', :collection => @results
 
   = will_paginate @results

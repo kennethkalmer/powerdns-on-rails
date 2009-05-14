@@ -1,15 +1,13 @@
 %div{ :style => "display: none" }
-  #new-zone
-    Adds a new domain
-  #delete-zone
-    Delete this domain from the system
-
+  #new-zone= t :help_adds_new_domain
+  #delete-zone= t :help_delete_domain
+  
 %ul.start
   %li
     = link_to prototip_info_icon('database_add.png', 'new-zone'), new_domain_path
-    = link_to "Add new zone", new_domain_path
+    = link_to t(:label_add_new_zone), new_domain_path
 
-%h1.underline Domains
+%h1.underline= t :title_domains_list
 
 %table
   = render :partial => 'domain', :collection => @domains

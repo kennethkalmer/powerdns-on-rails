@@ -1,16 +1,19 @@
-%h1.underline Latest 3 domains
+%h1.underline
+  =t :label_last_x_domains, :value => 3
 
 %table
   = render :partial => '/domains/domain', :collection => @latest_domains
 
 &nbsp;
-%h1 Search
+%h1
+  = t :generic_search
 
 - form_tag( { :controller => :search, :action => :results }, { :method => :get } ) do
   = text_field_tag :q
-  = submit_tag "Search"
+  = submit_tag t :generic_search
 
 &nbsp;
-%h1.underline New domain
+%h1.underline 
+  = t :label_new_domain
 
 = render :partial => '/domains/new'

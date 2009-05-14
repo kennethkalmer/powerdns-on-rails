@@ -1,7 +1,7 @@
 %h2.underline
   = @user.login
-  has
-  = pluralize @user.domains.count, 'domain'
+  = t :label_user_has
+  = t :label_lc_domain, :count => @user.domains.count
 
 #domains.padded
   = render :partial => '/domains/domain' , :collection => @user.domains

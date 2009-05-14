@@ -1,46 +1,37 @@
-%h1.underline Update zone
+%h1.underline=t :title_update_zone
 
 / These divs contain the help information.
 %div{ :style => 'display: none' }
-  #help-domain
-    This is the fully qualified domain name (FQDN) of the domain.
-  #help-type
-    PowerDNS supports NATIVE, MASTER and SLAVE domain types. NATIVE domains will
-    cause PowerDNS to keep quiet on changes, MASTER will have PowerDNS notify the
-    slaves when changes are made to the records, and SLAVE will create a
-    read-only domain where PowerDNS will pull changes from the specified master
-    server.
-  #help-master
-    The IP address of the authorative (or master) DNS server for this domain.
-  #help-ttl
-    The default TTL for new records created on this domain. Changing this value
-    doesn't affect existing records.
+  #help-domain=t :help_domain_fqdn
+  #help-type=t :help_domain_type
+  #help-master=t :help_domain_master
+  #help-ttl=t :help_ttl
 
 - form_for(@domain) do |f|
   = error_messages_for :domain
   %p &nbsp;
   %table.grid
     %tr
-      %td{:width => "300"} Domain name
+      %td{:width => "300"}=t :label_domain_name
       %td= f.text_field :name
       %td= prototip_help_icon('help-domain')
     %tr
-      %td Type
+      %td= t :label_domain_type
       %td
         = f.select :type, ['NATIVE','MASTER','SLAVE']
         = observe_field :domain_type, :function => "if(value == \"SLAVE\") { $('master-address').show(); } else { $('master-address').hide(); }"
       %td= prototip_help_icon('help-type')
     %tr#master-address{ :style => 'display: none' }
-      %td Master Address
+      %td= t :label_domain_master_address
       %td= f.text_field :master
       %td= prototip_help_icon('help-master')
     %tr
-      %td Default TTL
+      %td= t :label_default_ttl
       %td= f.text_field :ttl, :size => 8
       %td= prototip_help_icon('help-ttl')
   %table.grid
     %tr
       %td.right{:width => "300"}= link_to_cancel @domain
-      %td= submit_tag "Save"
+      %td= submit_tag t(:generic_save)
       %td &nbsp;
 

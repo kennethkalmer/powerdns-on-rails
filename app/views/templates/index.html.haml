@@ -1,19 +1,16 @@
 %h1.underline Zone Templates
 
 %div{ :style => "display: none;" }
-  #new-template
-    Add a new zone template
-  #edit-template
-    Edit this zone template's information
-  #delete-template
-    Delete this zone template
-  #missing-soa
-    Zone templates without SOA records cannot be used when creating new zones.
+  #new-template= t :help_template_zone_new
+  #edit-template= t :help_template_zone_edit
+  #delete-template= t :help_template_zone_delete
+  #missing-soa= t :help_template_zone_soa_missing
+    
 
 %table.grid
   %tr
     %td
       = link_to prototip_info_icon('table_add.png', 'new-template'), new_zone_template_path
-      = link_to 'New template', new_zone_template_path
+      = link_to t(:label_template_create_new), new_zone_template_path
     %td &nbsp;
   = render :partial => 'zone_template', :collection => @zone_templates

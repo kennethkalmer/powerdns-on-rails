@@ -1,14 +1,14 @@
-- @page_title = "Macros for #{@domain.name}"
+- @page_title = t :title_macro_for, :domain => @domain.name
 
-%h1.underline Apply macro
+%h1.underline= t :title_macro_apply
 
-%p Macro's provide a convenient way to update a domain with multiple, predefined changes.
+%p= t :text_macro_description
 
 - form_tag( apply_macro_domain_path( @domain ) ) do
   %table.grid
     %tr
-      %td Macro
+      %td= t :label_macro_sign
       %td= select_tag :macro_id, options_for_select( @macros.map { |m| [ m.name, m.id ] } )
     %tr
-      %td.right= link_to "Cancel", domain_path( @domain )
-      %td= submit_tag "Apply macro"
+      %td.right= link_to t(:generic_cancel), domain_path( @domain )
+      %td= submit_tag t(:label_macro_apply)

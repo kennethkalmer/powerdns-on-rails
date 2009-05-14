@@ -1,27 +1,26 @@
 %h1.underline 
-  = @zone_template.new_record? ? "New Zone Template" : "Update Zone Template"
+  = @zone_template.new_record? ? t("title_template_editing.new") : t("title_template_editing.update")
 
 %div{:style => "display: none;"}
-  #zone-name
-    The name by which our zone templates will be known.
+  #zone-name= t :help_template_name
   #zone-ttl
 
 - form_for( @zone_template ) do |f|
   = error_messages_for :zone_template
   %table
     %tr
-      %td Name
+      %td= t :label_template_zone_name
       %td &nbsp;
       %td= f.text_field :name
     %tr
-      %td TTL
+      %td= t :label_template_zone_ttl
       %td &nbsp;
       %td= f.text_field :ttl, :size => 6
     - unless @users.nil? || @users.empty?
       %tr
-        %td Owner
+        %td= t :label_template_zone_owner
         %td &nbsp;
         %td= f.collection_select :user_id, @users, :id, :login, :include_blank => true
     %tr
       %td= link_to_cancel @zone_template
-      %td= submit_tag 'Save'
+      %td= submit_tag t(:generic_save)
