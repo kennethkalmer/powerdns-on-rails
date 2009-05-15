@@ -2,7 +2,7 @@ class MacroStep < ActiveRecord::Base
 
   @@valid_actions = %w{ create update remove }
   cattr_reader :valid_actions
-  
+
   validates_presence_of :macro_id
   validates_presence_of :content, :if => :content_required?
   validates_inclusion_of :action, :in => self.valid_actions
@@ -30,7 +30,7 @@ class MacroStep < ActiveRecord::Base
 
     record_class.new( attrs )
   end
-  
+
   # Here we perform some magic to inherit the validations from our parent
   # #Record (record_type)
   def validate
@@ -42,6 +42,11 @@ class MacroStep < ActiveRecord::Base
       next if k == "domain_id" || k == "ttl"
       next if k == "content" || k == "prio" unless content_required?
 
+      # Since we don't have a domain, blank name validations will
+      # prevent pretty useful (and dangerous) macro steps from being
+      # created. This check offsets that, but might be flawed.
+      next if k == "name" && v == I18n.t('activerecord.errors.messages.blank')
+
       self.errors.add( k, v )
     end unless record.valid?
   end
@@ -49,5 +54,5 @@ class MacroStep < ActiveRecord::Base
   def content_required?
     self.action != 'remove'
   end
-  
+
 end
