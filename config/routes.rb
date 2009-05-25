@@ -17,7 +17,7 @@ ActionController::Routing::Routes.draw do |map|
 
   # Sample resource route with sub-resources:
   #   map.resources :products, :has_many => [ :comments, :sales ], :has_one => :seller
-  
+
   # Sample resource route with more complex sub-resources
   #   map.resources :products do |products|
   #     products.resources :comments
@@ -34,16 +34,18 @@ ActionController::Routing::Routes.draw do |map|
   # map.root :controller => "welcome"
 
   # See how all your routes lay out with "rake routes"
-  
+
   map.root :controller => 'dashboard'
-  
+
   # RESTful zones and records
-  map.resources :domains, :has_many => :records, :member => { 
-    :update_note => :put, :change_owner => :put, :apply_macro => [:get,:post]
+  map.resources :domains, :has_many => :records, :member => {
+    :update_note => :put,
+    :change_owner => :put,
+    :apply_macro => [:get,:post]
   }
   map.resources :records, :member => { :update_soa => :put }
   map.resources :soa, :controller => 'records'
-  
+
   # RESTful templates
   map.resources :zone_templates, :controller => 'templates'
   map.resources :record_templates
@@ -52,15 +54,15 @@ ActionController::Routing::Routes.draw do |map|
   map.resources :macros do |macro|
     macro.resources :macro_steps
   end
-  
+
   # Audits
   map.audits '/audits/:action/:id', :controller => 'audits', :action => 'index'
   map.reports '/reports/:action/:id' , :controller => 'reports' , :action => 'index'
-  
+
   # AuthTokens
   map.resource :auth_token
   map.token '/token/:token', :controller => 'sessions', :action => 'token'
-  
+
   # Authentication routes
   map.resources :users, :member => { :suspend   => :put,
                                      :unsuspend => :put,

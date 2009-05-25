@@ -225,15 +225,14 @@ describe Domain, "when serializing to XML" do
 
   it "should not show the user_id" do
     xml = @domain.to_xml
-    xml.should_not match(/<user[\-_]id>/) #have_tag('user-id')
-    #xml.should_not have_tag('user_id')
+    xml.should_not match(/<user[\-_]id>/)
   end
 
-  it "should include records" do
+  it "should not include records by default" do
     xml = @domain.to_xml
 
     xml.should match(/<name>#{@domain.name}<\/name>/)
-    xml.should match(/<records[^>]*>/)
+    xml.should_not match(/<records[^>]*>/)
   end
 
   it "should preserve original options passed" do

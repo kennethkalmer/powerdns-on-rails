@@ -44,7 +44,7 @@ class DomainsController < ApplicationController
       format.html {
         @record = @domain.records.new
       }
-      format.xml { render :xml => @domain }
+      format.xml { render :xml => @domain.to_xml(:include => [:records]) }
     end
   end
 
@@ -77,7 +77,7 @@ class DomainsController < ApplicationController
           flash[:info] = t(:message_domain_created)
           redirect_to domain_path( @domain ) 
         }
-        format.xml { render :xml => @domain, :status => :created, :location => domain_url( @domain ) }
+        format.xml { render :xml => @domain.to_xml(:include => [:records]), :status => :created, :location => domain_url( @domain ) }
       else
         format.html {
           @zone_templates = ZoneTemplate.find( :all )
@@ -99,7 +99,7 @@ class DomainsController < ApplicationController
           flash[:info] = t(:message_domain_updated)
           redirect_to domain_path(@domain)
         end
-        wants.xml { render :xml => @domain, :location => domain_url(@domain) }
+        wants.xml { render :xml => @domain.to_xml(:include => [:records]), :location => domain_url(@domain) }
       end
     else
       respond_to do |wants|
@@ -117,7 +117,7 @@ class DomainsController < ApplicationController
 
     respond_to do |format|
       format.html { redirect_to :action => 'index' }
-      format.xml { render :xml => @domain, :status => :no_content }
+      format.xml { render :xml => @domain.to_xml(:include => [:records]), :status => :no_content }
     end
   end
 
@@ -154,7 +154,7 @@ class DomainsController < ApplicationController
           flash[:notice] = t(:message_domain_macro_applied)
           redirect_to domain_path(@domain)
         }
-        format.xml { render :xml => @domain.reload, :status => :accepted, :location => domain_path(@domain) }
+        format.xml { render :xml => @domain.reload.to_xml(:include => [:records]), :status => :accepted, :location => domain_path(@domain) }
       end
 
     end
