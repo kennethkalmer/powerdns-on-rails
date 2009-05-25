@@ -4,11 +4,12 @@ module ActiveSupport
     end
 
     # Converts a Ruby object into a JSON string.
-    def self.encode(value, options = {})
+    def self.encode(value, options = nil)
+      options ||= {}
       seen = (options[:seen] ||= [])
       raise CircularReferenceError, 'object references itself' if seen.include?(value)
       seen << value
-      value.send(:to_json, options)
+      value.rails_to_json(options)
     ensure
       seen.pop
     end

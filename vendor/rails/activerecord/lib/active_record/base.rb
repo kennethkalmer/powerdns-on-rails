@@ -687,14 +687,9 @@ module ActiveRecord #:nodoc:
       #   Person.exists?(['name LIKE ?', "%#{query}%"])
       #   Person.exists?
       def exists?(id_or_conditions = {})
-        connection.select_all(
-          construct_finder_sql(
-            :select     => "#{quoted_table_name}.#{primary_key}",
-            :conditions => expand_id_conditions(id_or_conditions),
-            :limit      => 1
-          ),
-          "#{name} Exists"
-        ).size > 0
+        find_initial(
+          :select => "#{quoted_table_name}.#{primary_key}",
+          :conditions => expand_id_conditions(id_or_conditions)) ? true : false
       end
 
       # Creates an object (or multiple objects) and saves it to the database, if validations pass.
@@ -736,12 +731,12 @@ module ActiveRecord #:nodoc:
       # ==== Parameters
       #
       # * +id+ - This should be the id or an array of ids to be updated.
-      # * +attributes+ - This should be a Hash of attributes to be set on the object, or an array of Hashes.
+      # * +attributes+ - This should be a hash of attributes to be set on the object, or an array of hashes.
       #
       # ==== Examples
       #
       #   # Updating one record:
-      #   Person.update(15, { :user_name => 'Samuel', :group => 'expert' })
+      #   Person.update(15, :user_name => 'Samuel', :group => 'expert')
       #
       #   # Updating multiple records:
       #   people = { 1 => { "first_name" => "David" }, 2 => { "first_name" => "Jeremy" } }
@@ -2168,7 +2163,7 @@ module ActiveRecord #:nodoc:
         #     default_scope :order => 'last_name, first_name'
         #   end
         def default_scope(options = {})
-          self.default_scoping << { :find => options, :create => (options.is_a?(Hash) && options.has_key?(:conditions)) ? options[:conditions] : {} }
+          self.default_scoping << { :find => options, :create => options[:conditions].is_a?(Hash) ? options[:conditions] : {} }
         end
 
         # Test whether the given method and optional key are scoped.
@@ -2228,12 +2223,12 @@ module ActiveRecord #:nodoc:
         #   ["name='%s' and group_id='%s'", "foo'bar", 4]  returns  "name='foo''bar' and group_id='4'"
         #   { :name => "foo'bar", :group_id => 4 }  returns "name='foo''bar' and group_id='4'"
         #   "name='foo''bar' and group_id='4'" returns "name='foo''bar' and group_id='4'"
-        def sanitize_sql_for_conditions(condition)
+        def sanitize_sql_for_conditions(condition, table_name = quoted_table_name)
           return nil if condition.blank?
 
           case condition
             when Array; sanitize_sql_array(condition)
-            when Hash;  sanitize_sql_hash_for_conditions(condition)
+            when Hash;  sanitize_sql_hash_for_conditions(condition, table_name)
             else        condition
           end
         end
