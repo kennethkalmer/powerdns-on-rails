@@ -23,7 +23,7 @@
 class Macro < ActiveRecord::Base
 
   scope_user
-  
+
   validates_presence_of :name
   validates_uniqueness_of :name
 
@@ -35,7 +35,7 @@ class Macro < ActiveRecord::Base
     def record_types
       Record.record_types - ['SOA']
     end
-    
+
   end
 
   # Apply the macro instance to the provided domain
@@ -65,23 +65,29 @@ class Macro < ActiveRecord::Base
   end
 
   def macro_change( domain, step )
+    changed = false
+
     domain.records.find(:all, :conditions => { :type => step.record_type }).each do |record|
       next unless record.shortname == step.name
 
       record.content = step.content
       record.prio = step.prio if record.is_a?( MX )
       record.save
+
+      changed = true
     end
+
+    macro_create( domain, step ) unless changed
   end
 
   # Apply the remove macro to the domain
   def macro_remove( domain, step )
     domain.records.find(:all, :conditions => { :type => step.record_type }).each do |record|
-      
+
       # wild card or shortname match
       record.destroy if step.name == '*' || record.shortname == step.name
     end
   end
-  
+
 end
 

@@ -18,7 +18,7 @@ describe Macro, "when new" do
   it "should be disabled by default" do
     @macro.should_not be_active
   end
-  
+
 end
 
 describe Macro, "when applied" do
@@ -32,13 +32,15 @@ describe Macro, "when applied" do
     @step_update = Factory(:macro_step_change, :macro => @macro, :record_type => 'A', :name => 'www', :content => '127.0.0.9')
     @step_remove_target = Factory(:macro_step_remove, :macro => @macro, :record_type => 'A', :name => 'mail')
     @step_remove_wild = Factory(:macro_step_remove, :macro => @macro, :record_type => 'MX', :name => '*')
+
+    @step_update_create = Factory(:macro_step_change, :macro => @macro, :record_type => 'A', :name => 'admin', :content => '127.0.0.10')
   end
 
   it "should create new RR's" do
     @macro.apply_to( @target )
     @target.a_records.map(&:shortname).should include('foo')
   end
-  
+
   it "should update existing RR's" do
     rr = records(:example_com_a_www)
 
@@ -55,7 +57,7 @@ describe Macro, "when applied" do
 
     lambda { rr.reload }.should raise_error( ActiveRecord::RecordNotFound )
   end
-    
+
   it "should remove existing RR's (wild card)" do
     @target.mx_records(true).should_not be_empty
 
@@ -63,6 +65,11 @@ describe Macro, "when applied" do
 
     @target.mx_records(true).should be_empty
   end
-  
+
+  it "should create RR's that were supposed to be updated but doesn't exist" do
+    @macro.apply_to( @target )
+
+    @target.reload.a_records.detect { |a| a.name =~ /^admin/ }.should_not be_nil
+  end
 end
 

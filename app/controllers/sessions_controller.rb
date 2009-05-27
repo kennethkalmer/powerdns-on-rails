@@ -3,6 +3,10 @@ class SessionsController < ApplicationController
 
   skip_before_filter :login_required, :except => [ :destroy ]
 
+  def show
+    render :action => :new
+  end
+
   # render new.rhtml
   def new
   end
