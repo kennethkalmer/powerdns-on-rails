@@ -1,7 +1,6 @@
 # Did we fail or succeed?
 if @macro_step.new_record?
   # fail!
-#  page.insert_html :top, 'record-form-div', error_messages_for( :macro_step )
   page.replace_html 'record-form-error', error_messages_for(:macro_step)
   page.show 'record-form-error'
   page.call 'showflash', 'error', flash[:error]
