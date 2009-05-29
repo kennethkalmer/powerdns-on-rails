@@ -122,24 +122,21 @@
     #record-form-div{ :style => "display: none;" }
       - remote_form_for( :record, @record, :url => domain_records_path( @domain, :format => :js ), :html => { :id => 'record-form' } ) do |f|
         %table
-          %tr
+          %tr.all
             %td= t :label_domain_record_type
             %td
               = select_record_type( f )
               = observe_field "record_type", :function => "toggleRecordFields(element,value)"
-          %tr
+          %tr.all
             %td= t :label_domain_record_host
             %td= f.text_field :name
-          %tr
+          %tr.all
             %td= t :label_domain_record_ttl
             %td= f.text_field :ttl, :size => 6
-          %tr.rt-mx{ :style => 'display :none' }
+          %tr.rt-mx.rt-srv{ :style => 'display :none' }
             %td= t :label_domain_record_priority
             %td= f.text_field :prio, :size => 6
-          %tr.rt-srv{ :style => 'display :none' }
-            %td= t :label_domain_record_priority
-            %td= f.text_field :prio, :size => 6
-          %tr
+          %tr.all
             %td= t :label_domain_record_data
             %td= f.text_field :content
           %tr.rt-soa{ :style => 'display :none' }
@@ -160,7 +157,7 @@
           %tr.rt-soa{ :style => 'display :none' }
             %td= t :label_domain_minimum
             %td= f.text_field :minimum, :size => 6
-          %tr
+          %tr.all
             %td &nbsp;
             %td
               = link_to_function(t(:generic_cancel), "hideRecordForm()")
@@ -187,10 +184,10 @@
   function toggleRecordFields(e,v){
     t = 'rt-' + v.toLowerCase();
     $('record-form-div').select('tr').each(function(r){
-      if(r.className && r.className != t)
-        r.hide();
-      else
+      if(r.hasClassName(t) || r.hasClassName('all'))
         r.show();
+      else
+        r.hide();
     });
   }
   function showNote() {
