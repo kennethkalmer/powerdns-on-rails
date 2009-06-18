@@ -1,6 +1,6 @@
 class MacroStep < ActiveRecord::Base
 
-  @@valid_actions = %w{ create update remove }
+  @@valid_actions = %w{ create update remove create_update }
   cattr_reader :valid_actions
 
   validates_presence_of :macro_id

@@ -33,7 +33,7 @@ describe Macro, "when applied" do
     @step_remove_target = Factory(:macro_step_remove, :macro => @macro, :record_type => 'A', :name => 'mail')
     @step_remove_wild = Factory(:macro_step_remove, :macro => @macro, :record_type => 'MX', :name => '*')
 
-    @step_update_create = Factory(:macro_step_change, :macro => @macro, :record_type => 'A', :name => 'admin', :content => '127.0.0.10')
+    @step_update2 = Factory(:macro_step_change, :macro => @macro, :record_type => 'A', :name => 'admin', :content => '127.0.0.10')
   end
 
   it "should create new RR's" do
@@ -66,10 +66,10 @@ describe Macro, "when applied" do
     @target.mx_records(true).should be_empty
   end
 
-  it "should create RR's that were supposed to be updated but doesn't exist" do
+  it "should not create RR's that were supposed to be updated but doesn't exist" do
     @macro.apply_to( @target )
 
-    @target.reload.a_records.detect { |a| a.name =~ /^admin/ }.should_not be_nil
+    @target.reload.a_records.detect { |a| a.name =~ /^admin/ }.should be_nil
   end
 end
 

@@ -49,6 +49,8 @@ class Macro < ActiveRecord::Base
           macro_change( domain, step )
         elsif step.action == 'remove'
           macro_remove( domain, step )
+        elsif step.action == 'create_update'
+          macro_create_update( domain, step )
         else
           raise ArgumentError, "Cannot process action: #{step.action} (#{step.inspect})"
         end
@@ -70,14 +72,20 @@ class Macro < ActiveRecord::Base
     domain.records.find(:all, :conditions => { :type => step.record_type }).each do |record|
       next unless record.shortname == step.name
 
-      record.content = step.content
+      record.content = step.content.gsub('%ZONE%', domain.name)
       record.prio = step.prio if record.is_a?( MX )
       record.save
 
       changed = true
     end
 
-    macro_create( domain, step ) unless changed
+    changed
+  end
+
+  def macro_create_update( domain, step )
+    unless macro_change( domain, step )
+      macro_create( domain, step )
+    end
   end
 
   # Apply the remove macro to the domain

@@ -4,6 +4,9 @@
   #delete-macro=t :help_macro_delete
   #edit-step=t :help_macro_step_edit
   #delete-step=t :help_macro_step_delete
+  #actions=t :help_macro_actions
+  #content-field=t :help_macro_content_field
+  #name-field=t :help_macro_name_field
 
 %h1.underline
   = @macro.name
@@ -58,7 +61,9 @@
         %td= f.text_field :position, :size => 5
       %tr
         %td= t :label_macro_step_action
-        %td= f.select :action, MacroStep.valid_actions.map { |a| [ a.humanize, a ] }
+        %td
+          = f.select :action, MacroStep.valid_actions.map { |a| [ a.humanize, a ] }
+          = prototip_info_icon( 'help.png', 'actions' )
       %tr
         %td= t :label_domain_record_type
         %td
@@ -66,13 +71,17 @@
           = observe_field "macro_step_record_type", :function => 'toggleRecordFields(element,value);'
       %tr
         %td= t :label_domain_record_host
-        %td= f.text_field :name
+        %td
+          = f.text_field :name
+          = prototip_info_icon( 'help.png', 'name-field' )
       %tr.rt-mx{ :style => 'display :none' }
         %td= t :label_domain_record_priority
         %td= f.text_field :prio, :size => 6
       %tr
         %td= t :label_domain_record_data
-        %td= f.text_field :content
+        %td
+          = f.text_field :content
+          = prototip_info_icon( 'help.png', 'content-field' )
       %tr
         %td.right= link_to_function t(:generic_cancel), "hideAll()"
         %td= submit_tag t(:generic_save)
