@@ -30,11 +30,11 @@
       %td.top= t :label_user_role_sign
       %td
         = f.radio_button :admin, true
-        = t "label_user_role.admin"
+        = t "label_user_roles.admin"
         = prototip_help_icon('admin-user')
         %br
         = f.radio_button :admin, false
-        = t "label_user_role.domain_owner"
+        = t "label_user_roles.domain_owner"
         = prototip_help_icon('domain-owner')
         %br
         = check_box_tag 'token_user'
