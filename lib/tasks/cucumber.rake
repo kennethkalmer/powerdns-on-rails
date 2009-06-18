@@ -1,20 +1,16 @@
-$:.unshift(RAILS_ROOT + '/vendor/plugins/cucumber/lib')
+$LOAD_PATH.unshift(RAILS_ROOT + '/vendor/plugins/cucumber/lib') if File.directory?(RAILS_ROOT + '/vendor/plugins/cucumber/lib')
+
 begin
   require 'cucumber/rake/task'
 
   Cucumber::Rake::Task.new(:features) do |t|
-    t.cucumber_opts = "--format pretty"
+    t.fork = true
+    t.cucumber_opts = ['--format', (ENV['CUCUMBER_FORMAT'] || 'pretty')]
   end
   task :features => 'db:test:prepare'
 rescue LoadError
-  # Do nothing but warn
-  message = [
-             "You don't have the cucumber gem installed.",
-             "Unless you're developing patches for powerdns-on-rails, you can ignore this message.",
-             "To learn more about cucumber, please visit the URL below",
-             "http://github.com/aslakhellesoy/cucumber/wikis",
-             ""
-  ]
-  message.each { |l| $stderr.write( l + "\n" ) }
+  desc 'Cucumber rake task not available'
+  task :features do
+    abort 'Cucumber rake task is not available. Be sure to install cucumber as a gem or plugin'
+  end
 end
-
