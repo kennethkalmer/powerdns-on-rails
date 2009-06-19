@@ -1,3 +1,5 @@
+require 'scoped_finders'
+
 # = Overview
 #
 # Macros are used by PowerDNS on Rails to apply a whole sequence of updates to a

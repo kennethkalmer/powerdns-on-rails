@@ -1,4 +1,4 @@
-# See #Domain
+require 'scoped_finders'
 
 # = Domain
 #
