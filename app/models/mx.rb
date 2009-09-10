@@ -20,7 +20,7 @@ class MX < Record
   
   # Only accept valid IPv4 addresses
   def validate_with_mx
-    if content =~ /^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/
+    if content =~ /\A(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\z/
       errors.add('content', I18n.t(:message_domain_mx_cannot_be_ip))
     end
     validate_without_mx

@@ -36,7 +36,7 @@ class Domain < ActiveRecord::Base
   validates_presence_of :master, :if => :slave?
   validates_format_of :master, :if => :slave?,
     :allow_blank => true,
-    :with => /^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/
+    :with => /\A(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\z/
 
   # Disable single table inheritence (STI)
   set_inheritance_column 'not_used_here'

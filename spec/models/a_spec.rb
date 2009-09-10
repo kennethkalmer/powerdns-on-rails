@@ -29,6 +29,11 @@ describe A, "when new" do
     @a.should have(:no).error_on(:content)
   end
   
+  it "should not accept new lines in content" do 
+    @a.content = "10.1.1.1\nHELLO WORLD"
+    @a.should have(1).error_on(:content)
+  end
+  
   it "should not act as a CNAME" do
     @a.content = 'google.com'
     @a.should have(1).error_on(:content)
