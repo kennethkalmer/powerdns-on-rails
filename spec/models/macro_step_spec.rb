@@ -111,8 +111,6 @@ end
 
 
 describe MacroStep, "when building records" do
-  fixtures :domains
-
   before(:each) do
     @macro_step = MacroStep.new
   end

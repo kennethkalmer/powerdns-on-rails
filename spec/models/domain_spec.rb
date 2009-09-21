@@ -16,8 +16,6 @@ describe "New 'untyped'", Domain do
 end
 
 describe "New MASTER/NATIVE", Domain do
-  fixtures :all
-
   before(:each) do
     @domain = Domain.new
   end
@@ -27,6 +25,7 @@ describe "New MASTER/NATIVE", Domain do
   end
 
   it "should not allow duplicate names" do
+    Factory(:domain)
     @domain.name = "example.com"
     @domain.should have(1).error_on(:name)
   end
@@ -68,10 +67,8 @@ describe "New SLAVE", Domain do
 end
 
 describe Domain, "when loaded" do
-  fixtures :all
-
   before(:each) do
-    @domain = domains(:example_com)
+    @domain = Factory(:domain)
   end
 
   it "should have a name" do
@@ -79,29 +76,34 @@ describe Domain, "when loaded" do
   end
 
   it "should have an SOA record" do
-    @domain.soa_record.should eql( records( :example_com_soa ) )
+    @domain.soa_record.should be_a_kind_of( SOA )
   end
 
   it "should have NS records" do
+    ns1 = Factory(:ns, :domain => @domain)
+    ns2 = Factory(:ns, :domain => @domain)
     ns = @domain.ns_records
     ns.should be_a_kind_of( Array )
-    ns.should include( records( :example_com_ns_ns1 ) )
-    ns.should include( records( :example_com_ns_ns2 ) )
+    ns.should include( ns1 )
+    ns.should include( ns2 )
   end
 
   it "should have MX records" do
+    mx_f = Factory(:mx, :domain => @domain)
     mx = @domain.mx_records
     mx.should be_a_kind_of( Array )
-    mx.should include( records( :example_com_mx ) )
+    mx.should include( mx_f )
   end
 
   it "should have A records" do
+    a_f = Factory(:a, :domain => @domain)
     a = @domain.a_records
     a.should be_a_kind_of( Array )
-    a.should include( records( :example_com_a ) )
+    a.should include( a_f )
   end
 
   it "should give access to all records excluding the SOA" do
+    Factory(:a, :domain => @domain)
     @domain.records_without_soa.size.should be( @domain.records.size - 1 )
   end
 
@@ -111,7 +113,11 @@ describe Domain, "when loaded" do
 end
 
 describe Domain, "with scoped finders" do
-  fixtures :all
+  before(:each) do
+    @quentin = Factory(:quentin)
+    @domain = Factory(:domain, :user => @quentin)
+    @other_domain = Factory(:domain, :name => 'example.net')
+  end
 
   it "should return all zones without a user" do
     domains = Domain.find( :all )
@@ -120,14 +126,14 @@ describe Domain, "with scoped finders" do
   end
 
   it "should only return a user's zones if not an admin" do
-    domains = Domain.find( :all, :user => users(:quentin) )
+    domains = Domain.find( :all, :user => @quentin )
     domains.should_not be_empty
     domains.size.should be(1)
-    domains.each { |z| z.user.should eql( users( :quentin ) ) }
+    domains.each { |z| z.user.should eql( @quentin ) }
   end
 
   it "should return all zones if the user is an admin" do
-    domains = Domain.find( :all, :user => users(:admin) )
+    domains = Domain.find( :all, :user => Factory(:admin) )
     domains.should_not be_empty
     domains.size.should be( Domain.count )
   end
@@ -139,22 +145,20 @@ describe Domain, "with scoped finders" do
   end
 
   it "shoud support will_paginate (admin user)" do
-    domains = Domain.paginate( :page => 1, :user => users(:admin) )
+    domains = Domain.paginate( :page => 1, :user => Factory(:admin) )
     domains.should_not be_empty
     domains.size.should be( Domain.count )
   end
 
   it "should support will_paginate (zone owner)" do
-    domains = Domain.paginate( :page => 1, :user => users(:quentin) )
+    domains = Domain.paginate( :page => 1, :user => @quentin )
     domains.should_not be_empty
     domains.size.should be(1)
-    domains.each { |z| z.user.should eql(users(:quentin)) }
+    domains.each { |z| z.user.should eql(@quentin) }
   end
 end
 
 describe "NATIVE/MASTER", Domain, "when created" do
-  fixtures :all
-
   before(:each) do
     @domain = Domain.new
   end
@@ -175,8 +179,6 @@ describe "NATIVE/MASTER", Domain, "when created" do
 end
 
 describe "SLAVE", Domain, "when created" do
-  fixtures :all
-
   before(:each) do
     @domain = Domain.new( :type => 'SLAVE' )
   end
@@ -191,24 +193,27 @@ describe "SLAVE", Domain, "when created" do
 end
 
 describe Domain, "when deleting" do
-  fixtures :all
-
   it "should delete its records as well" do
-    @domain = domains(:example_com)
-    lambda { @domain.destroy }.should change(Record, :count).by(-@domain.records.size)
-
+    @domain = Factory(:domain)
+    #Factory(:soa, :domain => @domain)
+    lambda {
+      @domain.destroy
+    }.should change(Record, :count).by(-@domain.records.size)
   end
 end
 
 describe Domain, "when searching" do
-  fixtures :all
+  before(:each) do
+    @quentin = Factory(:quentin)
+    Factory(:domain, :user => @quentin)
+  end
 
   it "should return results for admins" do
-    Domain.search('exa', 1, users(:admin)).should_not be_empty
+    Domain.search('exa', 1, Factory(:admin)).should_not be_empty
   end
 
   it "should return results for users" do
-    Domain.search('exa', 1, users(:quentin)).should_not be_empty
+    Domain.search('exa', 1, @quentin).should_not be_empty
   end
 
   it "should return unscoped results" do
@@ -217,10 +222,8 @@ describe Domain, "when searching" do
 end
 
 describe Domain, "when serializing to XML" do
-  fixtures :all
-
   before(:each) do
-    @domain = domains(:example_com)
+    @domain = Factory(:domain)
   end
 
   it "should not show the user_id" do

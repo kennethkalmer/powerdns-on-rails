@@ -1,8 +1,6 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
 describe Record, "when new" do
-  fixtures :all
-
   before(:each) do
     @record = Record.new
   end
@@ -41,16 +39,15 @@ describe Record, "when new" do
 end
 
 describe Record, "during updates" do
-  fixtures :all
-
   before(:each) do
-    @soa = records( :example_com_soa )
+    @domain = Factory(:domain)
+    @soa = @domain.soa_record
   end
 
   it "should update the serial on the SOA" do
     serial = @soa.serial
 
-    record = records( :example_com_a )
+    record = Factory(:a, :domain => @domain)
     record.content = '10.0.0.1'
     record.save.should be_true
 
@@ -65,7 +62,7 @@ describe Record, "during updates" do
     Record.batch do
 
       record = A.new(
-        :domain => domains(:example_com),
+        :domain => @domain,
         :name => 'app',
         :content => '10.0.0.5',
         :ttl => 86400
@@ -73,7 +70,7 @@ describe Record, "during updates" do
       record.save.should be_true
 
       record = A.new(
-        :domain => domains(:example_com),
+        :domain => @domain,
         :name => 'app',
         :content => '10.0.0.6',
         :ttl => 86400
@@ -81,7 +78,7 @@ describe Record, "during updates" do
       record.save.should be_true
 
       record = A.new(
-        :domain => domains(:example_com),
+        :domain => @domain,
         :name => 'app',
         :content => '10.0.0.7',
         :ttl => 86400
@@ -92,23 +89,22 @@ describe Record, "during updates" do
     # Our serial should have move just one position, not three
     @soa.reload
     @soa.serial.should_not be( serial )
-    @soa.serial.to_s.should eql( Time.now.strftime( "%Y%m%d" ) + '00' )
+    @soa.serial.to_s.should eql( Time.now.strftime( "%Y%m%d" ) + '01' )
   end
 
 end
 
 describe Record, "when created" do
-  fixtures :all
-
   before(:each) do
-    @soa = records( :example_com_soa )
+    @domain = Factory(:domain)
+    @soa = @domain.soa_record
   end
 
   it "should update the serial on the SOA" do
     serial = @soa.serial
 
     record = A.new(
-      :domain => domains(:example_com),
+      :domain => @domain,
       :name => 'admin',
       :content => '10.0.0.5',
       :ttl => 86400
@@ -121,7 +117,7 @@ describe Record, "when created" do
 
   it "should inherit the name from the parent domain if not provided" do
     record = A.new(
-      :domain => domains( :example_com ),
+      :domain => @domain,
       :content => '10.0.0.6'
     )
     record.save.should be_true
@@ -131,7 +127,7 @@ describe Record, "when created" do
 
   it "should append the domain name to the name if not present" do
     record = A.new(
-      :domain => domains( :example_com ),
+      :domain => @domain,
       :name => 'test',
       :content => '10.0.0.6'
     )
@@ -142,11 +138,11 @@ describe Record, "when created" do
   end
 
   it "should inherit the TTL from the parent domain if not provided" do
-    ttl = domains( :example_com ).ttl
+    ttl = @domain.ttl
     ttl.should be( 86400 )
 
     record = A.new(
-      :domain => domains( :example_com ),
+      :domain => @domain,
       :name => 'ftp',
       :content => '10.0.0.6'
     )
@@ -157,7 +153,7 @@ describe Record, "when created" do
 
   it "should prefer own TTL over that of parent domain" do
     record = A.new(
-      :domain => domains( :example_com ),
+      :domain => @domain,
       :name => 'ftp',
       :content => '10.0.0.6',
       :ttl => 43200
@@ -170,10 +166,9 @@ describe Record, "when created" do
 end
 
 describe Record, "when loaded" do
-  fixtures :all
-
   before(:each) do
-    @record = records(:example_com_a)
+    domain = Factory(:domain)
+    @record = Factory(:a, :domain => domain)
   end
 
   it "should have a full name" do
@@ -186,10 +181,9 @@ describe Record, "when loaded" do
 end
 
 describe Record, "when serializing to XML" do
-  fixtures :all
-
   before(:each) do
-    @record = records(:example_com_a)
+    domain = Factory(:domain)
+    @record = Factory(:a, :domain => domain)
   end
 
   it "should have a root tag of the record type" do

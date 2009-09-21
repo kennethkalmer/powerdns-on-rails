@@ -1,7 +1,6 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
 describe SOA, "when new" do
-  fixtures :all
 
   before(:each) do
     @soa = SOA.new
@@ -12,7 +11,7 @@ describe SOA, "when new" do
   end
 
   it "should be unique per domain" do
-    @soa.domain = domains( :example_com )
+    @soa.domain = Factory(:domain)
     @soa.should have(1).error_on(:domain_id)
   end
 
@@ -126,10 +125,8 @@ describe SOA, "when new" do
 end
 
 describe SOA, "when created" do
-  fixtures :all
-
   before(:each) do
-    @domain = domains(:example_com)
+    @domain = Factory(:domain)
     @domain.soa_record.destroy
 
     @soa = SOA.new(
@@ -156,10 +153,8 @@ describe SOA, "when created" do
 end
 
 describe SOA, "and serial numbers" do
-  fixtures :all
-
   before(:each) do
-    @soa = records( :example_com_soa )
+    @soa = Factory(:domain).soa_record
   end
 
   it "should have an easy way to update (without saving)" do
@@ -191,7 +186,6 @@ describe SOA, "and serial numbers" do
   it "should update in sequence for the same day" do
     date_segment = Time.now.strftime( "%Y%m%d" )
 
-    @soa.update_serial!
     @soa.serial.to_s.should eql( date_segment + '00' )
 
     10.times { @soa.update_serial! }
@@ -201,10 +195,8 @@ describe SOA, "and serial numbers" do
 end
 
 describe SOA, "when serializing to XML" do
-  fixtures :all
-
   before(:each) do
-    @soa = records(:example_com_soa)
+    @soa = Factory(:domain).soa_record
   end
 
   it "should make an soa tag" do

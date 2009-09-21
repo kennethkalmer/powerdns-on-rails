@@ -22,10 +22,8 @@ describe Macro, "when new" do
 end
 
 describe Macro, "when applied" do
-  fixtures :domains, :records
-
   before(:each) do
-    @target = domains(:example_com)
+    @target = Factory(:domain)
 
     @macro = Factory(:macro)
     @step_create = Factory(:macro_step_create, :macro => @macro, :name => 'foo')
@@ -42,7 +40,7 @@ describe Macro, "when applied" do
   end
 
   it "should update existing RR's" do
-    rr = records(:example_com_a_www)
+    rr = Factory(:www, :domain => @target)
 
     lambda {
       @macro.apply_to( @target )
@@ -51,7 +49,7 @@ describe Macro, "when applied" do
   end
 
   it "should remove targetted RR's" do
-    rr = records(:example_com_a_mail)
+    rr = Factory(:a, :name => 'mail', :domain => @target)
 
     @macro.apply_to( @target )
 
@@ -59,6 +57,7 @@ describe Macro, "when applied" do
   end
 
   it "should remove existing RR's (wild card)" do
+    Factory(:mx, :domain => @target)
     @target.mx_records(true).should_not be_empty
 
     @macro.apply_to( @target )
