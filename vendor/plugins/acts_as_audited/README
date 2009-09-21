@@ -17,24 +17,28 @@ acts_as_audited is an ActiveRecord extension that logs all changes to your model
     script/generate audited_migration add_audits_table
     rake db:migrate
 
-== Auditing in Rails
+== Usage
 
 If you're using acts_as_audited within Rails, you can simply declare which models should be audited.  acts_as_audited can also automatically record the user that made the change if your controller has a <tt>current_user</tt> method.
 
   class ApplicationController < ActionController::Base
-    audit User, List, Item
+    audit User, List, Item => {:except => :password}
   protected
     def current_user
       @user ||= User.find(session[:user])
     end
   end
 
-== Customizing
-
-To get auditing outside of Rails, or to customize which fields are audited within Rails, you can explicitly declare <tt>acts_as_audited</tt> on your models:
+To get auditing outside of Rails you can explicitly declare <tt>acts_as_audited</tt> on your models:
 
     class User < ActiveRecord::Base
       acts_as_audited :except => [:password, :mistress]
+    end
+
+To record a user in the audits when the sweepers are not available, you can use <tt>as_user</tt>:
+
+    Audit.as_user( user ) do
+      # Perform changes on audited models
     end
 
 See http://opensoul.org/2006/07/21/acts_as_audited for more information.
@@ -79,7 +83,15 @@ acts_as_audited works with Rails 2.1 or later.
 == Contributing
 
 Contributions are always welcome. Checkout the latest code on GitHub:
-  http://github.com/collectiveidea/acts_as_audited 
+  http://github.com/collectiveidea/acts_as_audited
 
-Please report bugs or feature suggestions at:
-  http://collectiveidea.lighthouseapp.com/projects/20257-acts_as_audited
+Please include tests with your patches. There are a few gems required to run the tests:
+  $ gem install multi_rails
+  $ gem install thoughtbot-shoulda jnunemaker-matchy --source http://gems.github.com
+
+Make sure the tests pass against all versions of Rails since 2.1:
+
+  $ rake test:multi_rails:all
+
+Please report bugs or feature suggestions on GitHub:
+  http://github.com/collectiveidea/acts_as_audited/issues

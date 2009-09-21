@@ -1,34 +1,42 @@
 ENV["RAILS_ENV"] = "test"
 $:.unshift(File.dirname(__FILE__) + '/../lib')
 require 'rubygems'
+require 'multi_rails_init'
 require 'active_record'
+require 'active_record/version'
+require 'active_record/fixtures'
 require 'action_controller'
+require 'action_controller/test_process'
 require 'action_view'
+require 'test/unit'
+require 'shoulda'
+
+gem 'jnunemaker-matchy'
+require 'matchy'
 require File.dirname(__FILE__) + '/../init.rb'
 
-require 'active_record/fixtures'
-require 'action_controller/test_process'
-
-require 'spec'
-
-config = YAML::load(IO.read(File.dirname(__FILE__) + '/database.yml'))
+config = YAML::load(IO.read(File.dirname(__FILE__) + '/db/database.yml'))
 ActiveRecord::Base.logger = Logger.new(File.dirname(__FILE__) + "/debug.log")
 ActiveRecord::Base.establish_connection(config[ENV['DB'] || 'sqlite3mem'])
-
 ActiveRecord::Migration.verbose = false
-load(File.dirname(__FILE__) + "/schema.rb")
+load(File.dirname(__FILE__) + "/db/schema.rb")
 
 class User < ActiveRecord::Base
   acts_as_audited :except => :password
+  
+  attr_protected :logins
+  
+  def name=(val)
+    write_attribute(:name, CGI.escapeHTML(val))
+  end
 end
 class Company < ActiveRecord::Base
 end
 
-
-Spec::Runner.configure do |config|
-  # config.use_transactional_fixtures = true
-  # config.use_instantiated_fixtures  = false
-  # config.fixture_path = '/spec/fixtures/'
+class Test::Unit::TestCase
+  # def change(receiver=nil, message=nil, &block)
+  #   ChangeExpectation.new(self, receiver, message, &block)
+  # end
   
   def create_user(attrs = {})
     User.create({:name => 'Brandon', :username => 'brandon', :password => 'password'}.merge(attrs))
@@ -41,8 +49,5 @@ Spec::Runner.configure do |config|
       end
       u.reload
     end
-    
   end
-  
 end
-
