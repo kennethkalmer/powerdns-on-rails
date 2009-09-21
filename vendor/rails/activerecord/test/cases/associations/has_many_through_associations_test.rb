@@ -11,9 +11,13 @@ require 'models/author'
 require 'models/owner'
 require 'models/pet'
 require 'models/toy'
+require 'models/contract'
+require 'models/company'
+require 'models/developer'
 
 class HasManyThroughAssociationsTest < ActiveRecord::TestCase
-  fixtures :posts, :readers, :people, :comments, :authors, :owners, :pets, :toys
+  fixtures :posts, :readers, :people, :comments, :authors, :owners, :pets, :toys,
+           :companies
 
   def test_associate_existing
     assert_queries(2) { posts(:thinking);people(:david) }
@@ -93,7 +97,7 @@ class HasManyThroughAssociationsTest < ActiveRecord::TestCase
   end
 
   def test_destroy_association
-    assert_difference ["Person.count", "Reader.count"], -1 do
+    assert_difference "Person.count", -1 do
       posts(:welcome).people.destroy(people(:michael))
     end
 
@@ -102,18 +106,12 @@ class HasManyThroughAssociationsTest < ActiveRecord::TestCase
   end
 
   def test_destroy_all
-    assert_difference ["Person.count", "Reader.count"], -1 do
+    assert_difference "Person.count", -1 do
       posts(:welcome).people.destroy_all
     end
 
     assert posts(:welcome).reload.people.empty?
     assert posts(:welcome).people(true).empty?
-  end
-
-  def test_should_raise_exception_for_destroying_mismatching_records
-    assert_no_difference ["Person.count", "Reader.count"] do
-      assert_raise(ActiveRecord::AssociationTypeMismatch) { posts(:welcome).people.destroy(posts(:thinking)) }
-    end
   end
 
   def test_replace_association
@@ -161,6 +159,30 @@ class HasManyThroughAssociationsTest < ActiveRecord::TestCase
     peeps = posts(:thinking).people.count
     posts(:thinking).people.create!(:first_name => 'foo')
     assert_equal peeps + 1, posts(:thinking).people.count
+  end
+
+  def test_associate_with_create_and_invalid_options
+    peeps = companies(:first_firm).developers.count
+    assert_nothing_raised { companies(:first_firm).developers.create(:name => '0') }
+    assert_equal peeps, companies(:first_firm).developers.count
+  end
+
+  def test_associate_with_create_and_valid_options
+    peeps = companies(:first_firm).developers.count
+    assert_nothing_raised { companies(:first_firm).developers.create(:name => 'developer') }
+    assert_equal peeps + 1, companies(:first_firm).developers.count
+  end
+
+  def test_associate_with_create_bang_and_invalid_options
+    peeps = companies(:first_firm).developers.count
+    assert_raises(ActiveRecord::RecordInvalid) { companies(:first_firm).developers.create!(:name => '0') }
+    assert_equal peeps, companies(:first_firm).developers.count
+  end
+
+  def test_associate_with_create_bang_and_valid_options
+    peeps = companies(:first_firm).developers.count
+    assert_nothing_raised { companies(:first_firm).developers.create!(:name => 'developer') }
+    assert_equal peeps + 1, companies(:first_firm).developers.count
   end
 
   def test_clear_associations
@@ -281,5 +303,22 @@ class HasManyThroughAssociationsTest < ActiveRecord::TestCase
 
   def test_has_many_association_through_a_has_many_association_with_nonstandard_primary_keys
     assert_equal 1, owners(:blackbeard).toys.count
+  end
+
+  def test_find_on_has_many_association_collection_with_include_and_conditions
+    post_with_no_comments = people(:michael).posts_with_no_comments.first
+    assert_equal post_with_no_comments, posts(:authorless)
+  end
+
+  def test_has_many_through_has_one_reflection
+    assert_equal [comments(:eager_sti_on_associations_vs_comment)], authors(:david).very_special_comments
+  end
+
+  def test_modifying_has_many_through_has_one_reflection_should_raise
+    [
+      lambda { authors(:david).very_special_comments = [VerySpecialComment.create!(:body => "Gorp!", :post_id => 1011), VerySpecialComment.create!(:body => "Eep!", :post_id => 1012)] },
+      lambda { authors(:david).very_special_comments << VerySpecialComment.create!(:body => "Hoohah!", :post_id => 1013) },
+      lambda { authors(:david).very_special_comments.delete(authors(:david).very_special_comments.first) },
+    ].each {|block| assert_raise(ActiveRecord::HasManyThroughCantAssociateThroughHasOneOrManyReflection, &block) }
   end
 end

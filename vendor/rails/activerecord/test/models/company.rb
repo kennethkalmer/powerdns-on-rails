@@ -9,6 +9,8 @@ class Company < AbstractCompany
   validates_presence_of :name
 
   has_one :dummy_account, :foreign_key => "firm_id", :class_name => "Account"
+  has_many :contracts
+  has_many :developers, :through => :contracts
 
   def arbitrary_method
     "I am Jack's profound disappointment"
@@ -84,6 +86,7 @@ class Client < Company
   belongs_to :firm_with_select, :class_name => "Firm", :foreign_key => "firm_id", :select => "id"
   belongs_to :firm_with_other_name, :class_name => "Firm", :foreign_key => "client_of"
   belongs_to :firm_with_condition, :class_name => "Firm", :foreign_key => "client_of", :conditions => ["1 = ?", 1]
+  belongs_to :firm_with_primary_key, :class_name => "Firm", :primary_key => "name", :foreign_key => "firm_name"
   belongs_to :readonly_firm, :class_name => "Firm", :foreign_key => "firm_id", :readonly => true
 
   # Record destruction so we can test whether firm.clients.clear has
