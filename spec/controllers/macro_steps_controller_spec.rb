@@ -13,10 +13,8 @@ end
 
 describe MacroStepsController do
 
-  fixtures :users, :roles
-  
   before(:each) do
-    login_as(:admin)
+    login_as(Factory(:admin))
 
     @macro = Factory(:macro)
     @step = Factory(:macro_step_create,
@@ -41,12 +39,12 @@ describe MacroStepsController do
 
   it "should position a valid step correctly" do
     post :create, :macro_id => @macro.id,
-    :macro_step => {                     
-      :action => 'create',               
-      :record_type => 'A',               
-      :name => 'www',                    
-      :content => '127.0.0.1',           
-      :position => '1'                   
+    :macro_step => {
+      :action => 'create',
+      :record_type => 'A',
+      :name => 'www',
+      :content => '127.0.0.1',
+      :position => '1'
     }, :format => 'js'
 
     assigns[:macro_step].position.should == 1
@@ -86,7 +84,7 @@ describe MacroStepsController do
 
   it "should re-position existing steps" do
     Factory(:macro_step_create, :macro => @macro)
-    
+
     put :update, :macro_id => @macro.id, :id => @step.id,
     :macro_step => { :position => '2' }
 
@@ -99,8 +97,8 @@ describe MacroStepsController do
     flash[:info].should_not be_blank
     response.should be_redirect
     response.should redirect_to(macro_path(@macro))
-    
+
     lambda { @step.reload }.should raise_error( ActiveRecord::RecordNotFound )
   end
-  
+
 end

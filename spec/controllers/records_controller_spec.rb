@@ -1,12 +1,10 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
 describe RecordsController, ", users, and non-SOA records" do
-  fixtures :users, :domains, :records
-
   before( :each ) do
-    login_as(:admin)
+    login_as(Factory(:admin))
 
-    @domain = domains( :example_com )
+    @domain = Factory(:domain)
   end
 
   # Test adding various records
@@ -49,7 +47,7 @@ describe RecordsController, ", users, and non-SOA records" do
   end
 
   it "should update when valid" do
-    record = records(:example_com_ns_ns2)
+    record = Factory(:ns, :domain => @domain)
 
     params = {
       'name' => "",
@@ -64,7 +62,7 @@ describe RecordsController, ", users, and non-SOA records" do
   end
 
   it "shouldn't update when invalid" do
-    record = records(:example_com_ns_ns2)
+    record = Factory(:ns, :domain => @domain)
 
     params = {
       'name' => "@",
@@ -83,7 +81,7 @@ describe RecordsController, ", users, and non-SOA records" do
   end
 
   it "should destroy when requested to do so" do
-    delete :destroy, :domain_id => @domain.id, :id => records(:example_com_mx).id
+    delete :destroy, :domain_id => @domain.id, :id => Factory(:mx, :domain => @domain).id
 
     response.should be_redirect
     response.should redirect_to( domain_path( @domain ) )
@@ -92,12 +90,10 @@ describe RecordsController, ", users, and non-SOA records" do
 end
 
 describe RecordsController, ", users, and SOA records" do
-  fixtures :all
-
   it "should update when valid" do
-    login_as(:admin)
+    login_as( Factory(:admin) )
 
-    target_soa = records(:example_com_soa)
+    target_soa = Factory(:domain).soa_record
 
     put "update_soa", :id => target_soa.id, :domain_id => target_soa.domain.id,
       :soa => {
@@ -111,19 +107,19 @@ describe RecordsController, ", users, and SOA records" do
 end
 
 describe RecordsController, "and tokens" do
-  fixtures :auth_tokens, :domains, :records, :users
-
   before( :each ) do
-    @domain = domains( :example_com )
+    @domain = Factory(:domain)
+    @admin = Factory(:admin)
     @token = AuthToken.new(
-      :domain => @domain, :expires_at => 1.hour.since, :user => users(:admin)
+      :domain => @domain, :expires_at => 1.hour.since, :user => @admin
     )
   end
 
   it "should not be allowed to touch the SOA record" do
-    tokenize_as(:token_example_com)
+    token = Factory(:auth_token, :domain => @domain, :user => @admin)
+    tokenize_as( token )
 
-    target_soa = records(:example_com_soa)
+    target_soa = @domain.soa_record
 
     lambda {
       put "update_soa", :id => target_soa.id, :domain_id => target_soa.domain.id,
@@ -156,7 +152,7 @@ describe RecordsController, "and tokens" do
   it "should not allow updating NS records" do
     controller.stubs(:current_token).returns(@token)
 
-    record = records(:example_com_ns_ns1)
+    record = Factory(:ns, :domain => @domain)
 
     params = {
       'name' => '',
@@ -218,7 +214,7 @@ describe RecordsController, "and tokens" do
   end
 
   it "should update when allowed" do
-    record = records(:example_com_a_www)
+    record = Factory(:www, :domain => @domain)
     @token.can_change( record )
     controller.stubs(:current_token).returns( @token )
 
@@ -239,7 +235,7 @@ describe RecordsController, "and tokens" do
   end
 
   it "should not update if not allowed" do
-    record = records(:example_com_a_www)
+    record = Factory(:www, :domain => @domain)
     controller.stubs(:current_token).returns(@token)
 
     params = {
@@ -259,7 +255,7 @@ describe RecordsController, "and tokens" do
   end
 
   it "should destroy when allowed" do
-    record = records(:example_com_mx)
+    record = Factory(:mx, :domain => @domain)
     @token.can_change( record )
     @token.remove_records=( true )
     controller.stubs(:current_token).returns(@token)
@@ -274,9 +270,10 @@ describe RecordsController, "and tokens" do
 
   it "should not destroy records if not allowed" do
     controller.stubs(:current_token).returns( @token )
+    record = Factory(:a, :domain => @domain)
 
     lambda {
-      delete :destroy, :domain_id => @domain.id, :id => records(:example_com_a)
+      delete :destroy, :domain_id => @domain.id, :id => record.id
     }.should_not change( @domain.records, :count )
 
     response.should_not be_success
@@ -293,7 +290,7 @@ describe RecordsController, "and tokens" do
       'content' => '127.0.0.3'
     }
 
-    post :create, :domain_id => domains(:example_net).id, :record => record
+    post :create, :domain_id => Factory(:domain, :name => 'example.net').id, :record => record
 
     response.code.should == "403"
   end

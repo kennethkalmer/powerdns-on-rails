@@ -1,12 +1,11 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
-include AuthenticatedTestHelper
-
 describe DomainsController, "index" do
-  fixtures :all
 
   it "should display all zones to the admin" do
-    login_as(:admin)
+    login_as(Factory(:admin))
+
+    Factory(:domain)
 
     get 'index'
 
@@ -16,7 +15,11 @@ describe DomainsController, "index" do
   end
 
   it "should restrict zones for owners" do
-    login_as( :quentin )
+    quentin = Factory(:quentin)
+    Factory(:domain, :user => quentin)
+    Factory(:domain, :name => 'example.net')
+
+    login_as( quentin )
 
     get 'index'
 
@@ -26,7 +29,9 @@ describe DomainsController, "index" do
   end
 
   it "should display all zones as XML" do
-    login_as(:admin)
+    login_as(Factory(:admin))
+
+    Factory(:domain)
 
     get :index, :format => 'xml'
 
@@ -36,22 +41,27 @@ describe DomainsController, "index" do
 end
 
 describe DomainsController, "when creating" do
-  fixtures :all
 
   before(:each) do
-    login_as(:admin)
+    login_as(Factory(:admin))
   end
 
   it "should have a form for adding a new zone" do
+    Factory(:template_soa, :zone_template => Factory(:zone_template))
+    Factory(:zone_template, :name => 'No SOA')
+
     get 'new'
 
     response.should render_template('domains/new')
     assigns[:domain].should be_a_kind_of( Domain )
     assigns[:zone_templates].should_not be_empty
-    assigns[:zone_templates].size.should be(3)
+    assigns[:zone_templates].size.should be(1)
   end
 
   it "should not save a partial form" do
+    Factory(:template_soa, :zone_template => Factory(:zone_template))
+    Factory(:zone_template, :name => 'No SOA')
+
     post 'create', :domain => { :name => 'example.org' }, :zone_template => { :id => "" }
 
     response.should_not be_redirect
@@ -60,7 +70,8 @@ describe DomainsController, "when creating" do
   end
 
   it "should build from a zone template if selected" do
-    zone_template = zone_templates(:east_coast_dc)
+    zone_template = Factory(:zone_template)
+    Factory(:template_soa, :zone_template => zone_template)
 
     post 'create', :domain => { :name => 'example.org', :zone_template_id => zone_template.id }
 
@@ -81,7 +92,7 @@ describe DomainsController, "when creating" do
   end
 
   it "should ignore the zone template if a slave is created" do
-    zone_template = zone_templates(:east_coast_dc)
+    zone_template = Factory(:zone_template)
 
     post 'create', :domain => {
       :name => 'example.org',
@@ -99,17 +110,16 @@ describe DomainsController, "when creating" do
 end
 
 describe DomainsController do
-  fixtures :all
 
   before(:each) do
-    login_as(:admin)
+    login_as(Factory(:admin))
   end
 
   it "should accept ownership changes" do
-    domain = domains(:example_com)
+    domain = Factory(:domain)
 
     lambda {
-      put :change_owner, :id => domain.id, :domain => { :user_id => users(:quentin).id }
+      put :change_owner, :id => domain.id, :domain => { :user_id => Factory(:quentin).id }
       domain.reload
     }.should change( domain, :user_id )
 
@@ -118,13 +128,12 @@ describe DomainsController do
 end
 
 describe DomainsController, "and macros" do
-  fixtures :all
 
   before(:each) do
-    login_as(:admin)
+    login_as(Factory(:admin))
 
     @macro = Factory(:macro)
-    @domain = domains(:example_com)
+    @domain = Factory(:domain)
   end
 
   it "should have a selection for the user" do
@@ -147,12 +156,11 @@ describe DomainsController, "and macros" do
 end
 
 describe DomainsController, "should handle a REST client" do
-  fixtures :all
 
   before(:each) do
-    authorize_as(:api_client)
+    authorize_as(Factory(:api_client))
 
-    @domain = domains(:example_com)
+    @domain = Factory(:domain)
   end
 
   it "creating a new zone without a template" do
@@ -168,16 +176,22 @@ describe DomainsController, "should handle a REST client" do
   end
 
   it "creating a zone with a template" do
+    zt = Factory(:zone_template)
+    Factory(:template_soa, :zone_template => zt)
+
     post 'create', :domain => { :name => 'example.org',
-      :zone_template_id => zone_templates(:east_coast_dc).id },
+      :zone_template_id => zt.id },
       :format => "xml"
 
     response.should have_tag( 'domain' )
   end
 
   it "creating a zone with a named template" do
+    zt = Factory(:zone_template)
+    Factory(:template_soa, :zone_template => zt)
+
     post 'create', :domain => { :name => 'example.org',
-      :zone_template_name => zone_templates(:east_coast_dc).name },
+      :zone_template_name => zt.name },
       :format => "xml"
 
     response.should have_tag( 'domain' )
@@ -242,14 +256,16 @@ describe DomainsController, "should handle a REST client" do
 end
 
 describe DomainsController, "and auth tokens" do
-  fixtures :all
 
   before(:each) do
-    tokenize_as(:token_example_com)
+    @domain = Factory(:domain)
+    @token = Factory(:auth_token, :user => Factory(:admin), :domain => @domain)
+
+    tokenize_as(@token)
   end
 
   it "should display the domain in the token" do
-    get :show, :id => domains(:example_com)
+    get :show, :id => @domain.id
 
     response.should render_template('domains/show')
   end
@@ -257,7 +273,7 @@ describe DomainsController, "and auth tokens" do
   it "should restrict the domain to that of the token" do
     get :show, :id => rand(1_000_000)
 
-    assigns[:domain].should eql(domains(:example_com))
+    assigns[:domain].should eql(@domain)
   end
 
   it "should not allow a list of domains" do
@@ -267,7 +283,7 @@ describe DomainsController, "and auth tokens" do
   end
 
   it "should not accept updates to the domain" do
-    put :update, :id => domains(:example_com), :domain => { :name => 'hack' }
+    put :update, :id => @domain, :domain => { :name => 'hack' }
 
     response.should be_redirect
   end

@@ -1,11 +1,9 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
-# Be sure to include AuthenticatedTestHelper in spec/spec_helper.rb instead
-# Then, you can remove it from this and the units test.
-include AuthenticatedTestHelper
-
 describe SessionsController, "and users" do
-  fixtures :users
+  before(:each) do
+    @quentin = Factory(:quentin)
+  end
 
   it 'logins and redirects' do
     post :create, :login => 'quentin', :password => 'test'
@@ -20,7 +18,7 @@ describe SessionsController, "and users" do
   end
 
   it 'logs out' do
-    login_as :quentin
+    login_as @quentin
     get :destroy
     session[:user_id].should be_nil
     response.should be_redirect
@@ -37,28 +35,28 @@ describe SessionsController, "and users" do
   end
 
   it 'deletes token on logout' do
-    login_as :quentin
+    login_as @quentin
     get :destroy
     response.cookies["auth_token"].should be_nil
   end
 
   it 'logs in with cookie' do
-    users(:quentin).remember_me
-    request.cookies["auth_token"] = cookie_for(:quentin)
+    @quentin.remember_me
+    request.cookies["auth_token"] = cookie_for(@quentin)
     get :new
     controller.send(:logged_in?).should be_true
   end
 
   it 'fails expired cookie login' do
-    users(:quentin).remember_me
-    users(:quentin).update_attribute :remember_token_expires_at, 5.minutes.ago
-    request.cookies["auth_token"] = cookie_for(:quentin)
+    @quentin.remember_me
+    @quentin.update_attribute :remember_token_expires_at, 5.minutes.ago
+    request.cookies["auth_token"] = cookie_for(@quentin)
     get :new
     controller.send(:logged_in?).should_not be_true
   end
 
   it 'fails cookie login' do
-    users(:quentin).remember_me
+    @quentin.remember_me
     request.cookies["auth_token"] = auth_token('invalid_auth_token')
     get :new
     controller.send(:logged_in?).should_not be_true
@@ -69,19 +67,24 @@ describe SessionsController, "and users" do
   end
 
   def cookie_for(user)
-    auth_token users(user).remember_token
+    auth_token user.remember_token
   end
 end
 
 describe SessionsController, "and auth tokens" do
-  fixtures :auth_tokens, :domains
+
+  before(:each) do
+    @domain = Factory(:domain)
+    @user = Factory(:admin)
+    @token = Factory(:auth_token, :domain => @domain, :user => @user)
+  end
 
   it 'accepts and redirects' do
     post :token, :token => '5zuld3g9dv76yosy'
     session[:token_id].should_not be_nil
     controller.send(:token_user?).should be_true
     response.should be_redirect
-    response.should redirect_to( domain_path( domains(:example_com) ) )
+    response.should redirect_to( domain_path( @domain ) )
   end
 
   it 'fails login and does not redirect' do
@@ -91,14 +94,14 @@ describe SessionsController, "and auth tokens" do
   end
 
   it 'logs out' do
-    tokenize_as(:token_example_com)
+    tokenize_as(@token)
     get :destroy
     session[:token_id].should be_nil
     response.should redirect_to( session_path )
   end
 
   it 'fails expired cookie login' do
-    auth_tokens(:token_example_com).update_attribute :expires_at, 5.minutes.ago
+    @token.update_attribute :expires_at, 5.minutes.ago
     get :new
     controller.send(:token_user?).should_not be_true
   end

@@ -1,12 +1,13 @@
 require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 
 describe MacrosController, "for admins" do
-  fixtures :users, :roles
-  
+
   before(:each) do
-    login_as(:admin)
+    login_as( Factory(:admin) )
 
     @macro = Factory(:macro)
+
+    Factory(:quentin)
   end
 
   it "should have a list of macros" do
@@ -66,7 +67,7 @@ describe MacrosController, "for admins" do
 
     response.should render_template('macros/edit')
   end
-  
+
   it "should accept valid updates to macros" do
     lambda {
       put :update, :id => @macro.id, :macro => { :name => 'Foo Macro' }
@@ -97,16 +98,16 @@ describe MacrosController, "for admins" do
     response.should be_redirect
     response.should redirect_to( macros_path )
   end
-  
+
 end
 
 describe MacrosController, "for owners" do
-  fixtures :users, :roles
 
   before(:each) do
-    login_as(:quentin)
+    quentin = Factory(:quentin)
+    login_as(quentin)
 
-    @macro = Factory(:macro, :user => users(:quentin))
+    @macro = Factory(:macro, :user => quentin)
   end
 
   it "should have a form to create a new macro" do
@@ -117,6 +118,6 @@ describe MacrosController, "for owners" do
 
     response.should render_template('macros/edit')
   end
-    
+
 end
 
