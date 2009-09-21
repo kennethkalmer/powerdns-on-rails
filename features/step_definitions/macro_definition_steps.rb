@@ -1,9 +1,9 @@
 Given /^I have a domain$/ do
-  @domain = Factory(:example_com)
+  @domain = Factory(:domain)
 end
 
 Given /^I have a domain named "([^\"]*)"$/ do |name|
-  @domain = Factory(:example_com, :name => name)
+  @domain = Factory(:domain, :name => name)
 end
 
 Given /^I have a macro$/ do
