@@ -160,8 +160,8 @@ describe User, "as owner" do
 
   before(:each) do
     @user = Factory(:quentin)
-    Factory(:example_com, :user => @user)
-    Factory(:quentin_home, :user => @user)
+    Factory(:domain, :user => @user)
+    Factory(:zone_template, :user => @user)
   end
 
   it "should have domains" do
@@ -227,7 +227,7 @@ describe User, "and audits" do
   it "should have username persisted in audits when removed" do
     admin = Factory(:admin)
     Audit.as_user( admin ) do
-      domain =Factory(:example_com)
+      domain =Factory(:domain)
       audit = domain.audits.first
 
       audit.user.should eql( admin )
