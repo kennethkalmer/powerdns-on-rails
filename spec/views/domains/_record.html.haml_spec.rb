@@ -1,23 +1,24 @@
 require File.dirname(__FILE__) + '/../../spec_helper'
 
 describe "domains/_record", "for a user" do
-  fixtures :users, :records
-  
+
   before(:each) do
-    template.stubs(:current_user).returns( users(:admin) )
-    @record = records(:example_com_ns_ns1)
+    template.stubs(:current_user).returns( Factory(:admin) )
+    domain = Factory(:domain)
+    @record = Factory(:ns, :domain => domain)
+
     render :partial => 'domains/record', :object => @record
   end
-  
+
   it "should have tooltips ready" do
     response.should have_tag("div#record-template-edit-#{@record.id}")
     response.should have_tag("div#record-template-delete-#{@record.id}")
   end
-  
+
   it "should have a marker row (used by AJAX)" do
     response.should have_tag("tr#marker_ns_#{@record.id}")
   end
-  
+
   it "should have a row with the record details" do
     response.should have_tag("tr#show_ns_#{@record.id}") do
       with_tag("td", "") # shortname
@@ -27,7 +28,7 @@ describe "domains/_record", "for a user" do
       with_tag("td", "ns1.example.com")
     end
   end
-  
+
   it "should have a row for editing record details" do
     response.should have_tag("tr#edit_ns_#{@record.id}") do
       with_tag("td[colspan=7]") do
@@ -35,7 +36,7 @@ describe "domains/_record", "for a user" do
       end
     end
   end
-  
+
   it "should have links to edit/remove the record" do
     response.should have_tag("a[onclick^=editRecord]")
     response.should have_tag("a > img[src*=database_delete]")
@@ -43,20 +44,19 @@ describe "domains/_record", "for a user" do
 end
 
 describe "domains/_record", "for a SLAVE domain" do
-  fixtures :domains, :users, :records
-  
+
   before(:each) do
-    template.stubs(:current_user).returns( users(:admin) )
-    domain = domains(:slave_example_com)
+    template.stubs(:current_user).returns( Factory(:admin) )
+    domain = Factory(:domain, :type => 'SLAVE', :master => '127.0.0.1')
     @record = domain.a_records.create( :name => 'foo', :content => '127.0.0.1' )
     render :partial => 'domains/record', :object => @record
   end
-  
+
   it "should not have tooltips ready" do
     response.should_not have_tag("div#record-template-edit-#{@record.id}")
     response.should_not have_tag("div#record-template-delete-#{@record.id}")
   end
-  
+
   it "should have a row with the record details" do
     response.should have_tag("tr#show_a_#{@record.id}") do
       with_tag("td", "") # shortname
@@ -66,7 +66,7 @@ describe "domains/_record", "for a SLAVE domain" do
       with_tag("td", "foo")
     end
   end
-  
+
   it "should not have a row for editing record details" do
     response.should_not have_tag("tr#edit_ns_#{@record.id}") do
       with_tag("td[colspan=7]") do
@@ -74,7 +74,7 @@ describe "domains/_record", "for a SLAVE domain" do
       end
     end
   end
-  
+
   it "should not have links to edit/remove the record" do
     response.should_not have_tag("a[onclick^=editRecord]")
     response.should_not have_tag("a > img[src*=database_delete]")
@@ -82,45 +82,49 @@ describe "domains/_record", "for a SLAVE domain" do
 end
 
 describe "domains/_record", "for a token" do
-  fixtures :auth_tokens, :records, :domains
-  
+
+  before(:each) do
+    @domain = Factory(:domain)
+    template.stubs(:current_token).returns( Factory(:auth_token, :domain => @domain, :user => Factory(:admin)) )
+  end
+
   it "should not allow editing NS records" do
-    template.stubs(:current_token).returns( auth_tokens(:token_example_com) )
-    record = records(:example_com_ns_ns1)
+    record = Factory(:ns, :domain => @domain)
+
     render :partial => 'domains/record', :object => record
-    
+
     response.should_not have_tag("a[onclick^=editRecord]")
     response.should_not have_tag("tr#edit_ns_#{record.id}")
   end
-  
+
   it "should not allow removing NS records" do
-    template.stubs(:current_token).returns( auth_tokens(:token_example_com) )
-    record = records(:example_com_ns_ns1)
+    record = Factory(:ns, :domain => @domain)
+
     render :partial => 'domains/record', :object => record
-    
+
     response.should_not have_tag("a > img[src*=database_delete]")
   end
-  
+
   it "should allow edit records that aren't protected" do
-    template.stubs(:current_token).returns( auth_tokens(:token_example_com) )
-    record = records(:example_com_a)
+    record = Factory(:a, :domain => @domain)
     render :partial => 'domains/record', :object => record
-    
+
     response.should have_tag("a[onclick^=editRecord]")
     response.should_not have_tag("a > img[src*=database_delete]")
     response.should have_tag("tr#edit_a_#{record.id}")
   end
-  
+
   it "should allow removing records if permitted" do
-    record = records(:example_com_a)
+    record = Factory(:a, :domain => @domain)
     token = AuthToken.new(
-      :domain => domains(:example_com)
+      :domain => @domain
     )
     token.remove_records=( true )
     token.can_change( record )
     template.stubs(:current_token).returns( token )
+
     render :partial => 'domains/record', :object => record
-    
+
     response.should have_tag("a > img[src*=database_delete]")
   end
 end

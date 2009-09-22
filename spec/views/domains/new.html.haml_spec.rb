@@ -1,7 +1,6 @@
 require File.dirname(__FILE__) + '/../../spec_helper'
 
 describe "domains/new.html.haml" do
-  fixtures :zone_templates
 
   before(:each) do
     assigns[:domain] = Domain.new
@@ -15,14 +14,14 @@ describe "domains/new.html.haml" do
     response.should have_tag("a[href=#{new_zone_template_path}]", "Create Zone Templates")
     response.should_not have_tag("select[name*=zone_template_id]")
   end
-  
+
   it "should have a list of zone templates to select from" do
-    assigns[:zone_templates] = ZoneTemplate.find(:all)
+    assigns[:zone_templates] = [ Factory(:zone_template) ]
 
     render "domains/new.html.haml"
 
     response.should have_tag("select[name*=zone_template_id]")
     response.should_not have_tag("a[href=#{new_zone_template_path}]")
   end
-  
+
 end

@@ -1,10 +1,10 @@
 require File.dirname(__FILE__) + '/../../spec_helper'
 
 describe "templates/show.html.haml", "for complete templates" do
-  fixtures :all
 
   before(:each) do
-    @zone_template = zone_templates(:east_coast_dc)
+    @zone_template = Factory(:zone_template)
+    Factory(:template_soa, :zone_template => @zone_template)
     assigns[:zone_template] = @zone_template
     assigns[:record_template] = RecordTemplate.new( :record_type => 'A' )
 
@@ -14,7 +14,7 @@ describe "templates/show.html.haml", "for complete templates" do
   it "should have the template name" do
     response.should have_tag('h1', /^#{@zone_template.name}/)
   end
-  
+
   it "should have a table with template overview" do
     response.should have_tag('table.grid') do
       with_tag('td', 'Name')
@@ -32,14 +32,12 @@ describe "templates/show.html.haml", "for complete templates" do
 
     response.should_not have_tag('div#soa-warning')
   end
-    
+
 end
 
 describe "templates/show.html.haml", "for partial templates" do
-  fixtures :zone_templates
-
   before(:each) do
-    @zone_template = zone_templates(:partially_complete)
+    @zone_template = Factory(:zone_template)
     assigns[:zone_template] = @zone_template
     assigns[:record_template] = RecordTemplate.new( :record_type => 'A' )
 
@@ -49,6 +47,6 @@ describe "templates/show.html.haml", "for partial templates" do
   it "should have an SOA warning" do
     response.should have_tag('div#soa-warning')
   end
-  
+
 end
 
