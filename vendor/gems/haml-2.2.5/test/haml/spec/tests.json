@@ -1,0 +1,105 @@
+{
+  "headers": {
+    "!!! XML":      "<?xml version='1.0' encoding='utf-8' ?>",
+    "!!!":          "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">",
+    "!!! 1.1":      "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1//EN\" \"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd\">",
+    "!!! frameset": "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Frameset//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-frameset.dtd\">",
+    "!!! mobile":   "<!DOCTYPE html PUBLIC \"-//WAPFORUM//DTD XHTML Mobile 1.2//EN\" \"http://www.openmobilealliance.org/tech/DTD/xhtml-mobile12.dtd\">",
+    "!!! basic":    "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML Basic 1.1//EN\" \"http://www.w3.org/TR/xhtml-basic/xhtml-basic11.dtd\">"
+  },
+
+  "basic Haml tags and CSS": {
+    "%p":               "<p></p>",
+    "%meta":            "<meta />",
+    "#id1":             "<div id='id1'></div>",
+    ".class1":          "<div class='class1'></div>",
+    "%p.class1":        "<p class='class1'></p>",
+    "%p.class1.class2": "<p class='class1 class2'></p>",
+    "%p#id1":           "<p id='id1'></p>",
+    "%p#id1#id2":       "<p id='id2'></p>",
+    "%p.class1#id1":    "<p class='class1' id='id1'></p>",
+    "%p#id1.class1":    "<p class='class1' id='id1'></p>"
+  },
+
+  "tags with unusual HTML characters": {
+    "%ns:tag":     "<ns:tag></ns:tag>",
+    "%snake_case": "<snake_case></snake_case>",
+    "%dashed-tag": "<dashed-tag></dashed-tag>",
+    "%camelCase":  "<camelCase></camelCase>",
+    "%PascalCase": "<PascalCase></PascalCase>"
+  },
+
+  "tags with unusual CSS identifiers": {
+    ".123": "<div class='123'></div>",
+    ".__":  "<div class='__'></div>",
+    ".--":  "<div class='--'></div>"
+  },
+
+  "tags with inline content": {
+    "%p hello":        "<p>hello</p>",
+    "%p.class1 hello": "<p class='class1'>hello</p>"
+  },
+
+  "tags with nested content": {
+    "%p\n  hello": "<p>\n  hello\n</p>"
+  },
+
+  "tags with portable-style attributes": {
+    "%p(a='b')":                 "<p a='b'></p>",
+    "%p(a='b' c='d')":           "<p a='b' c='d'></p>",
+    "%p(a='b'\n  c='d')":        "<p a='b' c='d'></p>",
+    "%p(class='class1')":        "<p class='class1'></p>",
+    "%p.class2(class='class1')": "<p class='class1 class2'></p>",
+    "%p#id(id='1')":             "<p id='id_1'></p>",
+    ".hello(class=var)":         "<div class='hello value'></div>",
+    ".b(class=last)":            "<div class='b z'></div>",
+    ".b(class=first)":           "<div class='a b'></div>"
+  },
+
+  "tags with Ruby-style attributes": {
+    "%p{:a => 'b'}":                  "<p a='b'></p>",
+    "%p{ :a => 'b' }":                "<p a='b'></p>",
+    "%p{ :a => 'b', 'c' => 'd' }":    "<p a='b' c='d'></p>",
+    "%p{ :a => 'b',\n  'c' => 'd' }": "<p a='b' c='d'></p>",
+    "%p{ :a => var}":                 "<p a='value'></p>",
+    "%p#id{ :id => '1' }":            "<p id='id_1'></p>",
+    "%p#id{ :id => 1 }":              "<p id='id_1'></p>",
+    "%p{ :a => \"#{var}\"}":          "<p a='value'></p>",
+    ".b{ :class => last }":           "<div class='b z'></div>",
+    ".b{ :class => first }":          "<div class='a b'></div>"
+  },
+
+  "inline comments": {
+    "-# hello\n%p": "<p></p>"
+  },
+
+  "silent comments": {
+    "-# nothing\n%p":           "<p></p>",
+    "-# nothing\n  nested\n%p": "<p></p>"
+  },
+
+  "markup comments": {
+    "/ comment":                "<!-- comment -->",
+    "/\n  comment\n  comment2": "<!--\n  comment\n  comment2\n-->"
+  },
+
+  "conditional comments": {
+    "/[if IE]\n  %p a": "<!--[if IE]>\n  <p>a</p>\n<![endif]-->"
+  },
+
+  "internal filters": {
+    ":escaped\n  <&\">":        "&lt;&amp;&quot;&gt;",
+    ":preserve\n  hello\n\n%p": "hello&#x000A;\n<p></p>",
+    ":plain\n  hello\n\n%p":    "hello\n<p></p>",
+    ":javascript\n  a();\n%p":  "<script type='text/javascript'>\n  //<![CDATA[\n    a();\n  //]]>\n</script>\n<p></p>"
+  },
+
+  "interpolation": {
+    "%p= \"#{var}\"":                        "<p>value</p>",
+    "%p #{var}":                             "<p>value</p>",
+    "%p \\#{var}":                           "<p>#{var}</p>",
+    "%p \\\\#{var}":                         "<p>\\value</p>",
+    ":plain\n  #{var} interpolated: #{var}": "value interpolated: value"
+  }
+
+}
