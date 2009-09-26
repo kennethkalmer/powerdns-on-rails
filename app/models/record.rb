@@ -41,10 +41,12 @@ class Record < ActiveRecord::Base
 
     # Make some ammendments to the acts_as_audited assumptions
     def configure_audits
-      defaults = [ non_audited_columns ].flatten
-      defaults.delete( inheritance_column )
-      defaults.push( :change_date )
-      write_inheritable_attribute :non_audited_columns, defaults.flatten.map(&:to_s)
+      record_types.map(&:constantize).each do |klass|
+        defaults = [klass.non_audited_columns ].flatten
+        defaults.delete( klass.inheritance_column )
+        defaults.push( :change_date )
+        klass.write_inheritable_attribute :non_audited_columns, defaults.flatten.map(&:to_s)
+      end
     end
 
   end

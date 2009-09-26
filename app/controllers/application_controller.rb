@@ -11,7 +11,11 @@ class ApplicationController < ActionController::Base
   include RoleRequirementSystem
 
   # Enable audits
-  audit Domain, Record, :parents => { Record => :domain }
+  audit_params = [ Domain ]
+  # For my own sanity: This gives us [ A => { :parent => :domain }, NS => { :parent => :domain }, .. ]
+  audit_params << Record.record_types.map(&:constantize).inject({}) { |memo, t| memo[t] = { :parent => :domain }; memo }
+  audit *audit_params
+
   Record.configure_audits
 
   helper :all # include all helpers, all the time
@@ -22,6 +26,4 @@ class ApplicationController < ActionController::Base
 
   # All pages require a login...
   before_filter :login_required
-
-  protected
 end

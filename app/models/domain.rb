@@ -65,6 +65,15 @@ class Domain < ActiveRecord::Base
     records.find(:all, :include => :domain ).select { |r| !r.is_a?( SOA ) }
   end
 
+  # Convenience method to get the all the audits for the different records that
+  # belong to this domain
+  def record_audits
+    Record.record_types.inject([]) do |memo, t|
+      memo << send( "#{t.downcase}_audits" )
+      memo
+    end
+  end
+
   # Nicer representation of the domain as XML
   def to_xml_with_cleanup(options = {}, &block)
     #to_xml_without_cleanup options.merge(:include => [:records],

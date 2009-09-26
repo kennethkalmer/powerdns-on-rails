@@ -8,7 +8,9 @@ describe "/audits/domain", "and domain audits" do
   end
 
   it "should handle no audit entries on the domain" do
+    @domain.expects(:audits).returns( [] )
     assigns[:domain] = @domain
+
     render "/audits/domain"
 
     response.should have_tag("em", /No revisions found for the domain/)
@@ -36,7 +38,9 @@ end
 describe "/audits/domain", "and resource record audits" do
 
   before(:each) do
-    @domain = Factory(:domain)
+    Audit.as_user( 'admin' ) do
+      @domain = Factory(:domain)
+    end
   end
 
   it "should handle no audit entries" do
@@ -53,7 +57,7 @@ describe "/audits/domain", "and resource record audits" do
 
     render "/audits/domain"
 
-    response.should have_tag("ul > li > a", /1 destroy by admin/)
+    response.should have_tag("ul > li > a", /1 create by admin/)
   end
 
 end

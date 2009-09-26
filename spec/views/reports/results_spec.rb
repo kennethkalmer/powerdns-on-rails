@@ -27,7 +27,6 @@ describe "/reports/results" do
   it "should handle results with pagination and scoping" do
     1.upto(100) do |i|
       user = User.new
-      user.id = i
       user.login = "test-user-#{i}"
       user.save( false ).should be_true
     end
