@@ -1,5 +1,4 @@
 require File.dirname(__FILE__) + '/../spec_helper'
-require 'application_controller'
 
 describe AuditsHelper, "display_hash" do
 
