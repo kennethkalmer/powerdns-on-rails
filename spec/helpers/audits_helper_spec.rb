@@ -13,7 +13,7 @@ describe AuditsHelper, "display_hash" do
 
   it "should seperate items in the change hash with breaks" do
     result = helper.display_hash( 'one' => 'one', 'two' => 'two' )
-    result.should eql("<em>two</em>: two<br /><em>one</em>: one")
+    result.should match(/<br \/>/)
   end
 
 end
