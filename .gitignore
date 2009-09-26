@@ -1,4 +1,6 @@
 nbproject
 *.log
 doc/api*
+doc/app/*
+doc/guides/*
 *.swp
