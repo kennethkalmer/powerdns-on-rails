@@ -40,14 +40,27 @@ module ActiveSupport
     private
       # constant-time comparison algorithm to prevent timing attacks
       def secure_compare(a, b)
-        if a.length == b.length
-          result = 0
-          for i in 0..(a.length - 1)
-            result |= a[i] ^ b[i]
+        if a.respond_to?(:bytesize)
+          # > 1.8.6 friendly version
+          if a.bytesize == b.bytesize
+            result = 0
+            j = b.each_byte
+            a.each_byte { |i| result |= i ^ j.next }
+            result == 0
+          else
+            false
           end
-          result == 0
         else
-          false
+          # <= 1.8.6 friendly version
+          if a.size == b.size
+            result = 0
+            for i in 0..(a.length - 1)
+              result |= a[i] ^ b[i]
+            end
+            result == 0
+          else
+            false
+          end
         end
       end
 
