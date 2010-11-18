@@ -1,13 +1,13 @@
-class DomainsController < ApplicationController
-
-  require_role [ "admin", "owner" ], :unless => "token_user?"
+class DomainsController < InheritedResources::Base
 
   # Keep token users in line
   before_filter :restrict_token_movements, :except => :show
 
-  before_filter :load_domain, :except => [ :index, :new, :create ]
-
   protected
+
+  def collection
+    @domains = Domain.user( current_user ).paginate :page => params[:page]
+  end
 
   def load_domain
     if current_user
@@ -22,18 +22,6 @@ class DomainsController < ApplicationController
   end
 
   public
-
-  def index
-    respond_to do |wants|
-      wants.html do
-        @domains = Domain.paginate :page => params[:page], :user => current_user, :order => 'name'
-      end
-      wants.xml do
-        @domains = Domain.find(:all, :user => current_user, :order => 'name')
-        render :xml => @domains
-      end
-    end
-  end
 
   def show
     if current_user && current_user.admin?
@@ -50,7 +38,7 @@ class DomainsController < ApplicationController
 
   def new
     @domain = Domain.new
-    @zone_templates = ZoneTemplate.find( :all, :require_soa => true, :user => current_user )
+    @zone_templates = ZoneTemplate.all( :require_soa => true, :user => current_user )
   end
 
   def create
@@ -73,14 +61,14 @@ class DomainsController < ApplicationController
 
     respond_to do |format|
       if @domain.save
-        format.html { 
+        format.html {
           flash[:info] = t(:message_domain_created)
-          redirect_to domain_path( @domain ) 
+          redirect_to domain_path( @domain )
         }
         format.xml { render :xml => @domain.to_xml(:include => [:records]), :status => :created, :location => domain_url( @domain ) }
       else
         format.html {
-          @zone_templates = ZoneTemplate.find( :all )
+          @zone_templates = ZoneTemplate.all
           render :action => :new
         }
         format.xml { render :xml => @domain.errors, :status => :unprocessable_entity }
@@ -89,7 +77,7 @@ class DomainsController < ApplicationController
   end
 
   def edit
-    @zone_templates = ZoneTemplate.find(:all, :require_soa => true, :user => current_user)
+    @zone_templates = ZoneTemplate.all( :require_soa => true, :user => current_user)
   end
 
   def update
@@ -104,7 +92,7 @@ class DomainsController < ApplicationController
     else
       respond_to do |wants|
         wants.html do
-          @zone_templates = ZoneTemplate.find(:all, :require_soa => true, :user => current_user)
+          @zone_templates = ZoneTemplate.all( :require_soa => true, :user => current_user)
           render :action => "edit"
         end
         wants.xml { render :xml => @domain.errors, :status => :unprocessable_entity }
@@ -138,7 +126,7 @@ class DomainsController < ApplicationController
   # POST: apply selected macro
   def apply_macro
     if request.get?
-      @macros = Macro.find(:all, :user => current_user)
+      @macros = Macro.all( :user => current_user)
 
       respond_to do |format|
         format.html

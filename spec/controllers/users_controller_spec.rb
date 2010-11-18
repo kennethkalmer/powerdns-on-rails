@@ -33,7 +33,7 @@ describe UsersController do
     it 'should have a form for creating a new user' do
       get 'new'
 
-      response.should render_template( 'users/form' )
+      response.should render_template( 'users/new' )
       assigns[:user].should_not be_nil
     end
 
@@ -58,12 +58,12 @@ describe UsersController do
           :email => 'someone@example.com',
           :password => 'secret',
           :password_confirmation => 'secret',
-          :admin => 'true'
-        },
-        :token_user => '1'
+          :admin => '1',
+          :auth_tokens => '1'
+        }
 
-      assigns[:user].should be_an_admin
-      assigns[:user].has_role?('auth_token').should be_true
+      assigns[:user].admin?.should be_true
+      assigns[:user].auth_tokens?.should be_true
 
       response.should be_redirect
       response.should redirect_to( user_path( assigns[:user] ) )
@@ -75,7 +75,6 @@ describe UsersController do
           :email => 'someone@example.com',
           :password => 'secret',
           :password_confirmation => 'secret',
-          :admin => 'false'
         }
 
       assigns[:user].should_not be_an_admin
@@ -90,12 +89,11 @@ describe UsersController do
           :email => 'someone@example.com',
           :password => 'secret',
           :password_confirmation => 'secret',
-          :admin => 'false'
-        },
-        :token_user => '1'
+          :auth_tokens => '1'
+        }
 
       assigns[:user].should_not be_an_admin
-      assigns[:user].has_role?('auth_token').should be_false
+      assigns[:user].auth_tokens?.should be_false
 
       response.should be_redirect
       response.should redirect_to( user_path( assigns[:user] ) )

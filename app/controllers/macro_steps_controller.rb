@@ -1,6 +1,5 @@
 class MacroStepsController < ApplicationController
 
-  require_role ['admin','owner']
   before_filter :load_macro
 
   protected
@@ -25,7 +24,7 @@ class MacroStepsController < ApplicationController
     end
 
     @macro_step = @macro.macro_steps.create( params[:macro_step] )
-    
+
     @macro_step.insert_at( position ) if position && !@macro_step.new_record?
 
     if @macro.save

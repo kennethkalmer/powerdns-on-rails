@@ -1,7 +1,5 @@
 class RecordsController < ApplicationController
 
-  require_role [ "admin", "owner" ], :unless => "token_user?"
-
   before_filter :load_domain
   before_filter :load_record, :except => [ :create ]
   before_filter :restrict_token_movements, :except => [:create, :update, :destroy]
@@ -94,7 +92,7 @@ class RecordsController < ApplicationController
 
   def restrict_token_movements
     return unless current_token
-    
+
     render :text => t(:message_token_not_authorized), :status => 403
     return false
   end
