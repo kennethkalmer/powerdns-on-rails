@@ -112,50 +112,79 @@ describe Domain, "when loaded" do
   end
 end
 
-describe Domain, "with scoped finders" do
-  before(:each) do
-    @quentin = Factory(:quentin)
-    @domain = Factory(:domain, :user => @quentin)
-    @other_domain = Factory(:domain, :name => 'example.net')
+#describe Domain, "with scoped finders" do
+#  before(:each) do
+#    @quentin = Factory(:quentin)
+#    @domain = Factory(:domain, :user => @quentin)
+#    @other_domain = Factory(:domain, :name => 'example.net')
+#  end
+#
+#  it "should return all zones without a user" do
+#    domains = Domain.find( :all )
+#    domains.should_not be_empty
+#    domains.size.should be( Domain.count )
+#  end
+#
+#  it "should only return a user's zones if not an admin" do
+#    domains = Domain.find( :all, :user => @quentin )
+#    domains.should_not be_empty
+#    domains.size.should be(1)
+#    domains.each { |z| z.user.should eql( @quentin ) }
+#  end
+#
+#  it "should return all zones if the user is an admin" do
+#    domains = Domain.find( :all, :user => Factory(:admin) )
+#    domains.should_not be_empty
+#    domains.size.should be( Domain.count )
+#  end
+#
+#  it "should support will_paginate (no user)" do
+#    domains = Domain.paginate( :page => 1 )
+#    domains.should_not be_empty
+#    domains.size.should be( Domain.count )
+#  end
+#
+#  it "shoud support will_paginate (admin user)" do
+#    domains = Domain.paginate( :page => 1, :user => Factory(:admin) )
+#    domains.should_not be_empty
+#    domains.size.should be( Domain.count )
+#  end
+#
+#  it "should support will_paginate (zone owner)" do
+#    domains = Domain.paginate( :page => 1, :user => @quentin )
+#    domains.should_not be_empty
+#    domains.size.should be(1)
+#    domains.each { |z| z.user.should eql(@quentin) }
+#  end
+#end
+
+describe Domain, "scopes" do
+  let(:quentin) { Factory(:quentin) }
+  let(:aaron) { Factory(:aaron) }
+  let(:quentin_domain) { Factory(:domain, :user => quentin) }
+  let(:aaron_domain) { Factory(:domain, :name => 'example.org', :user => aaron) }
+  let(:admin) { Factory(:admin) }
+
+  it "should show all domains to an admin" do
+    quentin_domain
+    aaron_domain
+
+    Domain.user( admin ).all.should include(quentin_domain)
+    Domain.user( admin ).all.should include(aaron_domain)
   end
 
-  it "should return all zones without a user" do
-    domains = Domain.find( :all )
-    domains.should_not be_empty
-    domains.size.should be( Domain.count )
+  it "should restrict owners" do
+    quentin_domain
+    aaron_domain
+
+    Domain.user( quentin ).all.should include(quentin_domain)
+    Domain.user( quentin ).all.should_not include(aaron_domain)
+
+    Domain.user( aaron ).all.should_not include(quentin_domain)
+    Domain.user( aaron ).all.should include(aaron_domain)
   end
 
-  it "should only return a user's zones if not an admin" do
-    domains = Domain.find( :all, :user => @quentin )
-    domains.should_not be_empty
-    domains.size.should be(1)
-    domains.each { |z| z.user.should eql( @quentin ) }
-  end
-
-  it "should return all zones if the user is an admin" do
-    domains = Domain.find( :all, :user => Factory(:admin) )
-    domains.should_not be_empty
-    domains.size.should be( Domain.count )
-  end
-
-  it "should support will_paginate (no user)" do
-    domains = Domain.paginate( :page => 1 )
-    domains.should_not be_empty
-    domains.size.should be( Domain.count )
-  end
-
-  it "shoud support will_paginate (admin user)" do
-    domains = Domain.paginate( :page => 1, :user => Factory(:admin) )
-    domains.should_not be_empty
-    domains.size.should be( Domain.count )
-  end
-
-  it "should support will_paginate (zone owner)" do
-    domains = Domain.paginate( :page => 1, :user => @quentin )
-    domains.should_not be_empty
-    domains.size.should be(1)
-    domains.each { |z| z.user.should eql(@quentin) }
-  end
+  it "should restrict authentication tokens"
 end
 
 describe "NATIVE/MASTER", Domain, "when created" do

@@ -13,8 +13,11 @@ class AuthToken < ActiveRecord::Base
   belongs_to :user
 
   validates_presence_of :domain_id, :user_id, :token, :expires_at, :permissions
+  validate :ensure_future_expiry!
 
   serialize :permissions
+
+  after_initialize :set_defaults
 
   class << self
 
@@ -33,7 +36,7 @@ class AuthToken < ActiveRecord::Base
     end
   end
 
-  def after_initialize #:nodoc:
+  def set_defaults #:nodoc:
     # Ensure uniqueness
     t = self.class.token
     while self.class.count( :conditions => ['token = ?', t] ) > 1
@@ -188,10 +191,6 @@ class AuthToken < ActiveRecord::Base
     name.gsub!(/^\./,'') # Strip leading dots off
 
     return name, type
-  end
-
-  def validate #:nodoc:
-    ensure_future_expiry!
   end
 
   def ensure_future_expiry! #:nodoc:

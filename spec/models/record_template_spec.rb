@@ -35,7 +35,7 @@ describe RecordTemplate, "should inherit" do
     @record_template.record_type = 'NS'
     @record_template.should_not be_valid
 
-    @record_template.should have(1).error_on(:content)
+    @record_template.should have(2).error_on(:content)
   end
 
   it "validations from MX" do
@@ -43,7 +43,7 @@ describe RecordTemplate, "should inherit" do
     @record_template.should_not be_valid
 
     @record_template.should have(1).error_on(:prio)
-    @record_template.should have(1).error_on(:content)
+    @record_template.should have(2).error_on(:content)
 
     @record_template.prio = -10
     @record_template.should have(1).error_on(:prio)
@@ -60,7 +60,7 @@ describe RecordTemplate, "should inherit" do
     @record_template.record_type = 'NS'
     @record_template.should_not be_valid
 
-    @record_template.should have(1).error_on(:content)
+    @record_template.should have(2).error_on(:content)
   end
 
   it "validations from TXT" do

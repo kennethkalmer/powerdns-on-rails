@@ -20,6 +20,7 @@ class Record < ActiveRecord::Base
   # implemented in #SOA
   attr_accessor :primary_ns, :contact, :refresh, :retry, :expire, :minimum
 
+  before_validation :inherit_attributes_from_domain
   before_save :update_change_date
   after_save  :update_soa_serial
 
@@ -66,7 +67,7 @@ class Record < ActiveRecord::Base
   alias_method_chain :to_xml, :cleanup
 
   # Pull in the name & TTL from the domain if missing
-  def before_validation #:nodoc:
+  def inherit_attributes_from_domain #:nodoc:
     unless self.domain_id.nil?
       append_domain_name!
       self.ttl ||= self.domain.ttl
@@ -83,11 +84,6 @@ class Record < ActiveRecord::Base
       self.domain.soa_record.update_serial!
       @serial_updated = true
     end
-  end
-
-  # Force acts_as_audited to record all attributes when a record is destroyed
-  def audit_destroy(user = nil)
-    write_audit(:action => 'destroy', :auditable_parent => auditable_parent, :changes => audited_attributes, :user => user)
   end
 
   # By default records don't support priorities. Those who do can overwrite

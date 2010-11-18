@@ -54,7 +54,7 @@ describe ZoneTemplate, "when loaded" do
   end
 end
 
-describe ZoneTemplate, "with scoped finders" do
+describe ZoneTemplate, "with scopes" do
 
   before(:each) do
     @quentin = Factory(:quentin)
@@ -62,45 +62,25 @@ describe ZoneTemplate, "with scoped finders" do
     @other_template = Factory(:zone_template, :name => 'West Coast Data Center')
   end
 
-  it "should return all templates without a user" do
-    templates = ZoneTemplate.find( :all )
-    templates.should_not be_empty
-    templates.size.should be( ZoneTemplate.count )
-  end
-
   it "should only return a user's templates if not an admin" do
-    templates = ZoneTemplate.find( :all, :user => @quentin )
+    templates = ZoneTemplate.user(@quentin).all
     templates.should_not be_empty
     templates.size.should be(1)
     templates.each { |z| z.user.should eql( @quentin ) }
   end
 
   it "should return all templates if the user is an admin" do
-    templates = ZoneTemplate.find( :all, :user => Factory(:admin) )
+    templates = ZoneTemplate.user(Factory(:admin)).all
     templates.should_not be_empty
     templates.size.should be( ZoneTemplate.count )
   end
 
-  it "should support will_paginate (no user)" do
-    pending
-    templates = ZoneTemplate.paginate( :page => 1 )
-    templates.should_not be_empty
-    templates.size.should be( ZoneTemplate.count )
-  end
+  it "should return only valid records" do
+    templates = ZoneTemplate.with_soa.all
+    templates.should be_empty
 
-  it "shoud support will_paginate (admin user)" do
-    pending
-    templates = ZoneTemplate.paginate( :page => 1, :user => users(:admin) )
-    templates.should_not be_empty
-    templates.size.should be( ZoneTemplate.count )
-  end
-
-  it "should support will_paginate (template owner)" do
-    pending
-    templates = ZoneTemplate.paginate( :page => 1, :user => users(:quentin) )
-    templates.should_not be_empty
-    templates.size.should be(1)
-    templates.each { |z| z.user.should eql(users(:quentin)) }
+    Factory(:template_soa, :zone_template => @zone_template)
+    ZoneTemplate.with_soa.all.should_not be_empty
   end
 end
 

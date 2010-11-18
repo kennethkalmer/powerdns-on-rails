@@ -1,6 +1,3 @@
-%h1.underline
-  = @user.new_record? ? 'New User' : 'Update User'
-
 %div{:style => "display: none"}
   #admin-user= t :help_user_is_admin
   #domain-owner= t :help_user_is_user
@@ -46,4 +43,4 @@
     %tr
       %td.right= link_to t(:generic_cancel), users_path
       %td= submit_tag t(:generic_save)
-    
+

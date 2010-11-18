@@ -8,7 +8,7 @@
 #
 class SOA < Record
 
-  validates_presence_of :primary_ns, :content, :name, :serial, :refresh, :retry,
+  validates_presence_of :primary_ns, :content, :serial, :refresh, :retry,
     :expire, :minimum
 
   validates_numericality_of :serial, :refresh, :retry, :expire,
@@ -22,6 +22,11 @@ class SOA < Record
 
   validates_uniqueness_of :domain_id
   validates_format_of :contact, :with => /\A[a-zA-Z0-9\-\.]+@[a-zA-Z0-9-]+\.[a-zA-Z.]{2,6}\z/
+  validates :name, :presence => true, :hostname => true
+
+  before_validation :set_content
+  before_update :update_serial
+  after_initialize :update_convenience_accessors
 
   # The portions of the +content+ column that make up our SOA fields
   SOA_FIELDS = %w{ primary_ns contact serial refresh retry expire minimum }
@@ -43,11 +48,6 @@ class SOA < Record
     end
 
     @contact = email
-  end
-
-  # Convert our +content+ field into convenience variables
-  def after_initialize
-    update_convenience_accessors
   end
 
   # Hook into #reload
@@ -72,7 +72,7 @@ class SOA < Record
       Record.batch_soa_updates << self.id
     end
 
-    @serial_updated = true
+    return if self.content_changed?
 
     date_serial = Time.now.strftime( "%Y%m%d00" ).to_i
 
@@ -102,15 +102,9 @@ class SOA < Record
     to_xml_without_cleanup options.merge(:methods => SOA_FIELDS)
   end
 
-  def before_update #:nodoc:
-    update_serial unless @serial_updated
-  end
-
-  def before_validation_with_content
+  def set_content
     self.content = SOA_FIELDS.map { |f| instance_variable_get("@#{f}").to_s  }.join(' ')
-    before_validation_without_content
   end
-  alias_method_chain :before_validation, :content
 
   private
 

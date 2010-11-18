@@ -67,11 +67,6 @@ describe User do
     User.authenticate('quentin', 'test').should == quentin
   end
 
-  it 'has roles' do
-    Factory(:admin).roles.should_not be_empty
-    Factory(:aaron).roles.should be_empty
-  end
-
   it 'sets remember token' do
     quentin = Factory(:quentin)
     quentin.remember_me
@@ -159,7 +154,7 @@ end
 describe User, "as owner" do
 
   before(:each) do
-    @user = Factory(:quentin)
+    @user = Factory(:quentin, :auth_tokens => true)
     Factory(:domain, :user => @user)
     Factory(:zone_template, :user => @user)
   end
@@ -171,12 +166,16 @@ describe User, "as owner" do
   it "should have templates" do
     @user.zone_templates.should_not be_empty
   end
+
+  it "should not have auth_tokens" do
+    @user.auth_tokens?.should be_false
+  end
 end
 
 describe User, "as admin" do
 
   before(:each) do
-    @admin = Factory(:admin)
+    @admin = Factory(:admin, :auth_tokens => true)
   end
 
   it "should not own domains" do
@@ -186,6 +185,10 @@ describe User, "as admin" do
   it "should not own zone templates" do
     @admin.zone_templates.should be_empty
   end
+
+  it "should have auth tokens" do
+    @admin.auth_tokens?.should be_true
+  end
 end
 
 describe User, "and roles" do
@@ -193,23 +196,6 @@ describe User, "and roles" do
   it "should have a admin boolean flag" do
     Factory( :admin ).admin.should be_true
     Factory( :quentin ).admin.should be_false
-  end
-
-  it "should accept string and symbol values for admin value" do
-    user = Factory(:quentin)
-    user.should_not be_admin
-
-    user.admin = "true"
-    user.should be_admin
-    user.reload
-
-    user.admin = :true
-    user.should be_admin
-    user.reload
-
-    # Kinda pointless, but good for rcov
-    user.admin = 911
-    user.admin.should be(911)
   end
 
   it "should have a way to easily find active owners" do

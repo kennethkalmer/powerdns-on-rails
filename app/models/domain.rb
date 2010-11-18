@@ -11,7 +11,7 @@ require 'scoped_finders'
 #
 class Domain < ActiveRecord::Base
 
-  scope_user
+  acts_as_audited
 
   belongs_to :user
 
@@ -41,6 +41,8 @@ class Domain < ActiveRecord::Base
   # Disable single table inheritence (STI)
   set_inheritance_column 'not_used_here'
 
+  after_create :create_soa_record
+
   # Virtual attributes that ease new zone creation. If present, they'll be
   # used to create an SOA for the domain
   SOA_FIELDS = [ :primary_ns, :contact, :refresh, :retry, :expire, :minimum ]
@@ -55,6 +57,23 @@ class Domain < ActiveRecord::Base
   # Helper attributes for API clients and forms (keep it RESTful)
   attr_accessor :zone_template_id, :zone_template_name
 
+  # Needed for acts_as_audited (TODO: figure out why this is needed...)
+  attr_accessible :type, :name
+
+  # Scopes
+  scope :user, lambda { |user| user.admin? ? nil : where(:user_id => user.id) }
+  default_scope order('name')
+
+  class << self
+
+    def search( string, page, user = nil )
+      query = self.scoped
+      query = query.user( user ) unless user.nil?
+      query.where('name LIKE ?', "%#{string}%").paginate( :page => page )
+    end
+
+  end
+
   # Are we a slave domain
   def slave?
     self.type == 'SLAVE'
@@ -62,7 +81,7 @@ class Domain < ActiveRecord::Base
 
   # return the records, excluding the SOA record
   def records_without_soa
-    records.find(:all, :include => :domain ).select { |r| !r.is_a?( SOA ) }
+    records.all( :include => :domain ).select { |r| !r.is_a?( SOA ) }
   end
 
   # Convenience method to get the all the audits for the different records that
@@ -98,7 +117,7 @@ class Domain < ActiveRecord::Base
   end
 
   # Setup an SOA if we have the requirements
-  def after_create #:nodoc:
+  def create_soa_record #:nodoc:
     return if self.slave?
 
     soa = SOA.new( :domain => self )
