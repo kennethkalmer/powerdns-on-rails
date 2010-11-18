@@ -14,20 +14,10 @@ describe TemplatesController, "and admins" do
     assigns[:zone_templates].size.should be( ZoneTemplate.count )
   end
 
-  it "should have a list of users when showing the new form" do
-    Factory(:quentin)
-
-    get :new
-
-    assigns[:users].should_not be_empty
-    assigns[:users].each { |u| u.has_role?('owner').should be_true }
-  end
-
   it "should have a detailed view of a template" do
     get :show, :id => Factory(:zone_template).id
 
     assigns[:zone_template].should_not be_nil
-    assigns[:record_template].should be_a_new_record
 
     response.should render_template('templates/show')
   end
@@ -67,8 +57,6 @@ describe TemplatesController, "should handle a REST client" do
 
     get :index, :format => "xml"
 
-    response.should have_tag('zone-templates') do
-      with_tag('zone-template')
-    end
+    response.should have_tag('zone-templates > zone-template')
   end
 end

@@ -1,6 +1,3 @@
-%h1.underline 
-  = @zone_template.new_record? ? t("title_template_editing.new") : t("title_template_editing.update")
-
 %div{:style => "display: none;"}
   #zone-name= t :help_template_name
   #zone-ttl
@@ -16,11 +13,11 @@
       %td= t :label_template_zone_ttl
       %td &nbsp;
       %td= f.text_field :ttl, :size => 6
-    - unless @users.nil? || @users.empty?
+    - if User.active_owners.any?
       %tr
         %td= t :label_template_zone_owner
         %td &nbsp;
-        %td= f.collection_select :user_id, @users, :id, :login, :include_blank => true
+        %td= f.collection_select :user_id, User.active_owners, :id, :login, :include_blank => true
     %tr
       %td= link_to_cancel @zone_template
       %td= submit_tag t(:generic_save)
