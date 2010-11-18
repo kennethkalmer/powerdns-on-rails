@@ -8,16 +8,15 @@ PowerdnsOnRails::Application.routes.draw do
       post :apply_macro
       put :update_note
     end
-  end
 
-  resources :records do
-    member do
-      put :update_soa
+    resources :records do
+      member do
+        put :update_soa
+      end
     end
   end
 
-  resources :soa
-  resources :zone_templates
+  resources :zone_templates, :controler => 'templates'
   resources :record_templates
 
   resources :macros do

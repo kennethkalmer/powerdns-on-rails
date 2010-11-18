@@ -25,7 +25,7 @@ describe RecordsController, ", users, and non-SOA records" do
       pending "Still need test for #{record[:type]}" if record.delete(:pending)
 
       lambda {
-        post :create, :domain_id => @domain.id, :record => record
+        xhr :post, :create, :domain_id => @domain.id, :record => record
       }.should change( @domain.records, :count ).by(1)
 
       assigns[:domain].should_not be_nil
@@ -41,7 +41,7 @@ describe RecordsController, ", users, and non-SOA records" do
       'content' => ""
     }
 
-    post :create, :domain_id => @domain.id, :record => params
+    xhr :post, :create, :domain_id => @domain.id, :record => params
 
     response.should render_template( 'records/create' )
   end
@@ -56,7 +56,7 @@ describe RecordsController, ", users, and non-SOA records" do
       'content' => "n4.example.com"
     }
 
-    put :update, :id => record.id, :domain_id => @domain.id, :record => params
+    xhr :put, :update, :id => record.id, :domain_id => @domain.id, :record => params
 
     response.should render_template("records/update")
   end
@@ -72,7 +72,7 @@ describe RecordsController, ", users, and non-SOA records" do
     }
 
     lambda {
-      put :update, :id => record.id, :domain_id => @domain.id, :record => params
+      xhr :put, :update, :id => record.id, :domain_id => @domain.id, :record => params
       record.reload
     }.should_not change( record, :content )
 
@@ -81,7 +81,7 @@ describe RecordsController, ", users, and non-SOA records" do
   end
 
   it "should destroy when requested to do so" do
-    delete :destroy, :domain_id => @domain.id, :id => Factory(:mx, :domain => @domain).id
+    xhr :delete, :destroy, :domain_id => @domain.id, :id => Factory(:mx, :domain => @domain).id
 
     response.should be_redirect
     response.should redirect_to( domain_path( @domain ) )
@@ -95,7 +95,7 @@ describe RecordsController, ", users, and SOA records" do
 
     target_soa = Factory(:domain).soa_record
 
-    put "update_soa", :id => target_soa.id, :domain_id => target_soa.domain.id,
+    xhr :put, :update_soa, :id => target_soa.id, :domain_id => target_soa.domain.id,
       :soa => {
         :primary_ns => 'ns1.example.com', :contact => 'dnsadmin@example.com',
         :refresh => "10800", :retry => "10800", :minimum => "10800", :expire => "604800"
@@ -122,7 +122,7 @@ describe RecordsController, "and tokens" do
     target_soa = @domain.soa_record
 
     lambda {
-      put "update_soa", :id => target_soa.id, :domain_id => target_soa.domain.id,
+      xhr :put, "update_soa", :id => target_soa.id, :domain_id => target_soa.domain.id,
         :soa => {
           :primary_ns => 'ns1.example.com', :contact => 'dnsadmin@example.com',
           :refresh => "10800", :retry => "10800", :minimum => "10800", :expire => "604800"
@@ -142,7 +142,7 @@ describe RecordsController, "and tokens" do
     }
 
     lambda {
-      post :create, :domain_id => @domain.id, :record => params
+      xhr :post, :create, :domain_id => @domain.id, :record => params
     }.should_not change( @domain.records, :size )
 
     response.should_not be_success
@@ -162,7 +162,7 @@ describe RecordsController, "and tokens" do
     }
 
     lambda {
-      put :update, :id => record.id, :domain_id => @domain.id, :record => params
+      xhr :put, :update, :id => record.id, :domain_id => @domain.id, :record => params
       record.reload
     }.should_not change( record, :content )
 
@@ -182,7 +182,7 @@ describe RecordsController, "and tokens" do
     }
 
     lambda {
-      post :create, :domain_id => @domain.id, :record => params
+      xhr :post, :create, :domain_id => @domain.id, :record => params
     }.should change( @domain.records, :size )
 
     response.should be_success
@@ -206,7 +206,7 @@ describe RecordsController, "and tokens" do
     }
 
     lambda {
-      post :create, :domain_id => @domain.id, :record => params
+      xhr :post, :create, :domain_id => @domain.id, :record => params
     }.should_not change( @domain.records, :size )
 
     response.should_not be_success
@@ -226,7 +226,7 @@ describe RecordsController, "and tokens" do
     }
 
     lambda {
-      put :update, :id => record.id, :domain_id => @domain.id, :record => params
+      xhr :put, :update, :id => record.id, :domain_id => @domain.id, :record => params
       record.reload
     }.should change( record, :content )
 
@@ -246,7 +246,7 @@ describe RecordsController, "and tokens" do
     }
 
     lambda {
-      put :update, :id => record.id, :domain_id => @domain.id, :record => params
+      xhr :put, :update, :id => record.id, :domain_id => @domain.id, :record => params
       record.reload
     }.should_not change( record, :content )
 
@@ -261,7 +261,7 @@ describe RecordsController, "and tokens" do
     controller.stubs(:current_token).returns(@token)
 
     lambda {
-      delete :destroy, :domain_id => @domain.id, :id => record.id
+      xhr :delete, :destroy, :domain_id => @domain.id, :id => record.id
     }.should change( @domain.records, :size ).by(-1)
 
     response.should be_redirect
@@ -273,7 +273,7 @@ describe RecordsController, "and tokens" do
     record = Factory(:a, :domain => @domain)
 
     lambda {
-      delete :destroy, :domain_id => @domain.id, :id => record.id
+      xhr :delete, :destroy, :domain_id => @domain.id, :id => record.id
     }.should_not change( @domain.records, :count )
 
     response.should_not be_success
@@ -290,7 +290,7 @@ describe RecordsController, "and tokens" do
       'content' => '127.0.0.3'
     }
 
-    post :create, :domain_id => Factory(:domain, :name => 'example.net').id, :record => record
+    xhr :post, :create, :domain_id => Factory(:domain, :name => 'example.net').id, :record => record
 
     response.code.should == "403"
   end

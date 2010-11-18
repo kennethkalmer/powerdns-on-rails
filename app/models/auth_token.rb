@@ -9,6 +9,9 @@
 #
 class AuthToken < ActiveRecord::Base
 
+  class Denied < ::Exception
+  end
+
   belongs_to :domain
   belongs_to :user
 
