@@ -1,6 +1,5 @@
-nbproject
-*.log
-doc/api*
-doc/app/*
-doc/guides/*
+.bundle
+db/*.sqlite3
+log/*.log
+tmp/**/*
 *.swp

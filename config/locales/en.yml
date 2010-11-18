@@ -31,34 +31,34 @@ en:
       half_a_minute: "half a minute"
       less_than_x_seconds:
         one:   "less than 1 second"
-        other: "less than {{count}} seconds"
+        other: "less than %{count} seconds"
       x_seconds:
         one:   "1 second"
-        other: "{{count}} seconds"
+        other: "%{count} seconds"
       less_than_x_minutes:
         one:   "less than a minute"
-        other: "less than {{count}} minutes"
+        other: "less than %{count} minutes"
       x_minutes:
         one:   "1 minute"
-        other: "{{count}} minutes"
+        other: "%{count} minutes"
       about_x_hours:
         one:   "about 1 hour"
-        other: "about {{count}} hours"
+        other: "about %{count} hours"
       x_days:
         one:   "1 day"
-        other: "{{count}} days"
+        other: "%{count} days"
       about_x_months:
         one:   "about 1 month"
-        other: "about {{count}} months"
+        other: "about %{count} months"
       x_months:
         one:   "1 month"
-        other: "{{count}} months"
+        other: "%{count} months"
       about_x_years:
         one:   "about 1 year"
-        other: "about {{count}} years"
+        other: "about %{count} years"
       over_x_years:
         one:   "over 1 year"
-        other: "over {{count}} years"
+        other: "over %{count} years"
 
 # Used in array.to_sentence.
   support:
@@ -76,17 +76,17 @@ en:
         accepted: "must be accepted"
         empty: "can't be empty"
         blank: "can't be blank"
-        too_long: "is too long (maximum is {{count}} characters)"
-        too_short: "is too short (minimum is {{count}} characters)"
-        wrong_length: "is the wrong length (should be {{count}} characters)"
+        too_long: "is too long (maximum is %{count} characters)"
+        too_short: "is too short (minimum is %{count} characters)"
+        wrong_length: "is the wrong length (should be %{count} characters)"
         taken: "has already been taken"
         not_a_number: "is not a number"
         not_a_date: "is not a valid date"
-        greater_than: "must be greater than {{count}}"
-        greater_than_or_equal_to: "must be greater than or equal to {{count}}"
-        equal_to: "must be equal to {{count}}"
-        less_than: "must be less than {{count}}"
-        less_than_or_equal_to: "must be less than or equal to {{count}}"
+        greater_than: "must be greater than %{count}"
+        greater_than_or_equal_to: "must be greater than or equal to %{count}"
+        equal_to: "must be equal to %{count}"
+        less_than: "must be less than %{count}"
+        less_than_or_equal_to: "must be less than or equal to %{count}"
         odd: "must be odd"
         even: "must be even"
         greater_than_start_date: "must be greater than start date"
@@ -143,7 +143,7 @@ en:
     Coming soon!
 
 # Dashboard index
-  label_last_x_domains: "Latest {{value}} domains"
+  label_last_x_domains: "Latest %{value} domains"
   label_new_domain: "New domain"
 
 # Domains _record
@@ -205,7 +205,7 @@ en:
   label_domain_minimum: "Minimum"
 
 # Domain apply_macro
-  title_macro_for: "Macros for {{domain}}"
+  title_macro_for: "Macros for %{domain}"
   title_macro_apply: "Apply macro"
   text_macro_description:
     Macro's provide a convenient way to update a domain with multiple, predefined changes.
@@ -236,7 +236,7 @@ en:
 
   warning_this_domain_has_owner: "This domain has an owner! Please make sure that you want to delete it."
   confirm_delete_this_domain: "Yes I am sure I want to delete this domain."
-  confirm_domain_delete: "Are you sure you want to remove domain {{domain}}?"
+  confirm_domain_delete: "Are you sure you want to remove domain %{domain}?"
 
   label_domain_master_server: "Master server"
   label_domain_owner: "Owner"
@@ -353,7 +353,7 @@ en:
   label_report_total_domains: "Total Domains"
 
 # Reports results
-  title_report_result_for: "Results for \"{{who}}\""
+  title_report_result_for: "Results for \"%{who}\""
   message_user_not_found: "No users found"
 
 # Reports view
@@ -363,7 +363,7 @@ en:
     other: domains
 
 # Search result
-  title_search_result_for: "Results for \"{{who}}\""
+  title_search_result_for: "Results for \"%{who}\""
   message_search_domain_not_found: "No domains found"
 
 # Sessions new
@@ -438,7 +438,7 @@ en:
   label_template_record_minimum: "Minimum"
 
 # User_mailer activation
-  text_user_mailer_accout_activated: "{{user}}, your account has been activated.  You may now start adding your plugins:"
+  text_user_mailer_accout_activated: "%{user}, your account has been activated.  You may now start adding your plugins:"
 
 # User_mailer signup_notification
   text_user_mailer_account_created:
@@ -492,7 +492,7 @@ en:
   title_users: "Users"
 
 # User show
-  title_user_detail_for: " Details for {{user}}"
+  title_user_detail_for: " Details for %{user}"
   label_user_create: "New user"
   confirm_user_remove: "Are you sure you want to remove this user?"
   label_user_detail: "More Detail"
