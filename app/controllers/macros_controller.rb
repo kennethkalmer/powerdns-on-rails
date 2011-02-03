@@ -1,32 +1,27 @@
-class MacrosController < ApplicationController
-
-  before_filter :new_step, :only => :show
+class MacrosController < InheritedResources::Base
 
   protected
 
-  def load_macro
-    @macro = Macro.find(params[:id], :user => current_user)
+  def resource
+    @macro = Macro.user( current_user ).find(params[:id])
   end
 
-  def load_macros
-    @macros = Macro.all( :user => current_user)
-  end
-
-  def new_macro
-    @macro = Macro.new
-    # load the owners if this is an admin
-    @users = User.all.select{ |u| u.has_role?('owner') } if current_user.admin?
-  end
-
-  def new_step
-    @macro_step = @macro.macro_steps.new
+  def collection
+    @macros = Macro.user(current_user)
   end
 
   public
 
-  def destroy
-    flash[:notice] = t(:message_macro_removed)
-    redirect_to macros_path
+  def new
+    new! do |format|
+      format.html { render :action => :edit }
+    end
+  end
+
+  def create
+    create! do |success, failure|
+      failure.html { render :action => :edit }
+    end
   end
 
 end

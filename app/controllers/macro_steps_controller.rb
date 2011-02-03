@@ -1,33 +1,42 @@
-class MacroStepsController < ApplicationController
+class MacroStepsController < InheritedResources::Base
 
-  before_filter :load_macro
+  belongs_to :macro
+  respond_to :xml, :json, :js
 
   protected
 
-  def load_macro
-    @macro = Macro.find(params[:macro_id], :user => current_user)
+  def parent
+    Macro.user( current_user ).find( params[:macro_id] )
+  end
+
+  def collection
+    parent.macro_steps
+  end
+
+  def resource
+    collection.find( params[:id] )
   end
 
   public
 
   def create
     # Check for any previous macro steps
-    if @macro.macro_steps.any?
+    if parent.macro_steps.any?
       # Check for the parameter
       unless params[:macro_step][:position].blank?
         position = params[:macro_step].delete(:position)
       else
-        position = @macro.macro_steps.last.position + 1
+        position = parent.macro_steps.last.position + 1
       end
     else
       position = '1'
     end
 
-    @macro_step = @macro.macro_steps.create( params[:macro_step] )
+    @macro_step = parent.macro_steps.create( params[:macro_step] )
 
     @macro_step.insert_at( position ) if position && !@macro_step.new_record?
 
-    if @macro.save
+    if parent.save
       flash.now[:info] = t(:message_macro_step_created)
     else
       flash.now[:error] = t(:message_macro_step_cannot_create)
@@ -37,7 +46,7 @@ class MacroStepsController < ApplicationController
   def update
     position = params[:macro_step].delete(:position)
 
-    @macro_step = @macro.macro_steps.find( params[:id] )
+    @macro_step = parent.macro_steps.find( params[:id] )
     @macro_step.update_attributes( params[:macro_step] )
 
     @macro_step.insert_at( position ) if position
@@ -48,11 +57,11 @@ class MacroStepsController < ApplicationController
   end
 
   def destroy
-    @macro_step = @macro.macro_steps.find( params[:id] )
+    @macro_step = parent.macro_steps.find( params[:id] )
     @macro_step.destroy
 
     flash[:info] = t :message_macro_step_removed
-    redirect_to macro_path( @macro )
+    redirect_to macro_path( parent )
   end
 
 end

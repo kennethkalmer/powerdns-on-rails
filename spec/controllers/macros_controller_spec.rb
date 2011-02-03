@@ -22,7 +22,6 @@ describe MacrosController, "for admins" do
     get :show, :id => @macro.id
 
     assigns[:macro].should == @macro
-    assigns[:macro_step].should be_a_new_record
 
     response.should render_template('macros/show')
   end
@@ -30,7 +29,6 @@ describe MacrosController, "for admins" do
   it "should have a form for creating new macros" do
     get :new
 
-    assigns[:users].should_not be_empty
     assigns[:macro].should be_a_new_record
 
     response.should render_template('macros/edit')
