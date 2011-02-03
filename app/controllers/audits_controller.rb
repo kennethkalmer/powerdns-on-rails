@@ -12,10 +12,7 @@ class AuditsController < ApplicationController
 
   # Retrieve the audit details for a domain
   def domain
-    @domain = Domain.find(
-      params[:id],
-      :user => current_user
-    )
+    @domain = Domain.user( current_user ).find( params[:id] )
   end
 
 end

@@ -1,5 +1,5 @@
 PowerdnsOnRails::Application.routes.draw do
-  match '/' => 'dashboard#index'
+  root :to => 'dashboard#index'
 
   resources :domains do
     member do

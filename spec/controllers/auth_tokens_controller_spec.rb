@@ -5,11 +5,11 @@ describe AuthTokensController do
   it "should not allow access to admins or owners" do
     login_as( Factory(:admin) )
     post :create
-    response.code.should eql("401")
+    response.code.should eql("302")
 
     login_as(Factory(:quentin))
     post :create
-    response.code.should eql("401")
+    response.code.should eql("302")
   end
 
   it "should bail cleanly on missing auth_token" do
@@ -35,7 +35,7 @@ describe AuthTokensController do
 
     post :create, :auth_token => { :domain => 'example.com' }
 
-    response.should have_tag('error')
+    response.should have_selector('error')
   end
 
   describe "generating tokens" do
@@ -50,11 +50,9 @@ describe AuthTokensController do
     it "with allow_new set" do
       post :create, :auth_token => @params.merge(:allow_new => 'true')
 
-      response.should have_tag('token') do
-        with_tag('expires')
-        with_tag('auth_token')
-        with_tag('url')
-      end
+      response.should have_selector('token > expires')
+      response.should have_selector('token > auth_token')
+      response.should have_selector('token > url')
 
       assigns[:auth_token].should_not be_nil
       assigns[:auth_token].domain.should eql( @domain )
@@ -65,11 +63,9 @@ describe AuthTokensController do
       a = Factory(:www, :domain => @domain)
       post :create, :auth_token => @params.merge(:remove => 'true', :record => ['www.example.com'])
 
-      response.should have_tag('token') do
-        with_tag('expires')
-        with_tag('auth_token')
-        with_tag('url')
-      end
+      response.should have_selector('token > expires')
+      response.should have_selector('token > auth_token')
+      response.should have_selector('token > url')
 
       assigns[:auth_token].remove_records?.should be_true
       assigns[:auth_token].can_remove?( a ).should be_true
@@ -78,11 +74,9 @@ describe AuthTokensController do
     it "with policy set" do
       post :create, :auth_token => @params.merge(:policy => 'allow')
 
-      response.should have_tag('token') do
-        with_tag('expires')
-        with_tag('auth_token')
-        with_tag('url')
-      end
+      response.should have_selector('token > expires')
+      response.should have_selector('token > auth_token')
+      response.should have_selector('token > url')
 
       assigns[:auth_token].policy.should eql(:allow)
     end
@@ -97,11 +91,9 @@ describe AuthTokensController do
         :policy => 'allow'
       )
 
-      response.should have_tag('token') do
-        with_tag('expires')
-        with_tag('auth_token')
-        with_tag('url')
-      end
+      response.should have_selector('token > expires')
+      response.should have_selector('token > auth_token')
+      response.should have_selector('token > url')
 
       assigns[:auth_token].should_not be_nil
       assigns[:auth_token].can_change?( a ).should be_false

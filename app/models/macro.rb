@@ -28,6 +28,8 @@ class Macro < ActiveRecord::Base
   has_many :macro_steps, :dependent => :destroy, :order => 'position'
   belongs_to :user
 
+  scope :user, lambda { |user| user.admin? ? nil : where(:user_id => user.id) }
+
   class << self
 
     def record_types

@@ -53,9 +53,6 @@ describe DomainsController, "when creating" do
     get 'new'
 
     response.should render_template('domains/new')
-    assigns[:domain].should be_a_kind_of( Domain )
-    assigns[:zone_templates].should_not be_empty
-    assigns[:zone_templates].size.should be(1)
   end
 
   it "should not save a partial form" do
@@ -66,7 +63,6 @@ describe DomainsController, "when creating" do
 
     response.should_not be_redirect
     response.should render_template('domains/new')
-    assigns[:zone_templates].should_not be_empty
   end
 
   it "should build from a zone template if selected" do
@@ -88,7 +84,7 @@ describe DomainsController, "when creating" do
 
     response.should be_redirect
     response.should redirect_to( domain_path( assigns[:domain] ) )
-    flash[:info].should_not be_nil
+    flash[:notice].should_not be_nil
   end
 
   it "should ignore the zone template if a slave is created" do
@@ -119,7 +115,7 @@ describe DomainsController do
     domain = Factory(:domain)
 
     lambda {
-      put :change_owner, :id => domain.id, :domain => { :user_id => Factory(:quentin).id }
+      xhr :put, :change_owner, :id => domain.id, :domain => { :user_id => Factory(:quentin).id }
       domain.reload
     }.should change( domain, :user_id )
 
@@ -210,8 +206,6 @@ describe DomainsController, "should handle a REST client" do
   it "removing zones" do
     delete :destroy, :id => @domain.id, :format => "xml"
 
-    response.code.should == "204"
-
     lambda {
       @domain.reload
     }.should raise_error(ActiveRecord::RecordNotFound)
@@ -221,17 +215,13 @@ describe DomainsController, "should handle a REST client" do
   it "viewing a list of all zones" do
     get :index, :format => 'xml'
 
-    response.should have_tag('domains') do
-      with_tag( 'domain' )
-    end
+    response.should have_selector('domains > domain')
   end
 
   it "viewing a zone" do
     get :show, :id => @domain.id, :format => 'xml'
 
-    response.should have_tag('domain') do
-      with_tag 'records'
-    end
+    response.should have_selector('domain > records')
   end
 
   it "getting a list of macros to apply" do
@@ -239,9 +229,7 @@ describe DomainsController, "should handle a REST client" do
 
     get :apply_macro, :id => @domain.id, :format => 'xml'
 
-    response.should have_tag('macros') do
-      with_tag('macro')
-    end
+    response.should have_selector('macros > macro')
   end
 
   it "applying a macro to a domain" do

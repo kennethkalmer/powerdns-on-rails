@@ -11,7 +11,7 @@ require 'scoped_finders'
 #
 class Domain < ActiveRecord::Base
 
-  acts_as_audited
+  acts_as_audited :protect => false
 
   belongs_to :user
 
@@ -58,7 +58,7 @@ class Domain < ActiveRecord::Base
   attr_accessor :zone_template_id, :zone_template_name
 
   # Needed for acts_as_audited (TODO: figure out why this is needed...)
-  attr_accessible :type, :name
+  #attr_accessible :type
 
   # Scopes
   scope :user, lambda { |user| user.admin? ? nil : where(:user_id => user.id) }
@@ -97,7 +97,7 @@ class Domain < ActiveRecord::Base
   def to_xml_with_cleanup(options = {}, &block)
     #to_xml_without_cleanup options.merge(:include => [:records],
     #:except => [:user_id], &block)
-    to_xml_without_cleanup options.merge(:except => [:user_id], &block)
+    to_xml_without_cleanup options.merge(:except => [:user_id], :include => [:records], &block)
   end
   alias_method_chain :to_xml, :cleanup
 

@@ -56,7 +56,7 @@ EOS
     end
 
     # expiry time
-    t = Time.parse( params[:auth_token][:expires_at] || '' )
+    t = params[:auth_token][:expires_at].present? ? Time.parse( params[:auth_token][:expires_at] ) : nil
 
     # Our new token
     @auth_token = AuthToken.new(

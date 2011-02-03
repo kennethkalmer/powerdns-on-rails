@@ -188,22 +188,35 @@ describe Domain, "scopes" do
 end
 
 describe "NATIVE/MASTER", Domain, "when created" do
-  before(:each) do
-    @domain = Domain.new
+  it "with additional attributes should create an SOA record" do
+    domain = Domain.new
+    domain.name = 'example.org'
+    domain.primary_ns = 'ns1.example.org'
+    domain.contact = 'admin@example.org'
+    domain.refresh = 10800
+    domain.retry = 7200
+    domain.expire = 604800
+    domain.minimum = 10800
+
+    domain.save.should be_true
+    domain.soa_record.should_not be_nil
+    domain.soa_record.primary_ns.should eql('ns1.example.org')
   end
 
-  it "with additional attributes should create an SOA record" do
-    @domain.name = 'example.org'
-    @domain.primary_ns = 'ns1.example.org'
-    @domain.contact = 'admin@example.org'
-    @domain.refresh = 10800
-    @domain.retry = 7200
-    @domain.expire = 604800
-    @domain.minimum = 10800
+  it "with bulk additional attributes should be acceptable" do
+    domain = Domain.new(
+      :name => 'example.org',
+      :primary_ns => 'ns1.example.org',
+      :contact => 'admin@example.org',
+      :refresh => 10800,
+      :retry => 7200,
+      :expire => 608400,
+      :minimum => 10800
+    )
 
-    @domain.save.should be_true
-    @domain.soa_record.should_not be_nil
-    @domain.soa_record.primary_ns.should eql('ns1.example.org')
+    domain.save.should be_true
+    domain.soa_record.should_not be_nil
+    domain.soa_record.primary_ns.should eql('ns1.example.org')
   end
 end
 

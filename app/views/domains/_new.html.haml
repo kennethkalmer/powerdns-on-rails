@@ -12,7 +12,7 @@
 
 %p=t :label_create_new_domain_note
 
-- form_for(@domain) do |f|
+- form_for( Domain.new ) do |f|
   = error_messages_for :domain
   %p &nbsp;
   %table.grid
@@ -34,15 +34,15 @@
       %td=t :label_domain_zone_template
       %td
         - if @zone_templates.size > 0
-          = f.collection_select( :zone_template_id, @zone_templates, :id, :name, :include_blank => true )
+          = f.collection_select( :zone_template_id, ZoneTemplate.with_soa.user( current_user ), :id, :name, :include_blank => true )
           = observe_field :domain_zone_template_id, :function =>"if(value == \"\") $('no-template-input').show(); else $('no-template-input').hide()", :on => 'select'
         - else
           %em
             =link_to((t :label_create_zone_templates), new_zone_template_path)
             =t :label_zone_for_eazy_management
       %td &nbsp;
-    
-    
+
+
   #no-template-input
     %table.grid
       %tr
