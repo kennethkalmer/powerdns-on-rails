@@ -1,15 +1,4 @@
-require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
-
-describe "Secure", MacroStepsController do
-
-  it "should require a valid login" do
-    get :index
-
-    response.should be_redirect
-    response.should redirect_to(new_session_path)
-  end
-
-end
+require 'spec_helper'
 
 describe MacroStepsController do
 

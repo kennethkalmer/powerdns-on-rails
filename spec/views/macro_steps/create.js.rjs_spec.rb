@@ -1,4 +1,4 @@
-require File.dirname(__FILE__) + '/../../spec_helper'
+require 'spec_helper'
 
 describe "macro_steps/create.js.rjs" do
   describe "for failed records" do

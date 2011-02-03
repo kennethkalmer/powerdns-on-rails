@@ -1,4 +1,4 @@
-require File.dirname(__FILE__) + '/../spec_helper'
+require 'spec_helper'
 
 describe RecordsController, ", users, and non-SOA records" do
   before( :each ) do
