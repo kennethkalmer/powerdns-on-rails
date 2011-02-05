@@ -55,7 +55,7 @@ describe SearchController, "for api clients" do
 
     assigns[:results].should be_empty
 
-    response.should have_text("[]")
+    response.body.should == "[]"
   end
 
   it "should return a JSON set of results" do

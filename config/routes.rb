@@ -23,8 +23,8 @@ PowerdnsOnRails::Application.routes.draw do
     resources :macro_steps
   end
 
-  match '/audits/:action/:id' => 'audits#index', :as => :audits
-  match '/reports(/:action(/:id))' => 'reports#index', :as => :reports
+  match '/audits(/:action(/:id))' => 'audits#index', :as => :audits
+  match '/reports(/:action)' => 'reports#index', :as => :reports
 
   resource :auth_token
   match '/token/:token' => 'sessions#token', :as => :token

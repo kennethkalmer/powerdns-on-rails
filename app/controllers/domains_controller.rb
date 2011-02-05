@@ -78,6 +78,8 @@ class DomainsController < InheritedResources::Base
   # GET: list of macros to apply
   # POST: apply selected macro
   def apply_macro
+    @domain = resource
+
     if request.get?
       @macros = Macro.user(current_user)
 
