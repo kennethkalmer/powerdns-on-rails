@@ -1,6 +1,6 @@
-# A collection of helper methods to ease the use of Prototip throughout the 
+# A collection of helper methods to ease the use of Prototip throughout the
 module PrototipHelper
-  
+
   # Insert a help icon that displays the content of +dom_id+ in a tooltip
   def prototip_help_icon( dom_id )
     html = image_tag( 'help.png', :id => 'proto-' + dom_id )
@@ -18,7 +18,7 @@ module PrototipHelper
       EOF
     end
   end
-  
+
   def prototip_info_icon( image_name, dom_id )
     html = image_tag( image_name, :id => 'proto-info-' + dom_id )
     html << javascript_tag( :defer => 'defer' ) do

@@ -11,7 +11,7 @@
           =t :layout_main_title
       - if current_user
         #search-bar{:style => "display: inline; float: right;"}
-          - form_tag( { :controller => :search, :action => :results }, { :method => :get } ) do
+          = form_tag( { :controller => :search, :action => :results }, { :method => :get } ) do
             = text_field_tag :q
             = submit_tag( t(:generic_search) )
         #Nav

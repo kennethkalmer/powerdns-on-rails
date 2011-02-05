@@ -20,7 +20,7 @@
 
 - if current_user
   #soa-edit-form{ :style => "display: none;" }
-    - remote_form_for( @domain.soa_record, :url => update_soa_record_path( @domain.soa_record, :format => :js, :domain_id => @domain.id ), :html => { :method => :put } ) do |f|
+    = form_for( @domain.soa_record, :url => update_soa_domain_record_path( @domain.soa_record, :remote => true, :domain_id => @domain.id ) ) do |f|
       %table.grid
         %tr
           %td= t :label_domain_primary_name_server
@@ -46,7 +46,7 @@
           %td= t :label_domain_expire
           %td
             = f.text_field :expire, :size => 6
-            = prototip_help_icon('help-expire') 
+            = prototip_help_icon('help-expire')
           %td &nbsp;
         %tr
           %td= t :label_domain_minimum

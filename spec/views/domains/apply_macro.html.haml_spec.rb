@@ -5,14 +5,14 @@ describe "domains/apply_macro.html.haml" do
     @domain = Factory(:domain)
     @macro = Factory(:macro)
 
-    assigns[:domain] = @domain
-    assigns[:macros] = Macro.find(:all)
+    assign(:domain, @domain)
+    assign(:macros, Macro.all)
 
-    render "domains/apply_macro.html.haml"
+    render
   end
 
   it "should have a selection of macros" do
-    response.should have_tag('select[name=macro_id]')
+    rendered.should have_tag('select[name=macro_id]')
   end
 
 end

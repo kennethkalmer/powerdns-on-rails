@@ -16,7 +16,7 @@ module ApplicationHelper
       options.merge!( :style => 'display:none' ) if flash[f].nil?
       html << content_tag( 'div', options ) { flash[f] || '' }
     end
-    html
+    html.html_safe
   end
 
   # Link to Zytrax

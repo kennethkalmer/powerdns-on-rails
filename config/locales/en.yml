@@ -189,7 +189,7 @@ en:
     The IP address of the authorative (or master) DNS server for this domain.
 
   label_create_new_domain_note:
-    Create a new domain by entering the Start of Authority (SOA) information below:
+    Create a new domain by entering the Start of Authority (SOA) information below.
 
   label_domain_name: "Domain name"
   label_domain_type: "Type"

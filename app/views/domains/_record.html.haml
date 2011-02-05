@@ -1,7 +1,7 @@
 - unless record.domain.slave?
-  %div{ :style => "display: none;" } 
-    %div{ :id => "record-template-edit-#{record.id}" }= t :label_domain_edit_record 
-    %div{ :id => "record-template-delete-#{record.id}" }= t :label_domain_delete_record 
+  %div{ :style => "display: none;" }
+    %div{ :id => "record-template-edit-#{record.id}" }= t :label_domain_edit_record
+    %div{ :id => "record-template-delete-#{record.id}" }= t :label_domain_delete_record
 
 %tr[ record, :marker ]
 %tr[ record, :show ]
@@ -21,7 +21,7 @@
   - if current_user || current_token.can_change?( record )
     %tr[ record, :edit ]{ :style => "display: none;" }
       %td{ :colspan => 7 }
-        - remote_form_for( :record, record, :url => domain_record_path(record.domain, record, :format => :js), :html => { :method => :put }) do |f|
+        = form_for( record, :url => domain_record_path(record.domain, record, :remote => true)) do |f|
           %div[ record, :error ]
             %table.gridwide
               %tr

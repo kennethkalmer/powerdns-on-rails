@@ -71,7 +71,7 @@
             - else
               \-
           #owner-edit{ :style => 'display: none' }
-            - remote_form_for( :domain, @domain, :url => change_owner_domain_path( @domain, :format => :js ), :html => { :method => :put } ) do |f|
+            = form_for( @domain, :url => change_owner_domain_path( @domain, :remote => true ) ) do |f|
               = f.collection_select "user_id", @users, :id, :login, :include_blank => true
               = submit_tag(t(:generic_save))
         %td= link_to_function prototip_info_icon('user_edit.png', 'change-owner'), "changeOwner()"
@@ -84,7 +84,7 @@
             = link_to_function prototip_info_icon('note_edit.png', 'note-edit'), "showNote()"
 
           #note{ :style => "display: none;" }
-            - remote_form_for( :domain, @domain, :url => update_note_domain_path( @domain, :format => :js ), :html => { :method => :put } ) do |f|
+            = form_for( @domain, :url => update_note_domain_path( @domain, :remote => true ) ) do |f|
               = f.text_area :notes, :rows => 5, :cols => 17
               %br
               = link_to_function t(:generic_cancel), "hideNote()"
@@ -120,13 +120,12 @@
     = link_to_function t(:label_domain_record_new), "displayRecordForm()"
 
     #record-form-div{ :style => "display: none;" }
-      - remote_form_for( :record, @record, :url => domain_records_path( @domain, :format => :js ), :html => { :id => 'record-form' } ) do |f|
+      = form_for( @record, :url => domain_records_path( @domain, :remote => true ), :html => { :id => 'record-form' } ) do |f|
         %table
           %tr.all
             %td= t :label_domain_record_type
             %td
               = select_record_type( f )
-              = observe_field "record_type", :function => "toggleRecordFields(element,value)"
           %tr.all
             %td= t :label_domain_record_host
             %td= f.text_field :name

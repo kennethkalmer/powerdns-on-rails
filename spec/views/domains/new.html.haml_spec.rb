@@ -3,25 +3,27 @@ require 'spec_helper'
 describe "domains/new.html.haml" do
 
   before(:each) do
-    assigns[:domain] = Domain.new
+    assign(:domain, Domain.new)
+
+    view.stubs(:current_user).returns( Factory(:admin) )
   end
 
   it "should have a link to create a zone template if no zone templates are present" do
-    assigns[:zone_templates] = []
+    assign(:zone_templates, [])
 
-    render "domains/new.html.haml"
+    render
 
-    response.should have_tag("a[href=#{new_zone_template_path}]", "Create Zone Templates")
-    response.should_not have_tag("select[name*=zone_template_id]")
+    rendered.should have_selector("a[href='#{new_zone_template_path}']")
+    rendered.should_not have_selector("select[name*=zone_template_id]")
   end
 
   it "should have a list of zone templates to select from" do
-    assigns[:zone_templates] = [ Factory(:zone_template) ]
+    assign(:zone_templates, [ Factory(:zone_template) ])
 
-    render "domains/new.html.haml"
+    render
 
-    response.should have_tag("select[name*=zone_template_id]")
-    response.should_not have_tag("a[href=#{new_zone_template_path}]")
+    rendered.should have_selector("select[name*=zone_template_id]")
+    rendered.should_not have_selector("a[href='#{new_zone_template_path}']")
   end
 
 end
