@@ -5,29 +5,25 @@ describe "macros/show.html.haml" do
     @macro = Factory(:macro)
     Factory(:macro_step_create, :macro => @macro)
 
-    assigns[:macro] = @macro
-    assigns[:macro_step] = @macro.macro_steps.new
+    assign(:macro, @macro)
+    assign(:macro_step, @macro.macro_steps.new)
 
-    render "macros/show.html.haml"
+    render
   end
 
   it "should have the name of the macro" do
-    response.should have_tag('h1', /^#{@macro.name}/)
+    rendered.should have_tag('h1', :content => @macro.name)
   end
-  
+
   it "should have an overview table" do
-    response.should have_tag('table.grid') do
-      with_tag('td', 'Name')
-      with_tag('td', 'Description')
-      with_tag('td', 'Active')
-    end
+    rendered.should have_tag('table.grid td', :content => "Name")
+    rendered.should have_tag('table.grid td', :content => "Description")
+    rendered.should have_tag('table.grid td', :content => "Active")
   end
-  
+
   it "should have a list of steps" do
-    response.should have_tag('h1', 'Macro Steps')
-    response.should have_tag('table#steps-table') do
-      with_tag 'td', '1'
-    end
+    rendered.should have_tag('h1', :content => 'Macro Steps')
+    rendered.should have_tag('table#steps-table td', :content => "1")
   end
-    
+
 end

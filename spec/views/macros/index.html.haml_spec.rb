@@ -4,22 +4,20 @@ describe "macros/index.html.haml" do
 
   it "should render a list of macros" do
     2.times { |i| Factory(:macro, :name => "Macro #{i}") }
-    assigns[:macros] = Macro.find(:all)
+    assign(:macros, Macro.all)
 
-    render 'macros/index.html.haml'
+    render
 
-    response.should have_tag('h1', 'Macros')
-    response.should have_tag('table') do
-      with_tag('a[href^=/macro]')
-    end
+    rendered.should have_tag('h1', :content => 'Macros')
+    render.should have_tag("table a[href^='/macro']")
   end
 
   it "should indicate no macros are present" do
-    assigns[:macros] = Macro.find(:all)
+    assign(:macros, Macro.all)
 
-    render 'macros/index.html.haml'
+    render
 
-    response.should have_tag('em', /don't have any macros/)
+    rendered.should have_tag('em', :content => "don't have any macros")
   end
-  
+
 end

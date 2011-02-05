@@ -1,40 +1,41 @@
 require 'spec_helper'
 
 describe "macros/edit.html.haml" do
-  describe "for new macros" do
+  context "for new macros" do
     before(:each) do
-      assigns[:macro] = Macro.new
-      render "macros/edit.html.haml"
+      assign(:macro, Macro.new)
+      render
     end
 
     it "should behave accordingly" do
-      response.should have_tag('h1', 'New Macro')
+      rendered.should have_tag('h1', :content => 'New Macro')
     end
 
   end
 
-  describe "for existing records" do
+  context "for existing records" do
     before(:each) do
       @macro = Factory(:macro)
-      assigns[:macro] = @macro
-      render "macros/edit.html.haml"
+      assign(:macro, @macro)
+      render
     end
 
     it "should behave accordingly" do
-      response.should have_tag('h1', 'Update Macro')
+      rendered.should have_tag('h1', :content => 'Update Macro')
     end
   end
 
   describe "for records with errors" do
     before(:each) do
-      assigns[:macro] = Macro.new
-      assigns[:macro].valid?
-      render "macros/edit.html.haml"
+      m = Macro.new
+      m.valid?
+      assign(:macro, m)
+      render
     end
 
     it "should display the errors" do
-      response.should have_tag('div.errorExplanation')
+      rendered.should have_tag('div.errorExplanation')
     end
   end
-      
+
 end

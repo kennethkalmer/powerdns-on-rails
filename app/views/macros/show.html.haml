@@ -11,7 +11,7 @@
 %h1.underline
   = @macro.name
   &nbsp;
-  - link_to edit_macro_path( @macro ) do
+  = link_to edit_macro_path( @macro ) do
     = prototip_info_icon( 'brick_edit.png', 'edit-macro' )
 
 %table.grid
@@ -53,7 +53,7 @@
 
 #record-form-error{ :style => 'display:none' }
 #record-form-div{ :style => 'display:none' }
-  - remote_form_for( [@macro, @macro_step], :html => { :id => 'record-form' } ) do |f|
+  = form_for( [@macro, @macro_step], :remote => true, :html => { :id => 'record-form' } ) do |f|
     = f.hidden_field( :macro_id )
     %table.grid
       %tr
@@ -68,7 +68,6 @@
         %td= t :label_domain_record_type
         %td
           = f.select :record_type, Macro.record_types.map { |t| [t,t] }
-          = observe_field "macro_step_record_type", :function => 'toggleRecordFields(element,value);'
       %tr
         %td= t :label_domain_record_host
         %td
