@@ -8,9 +8,9 @@ class ReportsController < ApplicationController
 
   # search for a specific user
   def index
-    @users = User.find_owners(params[:page])
+    @users = User.where(:admin => false).paginate(:page => params[:page])
     @total_domains  = Domain.count
-    @system_domains = Domain.count( :conditions => 'user_id IS NULL' )
+    @system_domains = Domain.where('user_id IS NULL').count
   end
 
   def results

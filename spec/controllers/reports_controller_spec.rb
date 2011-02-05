@@ -61,7 +61,7 @@ describe ReportsController , "view" do
 
     response.should render_template("reports/view")
     assigns[:user].should_not be_nil
-    assigns[:user].login.should have_text('aaron')
+    assigns[:user].login.should == 'aaron'
   end
 
 end
