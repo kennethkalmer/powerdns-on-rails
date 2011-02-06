@@ -36,4 +36,12 @@ module ApplicationHelper
     link_to "Cancel", path
   end
 
+  def help_icon( dom_id )
+    image_tag('help.png', :id => "help-icn-#{dom_id}", :class => 'help-icn', "data-help" => dom_id )
+  end
+
+  def info_icon( image, dom_id )
+    image_tag( image , :id => "help-icn-#{dom_id}", :class => 'help-icn', "data-help" => dom_id )
+  end
+
 end
