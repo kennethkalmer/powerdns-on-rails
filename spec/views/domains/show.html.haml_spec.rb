@@ -8,7 +8,6 @@ describe "domains/show.html.haml" do
       view.stubs(:current_token).returns( nil )
       @domain = Factory(:domain)
       assign(:domain, @domain)
-      assign(:record, @domain.records.new)
       assign(:users, User.active_owners)
 
       render :template => "/domains/show.html.haml", :layout => "layouts/application"
@@ -27,7 +26,6 @@ describe "domains/show.html.haml" do
       view.stubs(:current_token).returns( nil )
       @domain = Factory(:domain)
       assign(:domain, @domain)
-      assign(:record, @domain.records.new)
       assign(:users, User.active_owners)
 
       render
@@ -58,7 +56,6 @@ describe "domains/show.html.haml" do
       view.stubs(:current_token).returns( nil )
       @domain = Factory(:domain, :user => Factory(:quentin))
       assign(:domain, @domain)
-      assign(:record, @domain.records.new)
       assign(:users, User.active_owners)
 
       render
@@ -82,7 +79,6 @@ describe "domains/show.html.haml" do
 
       @domain = Factory(:domain, :user => quentin)
       assign(:domain, @domain)
-      assign(:record, @domain.records.new)
 
       render
     end
@@ -145,7 +141,6 @@ describe "domains/show.html.haml" do
       @admin = Factory(:admin)
       @domain = Factory(:domain)
       assign(:domain, @domain)
-      assign(:record, @domain.records.new)
 
       view.stubs(:current_token).returns( Factory(:auth_token, :user => @admin, :domain => @domain) )
       view.stubs(:current_user).returns( nil )

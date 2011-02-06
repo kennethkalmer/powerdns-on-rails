@@ -120,7 +120,7 @@
     = link_to_function t(:label_domain_record_new), "displayRecordForm()"
 
     #record-form-div{ :style => "display: none;" }
-      = form_for( @record, :url => domain_records_path( @domain, :remote => true ), :html => { :id => 'record-form' } ) do |f|
+      = form_for( :record, :url => domain_records_path( @domain, :remote => true ), :html => { :id => 'record-form' } ) do |f|
         %table
           %tr.all
             %td= t :label_domain_record_type
