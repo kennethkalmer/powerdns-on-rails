@@ -12,7 +12,7 @@
   = @macro.name
   &nbsp;
   = link_to edit_macro_path( @macro ) do
-    = prototip_info_icon( 'brick_edit.png', 'edit-macro' )
+    = info_icon( 'brick_edit.png', 'edit-macro' )
 
 %table.grid
   %tr
@@ -48,7 +48,7 @@
 
 %p &nbsp;
 
-= link_to_function prototip_info_icon('table_add.png', 'new-step'), "displayRecordForm()"
+= link_to_function info_icon('table_add.png', 'new-step'), "displayRecordForm()"
 = link_to_function t(:label_macro_step_create_new), "displayRecordForm()"
 
 #record-form-error{ :style => 'display:none' }
@@ -63,7 +63,7 @@
         %td= t :label_macro_step_action
         %td
           = f.select :action, MacroStep.valid_actions.map { |a| [ a.humanize, a ] }
-          = prototip_info_icon( 'help.png', 'actions' )
+          = info_icon( 'help.png', 'actions' )
       %tr
         %td= t :label_domain_record_type
         %td
@@ -72,7 +72,7 @@
         %td= t :label_domain_record_host
         %td
           = f.text_field :name
-          = prototip_info_icon( 'help.png', 'name-field' )
+          = info_icon( 'help.png', 'name-field' )
       %tr.rt-mx{ :style => 'display :none' }
         %td= t :label_domain_record_priority
         %td= f.text_field :prio, :size => 6
@@ -80,7 +80,7 @@
         %td= t :label_domain_record_data
         %td
           = f.text_field :content
-          = prototip_info_icon( 'help.png', 'content-field' )
+          = info_icon( 'help.png', 'content-field' )
       %tr
         %td.right= link_to_function t(:generic_cancel), "hideAll()"
         %td= submit_tag t(:generic_save)

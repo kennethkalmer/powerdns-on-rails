@@ -14,21 +14,21 @@
     %tr
       %td{:width => "300"}=t :label_domain_name
       %td= f.text_field :name
-      %td= prototip_help_icon('help-domain')
+      %td= help_icon('help-domain')
     %tr
       %td= t :label_domain_type
       %td
         = f.select :type, ['NATIVE','MASTER','SLAVE']
         = observe_field :domain_type, :function => "if(value == \"SLAVE\") { $('master-address').show(); } else { $('master-address').hide(); }"
-      %td= prototip_help_icon('help-type')
+      %td= help_icon('help-type')
     %tr#master-address{ :style => 'display: none' }
       %td= t :label_domain_master_address
       %td= f.text_field :master
-      %td= prototip_help_icon('help-master')
+      %td= help_icon('help-master')
     %tr
       %td= t :label_default_ttl
       %td= f.text_field :ttl, :size => 8
-      %td= prototip_help_icon('help-ttl')
+      %td= help_icon('help-ttl')
   %table.grid
     %tr
       %td.right{:width => "300"}= link_to_cancel @domain

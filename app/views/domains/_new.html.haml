@@ -19,16 +19,16 @@
     %tr
       %td{:width => "300"}=t :label_domain_name
       %td= f.text_field :name
-      %td= prototip_help_icon('help-domain')
+      %td= help_icon('help-domain')
     %tr
       %td=t :label_domain_type
       %td
         = f.select :type, ['NATIVE','MASTER','SLAVE']
-      %td= prototip_help_icon('help-type')
+      %td= help_icon('help-type')
     %tr#master-address{ :style => 'display: none' }
       %td=t :label_domain_master_address
       %td= f.text_field :master
-      %td= prototip_help_icon('help-master')
+      %td= help_icon('help-master')
     %tr#zone-templates
       %td=t :label_domain_zone_template
       %td
@@ -36,7 +36,7 @@
           = f.collection_select( :zone_template_id, ZoneTemplate.with_soa.user( current_user ), :id, :name, :include_blank => true )
         - else
           %em
-            =link_to((t :label_create_zone_templates), new_zone_template_path)
+            =link_to((t :label_create_zone_templates), new_template_path)
             =t :label_zone_for_eazy_management
       %td &nbsp;
 
@@ -46,35 +46,35 @@
       %tr
         %td{:width => "300"}=t :label_domain_primary_name_server
         %td= f.text_field :primary_ns
-        %td= prototip_help_icon('help-primary-ns')
+        %td= help_icon('help-primary-ns')
       %tr
         %td=t :label_domain_contact
         %td= f.text_field :contact
-        %td= prototip_help_icon('help-contact')
+        %td= help_icon('help-contact')
       %tr
         %td=t :label_domain_refresh
         %td
           = f.text_field :refresh, :size => 6
-          = prototip_help_icon('help-refresh')
+          = help_icon('help-refresh')
         %td &nbsp;
 
       %tr
         %td= t :label_domain_retry
         %td
           = f.text_field :retry, :size => 6
-          = prototip_help_icon('help-retry')
+          = help_icon('help-retry')
         %td &nbsp;
       %tr
         %td= t :label_domain_expire
         %td
           = f.text_field :expire, :size => 6
-          = prototip_help_icon('help-expire')
+          = help_icon('help-expire')
         %td &nbsp;
       %tr
         %td= t :label_domain_minimum
         %td
           = f.text_field :minimum, :size => 6
-          = prototip_help_icon('help-minimum')
+          = help_icon('help-minimum')
         %td &nbsp;
   %table.grid
     %tr

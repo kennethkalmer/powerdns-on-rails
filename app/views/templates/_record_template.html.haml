@@ -6,8 +6,8 @@
   %td{ :width => 30 }= record_template.prio
   %td{ :width => 250 }= record_template.content unless record_template.soa?
   %td{ :width => 36 }
-    = link_to_function prototip_info_icon('table_edit.png', 'edit-record-template'), "editRecordTemplate(#{record_template.id})"
-    = link_to prototip_info_icon('table_delete.png', 'delete-record-template'), record_template_path( record_template ), :method => :delete, :confirm => t(:confirm_template_record_delete)
+    = link_to_function info_icon('table_edit.png', 'edit-record-template'), "editRecordTemplate(#{record_template.id})"
+    = link_to info_icon('table_delete.png', 'delete-record-template'), record_template_path( record_template ), :method => :delete, :confirm => t(:confirm_template_record_delete)
 - if record_template.soa?
   %tr[ record_template, 'show-soa' ]
     %td{ :colspan => 2 } &nbsp;
@@ -45,34 +45,34 @@
               %tr
                 %td= t :label_template_primary_nameserver
                 %td= f.text_field :primary_ns, :size => 20
-                %td= prototip_help_icon('help-primary-ns')
+                %td= help_icon('help-primary-ns')
               %tr
                 %td= t :label_template_primary_contact
                 %td= f.text_field :contact, :size => 20
-                %td= prototip_help_icon('help-contact')
+                %td= help_icon('help-contact')
               %tr
                 %td= t :label_template_refresh
                 %td
                   = f.text_field :refresh, :size => 6
-                  = prototip_help_icon('help-refresh')
+                  = help_icon('help-refresh')
                 %td &nbsp;
               %tr
                 %td= t :label_template_retry
                 %td
                   = f.text_field :retry, :size => 6
-                  = prototip_help_icon('help-retry')
+                  = help_icon('help-retry')
                 %td &nbsp;
               %tr
                 %td= t :label_template_expire
                 %td
                   = f.text_field :expire, :size => 6
-                  = prototip_help_icon('help-expire')
+                  = help_icon('help-expire')
                 %td &nbsp;
               %tr
                 %td= t :label_template_minimum
                 %td
                   = f.text_field :minimum, :size => 6
-                  = prototip_help_icon('help-minimum')
+                  = help_icon('help-minimum')
                 %td &nbsp;
         - else
           %td{ :width => 250 }= f.text_field :name, :size => 15

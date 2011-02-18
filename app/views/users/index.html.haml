@@ -5,7 +5,7 @@
 %table.gridwide
   %tr
     %td{ :colspan => 5 }
-      = link_to prototip_info_icon('user_add.png', 'new-user'), new_user_path
+      = link_to info_icon('user_add.png', 'new-user'), new_user_path
       = link_to t(:label_user_create), new_user_path
   = render :partial => 'user', :collection => @users
 

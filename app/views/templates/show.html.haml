@@ -15,7 +15,7 @@
 %h1.underline
   = @zone_template.name
   &nbsp;
-  = link_to prototip_info_icon( 'database_edit.png', 'edit-template' ), edit_zone_template_path(@zone_template)
+  = link_to info_icon( 'database_edit.png', 'edit-template' ), edit_zone_template_path(@zone_template)
 
 %table.grid
   %tr
@@ -55,7 +55,7 @@
 
 %p &nbsp;
 
-= link_to_function prototip_info_icon('table_add.png', 'new-record-template'), "displayRecordForm()"
+= link_to_function info_icon('table_add.png', 'new-record-template'), "displayRecordForm()"
 = link_to_function t(:label_template_record_create_new), "displayRecordForm()"
 
 #record-form-div{ :style => 'display:none' }
@@ -87,34 +87,34 @@
       %tr.rt-soa{ :style => 'display :none' }
         %td= t :label_template_record_primary_ns
         %td= f.text_field :primary_ns
-        %td= prototip_help_icon('help-primary-ns')
+        %td= help_icon('help-primary-ns')
       %tr.rt-soa{ :style => 'display :none' }
         %td= t :label_template_record_contact
         %td= f.text_field :contact
-        %td= prototip_help_icon('help-contact')
+        %td= help_icon('help-contact')
       %tr.rt-soa{ :style => 'display :none' }
         %td= t :label_template_record_refresh
         %td
           = f.text_field :refresh, :size => 6
-          = prototip_help_icon('help-refresh')
+          = help_icon('help-refresh')
         %td &nbsp;
       %tr.rt-soa{ :style => 'display :none' }
         %td= t :label_template_record_retry
         %td
           = f.text_field :retry, :size => 6
-          = prototip_help_icon('help-retry')
+          = help_icon('help-retry')
         %td &nbsp;
       %tr.rt-soa{ :style => 'display :none' }
         %td= t :label_template_record_expire
         %td
           = f.text_field :expire, :size => 6
-          = prototip_help_icon('help-expire')
+          = help_icon('help-expire')
         %td &nbsp;
       %tr.rt-soa{ :style => 'display :none' }
         %td= t :label_template_record_minimum
         %td
           = f.text_field :minimum, :size => 6
-          = prototip_help_icon('help-minimum')
+          = help_icon('help-minimum')
         %td &nbsp;
       %tr
         %td.right= link_to_function t(:generic_cancel), "hideAll()"
