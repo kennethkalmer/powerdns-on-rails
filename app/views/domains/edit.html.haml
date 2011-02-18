@@ -19,7 +19,6 @@
       %td= t :label_domain_type
       %td
         = f.select :type, ['NATIVE','MASTER','SLAVE']
-        = observe_field :domain_type, :function => "if(value == \"SLAVE\") { $('master-address').show(); } else { $('master-address').hide(); }"
       %td= help_icon('help-type')
     %tr#master-address{ :style => 'display: none' }
       %td= t :label_domain_master_address
