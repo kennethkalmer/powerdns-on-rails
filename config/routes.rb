@@ -16,7 +16,7 @@ PowerdnsOnRails::Application.routes.draw do
     end
   end
 
-  resources :zone_templates, :controler => 'templates'
+  resources :zone_templates, :controller => 'templates'
   resources :record_templates
 
   resources :macros do
