@@ -12,6 +12,7 @@ require 'scoped_finders'
 class Domain < ActiveRecord::Base
 
   acts_as_audited :protect => false
+  has_associated_audits
 
   belongs_to :user
 
@@ -82,15 +83,6 @@ class Domain < ActiveRecord::Base
   # return the records, excluding the SOA record
   def records_without_soa
     records.all( :include => :domain ).select { |r| !r.is_a?( SOA ) }
-  end
-
-  # Convenience method to get the all the audits for the different records that
-  # belong to this domain
-  def record_audits
-    Record.record_types.inject([]) do |memo, t|
-      memo << send( "#{t.downcase}_audits" )
-      memo
-    end
   end
 
   # Nicer representation of the domain as XML

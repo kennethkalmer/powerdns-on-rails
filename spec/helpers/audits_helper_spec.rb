@@ -119,11 +119,11 @@ describe AuditsHelper, "link_to_record_audit" do
     domain = Factory(:domain)
     audit = Audit.new(
       :auditable => Factory(:a, :domain => domain),
-      :auditable_parent => domain,
+      :association => domain,
       :action => 'create',
       :version => 1,
       :user => Factory(:admin),
-      :changes => { 'name' => 'example.com' }
+      :audited_changes => { 'name' => 'example.com' }
     )
 
     result = helper.link_to_record_audit( audit )
@@ -133,11 +133,11 @@ describe AuditsHelper, "link_to_record_audit" do
   it "should handle removed records without a 'type' key in the changes hash" do
     audit = Audit.new(
       :auditable => nil,
-      :auditable_parent => Factory(:domain),
+      :association => Factory(:domain),
       :action => 'destroy',
       :version => 1,
       :user => Factory(:admin),
-      :changes => { 'name' => 'local.example.com' }
+      :audited_changes => { 'name' => 'local.example.com' }
     )
 
     result = helper.link_to_record_audit( audit )
@@ -151,11 +151,11 @@ describe AuditsHelper, "audit_user" do
   it "should display user logins if present" do
     audit = Audit.new(
       :auditable => nil,
-      :auditable_parent => Factory(:domain),
+      :association => Factory(:domain),
       :action => 'destroy',
       :version => 1,
       :user => Factory(:admin),
-      :changes => { 'name' => 'local.example.com' }
+      :audited_changes => { 'name' => 'local.example.com' }
     )
 
     helper.audit_user( audit ).should == 'admin'
@@ -164,11 +164,11 @@ describe AuditsHelper, "audit_user" do
   it "should display usernames if present" do
     audit = Audit.new(
       :auditable => nil,
-      :auditable_parent => Factory(:domain),
+      :association => Factory(:domain),
       :action => 'destroy',
       :version => 1,
       :username => 'foo',
-      :changes => { 'name' => 'local.example.com' }
+      :audited_changes => { 'name' => 'local.example.com' }
     )
 
     helper.audit_user( audit ).should == 'foo'
@@ -177,10 +177,10 @@ describe AuditsHelper, "audit_user" do
   it "should not bork on missing user information" do
     audit = Audit.new(
       :auditable => nil,
-      :auditable_parent => Factory(:domain),
+      :association => Factory(:domain),
       :action => 'destroy',
       :version => 1,
-      :changes => { 'name' => 'local.example.com' }
+      :audited_changes => { 'name' => 'local.example.com' }
     )
 
     helper.audit_user( audit ).should == 'UNKNOWN'

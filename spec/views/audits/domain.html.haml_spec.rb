@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe "/audits/domain" do
+describe "audits/domain.html.haml" do
   context "and domain audits" do
 
     before(:each) do
@@ -30,7 +30,7 @@ describe "/audits/domain" do
       assign(:domain, @domain)
       render
 
-      rendered.should have_tag("ul > li > a", /1 create by/)
+      rendered.should have_tag("ul > li > a", :content => "1 create by")
     end
 
   end
@@ -44,7 +44,7 @@ describe "/audits/domain" do
     end
 
     it "should handle no audit entries" do
-      @domain.expects(:record_audits).at_most(2).returns( [] )
+      @domain.expects(:associated_audits).at_most(2).returns( [] )
       assign(:domain, @domain)
 
       render
@@ -57,7 +57,7 @@ describe "/audits/domain" do
 
       render
 
-      rendered.should have_tag("ul > li > a", /1 create by admin/)
+      rendered.should have_tag("ul > li > a", :content => "1 create by admin")
     end
 
   end

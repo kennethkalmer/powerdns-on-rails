@@ -7,6 +7,9 @@
 #
 class Record < ActiveRecord::Base
 
+  acts_as_audited :associated_with => :domain
+  self.non_audited_columns.delete( self.inheritance_column ) # Audit the 'type' column
+
   belongs_to :domain
 
   validates_presence_of :domain_id, :name
