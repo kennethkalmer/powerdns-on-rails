@@ -36,7 +36,7 @@
           = f.collection_select( :zone_template_id, ZoneTemplate.with_soa.user( current_user ), :id, :name, :include_blank => true )
         - else
           %em
-            =link_to((t :label_create_zone_templates), new_template_path)
+            =link_to((t :label_create_zone_templates), new_zone_template_path)
             =t :label_zone_for_eazy_management
       %td &nbsp;
 

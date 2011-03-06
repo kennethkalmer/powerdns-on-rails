@@ -13,18 +13,16 @@ describe "templates/show.html.haml" do
     end
 
     it "should have the template name" do
-      view.should have_tag('h1', /^#{@zone_template.name}/)
+      rendered.should have_tag('h1', :content => @zone_template.name)
     end
 
     it "should have a table with template overview" do
-      view.should have_tag('table.grid') do
-        with_tag('td', 'Name')
-        with_tag('td', 'TTL')
-      end
+      rendered.should have_selector('table.grid td', :content => 'Name')
+      rendered.should have_selector('table.grid td', :content => 'TTL')
     end
 
     it "should have the record templates" do
-      rendered.should have_selector('h1', :text => 'Record templates')
+      rendered.should have_selector('h1', :content => 'Record templates')
       rendered.should have_selector('table#record-table')
     end
 

@@ -1,18 +1,19 @@
 require 'spec_helper'
 
-describe "/search/results" do
+describe "search/results.html.haml" do
 
   before(:each) do
     @admin = Factory(:admin)
-    template.stubs(:current_user).returns(@admin)
+    view.stubs(:current_user).returns(@admin)
+    view.stubs(:current_token).returns(nil)
   end
 
   it "should handle no results" do
-    assigns[:results] = []
+    assign(:results, [])
 
-    render "/search/results"
+    render
 
-    response.should have_tag("strong", "No domains found")
+    rendered.should have_tag("strong", :content => "No domains found")
   end
 
   it "should handle results within the pagination limit" do
@@ -20,16 +21,14 @@ describe "/search/results" do
       zone = Domain.new
       zone.id = i
       zone.name = "zone-#{i}.com"
-      zone.save( false ).should be_true
+      zone.save( :validate => false ).should be_true
     end
 
-    assigns[:results] = Domain.search( 'zone', 1, @admin )
+    assign(:results, Domain.search( 'zone', 1, @admin ))
 
-    render "/search/results"
+    render 
 
-    response.should have_tag("table") do
-      with_tag "a", "zone-1.com"
-    end
+    rendered.should have_tag("table a", :content => "zone-1.com")
   end
 
   it "should handle results with pagination and scoping" do
@@ -37,16 +36,14 @@ describe "/search/results" do
       zone = Domain.new
       zone.id = i
       zone.name = "domain-#{i}.com"
-      zone.save( false ).should be_true
+      zone.save( :validate => false ).should be_true
     end
 
-    assigns[:results] = Domain.search( 'domain', 1, @admin )
+    assign(:results, Domain.search( 'domain', 1, @admin ))
 
-    render "/search/results"
+    render
 
-    response.should have_tag("table") do
-      with_tag "a", "domain-1.com"
-    end
+    rendered.should have_tag("table a", :content => "domain-1.com")
   end
 
 end

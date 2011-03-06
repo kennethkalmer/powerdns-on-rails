@@ -33,7 +33,7 @@
 
 %tr[ record_template, :edit ]{ :style => 'display: none' }
   %td{ :colspan => 6 }
-    - form_for( :record_template, record_template, :url => record_template_path( record_template ), :method => :put, :remote => true ) do |f|
+    = form_for( record_template, :url => record_template_path( record_template ), :method => :put, :remote => true ) do |f|
       %div[ record_template, :error ]
       %table.gridwide
         %tr
