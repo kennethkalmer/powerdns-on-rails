@@ -9,9 +9,12 @@ class ApplicationController < ActionController::Base
   def current_token
     nil
   end
+  helper_method :current_token
 
   # Stub
   def token_user?
     !!current_token
   end
+
+  helper_method :token_user?
 end

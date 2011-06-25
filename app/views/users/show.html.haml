@@ -9,8 +9,11 @@
     %td= t :label_user_email
     %td= @user.email
   %tr
-    %td= t :label_user_role
-    %td= @user.roles.map(&:name).map(&:humanize).to_sentence
+    %td= t :label_user_admin
+    %td= @user.admin? ? 'Yes' : 'No'
+  %tr
+    %td= t :label_user_auth_tokens
+    %td= @user.auth_tokens? ? 'Yes' : 'No'
   %tr
     %td &nbsp;
     %td &nbsp;

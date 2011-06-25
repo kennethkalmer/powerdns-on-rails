@@ -34,7 +34,7 @@
         = t "label_user_roles.domain_owner"
         = help_icon('domain-owner')
         %br
-        = check_box_tag 'token_user'
+        = f.check_box 'auth_tokens'
         = t :text_user_manage_token
         = help_icon('token-user-help')
     %tr

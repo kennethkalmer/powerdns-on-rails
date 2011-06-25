@@ -10,7 +10,7 @@
 %tr[ user, :show ]
   %td= link_to user.login, user_path( user )
   %td= user.email
-  %td= user.has_role?('admin') ? t("label_user_role.admin") : t("label_user_role.user")
+  %td= user.admin? ? t("label_user_role.admin") : t("label_user_role.user")
   %td
     - unless user.suspended?
       = info_icon('flag_green.png', "active-user-#{user.id}")
@@ -19,7 +19,7 @@
   %td
     = link_to info_icon('user_edit.png', "edit-user-#{user.id}"), edit_user_path( user )
     - unless user.suspended?
-      = link_to icon('user_suspend.png', "suspend-user-#{user.id}"), suspend_user_path( user ), :method => :put unless user.eql?(current_user)
+      = link_to info_icon('user_suspend.png', "suspend-user-#{user.id}"), suspend_user_path( user ), :method => :put unless user.eql?(current_user)
     - else
       = link_to info_icon('user_go.png', "reactivate-user-#{user.id}"), unsuspend_user_path( user ), :method => :put
     = link_to info_icon('user_delete.png', "delete-user-#{user.id}"), purge_user_path( user ), :method => :delete unless user.eql?(current_user)
