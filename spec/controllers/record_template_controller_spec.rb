@@ -3,7 +3,7 @@ require 'spec_helper'
 describe RecordTemplatesController, "when updating SOA records" do
 
   it "should accept a valid update" do
-    login_as(Factory(:admin))
+    sign_in(Factory(:admin))
 
     zt = Factory(:zone_template)
     target_soa = Factory(:template_soa, :zone_template => zt)

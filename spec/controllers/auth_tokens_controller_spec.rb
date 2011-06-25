@@ -3,17 +3,17 @@ require 'spec_helper'
 describe AuthTokensController do
 
   it "should not allow access to admins or owners" do
-    login_as( Factory(:admin) )
+    sign_in( Factory(:admin) )
     post :create
     response.code.should eql("302")
 
-    login_as(Factory(:quentin))
+    sign_in(Factory(:quentin))
     post :create
     response.code.should eql("302")
   end
 
   it "should bail cleanly on missing auth_token" do
-    login_as(Factory(:token_user))
+    sign_in(Factory(:token_user))
 
     post :create
 
@@ -21,7 +21,7 @@ describe AuthTokensController do
   end
 
   it "should bail cleanly on missing domains" do
-    login_as(Factory(:token_user))
+    sign_in(Factory(:token_user))
 
     post :create, :auth_token => { :domain => 'example.org' }
 
@@ -31,7 +31,7 @@ describe AuthTokensController do
   it "bail cleanly on invalid requests" do
     Factory(:domain)
 
-    login_as(Factory(:token_user))
+    sign_in(Factory(:token_user))
 
     post :create, :auth_token => { :domain => 'example.com' }
 
@@ -41,7 +41,7 @@ describe AuthTokensController do
   describe "generating tokens" do
 
     before(:each) do
-      login_as(Factory(:token_user))
+      sign_in(Factory(:token_user))
 
       @domain = Factory(:domain)
       @params = { :domain => @domain.name, :expires_at => 1.hour.since.to_s(:rfc822) }

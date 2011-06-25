@@ -1,4 +1,6 @@
 PowerdnsOnRails::Application.routes.draw do
+  devise_for :users, :controllers => { :sessions => "sessions" }, :path => "sessions"
+
   root :to => 'dashboard#index'
 
   resources :domains do
@@ -27,7 +29,7 @@ PowerdnsOnRails::Application.routes.draw do
   match '/reports(/:action)' => 'reports#index', :as => :reports
 
   resource :auth_token
-  match '/token/:token' => 'sessions#token', :as => :token
+  post '/token/:token' => 'sessions#token', :as => :token
 
   resources :users do
     member do
@@ -37,7 +39,9 @@ PowerdnsOnRails::Application.routes.draw do
     end
   end
 
-  resource :session
-  match '/logout' => 'sessions#destroy', :as => :logout
-  match '/:controller(/:action(/:id))'
+  get '/search(/:action)' => 'search#results', :as => :search
+
+  #resource :session
+  #match '/logout' => 'sessions#destroy', :as => :logout
+  #match '/:controller(/:action(/:id))'
 end

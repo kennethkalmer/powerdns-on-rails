@@ -3,7 +3,7 @@ require 'spec_helper'
 describe MacroStepsController do
 
   before(:each) do
-    login_as(Factory(:admin))
+    sign_in(Factory(:admin))
 
     @macro = Factory(:macro)
     @step = Factory(:macro_step_create,

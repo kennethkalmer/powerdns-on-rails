@@ -6,14 +6,14 @@ describe UsersController do
     it "should require a login" do
       get 'index'
 
-      response.should redirect_to( new_session_path )
+      response.should redirect_to( new_user_session_path )
     end
   end
 
   describe "with an admin" do
     before(:each) do
       @admin = Factory(:admin)
-      login_as( @admin )
+      sign_in( @admin )
     end
 
     it "should show a list of current users" do

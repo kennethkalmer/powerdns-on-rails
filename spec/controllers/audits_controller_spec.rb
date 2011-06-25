@@ -3,7 +3,7 @@ require 'spec_helper'
 describe AuditsController do
 
   before(:each) do
-    login_as(Factory(:admin))
+    sign_in(Factory(:admin))
   end
 
   it "should have a search form" do

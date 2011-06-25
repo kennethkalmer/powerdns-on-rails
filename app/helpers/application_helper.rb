@@ -11,7 +11,7 @@ module ApplicationHelper
   # Output the flashes if they exist
   def show_flash
     html = ''
-    [ :notice, :info, :warning, :error ].each do |f|
+    [ :alert, :notice, :info, :warning, :error ].each do |f|
       options = { :id => "flash-#{f}", :class => "flash-#{f}" }
       options.merge!( :style => 'display:none' ) if flash[f].nil?
       html << content_tag( 'div', options ) { flash[f] || '' }

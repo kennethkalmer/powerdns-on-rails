@@ -262,27 +262,3 @@ describe Domain, "when searching" do
     Domain.search('exa', 1).should_not be_empty
   end
 end
-
-describe Domain, "when serializing to XML" do
-  before(:each) do
-    @domain = Factory(:domain)
-  end
-
-  it "should not show the user_id" do
-    xml = @domain.to_xml
-    xml.should_not match(/<user[\-_]id>/)
-  end
-
-  it "should not include records by default" do
-    xml = @domain.to_xml
-
-    xml.should match(/<name>#{@domain.name}<\/name>/)
-    xml.should_not match(/<records[^>]*>/)
-  end
-
-  it "should preserve original options passed" do
-    xml = @domain.to_xml :skip_instruct => true
-
-    xml.should_not match(/<\?xml/)
-  end
-end

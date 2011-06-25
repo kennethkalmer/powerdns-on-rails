@@ -25,6 +25,7 @@ RSpec.configure do |config|
   # instead of true.
   config.use_transactional_fixtures = true
 
-  config.include AuthenticatedTestHelper
+  config.include Devise::TestHelpers, :type => :controller
+  config.include SignInHelpers, :type => :controller
   config.include Webrat::HaveTagMatcher
 end

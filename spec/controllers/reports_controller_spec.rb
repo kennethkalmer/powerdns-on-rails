@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe ReportsController, "index" do
   before(:each) do
-    login_as(Factory(:admin))
+    sign_in(Factory(:admin))
 
     Factory(:domain)
     q = Factory(:quentin)
@@ -28,7 +28,7 @@ end
 
 describe ReportsController, "results" do
   before(:each) do
-    login_as(Factory(:admin))
+    sign_in(Factory(:admin))
   end
 
   it "should display a list of users for a search hit" do
@@ -53,7 +53,7 @@ end
 
 describe ReportsController , "view" do
   before(:each) do
-    login_as(Factory(:admin))
+    sign_in(Factory(:admin))
   end
 
   it "should show a user reports" do

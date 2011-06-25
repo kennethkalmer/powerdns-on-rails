@@ -4,7 +4,7 @@ describe SearchController, "for admins" do
 
   before(:each) do
     #session[:user_id] = Factory(:admin).id
-    login_as Factory(:admin)
+    sign_in Factory(:admin)
 
     Factory(:domain, :name => 'example.com')
     Factory(:domain, :name => 'example.net')
@@ -44,7 +44,7 @@ end
 
 describe SearchController, "for api clients" do
   before(:each) do
-    authorize_as(Factory(:api_client))
+    sign_in(Factory(:api_client))
 
     Factory(:domain, :name => 'example.com')
     Factory(:domain, :name => 'example.net')

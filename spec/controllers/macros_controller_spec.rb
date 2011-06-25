@@ -3,7 +3,7 @@ require 'spec_helper'
 describe MacrosController, "for admins" do
 
   before(:each) do
-    login_as( Factory(:admin) )
+    sign_in( Factory(:admin) )
 
     @macro = Factory(:macro)
 
@@ -103,7 +103,7 @@ describe MacrosController, "for owners" do
 
   before(:each) do
     quentin = Factory(:quentin)
-    login_as(quentin)
+    sign_in(quentin)
 
     @macro = Factory(:macro, :user => quentin)
   end

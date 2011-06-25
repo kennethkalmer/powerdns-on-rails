@@ -85,14 +85,6 @@ class Domain < ActiveRecord::Base
     records.all( :include => :domain ).select { |r| !r.is_a?( SOA ) }
   end
 
-  # Nicer representation of the domain as XML
-  def to_xml_with_cleanup(options = {}, &block)
-    #to_xml_without_cleanup options.merge(:include => [:records],
-    #:except => [:user_id], &block)
-    to_xml_without_cleanup options.merge(:except => [:user_id], :include => [:records], &block)
-  end
-  alias_method_chain :to_xml, :cleanup
-
   # Expand our validations to include SOA details
   def after_validation_on_create #:nodoc:
     soa = SOA.new( :domain => self )

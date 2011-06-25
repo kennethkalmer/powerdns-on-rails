@@ -1,4 +1,8 @@
 class ConvertRolesToColumnsOnUser < ActiveRecord::Migration
+  class ::Role < ActiveRecord::Base
+    has_and_belongs_to_many :users
+  end
+
   def self.up
     change_table :users do |t|
       t.boolean :admin, :default => false

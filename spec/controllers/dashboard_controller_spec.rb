@@ -3,7 +3,7 @@ require 'spec_helper'
 describe DashboardController, "and admins" do
 
   before(:each) do
-    login_as( Factory(:admin) )
+    sign_in( Factory(:admin) )
 
     Factory(:domain)
 
