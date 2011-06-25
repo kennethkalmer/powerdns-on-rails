@@ -17,6 +17,9 @@ class DeviseCreateUsers < ActiveRecord::Migration
 
     # rememberme related fields
     add_column :users, "remember_created_at", :datetime #additional field required for devise.
+
+    # Current users can carry on logging in
+    User.all.each(&:confirm!)
   end
 
   def self.down
