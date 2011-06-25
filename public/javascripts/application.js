@@ -2,6 +2,7 @@
 // This file is automatically included by javascript_include_tag :defaults
 
 // Easily control flash visibility from RJS
+// TODO: This still used ?
 function showflash( level, message ) {
   f = $('flash-' + level);
   f.innerHTML = message;
@@ -17,3 +18,4 @@ $(document).ready(function() {
     });
   });
 });
+

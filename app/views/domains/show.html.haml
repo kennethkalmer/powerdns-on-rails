@@ -36,11 +36,11 @@
   = @domain.name
 
 #domain-name.padded
-  %table.grid
+  %table.gridwide
     %tr
-      %td= t :label_domain_name
+      %td{ :width => "100" }= t :label_domain_name
       %td= @domain.name
-      %td
+      %td{ :width => "100" }
         - if current_user
           = link_to info_icon('table_edit.png', 'zone-edit'), edit_domain_path(@domain)
           = link_to info_icon('report_magnify.png', 'audits'), audits_path(:action => :domain, :id => @domain)
@@ -78,16 +78,16 @@
       %tr
         %td{ :valign => 'top' }=t :label_domain_notes
         %td{ :colspan => 2 }
-          #note-row
-            = @domain.notes
+          #note
+            #note-text= @domain.notes
             %br
-            = link_to_function info_icon('note_edit.png', 'note-edit'), "showNote()"
+            = link_to_function info_icon('note_edit.png', 'note-edit'), "showNoteForm()"
 
-          #note{ :style => "display: none;" }
-            = form_for( @domain, :url => update_note_domain_path( @domain, :remote => true ) ) do |f|
-              = f.text_area :notes, :rows => 5, :cols => 17
+          #note-form{ :style => "display: none;" }
+            = form_for( @domain, :url => update_note_domain_path( @domain ), :remote => true ) do |f|
+              = f.text_area :notes, :rows => 4, :cols => 30
               %br
-              = link_to_function t(:generic_cancel), "hideNote()"
+              = link_to_function t(:generic_cancel), "hideNoteForm()"
               = submit_tag(t(:generic_update))
 
 #domain-soa.padded
@@ -164,53 +164,53 @@
 
 :javascript
   function editRecord(id, type) {
-    $('show_' + type + '_' + id).hide();
-    $('edit_' + type + '_' + id).show();
+    $('#show_' + type + '_' + id).hide();
+    $('3edit_' + type + '_' + id).show();
   }
   function hideRecord(id, type) {
-    $('edit_' + type + '_' + id).hide();
-    $('show_' + type + '_' + id).show();
+    $('#edit_' + type + '_' + id).hide();
+    $('#show_' + type + '_' + id).show();
   }
   function displayRecordForm() {
-    $('record-form-div').show();
+    $('#record-form-div').show();
   }
   function hideRecordForm() {
-    $('record-form-div').hide();
+    $('#record-form-div').hide();
   }
   function resetRecordForm() {
-    $('record-form').reset();
+    $('#record-form').reset();
   }
   function toggleRecordFields(e,v){
     t = 'rt-' + v.toLowerCase();
-    $('record-form-div').select('tr').each(function(r){
+    $('#record-form-div').select('tr').each(function(r){
       if(r.hasClassName(t) || r.hasClassName('all'))
         r.show();
       else
         r.hide();
     });
   }
-  function showNote() {
-    $('note-row').hide();
-    $('note').show();
+  function showNoteForm() {
+    $('#note').hide();
+    $('#note-form').show();
   }
-  function hideNote() {
-    $('note').hide();
-    $('note-row').show();
+  function hideNoteForm() {
+    $('#note-form').hide();
+    $('#note').show();
   }
   function showSOAEdit() {
-    $('soa-form').hide();
-    $('soa-edit-form').show();
+    $('#soa-form').hide();
+    $('#soa-edit-form').show();
   }
   function showSOAForm() {
-    $('soa-edit-form').hide();
-    $('soa-form').show();
+    $('#soa-edit-form').hide();
+    $('#soa-form').show();
   }
   function changeOwner() {
-    $('owner-info').toggle();
-    $('owner-edit').toggle();
+    $('#owner-info').toggle();
+    $('#owner-edit').toggle();
   }
 
   function deleteDomain() {
-    $('warning-message').toggle();
-    $('delete-link-buffer').toggle();
+    $('#warning-message').toggle();
+    $('#delete-link-buffer').toggle();
   }
