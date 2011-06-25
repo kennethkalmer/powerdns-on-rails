@@ -53,7 +53,7 @@
 
 #record-form-error{ :style => 'display:none' }
 #record-form-div{ :style => 'display:none' }
-  = form_for( [@macro, @macro_step], :remote => true, :html => { :id => 'record-form' } ) do |f|
+  = form_for( [@macro, @macro.macro_steps.build], :remote => true, :html => { :id => 'record-form' } ) do |f|
     = f.hidden_field( :macro_id )
     %table.grid
       %tr
