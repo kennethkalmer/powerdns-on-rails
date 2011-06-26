@@ -31,7 +31,7 @@ class RecordsController < InheritedResources::Base
   end
 
   def restrict_token_movements
-    return unless current_token
+    return true unless current_token
 
     render :text => t(:message_token_not_authorized), :status => 403
     return false
@@ -76,7 +76,7 @@ class RecordsController < InheritedResources::Base
     end
 
     destroy! do |format|
-      format.js { redirect_to parent }
+      format.html { redirect_to parent }
     end
   end
 
