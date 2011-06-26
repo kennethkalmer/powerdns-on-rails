@@ -24,12 +24,12 @@ describe RecordsController, ", users, and non-SOA records" do
     it "should create a #{record[:type]} record when valid" do
       pending "Still need test for #{record[:type]}" if record.delete(:pending)
 
-      lambda {
+      expect {
         xhr :post, :create, :domain_id => @domain.id, :record => record
-      }.should change( @domain.records, :count ).by(1)
+      }.to change( @domain.records, :count ).by(1)
 
-      assigns[:domain].should_not be_nil
-      assigns[:record].should_not be_nil
+      assigns(:domain).should_not be_nil
+      assigns(:record).should_not be_nil
     end
   end
 
@@ -71,10 +71,10 @@ describe RecordsController, ", users, and non-SOA records" do
       'content' => ""
     }
 
-    lambda {
+    expect {
       xhr :put, :update, :id => record.id, :domain_id => @domain.id, :record => params
       record.reload
-    }.should_not change( record, :content )
+    }.to_not change( record, :content )
 
     response.should_not be_redirect
     response.should render_template( "records/update" )
@@ -120,14 +120,14 @@ describe RecordsController, "and tokens" do
 
     target_soa = @domain.soa_record
 
-    lambda {
+    expect {
       xhr :put, "update_soa", :id => target_soa.id, :domain_id => target_soa.domain.id,
         :soa => {
           :primary_ns => 'ns1.example.com', :contact => 'dnsadmin@example.com',
           :refresh => "10800", :retry => "10800", :minimum => "10800", :expire => "604800"
         }
         target_soa.reload
-    }.should_not change( target_soa, :contact )
+    }.to_not change( target_soa, :contact )
   end
 
   xit "should not allow new NS records" do
@@ -140,9 +140,9 @@ describe RecordsController, "and tokens" do
       'content' => 'n3.example.com'
     }
 
-    lambda {
+    expect {
       xhr :post, :create, :domain_id => @domain.id, :record => params
-    }.should_not change( @domain.records, :size )
+    }.to_not change( @domain.records, :size )
 
     response.should_not be_success
     response.code.should == "403"
@@ -160,10 +160,10 @@ describe RecordsController, "and tokens" do
       'content' => 'ns1.somewhereelse.com'
     }
 
-    lambda {
+    expect {
       xhr :put, :update, :id => record.id, :domain_id => @domain.id, :record => params
       record.reload
-    }.should_not change( record, :content )
+    }.to_not change( record, :content )
 
     response.should_not be_success
     response.code.should == "403"
@@ -180,14 +180,14 @@ describe RecordsController, "and tokens" do
       'content' => '127.0.0.2'
     }
 
-    lambda {
+    expect {
       xhr :post, :create, :domain_id => @domain.id, :record => params
-    }.should change( @domain.records, :size )
+    }.to change( @domain.records, :size )
 
     response.should be_success
 
-    assigns[:domain].should_not be_nil
-    assigns[:record].should_not be_nil
+    assigns(:domain).should_not be_nil
+    assigns(:record).should_not be_nil
 
     # Ensure the token han been updated
     @token.can_change?( 'test', 'A' ).should be_true
@@ -204,9 +204,9 @@ describe RecordsController, "and tokens" do
       'content' => "127.0.0.2"
     }
 
-    lambda {
+    expect {
       xhr :post, :create, :domain_id => @domain.id, :record => params
-    }.should_not change( @domain.records, :size )
+    }.to_not change( @domain.records, :size )
 
     response.should_not be_success
     response.code.should == "403"
@@ -224,10 +224,10 @@ describe RecordsController, "and tokens" do
       'content' => "10.0.1.10"
     }
 
-    lambda {
+    expect {
       xhr :put, :update, :id => record.id, :domain_id => @domain.id, :record => params
       record.reload
-    }.should change( record, :content )
+    }.to change( record, :content )
 
     response.should be_success
     response.should render_template("update")
@@ -244,10 +244,10 @@ describe RecordsController, "and tokens" do
       'content' => "10.0.1.10"
     }
 
-    lambda {
+    expect {
       xhr :put, :update, :id => record.id, :domain_id => @domain.id, :record => params
       record.reload
-    }.should_not change( record, :content )
+    }.to_not change( record, :content )
 
     response.should_not be_success
     response.code.should == "403"
@@ -259,9 +259,9 @@ describe RecordsController, "and tokens" do
     @token.remove_records=( true )
     controller.stubs(:current_token).returns(@token)
 
-    lambda {
+    expect {
       delete :destroy, :domain_id => @domain.id, :id => record.id
-    }.should change( @domain.records, :size ).by(-1)
+    }.to change( @domain.records, :size ).by(-1)
 
     response.should be_redirect
     response.should redirect_to( domain_path( @domain ) )
@@ -271,9 +271,9 @@ describe RecordsController, "and tokens" do
     controller.stubs(:current_token).returns( @token )
     record = Factory(:a, :domain => @domain)
 
-    lambda {
+    expect {
       delete :destroy, :domain_id => @domain.id, :id => record.id
-    }.should_not change( @domain.records, :count )
+    }.to_not change( @domain.records, :count )
 
     response.should_not be_success
     response.code.should == "403"

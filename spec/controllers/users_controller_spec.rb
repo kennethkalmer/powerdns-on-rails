@@ -20,21 +20,21 @@ describe UsersController do
       get 'index'
 
       response.should render_template( 'users/index')
-      assigns[:users].should_not be_empty
+      assigns(:users).should_not be_empty
     end
 
     it 'should load a users details' do
       get 'show', :id => @admin.id
 
       response.should render_template( 'users/show' )
-      assigns[:user].should_not be_nil
+      assigns(:user).should_not be_nil
     end
 
     it 'should have a form for creating a new user' do
       get 'new'
 
       response.should render_template( 'users/new' )
-      assigns[:user].should_not be_nil
+      assigns(:user).should_not be_nil
     end
 
     it "should create a new administrator" do
@@ -46,10 +46,10 @@ describe UsersController do
           :admin => 'true'
         }
 
-      assigns[:user].should be_an_admin
+      assigns(:user).should be_an_admin
 
       response.should be_redirect
-      response.should redirect_to( user_path( assigns[:user] ) )
+      response.should redirect_to( user_path( assigns(:user) ) )
     end
 
     it 'should create a new administrator with token privs' do
@@ -62,11 +62,11 @@ describe UsersController do
           :auth_tokens => '1'
         }
 
-      assigns[:user].admin?.should be_true
-      assigns[:user].auth_tokens?.should be_true
+      assigns(:user).admin?.should be_true
+      assigns(:user).auth_tokens?.should be_true
 
       response.should be_redirect
-      response.should redirect_to( user_path( assigns[:user] ) )
+      response.should redirect_to( user_path( assigns(:user) ) )
     end
 
     it "should create a new owner" do
@@ -77,10 +77,10 @@ describe UsersController do
           :password_confirmation => 'secret',
         }
 
-      assigns[:user].should_not be_an_admin
+      assigns(:user).should_not be_an_admin
 
       response.should be_redirect
-      response.should redirect_to( user_path( assigns[:user] ) )
+      response.should redirect_to( user_path( assigns(:user) ) )
     end
 
     it 'should create a new owner ignoring token privs' do
@@ -92,11 +92,11 @@ describe UsersController do
           :auth_tokens => '1'
         }
 
-      assigns[:user].should_not be_an_admin
-      assigns[:user].auth_tokens?.should be_false
+      assigns(:user).should_not be_an_admin
+      assigns(:user).auth_tokens?.should be_false
 
       response.should be_redirect
-      response.should redirect_to( user_path( assigns[:user] ) )
+      response.should redirect_to( user_path( assigns(:user) ) )
     end
 
     it 'should update a user without password changes' do

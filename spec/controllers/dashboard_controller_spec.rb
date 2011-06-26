@@ -7,14 +7,11 @@ describe DashboardController, "and admins" do
 
     Factory(:domain)
 
-    zt = Factory(:zone_template)
-    Factory(:template_soa, :zone_template => zt)
-
     get :index
   end
 
   it "should have a list of the latest zones" do
-    assigns[:latest_domains].should_not be_empty
+    assigns(:latest_domains).should_not be_empty
   end
 
 end

@@ -10,8 +10,8 @@ describe DomainsController, "index" do
     get 'index'
 
     response.should render_template('domains/index')
-    assigns[:domains].should_not be_empty
-    assigns[:domains].size.should be(Domain.count)
+    assigns(:domains).should_not be_empty
+    assigns(:domains).size.should be(Domain.count)
   end
 
   it "should restrict zones for owners" do
@@ -24,8 +24,8 @@ describe DomainsController, "index" do
     get 'index'
 
     response.should render_template('domains/index')
-    assigns[:domains].should_not be_empty
-    assigns[:domains].size.should be(1)
+    assigns(:domains).should_not be_empty
+    assigns(:domains).size.should be(1)
   end
 
   it "should display all zones as XML" do
@@ -35,7 +35,7 @@ describe DomainsController, "index" do
 
     get :index, :format => 'xml'
 
-    assigns[:domains].should_not be_empty
+    assigns(:domains).should_not be_empty
     response.should have_tag('domains')
   end
 end
@@ -59,7 +59,9 @@ describe DomainsController, "when creating" do
     Factory(:template_soa, :zone_template => Factory(:zone_template))
     Factory(:zone_template, :name => 'No SOA')
 
-    post 'create', :domain => { :name => 'example.org' }, :zone_template => { :id => "" }
+    expect {
+      post 'create', :domain => { :name => 'example.org' }, :zone_template => { :id => "" }
+    }.to_not change( Domain, :count )
 
     response.should_not be_redirect
     response.should render_template('domains/new')
@@ -69,36 +71,42 @@ describe DomainsController, "when creating" do
     zone_template = Factory(:zone_template)
     Factory(:template_soa, :zone_template => zone_template)
 
-    post 'create', :domain => { :name => 'example.org', :zone_template_id => zone_template.id }
+    expect {
+      post 'create', :domain => { :name => 'example.org', :zone_template_id => zone_template.id }
+    }.to change( Domain, :count ).by(1)
 
-    assigns[:domain].should_not be_nil
+    assigns(:domain).should_not be_nil
     response.should be_redirect
-    response.should redirect_to( domain_path(assigns[:domain]) )
+    response.should redirect_to( domain_path(assigns(:domain)) )
   end
 
   it "should be redirected to the zone details after a successful save" do
-    post 'create', :domain => {
-      :name => 'example.org', :primary_ns => 'ns1.example.org',
-      :contact => 'admin@example.org', :refresh => 10800, :retry => 7200,
-      :expire => 604800, :minimum => 10800, :zone_template_id => "" }
+    expect {
+      post 'create', :domain => {
+        :name => 'example.org', :primary_ns => 'ns1.example.org',
+        :contact => 'admin@example.org', :refresh => 10800, :retry => 7200,
+        :expire => 604800, :minimum => 10800, :zone_template_id => "" }
+    }.to change( Domain, :count ).by(1)
 
     response.should be_redirect
-    response.should redirect_to( domain_path( assigns[:domain] ) )
+    response.should redirect_to( domain_path( assigns(:domain) ) )
     flash[:notice].should_not be_nil
   end
 
   it "should ignore the zone template if a slave is created" do
     zone_template = Factory(:zone_template)
 
-    post 'create', :domain => {
-      :name => 'example.org',
-      :type => 'SLAVE',
-      :master => '127.0.0.1',
-      :zone_template_id => zone_template.id
-    }
+    expect {
+      post 'create', :domain => {
+        :name => 'example.org',
+        :type => 'SLAVE',
+        :master => '127.0.0.1',
+        :zone_template_id => zone_template.id
+      }
+    }.to change( Domain, :count ).by(1)
 
-    assigns[:domain].should be_slave
-    assigns[:domain].soa_record.should be_nil
+    assigns(:domain).should be_slave
+    assigns(:domain).soa_record.should be_nil
 
     response.should be_redirect
   end
@@ -114,10 +122,10 @@ describe DomainsController do
   it "should accept ownership changes" do
     domain = Factory(:domain)
 
-    lambda {
+    expect {
       xhr :put, :change_owner, :id => domain.id, :domain => { :user_id => Factory(:quentin).id }
       domain.reload
-    }.should change( domain, :user_id )
+    }.to change( domain, :user_id )
 
     response.should render_template('domains/change_owner')
   end
@@ -135,8 +143,8 @@ describe DomainsController, "and macros" do
   it "should have a selection for the user" do
     get :apply_macro, :id => @domain.id
 
-    assigns[:domain].should_not be_nil
-    assigns[:macros].should_not be_empty
+    assigns(:domain).should_not be_nil
+    assigns(:macros).should_not be_empty
 
     response.should render_template('domains/apply_macro')
   end
@@ -160,13 +168,13 @@ describe DomainsController, "should handle a REST client" do
   end
 
   it "creating a new zone without a template" do
-    lambda {
+    expect {
       post 'create', :domain => {
         :name => 'example.org', :primary_ns => 'ns1.example.org',
         :contact => 'admin@example.org', :refresh => 10800, :retry => 7200,
         :expire => 604800, :minimum => 10800
       }, :format => "xml"
-    }.should change( Domain, :count ).by( 1 )
+    }.to change( Domain, :count ).by( 1 )
 
     response.should have_tag( 'domain' )
   end
@@ -194,11 +202,11 @@ describe DomainsController, "should handle a REST client" do
   end
 
   it "creating a zone with invalid input" do
-    lambda {
+    expect {
       post 'create', :domain => {
         :name => 'example.org'
       }, :format => "xml"
-    }.should_not change( Domain, :count )
+    }.to_not change( Domain, :count )
 
     response.should have_tag( 'errors' )
   end
@@ -206,9 +214,9 @@ describe DomainsController, "should handle a REST client" do
   it "removing zones" do
     delete :destroy, :id => @domain.id, :format => "xml"
 
-    lambda {
+    expect {
       @domain.reload
-    }.should raise_error(ActiveRecord::RecordNotFound)
+    }.to raise_error(ActiveRecord::RecordNotFound)
   end
 
 
@@ -261,7 +269,7 @@ describe DomainsController, "and auth tokens" do
   xit "should restrict the domain to that of the token" do
     get :show, :id => rand(1_000_000)
 
-    assigns[:domain].should eql(@domain)
+    assigns(:domain).should eql(@domain)
   end
 
   xit "should not allow a list of domains" do

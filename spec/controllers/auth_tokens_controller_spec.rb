@@ -54,9 +54,9 @@ describe AuthTokensController do
       response.should have_selector('token > auth_token')
       response.should have_selector('token > url')
 
-      assigns[:auth_token].should_not be_nil
-      assigns[:auth_token].domain.should eql( @domain )
-      assigns[:auth_token].should be_allow_new_records
+      assigns(:auth_token).should_not be_nil
+      assigns(:auth_token).domain.should eql( @domain )
+      assigns(:auth_token).should be_allow_new_records
     end
 
     it "with remove set" do
@@ -67,8 +67,8 @@ describe AuthTokensController do
       response.should have_selector('token > auth_token')
       response.should have_selector('token > url')
 
-      assigns[:auth_token].remove_records?.should be_true
-      assigns[:auth_token].can_remove?( a ).should be_true
+      assigns(:auth_token).remove_records?.should be_true
+      assigns(:auth_token).can_remove?( a ).should be_true
     end
 
     it "with policy set" do
@@ -78,7 +78,7 @@ describe AuthTokensController do
       response.should have_selector('token > auth_token')
       response.should have_selector('token > url')
 
-      assigns[:auth_token].policy.should eql(:allow)
+      assigns(:auth_token).policy.should eql(:allow)
     end
 
     it "with protected records" do
@@ -95,10 +95,10 @@ describe AuthTokensController do
       response.should have_selector('token > auth_token')
       response.should have_selector('token > url')
 
-      assigns[:auth_token].should_not be_nil
-      assigns[:auth_token].can_change?( a ).should be_false
-      assigns[:auth_token].can_change?( mx ).should be_true
-      assigns[:auth_token].can_change?( www ).should be_false
+      assigns(:auth_token).should_not be_nil
+      assigns(:auth_token).can_change?( a ).should be_false
+      assigns(:auth_token).can_change?( mx ).should be_true
+      assigns(:auth_token).can_change?( www ).should be_false
     end
 
     it "with protected record types" do
@@ -106,7 +106,7 @@ describe AuthTokensController do
 
       post :create, :auth_token => @params.merge(:policy => 'allow', :protect_type => ['MX'])
 
-      assigns[:auth_token].can_change?( mx ).should be_false
+      assigns(:auth_token).can_change?( mx ).should be_false
     end
 
     it "with allowed records" do
@@ -116,9 +116,9 @@ describe AuthTokensController do
 
       post :create, :auth_token => @params.merge(:record => ['example.com'])
 
-      assigns[:auth_token].can_change?( www ).should be_false
-      assigns[:auth_token].can_change?( a ).should be_true
-      assigns[:auth_token].can_change?( mx ).should be_true
+      assigns(:auth_token).can_change?( www ).should be_false
+      assigns(:auth_token).can_change?( a ).should be_true
+      assigns(:auth_token).can_change?( mx ).should be_true
     end
 
   end

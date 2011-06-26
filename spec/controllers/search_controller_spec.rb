@@ -13,14 +13,14 @@ describe SearchController, "for admins" do
   it "should return results when searched legally" do
     get :results, :q => 'exa'
 
-    assigns[:results].should_not be_nil
+    assigns(:results).should_not be_nil
     response.should render_template('search/results')
   end
 
   it "should handle whitespace in the query" do
     get :results, :q => ' exa '
 
-    assigns[:results].should_not be_nil
+    assigns(:results).should_not be_nil
     response.should render_template('results')
   end
 
@@ -53,7 +53,7 @@ describe SearchController, "for api clients" do
   it "should return an empty JSON response for no results" do
     get :results, :q => 'amazon', :format => 'json'
 
-    assigns[:results].should be_empty
+    assigns(:results).should be_empty
 
     response.body.should == "[]"
   end
@@ -61,7 +61,7 @@ describe SearchController, "for api clients" do
   it "should return a JSON set of results" do
     get :results, :q => 'example', :format => 'json'
 
-    assigns[:results].should_not be_empty
+    assigns(:results).should_not be_empty
 
     json = ActiveSupport::JSON.decode( response.body )
     json.size.should be(2)

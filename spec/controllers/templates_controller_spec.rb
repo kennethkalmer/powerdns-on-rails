@@ -10,14 +10,14 @@ describe TemplatesController, "and admins" do
 
     get :index
 
-    assigns[:zone_templates].should_not be_empty
-    assigns[:zone_templates].size.should be( ZoneTemplate.count )
+    assigns(:zone_templates).should_not be_empty
+    assigns(:zone_templates).size.should be( ZoneTemplate.count )
   end
 
   it "should have a detailed view of a template" do
     get :show, :id => Factory(:zone_template).id
 
-    assigns[:zone_template].should_not be_nil
+    assigns(:zone_template).should_not be_nil
 
     response.should render_template('templates/show')
   end
@@ -36,14 +36,14 @@ describe TemplatesController, "and users" do
 
     get :index
 
-    assigns[:zone_templates].should_not be_empty
-    assigns[:zone_templates].size.should be(1)
+    assigns(:zone_templates).should_not be_empty
+    assigns(:zone_templates).size.should be(1)
   end
 
   it "should not have a list of users when showing the new form" do
     get :new
 
-    assigns[:users].should be_nil
+    assigns(:users).should be_nil
   end
 end
 
