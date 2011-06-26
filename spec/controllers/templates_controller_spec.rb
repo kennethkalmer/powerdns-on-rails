@@ -22,6 +22,14 @@ describe TemplatesController, "and admins" do
     response.should render_template('templates/show')
   end
 
+  it "should redirect to the template on create" do
+    expect {
+      post :create, :zone_template => { :name => 'Foo' }
+    }.to change( ZoneTemplate, :count ).by(1)
+
+    response.should redirect_to( zone_template_path( assigns(:zone_template) ) )
+  end
+
 end
 
 describe TemplatesController, "and users" do
