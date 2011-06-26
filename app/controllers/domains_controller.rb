@@ -50,6 +50,9 @@ class DomainsController < InheritedResources::Base
           @domain = @zone_template.build( params[:domain][:name] )
         rescue ActiveRecord::RecordInvalid => e
           @domain.attach_errors(e)
+
+          render :action => :new
+          return
         end
       end
     end
