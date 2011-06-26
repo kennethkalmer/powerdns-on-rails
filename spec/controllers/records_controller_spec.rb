@@ -81,11 +81,10 @@ describe RecordsController, ", users, and non-SOA records" do
   end
 
   it "should destroy when requested to do so" do
-    xhr :delete, :destroy, :domain_id => @domain.id, :id => Factory(:mx, :domain => @domain).id
+    delete :destroy, :domain_id => @domain.id, :id => Factory(:mx, :domain => @domain).id
 
     response.should be_redirect
     response.should redirect_to( domain_path( @domain ) )
-
   end
 end
 
@@ -261,7 +260,7 @@ describe RecordsController, "and tokens" do
     controller.stubs(:current_token).returns(@token)
 
     lambda {
-      xhr :delete, :destroy, :domain_id => @domain.id, :id => record.id
+      delete :destroy, :domain_id => @domain.id, :id => record.id
     }.should change( @domain.records, :size ).by(-1)
 
     response.should be_redirect
@@ -273,7 +272,7 @@ describe RecordsController, "and tokens" do
     record = Factory(:a, :domain => @domain)
 
     lambda {
-      xhr :delete, :destroy, :domain_id => @domain.id, :id => record.id
+      delete :destroy, :domain_id => @domain.id, :id => record.id
     }.should_not change( @domain.records, :count )
 
     response.should_not be_success
