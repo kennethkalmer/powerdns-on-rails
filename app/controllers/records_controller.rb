@@ -82,12 +82,8 @@ class RecordsController < InheritedResources::Base
 
   # Non-CRUD methods
   def update_soa
-    parent.soa_record.update_attributes( params[:soa] )
-    if parent.soa_record.valid?
-      flash.now[:info] = t(:message_record_soa_updated)
-    else
-      flash.now[:error] = t(:message_record_soa_not_updated)
-    end
+    @domain = parent
+    @domain.soa_record.update_attributes( params[:soa] )
   end
 
 end

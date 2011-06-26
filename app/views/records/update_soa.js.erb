@@ -1,0 +1,10 @@
+$('#soa').replaceWith('<%= escape_javascript render(:partial => '/domains/soa_record', :object => @domain.soa_record) %>');
+
+<% if @domain.soa_record.errors.empty? %>
+  $('#soa-form').hide();
+  $('#soa-view').show();
+  humane("<%= escape_javascript t(:message_record_soa_updated) %>");
+<% else %>
+  $('#soa-form').show();
+  $('#soa-view').hide();
+<% end %>

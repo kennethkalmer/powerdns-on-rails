@@ -524,7 +524,6 @@ en:
 # records_controller
   message_token_not_authorized: "Token not authorized"
   message_record_soa_updated: "SOA record updated!"
-  message_record_soa_not_updated: "SOA record not updated!"
 
 # sessions_controller
   message_user_logged: "Logged in successfully"
@@ -553,6 +552,9 @@ en:
 
 # mx
   message_domain_mx_cannot_be_ip: "Cannot be an IP address"
+
+# soa
+  message_attribute_must_be_hostname: "must be a host"
 
 # user_mailer
   message_user_activated: "Your account has been activated!"

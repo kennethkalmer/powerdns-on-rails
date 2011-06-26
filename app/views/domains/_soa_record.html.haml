@@ -1,60 +1,62 @@
-%table#soa-form.grid
-  %tr
-    %td= t :label_domain_primary_name_server
-    %td= soa_record.primary_ns
-  %tr
-    %td= t :label_domain_contact
-    %td= soa_record.contact
-  %tr
-    %td= t :label_domain_refresh
-    %td= soa_record.refresh
-  %tr
-    %td= t :label_domain_retry
-    %td= soa_record.retry
-  %tr
-    %td= t :label_domain_expire
-    %td= soa_record.expire
-  %tr
-    %td= t :label_domain_minimum
-    %td= soa_record.minimum
-
-- if current_user
-  #soa-edit-form{ :style => "display: none;" }
-    = form_for( @domain.soa_record, :url => update_soa_domain_record_path( @domain.soa_record, :remote => true, :domain_id => @domain.id ) ) do |f|
-      %table.grid
-        %tr
-          %td= t :label_domain_primary_name_server
-          %td= f.text_field :primary_ns
-          %td= help_icon('help-primary-ns')
-        %tr
-          %td= t :label_domain_contact
-          %td= f.text_field :contact
-          %td= help_icon('help-contact')
-        %tr
-          %td= t :label_domain_refresh
-          %td
-            = f.text_field :refresh, :size => 6
-            = help_icon('help-refresh')
-          %td &nbsp;
-        %tr
-          %td= t :label_domain_retry
-          %td
-            = f.text_field :retry, :size => 6
-            = help_icon('help-retry')
-          %td &nbsp;
-        %tr
-          %td= t :label_domain_expire
-          %td
-            = f.text_field :expire, :size => 6
-            = help_icon('help-expire')
-          %td &nbsp;
-        %tr
-          %td= t :label_domain_minimum
-          %td
-            = f.text_field :minimum, :size => 6
-            = help_icon('help-minimum')
-          %td &nbsp;
-        %tr
-          %td.right= link_to_function t(:generic_cancel), "showSOAForm()"
-          %td= submit_tag t(:generic_update)
-          %td &nbsp;
+#soa
+  %table#soa-view.grid
+    %tr
+      %td= t :label_domain_primary_name_server
+      %td= soa_record.primary_ns
+    %tr
+      %td= t :label_domain_contact
+      %td= soa_record.contact
+    %tr
+      %td= t :label_domain_refresh
+      %td= soa_record.refresh
+    %tr
+      %td= t :label_domain_retry
+      %td= soa_record.retry
+    %tr
+      %td= t :label_domain_expire
+      %td= soa_record.expire
+    %tr
+      %td= t :label_domain_minimum
+      %td= soa_record.minimum
+  
+  - if current_user
+    #soa-form{ :style => "display: none;" }
+      = form_for( @domain.soa_record, :url => update_soa_domain_record_path( @domain.soa_record, :domain_id => @domain.id ), :remote => true ) do |f|
+        = error_messages_for @domain.soa_record
+        %table.grid
+          %tr
+            %td= t :label_domain_primary_name_server
+            %td= f.text_field :primary_ns
+            %td= help_icon('help-primary-ns')
+          %tr
+            %td= t :label_domain_contact
+            %td= f.text_field :contact
+            %td= help_icon('help-contact')
+          %tr
+            %td= t :label_domain_refresh
+            %td
+              = f.text_field :refresh, :size => 6
+              = help_icon('help-refresh')
+            %td &nbsp;
+          %tr
+            %td= t :label_domain_retry
+            %td
+              = f.text_field :retry, :size => 6
+              = help_icon('help-retry')
+            %td &nbsp;
+          %tr
+            %td= t :label_domain_expire
+            %td
+              = f.text_field :expire, :size => 6
+              = help_icon('help-expire')
+            %td &nbsp;
+          %tr
+            %td= t :label_domain_minimum
+            %td
+              = f.text_field :minimum, :size => 6
+              = help_icon('help-minimum')
+            %td &nbsp;
+          %tr
+            %td.right= link_to_function t(:generic_cancel), "showSOAForm()"
+            %td= submit_tag t(:generic_update)
+            %td &nbsp;
