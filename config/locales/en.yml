@@ -553,8 +553,9 @@ en:
 # mx
   message_domain_mx_cannot_be_ip: "Cannot be an IP address"
 
-# soa
+# soa/record
   message_attribute_must_be_hostname: "must be a host"
+  message_attribute_must_be_ip: "must be an IP address"
 
 # user_mailer
   message_user_activated: "Your account has been activated!"

@@ -1,0 +1,9 @@
+<% if @record.errors.empty? %>
+  $('#record-form-div').hide();
+  $('#record-form:input').val('');
+  $('#record-table').append('<%= escape_javascript render(:partial => '/domains/record', :object => @record) %>');
+  humane('<%= t(:message_record_created) %>');
+<% else %>
+  $('#record-form div.errorExplanation').remove();
+  $('#record-form').prepend('<%= escape_javascript error_messages_for(@record) %>');
+<% end %>
