@@ -275,7 +275,6 @@ en:
 
 # Macros_steps _macro_step
   confirm_macro_step_delte: "Are you sure you want to remove this step?"
-  message_macro_step_cannot_create: "Could not create step"
   message_macro_step_created: "Macro step created"
   message_macro_step_updated: "Macro step updated"
   message_macro_step_cannot_update: "Could not update macro step"

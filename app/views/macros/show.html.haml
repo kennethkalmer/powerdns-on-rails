@@ -51,66 +51,61 @@
 = link_to_function info_icon('table_add.png', 'new-step'), "displayRecordForm()"
 = link_to_function t(:label_macro_step_create_new), "displayRecordForm()"
 
-#record-form-error{ :style => 'display:none' }
 #record-form-div{ :style => 'display:none' }
   = form_for( [@macro, @macro.macro_steps.build], :remote => true, :html => { :id => 'record-form' } ) do |f|
     = f.hidden_field( :macro_id )
     %table.grid
-      %tr
+      %tr.all
         %td= t :label_macro_step_position
         %td= f.text_field :position, :size => 5
-      %tr
+      %tr.all
         %td= t :label_macro_step_action
         %td
           = f.select :action, MacroStep.valid_actions.map { |a| [ a.humanize, a ] }
           = info_icon( 'help.png', 'actions' )
-      %tr
+      %tr.all
         %td= t :label_domain_record_type
         %td
           = f.select :record_type, Macro.record_types.map { |t| [t,t] }
-      %tr
+      %tr.all
         %td= t :label_domain_record_host
         %td
           = f.text_field :name
           = info_icon( 'help.png', 'name-field' )
-      %tr.rt-mx{ :style => 'display :none' }
+      %tr.rt-mx.rt-srv{ :style => 'display :none' }
         %td= t :label_domain_record_priority
         %td= f.text_field :prio, :size => 6
-      %tr
+      %tr.all
         %td= t :label_domain_record_data
         %td
           = f.text_field :content
           = info_icon( 'help.png', 'content-field' )
-      %tr
+      %tr.all
         %td.right= link_to_function t(:generic_cancel), "hideAll()"
         %td= submit_tag t(:generic_save)
 
 :javascript
   // Blatantly copied from record templates, needs to be unified
   function hideAll() {
-    $('record-form-div').hide();
-    $('record-form-error').hide();
+    $('#record-form-div').hide();
   }
   function displayRecordForm() {
-    $('record-form-div').show();
+    $('#record-form-div').show();
   }
   function editRecordTemplate(i){
-    $('show_macro_step_' + i).hide();
-    $('edit_macro_step_' + i).show();
+    $('#show_macro_step_' + i).hide();
+    $('#edit_macro_step_' + i).show();
   }
   function hideRecordTemplate(i) {
-    $('show_macro_step_' + i).show();
-    $('edit_macro_step_' + i).hide();
+    $('#show_macro_step_' + i).show();
+    $('#edit_macro_step_' + i).hide();
   }
-  function toggleRecordFields(e,v){
+  function toggleRecordFields(v){
     t = 'rt-' + v.toLowerCase();
-    $('record-form-div').select('tr').each(function(r){
-      if(r.className && r.className != t)
-        r.hide();
+    $('#record-form-div tr').each(function(){
+      if($(this).hasClass(t) || $(this).hasClass('all'))
+        $(this).show();
       else
-        r.show();
+        $(this).hide();
     });
-  }
-  function resetRecordForm() {
-    $('record-form').reset();
   }

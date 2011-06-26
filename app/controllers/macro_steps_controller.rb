@@ -36,10 +36,11 @@ class MacroStepsController < InheritedResources::Base
 
     @macro_step.insert_at( position ) if position && !@macro_step.new_record?
 
-    if parent.save
-      flash.now[:info] = t(:message_macro_step_created)
-    else
-      flash.now[:error] = t(:message_macro_step_cannot_create)
+    parent.save
+    @macro = parent
+
+    respond_to do |format|
+      format.js
     end
   end
 
@@ -50,6 +51,8 @@ class MacroStepsController < InheritedResources::Base
     @macro_step.update_attributes( params[:macro_step] )
 
     @macro_step.insert_at( position ) if position
+
+    @macro = parent
 
     respond_to do |wants|
       wants.js

@@ -43,6 +43,11 @@ $(document).ready(function() {
   $('#record-form #record_template_record_type').change(function() {
     toggleRecordFields( $(this).val() );
   });
+
+  // Used by the new macro step form
+  $('#record-form #macro_step_record_type').change(function() {
+    toggleRecordFields( $(this).val() );
+  });
 });
 
 // Ajax activity indicator bound to ajax start/stop document events

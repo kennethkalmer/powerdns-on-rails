@@ -6,7 +6,7 @@
   %td{ :width => 230 }= macro_step.name
   %td{ :width => 30 }= macro_step.prio
   %td{ :width => 230 }= macro_step.content
-  %td{ :width => 36 }
+  %td{ :width => 40 }
     = link_to_function info_icon('table_edit.png', 'edit-step'), "editRecordTemplate(#{macro_step.id})"
     = link_to info_icon('table_delete.png', 'delete-step'), macro_macro_step_path(@macro, macro_step), :method => :delete, :confirm => t(:confirm_macro_step_delte)
 %tr[ macro_step, :edit ]{ :style => 'display: none' }
@@ -23,6 +23,6 @@
             - if macro_step.record_type == 'MX'
               = f.text_field :prio, :size => 2
           %td{ :width => 220 }= f.text_field :content, :size => 15
-          %td{ :width => 40 }
+          %td{ :width => 44 }
             = image_submit_tag "table_save.png", { :class => 'nb' }
             = link_to_function image_tag('cancel.png'), "hideRecordTemplate(#{macro_step.id})"
