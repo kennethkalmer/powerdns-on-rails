@@ -7,6 +7,7 @@ class ApplicationController < ActionController::Base
 
   # Stub
   def current_token
+    p [ :current_token ]
     nil
   end
   helper_method :current_token

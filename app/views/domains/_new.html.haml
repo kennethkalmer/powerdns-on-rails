@@ -32,7 +32,7 @@
     %tr#zone-templates
       %td=t :label_domain_zone_template
       %td
-        - if @zone_templates.size > 0
+        - if ZoneTemplate.with_soa.user( current_user ).size > 0
           = f.collection_select( :zone_template_id, ZoneTemplate.with_soa.user( current_user ), :id, :name, :include_blank => true )
         - else
           %em
@@ -78,6 +78,8 @@
         %td &nbsp;
   %table.grid
     %tr
-      %td.right{:width => "300"}= link_to_cancel @domain
+      %td.right{:width => "300"}
+        - if @domain
+          = link_to_cancel @domain
       %td= submit_tag((t :generic_save))
       %td &nbsp;

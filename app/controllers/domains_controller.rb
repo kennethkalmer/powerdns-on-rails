@@ -38,9 +38,6 @@ class DomainsController < InheritedResources::Base
     show!
   end
 
-  def new
-  end
-
   def create
     @domain = Domain.new( params[:domain] )
 

@@ -17,8 +17,4 @@ describe DashboardController, "and admins" do
     assigns[:latest_domains].should_not be_empty
   end
 
-  it "should have a list of templates for quick zone additions" do
-    assigns[:zone_templates].should_not be_empty
-  end
-
 end
