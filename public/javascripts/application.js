@@ -2,6 +2,8 @@
 // This file is automatically included by javascript_include_tag :defaults
 
 $(document).ready(function() {
+  // AJAX activity indicator
+  $('body').append('<div id="ajaxBusy"><img src="/images/loading.gif"> Processing</div>');
 
   // Setup tooltips where required
   $('.help-icn').each(function(i, icon){
@@ -16,3 +18,9 @@ $(document).ready(function() {
   });
 });
 
+// Ajax activity indicator bound to ajax start/stop document events
+$(document).ajaxStart(function(){ 
+  $('#ajaxBusy').show(); 
+}).ajaxStop(function(){ 
+  $('#ajaxBusy').hide();
+});
