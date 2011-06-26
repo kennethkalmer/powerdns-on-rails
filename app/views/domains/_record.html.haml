@@ -1,8 +1,3 @@
-- unless record.domain.slave?
-  %div{ :style => "display: none;" }
-    %div{ :id => "record-template-edit-#{record.id}" }= t :label_domain_edit_record
-    %div{ :id => "record-template-delete-#{record.id}" }= t :label_domain_delete_record
-
 %tr[ record, :marker ]
 %tr[ record, :show ]
   %td{ :width => 250 }= record.shortname
@@ -13,15 +8,15 @@
   %td{ :width => 39 }
     - unless record.domain.slave?
       - if current_user || current_token.can_change?( record )
-        = link_to_function info_icon('database_edit.png', "record-template-edit-#{record.id}"), "editRecord(#{record.id}, '#{record.type.downcase}')"
+        = link_to_function info_icon('database_edit.png', "record-template-edit"), "editRecord(#{record.id}, '#{record.type.downcase}')"
       - if current_user || current_token.can_remove?( record )
-        = link_to info_icon('database_delete.png', "record-template-delete-#{record.id}"), domain_record_path( record.domain, record ), :method => :delete, :confirm => t(:confirm_domain_delte_record)
+        = link_to info_icon('database_delete.png', "record-template-delete"), domain_record_path( record.domain, record ), :method => :delete, :confirm => t(:confirm_domain_delte_record)
 
 - unless record.domain.slave?
   - if current_user || current_token.can_change?( record )
     %tr[ record, :edit ]{ :style => "display: none;" }
       %td{ :colspan => 7 }
-        = form_for( record, :url => domain_record_path(record.domain, record, :remote => true)) do |f|
+        = form_for( record, :as => :record, :url => domain_record_path(record.domain, record ), :remote => true ) do |f|
           %div[ record, :error ]
             %table.gridwide
               %tr

@@ -17,6 +17,8 @@
   #help-expire=t :help_domain_expire
   #help-minimum=t :help_domain_minimum
   #delete-reset=t :help_delete_reset
+  #record-template-edit= t :label_domain_edit_record
+  #record-template-delete= t :label_domain_delete_record
 
 - if current_user && current_user.admin? && @domain.user
   #warning-message.flash-warning{ :style => 'display: none' }
@@ -165,7 +167,7 @@
 :javascript
   function editRecord(id, type) {
     $('#show_' + type + '_' + id).hide();
-    $('3edit_' + type + '_' + id).show();
+    $('#edit_' + type + '_' + id).show();
   }
   function hideRecord(id, type) {
     $('#edit_' + type + '_' + id).hide();
