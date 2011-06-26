@@ -1,9 +1,0 @@
-if @record_template.errors.empty?
-  page.remove "show_record_template_#{@record_template.id}", "edit_record_template_#{@record_template.id}"
-  page.replace "marker_record_template_#{@record_template.id}", :partial => '/templates/record_template', :object => @record_template
-  page.visual_effect(:highlight, "show_record_template_#{@record_template.id}")
-  page.call 'showflash', 'info', flash[:info]
-else
-  page.replace_html "error_record_template_#{@record_template.id}", error_messages_for(:record_template)
-  page.call 'showflash', 'error', flash[:error]
-end

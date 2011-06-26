@@ -62,24 +62,24 @@
   = form_for( RecordTemplate.new, :remote => true, :html => { :id => 'record-form' } ) do |f|
     = hidden_field( :zone_template, :id )
     %table.grid
-      %tr
+      %tr.all
         %td= t :label_template_record_type
         %td
           = f.select :record_type, RecordTemplate.record_types.map { |t| [t,t] }
         %td &nbsp;
-      %tr
+      %tr.all
         %td= t :label_template_record_host
         %td= f.text_field :name
         %td &nbsp;
-      %tr
+      %tr.all
         %td= t :label_template_record_ttl
         %td= f.text_field :ttl, :size => 6
         %td &nbsp;
-      %tr.rt-mx{ :style => 'display :none' }
+      %tr.rt-mx.rt-srv{ :style => 'display :none' }
         %td= t :label_template_record_priority
         %td= f.text_field :prio, :size => 6
         %td &nbsp;
-      %tr
+      %tr.all
         %td= t :label_template_record_data
         %td= f.text_field :content
         %td &nbsp;
@@ -115,40 +115,37 @@
           = f.text_field :minimum, :size => 6
           = help_icon('help-minimum')
         %td &nbsp;
-      %tr
+      %tr.all
         %td.right= link_to_function t(:generic_cancel), "hideAll()"
         %td= submit_tag t(:generic_save)
 
 :javascript
   function hideAll() {
-    $('record-form-div').hide();
+    $('#record-form-div').hide();
   }
   function displayRecordForm() {
-    $('record-form-div').show();
+    $('#record-form-div').show();
   }
   function editRecordTemplate(i){
-    $('show_record_template_' + i).hide();
-    soa = $('show-soa_record_template_' + i);
+    $('#show_record_template_' + i).hide();
+    soa = $('#show-soa_record_template_' + i);
     if (soa)
       soa.hide();
-    $('edit_record_template_' + i).show();
+    $('#edit_record_template_' + i).show();
   }
   function hideRecordTemplate(i) {
-    $('show_record_template_' + i).show();
-    soa = $('show-soa_record_template_' + i);
+    $('#show_record_template_' + i).show();
+    soa = $('#show-soa_record_template_' + i);
     if (soa)
       soa.show();
-    $('edit_record_template_' + i).hide();
+    $('#edit_record_template_' + i).hide();
   }
-  function toggleRecordFields(e,v){
+  function toggleRecordFields(v){
     t = 'rt-' + v.toLowerCase();
-    $('record-form-div').select('tr').each(function(r){
-      if(r.className && r.className != t)
-        r.hide();
+    $('#record-form-div tr').each(function(){
+      if($(this).hasClass(t) || $(this).hasClass('all'))
+        $(this).show();
       else
-        r.show();
+        $(this).hide();
     });
-  }
-  function resetRecordForm() {
-    $('record-form').reset();
   }

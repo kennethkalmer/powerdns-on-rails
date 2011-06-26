@@ -81,7 +81,6 @@ class SOA < Record
     else
        self.serial + 1
     end
-
   end
 
   # Same as #update_serial and saves the record

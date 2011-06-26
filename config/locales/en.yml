@@ -525,6 +525,12 @@ en:
   message_token_not_authorized: "Token not authorized"
   message_record_soa_updated: "SOA record updated!"
 
+# record_templates_controller
+  message_record_template_created: "Record template created"
+  message_record_template_updated: "Record template updated"
+  message_record_template_update_fail: "Failed to update record template"
+  message_record_template_removed: "Record template removed"
+
 # sessions_controller
   message_user_logged: "Logged in successfully"
   message_user_logout: "You have been logged out."

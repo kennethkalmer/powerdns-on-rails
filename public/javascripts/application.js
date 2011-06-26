@@ -38,6 +38,11 @@ $(document).ready(function() {
       $('#no-template-input').hide();
     }
   });
+
+  // Used by the new record template form
+  $('#record-form #record_template_record_type').change(function() {
+    toggleRecordFields( $(this).val() );
+  });
 });
 
 // Ajax activity indicator bound to ajax start/stop document events

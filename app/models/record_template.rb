@@ -54,6 +54,7 @@ class RecordTemplate < ActiveRecord::Base
       SOA::SOA_FIELDS.each do |soa_field|
         attrs[soa_field] = instance_variable_get("@#{soa_field}")
       end
+      attrs[:serial] = 0
     end
 
     # instantiate a new destination with our duplicated attributes & validate

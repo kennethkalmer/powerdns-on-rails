@@ -1,0 +1,14 @@
+$('#record-form div.errorExplanation').remove();
+
+<% if !@record_template.new_record? %>
+  $('#record-form-div').hide();
+  $('#record-form input:text').val('');
+  $('#record-table').append('<%= escape_javascript render(:partial => '/templates/record_template', :object => @record_template) %>');
+  humane('<%= escape_javascript t(:message_record_template_created) %>');
+
+  <% if @record_template.record_type == 'SOA' %>
+    $('#soa-warning').hide();
+  <% end %>
+<% else %>
+  $('#record-form').prepend('<%= escape_javascript error_messages_for(@record_template) %>');
+<% end %>
