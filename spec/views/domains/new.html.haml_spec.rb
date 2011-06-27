@@ -18,7 +18,8 @@ describe "domains/new.html.haml" do
   end
 
   it "should have a list of zone templates to select from" do
-    assign(:zone_templates, [ Factory(:zone_template) ])
+    zt = Factory(:zone_template)
+    Factory(:template_soa, :zone_template => zt)
 
     render
 

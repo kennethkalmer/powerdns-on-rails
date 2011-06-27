@@ -18,7 +18,7 @@
     %tr
       %td= t :label_domain_minimum
       %td= soa_record.minimum
-  
+
   - if current_user
     #soa-form{ :style => "display: none;" }
       = form_for( @domain.soa_record, :url => update_soa_domain_record_path( @domain.soa_record, :domain_id => @domain.id ), :remote => true ) do |f|

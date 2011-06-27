@@ -36,7 +36,7 @@ describe "domains/show.html.haml" do
     end
 
     it "should allow changing the SOA" do
-      rendered.should have_tag( "div#soa-edit-form")
+      rendered.should have_tag( "div#soa-form")
     end
 
     it "should have a form for adding new records" do
@@ -88,7 +88,7 @@ describe "domains/show.html.haml" do
     end
 
     it "should allow for changing the SOA" do
-      rendered.should have_tag( "div#soa-edit-form" )
+      rendered.should have_tag( "div#soa-form" )
     end
 
     it "should have a form for adding new records" do
@@ -119,12 +119,12 @@ describe "domains/show.html.haml" do
     end
 
     it "should show the master address" do
-      rendered.should have_tag('table.grid td', :content => "Master server")
-      rendered.should have_tag('table.grid td', :content => @domain.master)
+      rendered.should have_tag('#domain-name td', :content => "Master server")
+      rendered.should have_tag('#domain-name td', :content => @domain.master)
     end
 
     it "should not allow for changing the SOA" do
-      rendered.should_not have_tag( "div#soa-edit-form" )
+      rendered.should_not have_tag( "div#soa-form" )
     end
 
     it "should not have a form for adding new records" do
@@ -156,7 +156,7 @@ describe "domains/show.html.haml" do
       render
 
       rendered.should_not have_tag( "a[onclick^=showSOAEdit]")
-      rendered.should_not have_tag( "div#soa-edit-form" )
+      rendered.should_not have_tag( "div#soa-form" )
     end
 
     it "should only allow new record if permitted (FALSE)" do

@@ -11,11 +11,6 @@ describe "domains/_record" do
       render :partial => 'domains/record', :object => @record
     end
 
-    it "should have tooltips ready" do
-      rendered.should have_tag("div#record-template-edit-#{@record.id}")
-      rendered.should have_tag("div#record-template-delete-#{@record.id}")
-    end
-
     it "should have a marker row (used by AJAX)" do
       rendered.should have_tag("tr#marker_ns_#{@record.id}")
     end
