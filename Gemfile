@@ -9,7 +9,7 @@ gem 'mysql2', '~> 0.2.7'
 gem 'haml'
 gem 'jquery-rails'
 gem 'will_paginate', '~> 3.0.pre2'
-gem 'acts_as_audited', '2.0.0.rc7', :path => '/Users/kenneth/Code/FOSS/acts_as_audited'
+gem 'acts_as_audited', '2.0.0.rc7'
 gem 'inherited_resources'
 gem 'devise'
 
