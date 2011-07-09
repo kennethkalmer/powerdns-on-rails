@@ -1,4 +1,10 @@
-h1. PowerDNS on Rails
+h1. Important update
+
+*The current master branch of the PowerDNS on Rails project is deprecated. I'm busy finishing off the "features/rails3":https://github.com/kennethkalmer/powerdns-on-rails/tree/feature%2Frails3 branch which will be merged into master shortly and will be the new base of future development. This project will remain actively maintained once again.*
+
+Thanks for your support and understanding.
+
+h2. PowerDNS on Rails
 
 PowerDNS on Rails is a Ruby on Rails application made to manage "PowerDNS":http://www.powerdns.com installations using the generic MySQL/PostgreSQL backends.
 
