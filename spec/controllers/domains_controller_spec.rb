@@ -56,9 +56,6 @@ describe DomainsController, "when creating" do
   end
 
   it "should not save a partial form" do
-    Factory(:template_soa, :zone_template => Factory(:zone_template))
-    Factory(:zone_template, :name => 'No SOA')
-
     expect {
       post 'create', :domain => { :name => 'example.org' }, :zone_template => { :id => "" }
     }.to_not change( Domain, :count )
@@ -160,11 +157,10 @@ describe DomainsController, "and macros" do
 end
 
 describe DomainsController, "should handle a REST client" do
+  let(:domain) { Factory(:domain) }
 
   before(:each) do
     sign_in(Factory(:api_client))
-
-    @domain = Factory(:domain)
   end
 
   it "creating a new zone without a template" do
@@ -173,10 +169,11 @@ describe DomainsController, "should handle a REST client" do
         :name => 'example.org', :primary_ns => 'ns1.example.org',
         :contact => 'admin@example.org', :refresh => 10800, :retry => 7200,
         :expire => 604800, :minimum => 10800
-      }, :format => "xml"
+      }, :format => "json"
     }.to change( Domain, :count ).by( 1 )
 
-    response.should have_tag( 'domain' )
+    data = ActiveSupport::JSON.decode( response.body )
+    data.keys.should include("id", "name", "type", "records")
   end
 
   it "creating a zone with a template" do
@@ -185,9 +182,10 @@ describe DomainsController, "should handle a REST client" do
 
     post 'create', :domain => { :name => 'example.org',
       :zone_template_id => zt.id },
-      :format => "xml"
+      :format => "json"
 
-    response.should have_tag( 'domain' )
+    data = ActiveSupport::JSON.decode( response.body )
+    data.keys.should include("id", "name", "type", "records")
   end
 
   it "creating a zone with a named template" do
@@ -196,57 +194,71 @@ describe DomainsController, "should handle a REST client" do
 
     post 'create', :domain => { :name => 'example.org',
       :zone_template_name => zt.name },
-      :format => "xml"
+      :format => "json"
 
-    response.should have_tag( 'domain' )
+    data = ActiveSupport::JSON.decode( response.body )
+    data.keys.should include("id", "name", "type", "records")
   end
 
   it "creating a zone with invalid input" do
     expect {
       post 'create', :domain => {
         :name => 'example.org'
-      }, :format => "xml"
+      }, :format => "json"
     }.to_not change( Domain, :count )
 
-    response.should have_tag( 'errors' )
+    data = ActiveSupport::JSON.decode( response.body )
+    data.keys.should include("id", "name", "type", "records", "errors")
+    data["errors"].should_not be_empty
   end
 
   it "removing zones" do
-    delete :destroy, :id => @domain.id, :format => "xml"
+    delete :destroy, :id => domain.id, :format => "json"
 
     expect {
-      @domain.reload
+      domain.reload
     }.to raise_error(ActiveRecord::RecordNotFound)
   end
 
 
   it "viewing a list of all zones" do
-    get :index, :format => 'xml'
+    domain # Force instance to exist
 
-    response.should have_selector('domains > domain')
+    get :index, :format => 'json'
+
+    data = ActiveSupport::JSON.decode( response.body )
+    data.should have(1).entry
+    data.first.keys.should include("id", "name")
   end
 
   it "viewing a zone" do
-    get :show, :id => @domain.id, :format => 'xml'
+    Factory(:a, :domain => domain)
+    Factory(:mx, :domain => domain)
 
-    response.should have_selector('domain > records')
+    get :show, :id => domain.id, :format => 'json'
+
+    data = ActiveSupport::JSON.decode( response.body )
+    data.keys.should include("records")
   end
 
   it "getting a list of macros to apply" do
     Factory(:macro)
 
-    get :apply_macro, :id => @domain.id, :format => 'xml'
+    get :apply_macro, :id => domain.id, :format => 'json'
 
-    response.should have_selector('macros > macro')
+    data = ActiveSupport::JSON.decode( response.body )
+    data.should have(1).entry
   end
 
   it "applying a macro to a domain" do
     macro = Factory(:macro)
 
-    post :apply_macro, :id => @domain.id, :macro_id => macro.id, :format => 'xml'
+    post :apply_macro, :id => domain.id, :macro_id => macro.id, :format => 'json'
 
     response.code.should == "202"
-    response.should have_tag('domain')
+
+    data = ActiveSupport::JSON.decode( response.body )
+    data.keys.should include("id", "name", "type", "records")
   end
 
 end

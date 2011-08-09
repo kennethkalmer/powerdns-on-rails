@@ -4,7 +4,7 @@ class DomainsController < InheritedResources::Base
   before_filter :restrict_token_movements, :except => :show
 
   custom_actions :resource => :apply_macro
-  respond_to :xml, :json, :js
+  respond_to :xml, :json, :js, :html
 
   protected
 
@@ -85,7 +85,8 @@ class DomainsController < InheritedResources::Base
 
       respond_to do |format|
         format.html
-        format.xml { render :xml => @macros }
+        format.json
+        format.xml
       end
 
     else
@@ -97,7 +98,8 @@ class DomainsController < InheritedResources::Base
           flash[:notice] = t(:message_domain_macro_applied)
           redirect_to resource
         }
-        format.xml { render :xml => resource.reload.to_xml(:include => [:records]), :status => :accepted, :location => domain_path(@domain) }
+        format.json { render :status => 202 }
+        format.xml { render :status => 202 }
       end
 
     end
