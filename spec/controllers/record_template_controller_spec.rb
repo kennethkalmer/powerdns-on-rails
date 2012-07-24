@@ -2,8 +2,8 @@ require 'spec_helper'
 
 describe RecordTemplatesController, "when updating SOA records" do
   before(:each) do
-    sign_in(Factory(:admin))
-    @zt = Factory(:zone_template)
+    sign_in(FactoryGirl.create(:admin))
+    @zt = FactoryGirl.create(:zone_template)
   end
 
   it "should create valid templates" do
@@ -18,7 +18,7 @@ describe RecordTemplatesController, "when updating SOA records" do
   end
 
   it "should accept a valid update" do
-    target_soa = Factory(:template_soa, :zone_template => @zt)
+    target_soa = FactoryGirl.create(:template_soa, :zone_template => @zt)
 
     xhr :put, :update, :id => target_soa.id, :record_template => {
       :retry => "7200", :primary_ns => 'ns1.provider.net',

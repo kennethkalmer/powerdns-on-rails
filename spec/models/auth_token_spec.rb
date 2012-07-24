@@ -44,12 +44,12 @@ end
 
 describe AuthToken, "internals" do
   before(:each) do
-    @domain = Factory(:domain)
+    @domain = FactoryGirl.create(:domain)
     @auth_token = AuthToken.new( :domain => @domain )
   end
 
   it "should extract the name and RR class from Record objects" do
-    record = Factory(:a, :domain => @domain)
+    record = FactoryGirl.create(:a, :domain => @domain)
     name, type = @auth_token.send(:get_name_and_type_from_param, record )
     name.should eql('example.com')
     type.should eql('A')
@@ -87,9 +87,9 @@ end
 
 describe AuthToken, "and permissions" do
   before(:each) do
-    @domain = Factory(:domain)
+    @domain = FactoryGirl.create(:domain)
     @auth_token = AuthToken.new(
-      :user => Factory(:admin),
+      :user => FactoryGirl.create(:admin),
       :domain => @domain,
       :expires_at => 5.hours.since
     )
@@ -132,7 +132,7 @@ describe AuthToken, "and permissions" do
     @auth_token.remove_records = true
     @auth_token.remove_records?.should be_true
 
-    a = Factory(:a, :domain => @domain)
+    a = FactoryGirl.create(:a, :domain => @domain)
     @auth_token.can_remove?( a ).should be_false
     @auth_token.can_remove?( 'example.com', 'A' ).should be_false
 
@@ -143,20 +143,20 @@ describe AuthToken, "and permissions" do
   end
 
   it "should allow for setting permissions to edit specific RR's (AR)" do
-    a = Factory(:a, :domain => @domain)
+    a = FactoryGirl.create(:a, :domain => @domain)
     @auth_token.can_change( a )
 
     @auth_token.can_change?( 'example.com' ).should be_true
     @auth_token.can_change?( 'example.com', 'MX' ).should be_false
 
-    mx = Factory(:mx, :domain => @domain)
+    mx = FactoryGirl.create(:mx, :domain => @domain)
     @auth_token.can_change?( a ).should be_true
     @auth_token.can_change?( mx ).should be_false
   end
 
   it "should allow for setting permissions to edit specific RR's (name)" do
-    a = Factory(:a, :domain => @domain)
-    mail = Factory(:a, :name => 'mail', :domain => @domain)
+    a = FactoryGirl.create(:a, :domain => @domain)
+    mail = FactoryGirl.create(:a, :name => 'mail', :domain => @domain)
 
     @auth_token.can_change( 'mail.example.com' )
 
@@ -167,9 +167,9 @@ describe AuthToken, "and permissions" do
   end
 
   it "should allow for protecting certain RR's" do
-    mail = Factory(:a, :name => 'mail', :domain => @domain)
-    mx = Factory(:mx, :domain => @domain)
-    a = Factory(:a, :domain => @domain)
+    mail = FactoryGirl.create(:a, :name => 'mail', :domain => @domain)
+    mx = FactoryGirl.create(:mx, :domain => @domain)
+    a = FactoryGirl.create(:a, :domain => @domain)
 
     @auth_token.policy = :allow
     @auth_token.protect( mail )
@@ -185,8 +185,8 @@ describe AuthToken, "and permissions" do
   end
 
   it "should allow for protecting RR's by type" do
-    mail = Factory(:a, :name => 'mail', :domain => @domain)
-    mx = Factory(:mx, :domain => @domain)
+    mail = FactoryGirl.create(:a, :name => 'mail', :domain => @domain)
+    mx = FactoryGirl.create(:mx, :domain => @domain)
 
     @auth_token.policy = :allow
     @auth_token.protect_type 'A'
@@ -196,7 +196,7 @@ describe AuthToken, "and permissions" do
   end
 
   it "should prevent removing RR's by type" do
-    mx = Factory(:mx, :domain => @domain)
+    mx = FactoryGirl.create(:mx, :domain => @domain)
 
     @auth_token.policy = :allow
     @auth_token.protect_type 'MX'
@@ -213,8 +213,8 @@ describe AuthToken, "and permissions" do
   end
 
   it "should always protect NS records" do
-    ns1 = Factory(:ns, :domain => @domain)
-    ns2 = Factory(:ns, :name => 'ns2', :domain => @domain)
+    ns1 = FactoryGirl.create(:ns, :domain => @domain)
+    ns2 = FactoryGirl.create(:ns, :name => 'ns2', :domain => @domain)
 
     @auth_token.policy = :allow
     @auth_token.remove_records = true
@@ -244,9 +244,9 @@ end
 
 describe AuthToken, "and authentication" do
   before(:each) do
-    @domain = Factory(:domain)
-    @user = Factory(:admin)
-    @auth_token = Factory(:auth_token, :domain => @domain, :user => @user)
+    @domain = FactoryGirl.create(:domain)
+    @user = FactoryGirl.create(:admin)
+    @auth_token = FactoryGirl.create(:auth_token, :domain => @domain, :user => @user)
   end
 
   it "should authenticate current tokens" do
@@ -270,7 +270,7 @@ describe AuthToken, "and authentication" do
   end
 
   it "should correctly report permissions (deserialized)" do
-    a = Factory(:a, :domain => @domain)
+    a = FactoryGirl.create(:a, :domain => @domain)
     @auth_token.can_change?( a ).should be_true
   end
 end

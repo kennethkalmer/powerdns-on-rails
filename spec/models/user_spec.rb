@@ -3,7 +3,7 @@ require 'spec_helper'
 describe User do
 
   it 'suspends user' do
-    quentin = Factory(:quentin)
+    quentin = FactoryGirl.create(:quentin)
     quentin.suspend!
     quentin.should be_suspended
   end
@@ -11,7 +11,7 @@ describe User do
   it 'does not authenticate suspended user'
 
   it 'deletes user' do
-    quentin = Factory(:quentin)
+    quentin = FactoryGirl.create(:quentin)
     quentin.deleted_at.should be_nil
     quentin.delete!
     #quentin.deleted_at.should_not be_nil
@@ -23,7 +23,7 @@ describe User do
   describe "being unsuspended" do
 
     before do
-      @user = Factory(:quentin)
+      @user = FactoryGirl.create(:quentin)
       @user.suspend!
     end
 
@@ -43,9 +43,9 @@ end
 describe User, "as owner" do
 
   before(:each) do
-    @user = Factory(:quentin, :auth_tokens => true)
-    Factory(:domain, :user => @user)
-    Factory(:zone_template, :user => @user)
+    @user = FactoryGirl.create(:quentin, :auth_tokens => true)
+    FactoryGirl.create(:domain, :user => @user)
+    FactoryGirl.create(:zone_template, :user => @user)
   end
 
   it "should have domains" do
@@ -64,7 +64,7 @@ end
 describe User, "as admin" do
 
   before(:each) do
-    @admin = Factory(:admin, :auth_tokens => true)
+    @admin = FactoryGirl.create(:admin, :auth_tokens => true)
   end
 
   it "should not own domains" do
@@ -88,7 +88,7 @@ describe User, "and roles" do
   end
 
   it "should have a way to easily find active owners" do
-    Factory(:quentin)
+    FactoryGirl.create(:quentin)
     candidates = User.active_owners
     candidates.each do |user|
       user.should be_active
@@ -100,9 +100,9 @@ end
 describe User, "and audits" do
 
   it "should have username persisted in audits when removed" do
-    admin = Factory(:admin)
+    admin = FactoryGirl.create(:admin)
     Audit.as_user( admin ) do
-      domain =Factory(:domain)
+      domain =FactoryGirl.create(:domain)
       audit = domain.audits.first
 
       audit.user.should eql( admin )

@@ -11,7 +11,7 @@ FactoryGirl.define do
     primary_ns 'ns1.%ZONE%'
     contact 'admin@example.com'
     refresh 10800
-    retry 7200
+    self.retry 7200
     expire 604800
     minimum 3600
   end

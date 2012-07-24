@@ -1,13 +1,13 @@
 Given /^I have a domain$/ do
-  @domain = Factory(:domain)
+  @domain = FactoryGirl.create(:domain)
 end
 
 Given /^I have a domain named "([^\"]*)"$/ do |name|
-  @domain = Factory(:domain, :name => name)
+  @domain = FactoryGirl.create(:domain, :name => name)
 end
 
 Given /^I have a macro$/ do
-  @macro = Factory(:macro)
+  @macro = FactoryGirl.create(:macro)
 end
 
 When /^I apply the macro$/ do

@@ -10,7 +10,7 @@ describe Macro, "when new" do
   end
 
   it "should have a unique name" do
-    m = Factory(:macro)
+    m = FactoryGirl.create(:macro)
     @macro.name = m.name
     @macro.should have(1).error_on(:name)
   end
@@ -23,15 +23,15 @@ end
 
 describe Macro, "when applied" do
   before(:each) do
-    @target = Factory(:domain)
+    @target = FactoryGirl.create(:domain)
 
-    @macro = Factory(:macro)
-    @step_create = Factory(:macro_step_create, :macro => @macro, :name => 'foo')
-    @step_update = Factory(:macro_step_change, :macro => @macro, :record_type => 'A', :name => 'www', :content => '127.0.0.9')
-    @step_remove_target = Factory(:macro_step_remove, :macro => @macro, :record_type => 'A', :name => 'mail')
-    @step_remove_wild = Factory(:macro_step_remove, :macro => @macro, :record_type => 'MX', :name => '*')
+    @macro = FactoryGirl.create(:macro)
+    @step_create = FactoryGirl.create(:macro_step_create, :macro => @macro, :name => 'foo')
+    @step_update = FactoryGirl.create(:macro_step_change, :macro => @macro, :record_type => 'A', :name => 'www', :content => '127.0.0.9')
+    @step_remove_target = FactoryGirl.create(:macro_step_remove, :macro => @macro, :record_type => 'A', :name => 'mail')
+    @step_remove_wild = FactoryGirl.create(:macro_step_remove, :macro => @macro, :record_type => 'MX', :name => '*')
 
-    @step_update2 = Factory(:macro_step_change, :macro => @macro, :record_type => 'A', :name => 'admin', :content => '127.0.0.10')
+    @step_update2 = FactoryGirl.create(:macro_step_change, :macro => @macro, :record_type => 'A', :name => 'admin', :content => '127.0.0.10')
   end
 
   it "should create new RR's" do
@@ -40,7 +40,7 @@ describe Macro, "when applied" do
   end
 
   it "should update existing RR's" do
-    rr = Factory(:www, :domain => @target)
+    rr = FactoryGirl.create(:www, :domain => @target)
 
     lambda {
       @macro.apply_to( @target )
@@ -49,7 +49,7 @@ describe Macro, "when applied" do
   end
 
   it "should remove targetted RR's" do
-    rr = Factory(:a, :name => 'mail', :domain => @target)
+    rr = FactoryGirl.create(:a, :name => 'mail', :domain => @target)
 
     @macro.apply_to( @target )
 
@@ -57,7 +57,7 @@ describe Macro, "when applied" do
   end
 
   it "should remove existing RR's (wild card)" do
-    Factory(:mx, :domain => @target)
+    FactoryGirl.create(:mx, :domain => @target)
     @target.mx_records(true).should_not be_empty
 
     @macro.apply_to( @target )

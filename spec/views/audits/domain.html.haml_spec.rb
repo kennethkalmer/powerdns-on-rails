@@ -4,7 +4,7 @@ describe "audits/domain.html.haml" do
   context "and domain audits" do
 
     before(:each) do
-      @domain = Factory(:domain)
+      @domain = FactoryGirl.create(:domain)
     end
 
     it "should handle no audit entries on the domain" do
@@ -39,7 +39,7 @@ describe "audits/domain.html.haml" do
 
     before(:each) do
       Audit.as_user( 'admin' ) do
-        @domain = Factory(:domain)
+        @domain = FactoryGirl.create(:domain)
       end
     end
 

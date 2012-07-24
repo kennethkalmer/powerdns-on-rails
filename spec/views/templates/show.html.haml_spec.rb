@@ -3,8 +3,8 @@ require 'spec_helper'
 describe "templates/show.html.haml" do
   context "for complete templates" do
     before(:each) do
-      @zone_template = Factory(:zone_template)
-      Factory(:template_soa, :zone_template => @zone_template)
+      @zone_template = FactoryGirl.create(:zone_template)
+      FactoryGirl.create(:template_soa, :zone_template => @zone_template)
 
       assign(:zone_template, @zone_template)
       assign(:record_template, RecordTemplate.new( :record_type => 'A' ))
@@ -36,7 +36,7 @@ describe "templates/show.html.haml" do
 
   context "for partial templates" do
     before(:each) do
-      @zone_template = Factory(:zone_template)
+      @zone_template = FactoryGirl.create(:zone_template)
       assign(:zone_template, @zone_template)
       assign(:record_template, RecordTemplate.new( :record_type => 'A' ))
 

@@ -14,7 +14,7 @@ end
 describe RecordTemplate, "should inherit" do
   before(:each) do
     @record_template = RecordTemplate.new
-    @record_template.zone_template = Factory(:zone_template)
+    @record_template.zone_template = FactoryGirl.create(:zone_template)
   end
 
   it "validations from A" do
@@ -97,11 +97,11 @@ end
 describe RecordTemplate, "when building" do
 
   before(:each) do
-    @zone_template = Factory(:zone_template)
+    @zone_template = FactoryGirl.create(:zone_template)
   end
 
   it "an SOA should replace the %ZONE% token with the provided domain name" do
-    template = Factory(:template_soa, :zone_template => @zone_template)
+    template = FactoryGirl.create(:template_soa, :zone_template => @zone_template)
     record = template.build( 'example.org' )
 
     record.should_not be_nil
@@ -110,7 +110,7 @@ describe RecordTemplate, "when building" do
   end
 
   it "an NS should replace the %ZONE% token with the provided domain name" do
-    template = Factory(:template_ns, :zone_template => @zone_template)
+    template = FactoryGirl.create(:template_ns, :zone_template => @zone_template)
     record = template.build( 'example.org' )
 
     record.should_not be_nil
@@ -119,7 +119,7 @@ describe RecordTemplate, "when building" do
   end
 
   it "a MX should replace the %ZONE% token with provided domain name" do
-    template = Factory(:template_mx, :zone_template => @zone_template)
+    template = FactoryGirl.create(:template_mx, :zone_template => @zone_template)
     record = template.build( 'example.org' )
 
     record.should_not be_nil
@@ -130,7 +130,7 @@ end
 
 describe RecordTemplate, "when creating" do
   before(:each) do
-    @zone_template = Factory(:zone_template)
+    @zone_template = FactoryGirl.create(:zone_template)
   end
 
   it "should inherit the TTL from the ZoneTemplate" do
@@ -155,8 +155,8 @@ end
 
 describe RecordTemplate, "when loaded" do
   it "should have SOA convenience, if an SOA template" do
-    zone_template = Factory(:zone_template)
-    record_template = Factory(:template_soa, :zone_template => zone_template)
+    zone_template = FactoryGirl.create(:zone_template)
+    record_template = FactoryGirl.create(:template_soa, :zone_template => zone_template)
     record_template.primary_ns.should eql('ns1.%ZONE%')
     record_template.retry.should be(7200)
   end
@@ -164,8 +164,8 @@ end
 
 describe RecordTemplate, "when updated" do
   it "should handle SOA convenience" do
-    zone_template = Factory(:zone_template)
-    record_template = Factory(:template_soa, :zone_template => zone_template, :primary_ns => 'ns1.provider.net')
+    zone_template = FactoryGirl.create(:zone_template)
+    record_template = FactoryGirl.create(:template_soa, :zone_template => zone_template, :primary_ns => 'ns1.provider.net')
     record_template.primary_ns = 'ns1.provider.net'
 
     record_template.save

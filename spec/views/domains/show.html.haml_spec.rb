@@ -4,9 +4,9 @@ describe "domains/show.html.haml" do
   context "for all users" do
 
     before(:each) do
-      view.stubs(:current_user).returns( Factory(:admin) )
+      view.stubs(:current_user).returns( FactoryGirl.create(:admin) )
       view.stubs(:current_token).returns( nil )
-      @domain = Factory(:domain)
+      @domain = FactoryGirl.create(:domain)
       assign(:domain, @domain)
       assign(:users, User.active_owners)
 
@@ -22,9 +22,9 @@ describe "domains/show.html.haml" do
   context "for admins and domains without owners" do
 
     before(:each) do
-      view.stubs(:current_user).returns( Factory(:admin) )
+      view.stubs(:current_user).returns( FactoryGirl.create(:admin) )
       view.stubs(:current_token).returns( nil )
-      @domain = Factory(:domain)
+      @domain = FactoryGirl.create(:domain)
       assign(:domain, @domain)
       assign(:users, User.active_owners)
 
@@ -52,9 +52,9 @@ describe "domains/show.html.haml" do
   context "for admins and domains with owners" do
 
     before(:each) do
-      view.stubs(:current_user).returns( Factory(:admin) )
+      view.stubs(:current_user).returns( FactoryGirl.create(:admin) )
       view.stubs(:current_token).returns( nil )
-      @domain = Factory(:domain, :user => Factory(:quentin))
+      @domain = FactoryGirl.create(:domain, :user => FactoryGirl.create(:quentin))
       assign(:domain, @domain)
       assign(:users, User.active_owners)
 
@@ -73,11 +73,11 @@ describe "domains/show.html.haml" do
 
   context "for owners" do
     before(:each) do
-      quentin = Factory(:quentin)
+      quentin = FactoryGirl.create(:quentin)
       view.stubs(:current_user).returns( quentin )
       view.stubs(:current_token).returns( nil )
 
-      @domain = Factory(:domain, :user => quentin)
+      @domain = FactoryGirl.create(:domain, :user => quentin)
       assign(:domain, @domain)
 
       render
@@ -108,10 +108,10 @@ describe "domains/show.html.haml" do
   context "for SLAVE domains" do
 
     before(:each) do
-      view.stubs(:current_user).returns( Factory(:admin) )
+      view.stubs(:current_user).returns( FactoryGirl.create(:admin) )
       view.stubs(:current_token).returns( nil )
 
-      @domain = Factory(:domain, :type => 'SLAVE', :master => '127.0.0.1')
+      @domain = FactoryGirl.create(:domain, :type => 'SLAVE', :master => '127.0.0.1')
       assign(:domain, @domain)
       assign(:users, User.active_owners)
 
@@ -138,11 +138,11 @@ describe "domains/show.html.haml" do
 
   context "for token users" do
     before(:each) do
-      @admin = Factory(:admin)
-      @domain = Factory(:domain)
+      @admin = FactoryGirl.create(:admin)
+      @domain = FactoryGirl.create(:domain)
       assign(:domain, @domain)
 
-      view.stubs(:current_token).returns( Factory(:auth_token, :user => @admin, :domain => @domain) )
+      view.stubs(:current_token).returns( FactoryGirl.create(:auth_token, :user => @admin, :domain => @domain) )
       view.stubs(:current_user).returns( nil )
     end
 

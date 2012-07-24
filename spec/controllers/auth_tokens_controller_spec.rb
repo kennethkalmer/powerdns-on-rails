@@ -3,17 +3,17 @@ require 'spec_helper'
 describe AuthTokensController do
 
   it "should not allow access to admins or owners" do
-    sign_in( Factory(:admin) )
+    sign_in( FactoryGirl.create(:admin) )
     post :create
     response.code.should eql("302")
 
-    sign_in(Factory(:quentin))
+    sign_in(FactoryGirl.create(:quentin))
     post :create
     response.code.should eql("302")
   end
 
   it "should bail cleanly on missing auth_token" do
-    sign_in(Factory(:token_user))
+    sign_in(FactoryGirl.create(:token_user))
 
     post :create
 
@@ -21,7 +21,7 @@ describe AuthTokensController do
   end
 
   it "should bail cleanly on missing domains" do
-    sign_in(Factory(:token_user))
+    sign_in(FactoryGirl.create(:token_user))
 
     post :create, :auth_token => { :domain => 'example.org' }
 
@@ -29,9 +29,9 @@ describe AuthTokensController do
   end
 
   it "bail cleanly on invalid requests" do
-    Factory(:domain)
+    FactoryGirl.create(:domain)
 
-    sign_in(Factory(:token_user))
+    sign_in(FactoryGirl.create(:token_user))
 
     post :create, :auth_token => { :domain => 'example.com' }
 
@@ -41,9 +41,9 @@ describe AuthTokensController do
   describe "generating tokens" do
 
     before(:each) do
-      sign_in(Factory(:token_user))
+      sign_in(FactoryGirl.create(:token_user))
 
-      @domain = Factory(:domain)
+      @domain = FactoryGirl.create(:domain)
       @params = { :domain => @domain.name, :expires_at => 1.hour.since.to_s(:rfc822) }
     end
 
@@ -60,7 +60,7 @@ describe AuthTokensController do
     end
 
     it "with remove set" do
-      a = Factory(:www, :domain => @domain)
+      a = FactoryGirl.create(:www, :domain => @domain)
       post :create, :auth_token => @params.merge(:remove => 'true', :record => ['www.example.com'])
 
       response.should have_selector('token > expires')
@@ -82,9 +82,9 @@ describe AuthTokensController do
     end
 
     it "with protected records" do
-      a = Factory(:a, :domain => @domain)
-      www = Factory(:www, :domain => @domain)
-      mx = Factory(:mx, :domain => @domain)
+      a = FactoryGirl.create(:a, :domain => @domain)
+      www = FactoryGirl.create(:www, :domain => @domain)
+      mx = FactoryGirl.create(:mx, :domain => @domain)
 
       post :create, :auth_token => @params.merge(
         :protect => ['example.com:A', 'www.example.com'],
@@ -102,7 +102,7 @@ describe AuthTokensController do
     end
 
     it "with protected record types" do
-      mx = Factory(:mx, :domain => @domain)
+      mx = FactoryGirl.create(:mx, :domain => @domain)
 
       post :create, :auth_token => @params.merge(:policy => 'allow', :protect_type => ['MX'])
 
@@ -110,9 +110,9 @@ describe AuthTokensController do
     end
 
     it "with allowed records" do
-      a = Factory(:a, :domain => @domain)
-      www = Factory(:www, :domain => @domain)
-      mx = Factory(:mx, :domain => @domain)
+      a = FactoryGirl.create(:a, :domain => @domain)
+      www = FactoryGirl.create(:www, :domain => @domain)
+      mx = FactoryGirl.create(:mx, :domain => @domain)
 
       post :create, :auth_token => @params.merge(:record => ['example.com'])
 
