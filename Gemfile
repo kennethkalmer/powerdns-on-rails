@@ -25,8 +25,11 @@ group :test do
   else
     gem 'ruby-debug19'
   end
-  gem 'factory_girl_rails'
+  gem "factory_girl_rails", "~> 3.0"
+
   gem "cucumber-rails"
   gem 'mocha'
   gem 'webrat'
+  gem 'database_cleaner'
+  
 end
