@@ -1,25 +1,27 @@
-Factory.define(:macro) do |f|
-  f.name 'Move to West Coast'
-  f.active true
-end
+FactoryGirl.define do
+  factory(:macro) do
+    name 'Move to West Coast'
+    active true
+  end
 
-Factory.define(:macro_step_create, :class => MacroStep) do |f|
-  f.action 'create'
-  f.record_type 'A'
-  f.name 'auto'
-  f.content '127.0.0.1'
-end
+  factory(:macro_step_create, :class => MacroStep) do
+    action 'create'
+    record_type 'A'
+    name 'auto'
+    content '127.0.0.1'
+  end
 
-Factory.define(:macro_step_change, :class => MacroStep) do |f|
-  f.action 'update'
-  f.record_type 'A'
-  f.name 'www'
-  f.content '127.1.1.1'
-end
+  factory(:macro_step_change, :class => MacroStep) do
+    action 'update'
+    record_type 'A'
+    name 'www'
+    content '127.1.1.1'
+  end
 
-Factory.define(:macro_step_remove, :class => MacroStep) do |f|
-  f.action 'remove'
-  f.record_type 'A'
-  f.name 'ftp'
+  factory(:macro_step_remove, :class => MacroStep) do
+    action 'remove'
+    record_type 'A'
+    name 'ftp'
+  end
 end
 
