@@ -34,7 +34,7 @@ class MacroStepsController < InheritedResources::Base
 
     @macro_step = parent.macro_steps.create( params[:macro_step] )
 
-    @macro_step.insert_at( position ) if position && !@macro_step.new_record?
+    @macro_step.insert_at( position.to_i ) if position && !@macro_step.new_record?
 
     parent.save
     @macro = parent
@@ -50,7 +50,7 @@ class MacroStepsController < InheritedResources::Base
     @macro_step = parent.macro_steps.find( params[:id] )
     @macro_step.update_attributes( params[:macro_step] )
 
-    @macro_step.insert_at( position ) if position
+    @macro_step.insert_at( position.to_i ) if position
 
     @macro = parent
 

@@ -6,8 +6,8 @@
 # that can easily be applied to any DNS RR's
 #
 class Record < ActiveRecord::Base
-
-  acts_as_audited :associated_with => :domain
+  #TODO: lockdown
+  audited :associated_with => :domain, :allow_mass_assignment => true
   self.non_audited_columns.delete( self.inheritance_column ) # Audit the 'type' column
 
   belongs_to :domain

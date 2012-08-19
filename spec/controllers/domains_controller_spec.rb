@@ -5,9 +5,7 @@ describe DomainsController, "index" do
   it "should display all zones to the admin" do
     sign_in(FactoryGirl.create(:admin))
     FactoryGirl.create(:domain)
-    puts "after domain"
     get 'index'
-    puts "after get"
     response.should render_template('domains/index')
     assigns(:domains).should_not be_empty
     assigns(:domains).size.should be(Domain.count)

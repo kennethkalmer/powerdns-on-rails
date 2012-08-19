@@ -119,7 +119,7 @@ describe AuditsHelper, "link_to_record_audit" do
     domain = FactoryGirl.create(:domain)
     audit = Audit.new(
       :auditable => FactoryGirl.create(:a, :domain => domain),
-      :association => domain,
+      :associated => domain,
       :action => 'create',
       :version => 1,
       :user => FactoryGirl.create(:admin),
@@ -133,7 +133,7 @@ describe AuditsHelper, "link_to_record_audit" do
   it "should handle removed records without a 'type' key in the changes hash" do
     audit = Audit.new(
       :auditable => nil,
-      :association => FactoryGirl.create(:domain),
+      :associated => FactoryGirl.create(:domain),
       :action => 'destroy',
       :version => 1,
       :user => FactoryGirl.create(:admin),
@@ -151,7 +151,7 @@ describe AuditsHelper, "audit_user" do
   it "should display user logins if present" do
     audit = Audit.new(
       :auditable => nil,
-      :association => FactoryGirl.create(:domain),
+      :associated => FactoryGirl.create(:domain),
       :action => 'destroy',
       :version => 1,
       :user => FactoryGirl.create(:admin),
@@ -164,7 +164,7 @@ describe AuditsHelper, "audit_user" do
   it "should display usernames if present" do
     audit = Audit.new(
       :auditable => nil,
-      :association => FactoryGirl.create(:domain),
+      :associated => FactoryGirl.create(:domain),
       :action => 'destroy',
       :version => 1,
       :username => 'foo',
@@ -177,7 +177,7 @@ describe AuditsHelper, "audit_user" do
   it "should not bork on missing user information" do
     audit = Audit.new(
       :auditable => nil,
-      :association => FactoryGirl.create(:domain),
+      :associated => FactoryGirl.create(:domain),
       :action => 'destroy',
       :version => 1,
       :audited_changes => { 'name' => 'local.example.com' }

@@ -33,7 +33,7 @@ end
 describe ZoneTemplate, "when loaded" do
 
   before(:each) do
-    @zone_template = Factory( :zone_template )
+    @zone_template = FactoryGirl.create(:zone_template)
     FactoryGirl.create(:template_soa, :zone_template => @zone_template)
   end
 
@@ -50,7 +50,7 @@ describe ZoneTemplate, "when loaded" do
   it "should have a sense of validity" do
     @zone_template.has_soa?.should be_true
 
-    Factory( :zone_template, :name => 'West Coast Data Center' ).has_soa?.should_not be_true
+    FactoryGirl.create( :zone_template, :name => 'West Coast Data Center' ).has_soa?.should_not be_true
   end
 end
 
@@ -87,7 +87,7 @@ end
 describe ZoneTemplate, "when used to build a zone" do
 
   before(:each) do
-    @zone_template = Factory( :zone_template )
+    @zone_template = FactoryGirl.create(:zone_template)
     FactoryGirl.create(:template_soa, :zone_template => @zone_template)
     FactoryGirl.create(:template_ns, :zone_template => @zone_template)
     FactoryGirl.create(:template_ns, :content => 'ns2.%ZONE%', :zone_template => @zone_template)

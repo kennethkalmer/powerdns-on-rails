@@ -11,7 +11,8 @@ require 'scoped_finders'
 #
 class Domain < ActiveRecord::Base
 
-  acts_as_audited :protect => false
+  #TODO: lockdown
+  audited :allow_mass_assignment => true
   has_associated_audits
 
   belongs_to :user
