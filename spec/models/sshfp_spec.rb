@@ -50,8 +50,8 @@ describe SSHFP, "when new" do
     @sshfp.should have(1).error_on(:content)
   end
 
-  it "must not accept a key of type higher than 2 (undefined)" do
-    @sshfp.content = '3 1 d6d934e46c1c0993ab861d3302abdd1e11682e0e'
+  it "must not accept a key of type higher than 3 (undefined)" do
+    @sshfp.content = '4 1 d6d934e46c1c0993ab861d3302abdd1e11682e0e'
     @sshfp.should have(1).error_on(:content)
   end
 
@@ -60,8 +60,8 @@ describe SSHFP, "when new" do
     @sshfp.should have(1).error_on(:content)
   end
 
-  it "must not accept a key with a fingerprint type higher than 1 (undefined)" do
-    @sshfp.content = '1 2 d6d934e46c1c0993ab861d3302abdd1e11682e0e'
+  it "must not accept a key with a fingerprint type higher than 2 (undefined)" do
+    @sshfp.content = '1 3 d6d934e46c1c0993ab861d3302abdd1e11682e0e'
     @sshfp.should have(1).error_on(:content)
   end
 
