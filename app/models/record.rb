@@ -17,7 +17,7 @@ class Record < ActiveRecord::Base
     :greater_than_or_equal_to => 0,
     :only_integer => true
 
-  class_inheritable_accessor :batch_soa_updates
+  class_attribute :batch_soa_updates
 
   # This is needed here for generic form support, actual functionality
   # implemented in #SOA
@@ -28,8 +28,9 @@ class Record < ActiveRecord::Base
   after_save  :update_soa_serial
 
   # Known record types
-  @@record_types = ['A', 'AAAA', 'CNAME', 'LOC', 'MX', 'NS', 'PTR', 'SOA', 'SPF', 'SRV', 'TXT']
-  cattr_reader :record_types
+
+  class_attribute :record_types
+  self.record_types = ['A', 'AAAA', 'CNAME', 'LOC', 'MX', 'NS', 'PTR', 'SOA', 'SPF', 'SRV', 'TXT']
 
   class << self
 

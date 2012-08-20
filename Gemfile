@@ -1,9 +1,12 @@
 source 'http://rubygems.org'
 
-gem 'rails', '3.0.9' #TODO
+gem 'rails', '3.2.8'
 
-# Bundle edge Rails instead:
-# gem 'rails', :git => 'git://github.com/rails/rails.git'
+group :assets do
+  gem 'sass-rails'
+  gem 'coffee-rails'
+  gem 'uglifier'
+end
 
 platforms :ruby do
   gem 'pg', '>= 0.9.0'
@@ -16,6 +19,7 @@ gem 'will_paginate', '~> 3.0.3'
 gem "audited-activerecord", "~> 3.0.0.rc2"
 gem 'inherited_resources'
 gem 'devise'
+gem "devise-encryptable"
 gem 'rabl'
 
 gem 'acts_as_list'

@@ -6,7 +6,6 @@ describe "macros/show.html.haml" do
     FactoryGirl.create(:macro_step_create, :macro => @macro)
 
     assign(:macro, @macro)
-    assign(:macro_step, @macro.macro_steps.new)
 
     render
   end
