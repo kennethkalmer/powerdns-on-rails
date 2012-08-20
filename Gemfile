@@ -19,6 +19,7 @@ gem 'devise'
 gem 'rabl'
 
 gem 'acts_as_list'
+gem 'state_machine'
 
 group :development, :test do
   gem "rspec-rails"
