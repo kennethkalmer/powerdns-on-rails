@@ -24,6 +24,7 @@ gem 'rabl'
 
 gem 'acts_as_list'
 gem 'state_machine'
+gem 'dynamic_form'
 
 group :development, :test do
   gem "rspec-rails"
