@@ -19,11 +19,11 @@
       %td.top= t(:label_macro_description)
       %td &nbsp;
       %td= f.text_area :description, :size => '35x2'
-    - unless @users.nil? || @users.empty?
+    - if current_user.admin? && !possible_owners.empty?
       %tr
         %td= t(:label_macro_owner)
         %td &nbsp;
-        %td= f.collection_select :user_id, @users, :id, :login, :include_blank => true
+        %td= f.collection_select :user_id, possible_owners, :id, :login, :include_blank => true
     %tr
       %td= t(:label_macro_active)
       %td &nbsp;
