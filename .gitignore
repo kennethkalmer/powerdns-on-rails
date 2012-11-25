@@ -4,3 +4,4 @@ log/*.log
 tmp/**/*
 *.swp
 config/initializers/secret_token.rb
+config/database.yml
