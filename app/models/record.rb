@@ -9,7 +9,7 @@ class Record < ActiveRecord::Base
   audited :associated_with => :domain, :allow_mass_assignment => true
   self.non_audited_columns.delete( self.inheritance_column ) # Audit the 'type' column
 
-  attr_accessible :type, :name, :ttl, :prio, :content, :primary_ns, :contact, :refresh, :retry, :expire, :minimum
+  attr_accessible :type, :name, :shortname, :ttl, :prio, :content, :primary_ns, :contact, :refresh, :retry, :expire, :minimum
   belongs_to :domain
 
   validates_presence_of :domain_id, :name

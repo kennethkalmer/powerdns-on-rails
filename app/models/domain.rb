@@ -10,8 +10,6 @@ require 'scoped_finders'
 # * It specifies a default $TTL
 #
 class Domain < ActiveRecord::Base
-
-  #TODO: lockdown
   audited :allow_mass_assignment => true
   has_associated_audits
 
@@ -89,7 +87,7 @@ class Domain < ActiveRecord::Base
 
   # return the records, excluding the SOA record
   def records_without_soa
-    records.all( :include => :domain ).select { |r| !r.is_a?( SOA ) }
+    records.includes(:domain).all.select { |r| !r.is_a?( SOA ) }.sort_by {|r| [r.shortname, r.type]}
   end
 
   # Expand our validations to include SOA details
