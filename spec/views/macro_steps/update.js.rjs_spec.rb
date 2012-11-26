@@ -2,8 +2,8 @@ require 'spec_helper'
 
 describe "macro_steps/update.js.rjs" do
   before(:each) do
-    assigns[:macro] = @macro = Factory(:macro)
-    assigns[:macro_step] = @macro_step = Factory(:macro_step_create, :macro => @macro)
+    assigns[:macro] = @macro = FactoryGirl.create(:macro)
+    assigns[:macro_step] = @macro_step = FactoryGirl.create(:macro_step_create, :macro => @macro)
   end
 
   describe "for valid updates" do

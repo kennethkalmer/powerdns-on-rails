@@ -5,7 +5,7 @@ describe "templates/edit.html.haml" do
   context "and existing templates" do
 
     before(:each) do
-      @zone_template = Factory(:zone_template)
+      @zone_template = FactoryGirl.create(:zone_template)
       assign(:zone_template, @zone_template)
     end
 

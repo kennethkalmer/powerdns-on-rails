@@ -21,8 +21,8 @@ describe "macro_steps/create.js.rjs" do
 
   describe "for successful records" do
     before(:each) do
-      assigns[:macro] = Factory(:macro)
-      assigns[:macro_step] = Factory(:macro_step_create, :macro => assigns[:macro])
+      assigns[:macro] = FactoryGirl.create(:macro)
+      assigns[:macro_step] = FactoryGirl.create(:macro_step_create, :macro => assigns[:macro])
 
       render('macro_steps/create.js.rjs')
     end

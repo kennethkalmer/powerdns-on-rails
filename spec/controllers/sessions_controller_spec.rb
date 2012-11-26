@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe SessionsController, "and users" do
   #before(:each) do
-  #  @quentin = Factory(:quentin)
+  #  @quentin = FactoryGirl.create(:quentin)
   #end
 
   #it 'logins and redirects' do
@@ -74,9 +74,9 @@ end
 describe SessionsController, "and auth tokens" do
 
   before(:each) do
-    @domain = Factory(:domain)
-    @user = Factory(:admin)
-    @token = Factory(:auth_token, :domain => @domain, :user => @user)
+    @domain = FactoryGirl.create(:domain)
+    @user = FactoryGirl.create(:admin)
+    @token = FactoryGirl.create(:auth_token, :domain => @domain, :user => @user)
   end
 
   xit 'accepts and redirects' do

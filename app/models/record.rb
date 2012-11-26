@@ -6,9 +6,12 @@
 # that can easily be applied to any DNS RR's
 #
 class Record < ActiveRecord::Base
-
-  acts_as_audited :associated_with => :domain
+  audited :associated_with => :domain, :allow_mass_assignment => true
   self.non_audited_columns.delete( self.inheritance_column ) # Audit the 'type' column
+
+  def self.attributes_protected_by_default
+    []
+  end
 
   belongs_to :domain
 
@@ -17,7 +20,7 @@ class Record < ActiveRecord::Base
     :greater_than_or_equal_to => 0,
     :only_integer => true
 
-  class_inheritable_accessor :batch_soa_updates
+  class_attribute :batch_soa_updates
 
   # This is needed here for generic form support, actual functionality
   # implemented in #SOA
@@ -28,8 +31,9 @@ class Record < ActiveRecord::Base
   after_save  :update_soa_serial
 
   # Known record types
-  @@record_types = ['A', 'AAAA', 'CNAME', 'LOC', 'MX', 'NS', 'PTR', 'SOA', 'SPF', 'SRV', 'TXT']
-  cattr_reader :record_types
+
+  class_attribute :record_types
+  self.record_types = ['A', 'AAAA', 'CNAME', 'LOC', 'MX', 'NS', 'PTR', 'SOA', 'SPF', 'SRV','SSHFP', 'TXT']
 
   class << self
 

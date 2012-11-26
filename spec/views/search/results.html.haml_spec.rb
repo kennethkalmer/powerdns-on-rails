@@ -3,7 +3,7 @@ require 'spec_helper'
 describe "search/results.html.haml" do
 
   before(:each) do
-    @admin = Factory(:admin)
+    @admin = FactoryGirl.create(:admin)
     view.stubs(:current_user).returns(@admin)
     view.stubs(:current_token).returns(nil)
   end

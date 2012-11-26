@@ -1,21 +1,33 @@
 source 'http://rubygems.org'
 
-gem 'rails', '3.0.9'
+gem 'rails', '3.2.9'
 
-# Bundle edge Rails instead:
-# gem 'rails', :git => 'git://github.com/rails/rails.git'
+group :assets do
+  gem 'sass-rails'
+  gem 'coffee-rails'
+  gem 'uglifier'
+end
 
-gem 'mysql2', '~> 0.2.7'
+platforms :ruby do
+  gem 'pg', '>= 0.9.0'
+  gem 'therubyracer'
+end
+
 gem 'haml'
 gem 'jquery-rails'
-gem 'will_paginate', '~> 3.0.pre2'
-gem 'acts_as_audited', '2.0.0.rc7'
+gem 'will_paginate', '~> 3.0.3'
+gem "audited-activerecord", "~> 3.0.0.rc2"
 gem 'inherited_resources'
 gem 'devise'
+gem "devise-encryptable"
 gem 'rabl'
 
+gem 'acts_as_list'
+gem 'state_machine'
+gem 'dynamic_form'
+
 group :development, :test do
-  gem "rspec-rails", "~> 2.6.0"
+  gem "rspec-rails"
   gem 'RedCloth', '>= 4.1.1'
 end
 
@@ -25,8 +37,10 @@ group :test do
   else
     gem 'ruby-debug19'
   end
-  gem 'factory_girl_rails'
-  gem "cucumber-rails"
-  gem 'mocha'
+  gem "factory_girl_rails", "~> 3.0" #TODO: 4.0
+
+  gem "cucumber-rails", :require => false
+  gem 'mocha', :require => false
   gem 'webrat'
+  gem 'database_cleaner'
 end

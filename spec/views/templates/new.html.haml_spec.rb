@@ -8,7 +8,7 @@ describe "templates/new.html.haml" do
     end
 
     it "should have a list of users if provided" do
-      Factory(:quentin)
+      FactoryGirl.create(:quentin)
 
       render
 

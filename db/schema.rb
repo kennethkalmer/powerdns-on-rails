@@ -1,3 +1,4 @@
+# encoding: UTF-8
 # This file is auto-generated from the current state of the database. Instead
 # of editing this file, please use the migrations feature of Active Record to
 # incrementally modify your database, and then regenerate this schema definition.
@@ -10,25 +11,26 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110306115116) do
+ActiveRecord::Schema.define(:version => 20120819220815) do
 
   create_table "audits", :force => true do |t|
     t.integer  "auditable_id"
     t.string   "auditable_type"
-    t.integer  "association_id"
-    t.string   "association_type"
+    t.integer  "associated_id"
+    t.string   "associated_type"
     t.integer  "user_id"
     t.string   "user_type"
     t.string   "username"
     t.string   "action"
     t.text     "audited_changes"
-    t.integer  "version",          :default => 0
+    t.integer  "version",         :default => 0
     t.datetime "created_at"
     t.string   "comment"
     t.string   "remote_address"
   end
 
-  add_index "audits", ["association_id", "association_type"], :name => "auditable_parent_index"
+  add_index "audits", ["associated_id", "associated_type"], :name => "associated_index"
+  add_index "audits", ["associated_id", "associated_type"], :name => "auditable_parent_index"
   add_index "audits", ["auditable_id", "auditable_type"], :name => "auditable_index"
   add_index "audits", ["created_at"], :name => "index_audits_on_created_at"
   add_index "audits", ["user_id", "user_type"], :name => "user_index"
@@ -38,8 +40,8 @@ ActiveRecord::Schema.define(:version => 20110306115116) do
     t.integer  "user_id"
     t.string   "token",       :null => false
     t.text     "permissions", :null => false
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",  :null => false
+    t.datetime "updated_at",  :null => false
     t.datetime "expires_at",  :null => false
   end
 
@@ -51,9 +53,8 @@ ActiveRecord::Schema.define(:version => 20110306115116) do
     t.integer  "notified_serial"
     t.string   "account"
     t.integer  "ttl",             :default => 86400
-    t.integer  "integer",         :default => 86400
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",                            :null => false
+    t.datetime "updated_at",                            :null => false
     t.integer  "user_id"
     t.text     "notes"
   end
@@ -71,8 +72,8 @@ ActiveRecord::Schema.define(:version => 20110306115116) do
     t.integer  "position",                      :null => false
     t.boolean  "active",      :default => true
     t.string   "note"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",                    :null => false
+    t.datetime "updated_at",                    :null => false
   end
 
   create_table "macros", :force => true do |t|
@@ -80,8 +81,8 @@ ActiveRecord::Schema.define(:version => 20110306115116) do
     t.string   "description"
     t.integer  "user_id"
     t.boolean  "active",      :default => false
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",                     :null => false
+    t.datetime "updated_at",                     :null => false
   end
 
   create_table "record_templates", :force => true do |t|
@@ -91,31 +92,25 @@ ActiveRecord::Schema.define(:version => 20110306115116) do
     t.string   "content",          :null => false
     t.integer  "ttl",              :null => false
     t.integer  "prio"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",       :null => false
+    t.datetime "updated_at",       :null => false
   end
 
   create_table "records", :force => true do |t|
-    t.integer  "domain_id",                 :null => false
-    t.string   "name",                      :null => false
-    t.string   "type",        :limit => 11, :null => false
-    t.string   "content",                   :null => false
-    t.integer  "ttl",                       :null => false
+    t.integer  "domain_id",   :null => false
+    t.string   "name",        :null => false
+    t.string   "type",        :null => false
+    t.string   "content",     :null => false
+    t.integer  "ttl",         :null => false
     t.integer  "prio"
-    t.integer  "change_date",               :null => false
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.integer  "change_date", :null => false
+    t.datetime "created_at",  :null => false
+    t.datetime "updated_at",  :null => false
   end
 
   add_index "records", ["domain_id"], :name => "index_records_on_domain_id"
   add_index "records", ["name", "type"], :name => "index_records_on_name_and_type"
   add_index "records", ["name"], :name => "index_records_on_name"
-
-  create_table "supermasters", :id => false, :force => true do |t|
-    t.string "ip",         :limit => 25, :default => "", :null => false
-    t.string "nameserver",               :default => "", :null => false
-    t.string "account",    :limit => 40
-  end
 
   create_table "users", :force => true do |t|
     t.string   "login"
@@ -140,8 +135,8 @@ ActiveRecord::Schema.define(:version => 20110306115116) do
   create_table "zone_templates", :force => true do |t|
     t.string   "name"
     t.integer  "ttl",        :default => 86400
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",                    :null => false
+    t.datetime "updated_at",                    :null => false
     t.integer  "user_id"
   end
 

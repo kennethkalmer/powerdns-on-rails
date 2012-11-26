@@ -2,8 +2,8 @@ require 'spec_helper'
 
 describe "domains/apply_macro.html.haml" do
   before(:each) do
-    @domain = Factory(:domain)
-    @macro = Factory(:macro)
+    @domain = FactoryGirl.create(:domain)
+    @macro = FactoryGirl.create(:macro)
 
     assign(:domain, @domain)
     assign(:macros, Macro.all)

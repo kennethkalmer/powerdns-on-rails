@@ -124,7 +124,6 @@ A.create!({
 })
 MX.create!({
   :domain => domain,
-  :type => 'MX',
   :content => 'mail',
   :prio => 10
 })

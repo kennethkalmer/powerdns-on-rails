@@ -2,11 +2,10 @@ require 'spec_helper'
 
 describe "macros/show.html.haml" do
   before(:each) do
-    @macro = Factory(:macro)
-    Factory(:macro_step_create, :macro => @macro)
+    @macro = FactoryGirl.create(:macro)
+    FactoryGirl.create(:macro_step_create, :macro => @macro)
 
     assign(:macro, @macro)
-    assign(:macro_step, @macro.macro_steps.new)
 
     render
   end

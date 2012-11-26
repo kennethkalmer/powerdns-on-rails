@@ -3,11 +3,11 @@ require 'spec_helper'
 describe SearchController, "for admins" do
 
   before(:each) do
-    #session[:user_id] = Factory(:admin).id
-    sign_in Factory(:admin)
+    #session[:user_id] = FactoryGirl.create(:admin).id
+    sign_in FactoryGirl.create(:admin)
 
-    Factory(:domain, :name => 'example.com')
-    Factory(:domain, :name => 'example.net')
+    FactoryGirl.create(:domain, :name => 'example.com')
+    FactoryGirl.create(:domain, :name => 'example.net')
   end
 
   it "should return results when searched legally" do
@@ -32,7 +32,7 @@ describe SearchController, "for admins" do
   end
 
   it "should redirect to the domain page if only one result is found" do
-    domain = Factory(:domain, :name => 'slave-example.com')
+    domain = FactoryGirl.create(:domain, :name => 'slave-example.com')
 
     get :results, :q => 'slave-example.com'
 
@@ -44,10 +44,10 @@ end
 
 describe SearchController, "for api clients" do
   before(:each) do
-    sign_in(Factory(:api_client))
+    sign_in(FactoryGirl.create(:api_client))
 
-    Factory(:domain, :name => 'example.com')
-    Factory(:domain, :name => 'example.net')
+    FactoryGirl.create(:domain, :name => 'example.com')
+    FactoryGirl.create(:domain, :name => 'example.net')
   end
 
   it "should return an empty JSON response for no results" do

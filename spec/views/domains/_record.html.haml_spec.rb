@@ -4,9 +4,9 @@ describe "domains/_record" do
   context "for a user" do
 
     before(:each) do
-      view.stubs(:current_user).returns( Factory(:admin) )
-      domain = Factory(:domain)
-      @record = Factory(:ns, :domain => domain)
+      view.stubs(:current_user).returns( FactoryGirl.create(:admin) )
+      domain = FactoryGirl.create(:domain)
+      @record = FactoryGirl.create(:ns, :domain => domain)
 
       render :partial => 'domains/record', :object => @record
     end
@@ -36,8 +36,8 @@ describe "domains/_record" do
   context "for a SLAVE domain" do
 
     before(:each) do
-      view.stubs(:current_user).returns( Factory(:admin) )
-      domain = Factory(:domain, :type => 'SLAVE', :master => '127.0.0.1')
+      view.stubs(:current_user).returns( FactoryGirl.create(:admin) )
+      domain = FactoryGirl.create(:domain, :type => 'SLAVE', :master => '127.0.0.1')
       @record = domain.a_records.create( :name => 'foo', :content => '127.0.0.1' )
       render :partial => 'domains/record', :object => @record
     end
@@ -68,13 +68,13 @@ describe "domains/_record" do
   context "for a token" do
 
     before(:each) do
-      @domain = Factory(:domain)
+      @domain = FactoryGirl.create(:domain)
       view.stubs(:current_user).returns( nil )
-      view.stubs(:current_token).returns( Factory(:auth_token, :domain => @domain, :user => Factory(:admin)) )
+      view.stubs(:current_token).returns( FactoryGirl.create(:auth_token, :domain => @domain, :user => FactoryGirl.create(:admin)) )
     end
 
     it "should not allow editing NS records" do
-      record = Factory(:ns, :domain => @domain)
+      record = FactoryGirl.create(:ns, :domain => @domain)
 
       render :partial => 'domains/record', :object => record
 
@@ -83,7 +83,7 @@ describe "domains/_record" do
     end
 
     it "should not allow removing NS records" do
-      record = Factory(:ns, :domain => @domain)
+      record = FactoryGirl.create(:ns, :domain => @domain)
 
       render :partial => 'domains/record', :object => record
 
@@ -91,7 +91,7 @@ describe "domains/_record" do
     end
 
     it "should allow edit records that aren't protected" do
-      record = Factory(:a, :domain => @domain)
+      record = FactoryGirl.create(:a, :domain => @domain)
       render :partial => 'domains/record', :object => record
 
       rendered.should have_tag("a[onclick^=editRecord]")
@@ -100,7 +100,7 @@ describe "domains/_record" do
     end
 
     it "should allow removing records if permitted" do
-      record = Factory(:a, :domain => @domain)
+      record = FactoryGirl.create(:a, :domain => @domain)
       token = AuthToken.new(
         :domain => @domain
       )
