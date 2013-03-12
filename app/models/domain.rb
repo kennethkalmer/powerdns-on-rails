@@ -40,7 +40,7 @@ class Domain < ActiveRecord::Base
     :with => /\A(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\z/
 
   # Disable single table inheritence (STI)
-  set_inheritance_column 'not_used_here'
+  self.inheritance_column = 'not_used_here'
 
   after_create :create_soa_record
 

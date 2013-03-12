@@ -17,7 +17,7 @@ class Record < ActiveRecord::Base
     :greater_than_or_equal_to => 0,
     :only_integer => true
 
-  class_inheritable_accessor :batch_soa_updates
+  class_attribute :batch_soa_updates
 
   # This is needed here for generic form support, actual functionality
   # implemented in #SOA

@@ -34,21 +34,22 @@ class User < ActiveRecord::Base
   # Named scopes
   scope :active_owners, where(:state => :active, :admin => false)
 
-  acts_as_state_machine :initial => :active
-  state :active #, :enter => :do_activate
-  state :suspended
-  state :deleted #, :enter => :do_delete
+  state_machine :initial => :active do
+    state :active #, :enter => :do_activate
+    state :suspended
+    state :deleted #, :enter => :do_delete
 
-  event :suspend do
-    transitions :from => :active, :to => :suspended
-  end
+    event :suspend do
+      transition :active => :suspended
+    end
 
-  event :unsuspend do
-    transitions :from => :suspended, :to => :active
-  end
+    event :unsuspend do
+      transition :suspended => :active
+    end
 
-  event :delete do
-    transitions :from => [:suspended, :active], :to => :deleted
+    event :delete do
+      transition [:suspended, :active] => :deleted
+    end
   end
 
   class << self
