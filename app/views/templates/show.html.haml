@@ -15,7 +15,7 @@
 %h1.underline
   = @zone_template.name
   &nbsp;
-  = link_to prototip_info_icon( 'database_edit.png', 'edit-template' ), edit_zone_template_path(@zone_template)
+  = link_to info_icon( 'database_edit.png', 'edit-template' ), edit_zone_template_path(@zone_template)
 
 %table.grid
   %tr
@@ -55,101 +55,97 @@
 
 %p &nbsp;
 
-= link_to_function prototip_info_icon('table_add.png', 'new-record-template'), "displayRecordForm()"
+= link_to_function info_icon('table_add.png', 'new-record-template'), "displayRecordForm()"
 = link_to_function t(:label_template_record_create_new), "displayRecordForm()"
 
 #record-form-div{ :style => 'display:none' }
-  - remote_form_for( @record_template, :html => { :id => 'record-form' } ) do |f|
+  = form_for( RecordTemplate.new, :remote => true, :html => { :id => 'record-form' } ) do |f|
     = hidden_field( :zone_template, :id )
     %table.grid
-      %tr
+      %tr.all
         %td= t :label_template_record_type
         %td
           = f.select :record_type, RecordTemplate.record_types.map { |t| [t,t] }
-          = observe_field "record_template_record_type", :function => 'toggleRecordFields(element,value);'
         %td &nbsp;
-      %tr
+      %tr.all
         %td= t :label_template_record_host
         %td= f.text_field :name
         %td &nbsp;
-      %tr
+      %tr.all
         %td= t :label_template_record_ttl
         %td= f.text_field :ttl, :size => 6
         %td &nbsp;
-      %tr.rt-mx{ :style => 'display :none' }
+      %tr.rt-mx.rt-srv{ :style => 'display :none' }
         %td= t :label_template_record_priority
         %td= f.text_field :prio, :size => 6
         %td &nbsp;
-      %tr
+      %tr.all
         %td= t :label_template_record_data
         %td= f.text_field :content
         %td &nbsp;
       %tr.rt-soa{ :style => 'display :none' }
         %td= t :label_template_record_primary_ns
         %td= f.text_field :primary_ns
-        %td= prototip_help_icon('help-primary-ns')
+        %td= help_icon('help-primary-ns')
       %tr.rt-soa{ :style => 'display :none' }
         %td= t :label_template_record_contact
         %td= f.text_field :contact
-        %td= prototip_help_icon('help-contact')
+        %td= help_icon('help-contact')
       %tr.rt-soa{ :style => 'display :none' }
         %td= t :label_template_record_refresh
         %td
           = f.text_field :refresh, :size => 6
-          = prototip_help_icon('help-refresh')
+          = help_icon('help-refresh')
         %td &nbsp;
       %tr.rt-soa{ :style => 'display :none' }
         %td= t :label_template_record_retry
         %td
           = f.text_field :retry, :size => 6
-          = prototip_help_icon('help-retry')
+          = help_icon('help-retry')
         %td &nbsp;
       %tr.rt-soa{ :style => 'display :none' }
         %td= t :label_template_record_expire
         %td
           = f.text_field :expire, :size => 6
-          = prototip_help_icon('help-expire')
+          = help_icon('help-expire')
         %td &nbsp;
       %tr.rt-soa{ :style => 'display :none' }
         %td= t :label_template_record_minimum
         %td
           = f.text_field :minimum, :size => 6
-          = prototip_help_icon('help-minimum')
+          = help_icon('help-minimum')
         %td &nbsp;
-      %tr
+      %tr.all
         %td.right= link_to_function t(:generic_cancel), "hideAll()"
         %td= submit_tag t(:generic_save)
 
 :javascript
   function hideAll() {
-    $('record-form-div').hide();
+    $('#record-form-div').hide();
   }
   function displayRecordForm() {
-    $('record-form-div').show();
+    $('#record-form-div').show();
   }
   function editRecordTemplate(i){
-    $('show_record_template_' + i).hide();
-    soa = $('show-soa_record_template_' + i);
+    $('#show_record_template_' + i).hide();
+    soa = $('#show-soa_record_template_' + i);
     if (soa)
       soa.hide();
-    $('edit_record_template_' + i).show();
+    $('#edit_record_template_' + i).show();
   }
   function hideRecordTemplate(i) {
-    $('show_record_template_' + i).show();
-    soa = $('show-soa_record_template_' + i);
+    $('#show_record_template_' + i).show();
+    soa = $('#show-soa_record_template_' + i);
     if (soa)
       soa.show();
-    $('edit_record_template_' + i).hide();
+    $('#edit_record_template_' + i).hide();
   }
-  function toggleRecordFields(e,v){
+  function toggleRecordFields(v){
     t = 'rt-' + v.toLowerCase();
-    $('record-form-div').select('tr').each(function(r){
-      if(r.className && r.className != t)
-        r.hide();
+    $('#record-form-div tr').each(function(){
+      if($(this).hasClass(t) || $(this).hasClass('all'))
+        $(this).show();
       else
-        r.show();
+        $(this).hide();
     });
-  }
-  function resetRecordForm() {
-    $('record-form').reset();
   }

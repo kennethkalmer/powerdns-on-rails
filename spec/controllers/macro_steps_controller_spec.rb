@@ -1,20 +1,9 @@
-require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
-
-describe "Secure", MacroStepsController do
-
-  it "should require a valid login" do
-    get :index
-
-    response.should be_redirect
-    response.should redirect_to(new_session_path)
-  end
-
-end
+require 'spec_helper'
 
 describe MacroStepsController do
 
   before(:each) do
-    login_as(Factory(:admin))
+    sign_in(Factory(:admin))
 
     @macro = Factory(:macro)
     @step = Factory(:macro_step_create,
@@ -24,7 +13,7 @@ describe MacroStepsController do
   end
 
   it "should create a valid step" do
-    lambda {
+    expect {
       post :create, :macro_id => @macro.id,
         :macro_step => {
           :action => 'create',
@@ -32,7 +21,7 @@ describe MacroStepsController do
           :name => 'www',
           :content => '127.0.0.1'
         }, :format => 'js'
-    }.should change(@macro.macro_steps(true), :count)
+    }.to change(@macro.macro_steps(true), :count)
 
     response.should render_template('macro_steps/create')
   end
@@ -47,17 +36,17 @@ describe MacroStepsController do
       :position => '1'
     }, :format => 'js'
 
-    assigns[:macro_step].position.should == 1
+    assigns(:macro_step).position.should == 1
   end
 
   it "should not create an invalid step" do
-    lambda {
+    expect {
       post :create, :macro_id => @macro.id,
         :macro_step => {
           :position => '1',
           :record_type => 'A'
         }, :format => 'js'
-    }.should_not change(@macro.macro_steps(true), :count)
+    }.to_not change(@macro.macro_steps(true), :count)
 
     response.should render_template('macro_steps/create')
   end
@@ -98,7 +87,7 @@ describe MacroStepsController do
     response.should be_redirect
     response.should redirect_to(macro_path(@macro))
 
-    lambda { @step.reload }.should raise_error( ActiveRecord::RecordNotFound )
+    expect { @step.reload }.to raise_error( ActiveRecord::RecordNotFound )
   end
 
 end

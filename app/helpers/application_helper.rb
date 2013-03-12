@@ -11,12 +11,12 @@ module ApplicationHelper
   # Output the flashes if they exist
   def show_flash
     html = ''
-    [ :notice, :info, :warning, :error ].each do |f|
+    [ :alert, :notice, :info, :warning, :error ].each do |f|
       options = { :id => "flash-#{f}", :class => "flash-#{f}" }
       options.merge!( :style => 'display:none' ) if flash[f].nil?
       html << content_tag( 'div', options ) { flash[f] || '' }
     end
-    html
+    html.html_safe
   end
 
   # Link to Zytrax
@@ -34,6 +34,14 @@ module ApplicationHelper
              send( path.singularize + '_path', object )
            end
     link_to "Cancel", path
+  end
+
+  def help_icon( dom_id )
+    image_tag('help.png', :id => "help-icn-#{dom_id}", :class => 'help-icn', "data-help" => dom_id )
+  end
+
+  def info_icon( image, dom_id )
+    image_tag( image , :id => "help-icn-#{dom_id}", :class => 'help-icn', "data-help" => dom_id )
   end
 
 end

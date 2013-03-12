@@ -1,68 +1,61 @@
-require File.dirname(__FILE__) + '/../spec_helper'
+require 'spec_helper'
 
 describe "New 'untyped'", Domain do
-  before(:each) do
-    @domain = Domain.new
-  end
+  subject { Domain.new }
 
   it "should be NATIVE by default" do
-    @domain.type.should == 'NATIVE'
+    subject.type.should == 'NATIVE'
   end
 
   it "should not accept rubbish types" do
-    @domain.type = 'DOMINANCE'
-    @domain.should have(1).error_on(:type)
+    subject.type = 'DOMINANCE'
+    subject.should have(1).error_on(:type)
   end
 end
 
 describe "New MASTER/NATIVE", Domain do
-  before(:each) do
-    @domain = Domain.new
-  end
+  subject { Domain.new }
 
   it "should require a name" do
-    @domain.should have(1).error_on(:name)
+    subject.should have(1).error_on(:name)
   end
 
   it "should not allow duplicate names" do
     Factory(:domain)
-    @domain.name = "example.com"
-    @domain.should have(1).error_on(:name)
+    subject.name = "example.com"
+    subject.should have(1).error_on(:name)
   end
 
   it "should bail out on missing SOA fields" do
-    @domain.should have(1).error_on( :primary_ns )
+    subject.should have(1).error_on( :primary_ns )
   end
 
   it "should be NATIVE by default" do
-    @domain.type.should eql('NATIVE')
+    subject.type.should eql('NATIVE')
   end
 
   it "should not require a MASTER" do
-    @domain.should have(:no).errors_on(:master)
+    subject.should have(:no).errors_on(:master)
   end
 end
 
 describe "New SLAVE", Domain do
-  before(:each) do
-    @domain = Domain.new( :type => 'SLAVE' )
-    @domain.should be_slave
-  end
+  subject { Domain.new( :type => 'SLAVE' ) }
 
   it "should require a master address" do
-    @domain.should have(1).error_on(:master)
+    subject.should have(1).error_on(:master)
   end
 
   it "should require a valid master address" do
-    @domain.master = 'foo'
-    @domain.should have(1).error_on(:master)
+    subject.master = 'foo'
+    subject.should have(1).error_on(:master)
 
-    @domain.master = '127.0.0.1'
-    @domain.should have(:no).errors_on(:master)
+    subject.master = '127.0.0.1'
+    subject.should have(:no).errors_on(:master)
   end
 
   it "should not bail out on missing SOA fields" do
-    @domain.should have(:no).errors_on( :primary_ns )
+    subject.should have(:no).errors_on( :primary_ns )
   end
 end
 
@@ -112,69 +105,65 @@ describe Domain, "when loaded" do
   end
 end
 
-describe Domain, "with scoped finders" do
-  before(:each) do
-    @quentin = Factory(:quentin)
-    @domain = Factory(:domain, :user => @quentin)
-    @other_domain = Factory(:domain, :name => 'example.net')
+describe Domain, "scopes" do
+  let(:quentin) { Factory(:quentin) }
+  let(:aaron) { Factory(:aaron) }
+  let(:quentin_domain) { Factory(:domain, :user => quentin) }
+  let(:aaron_domain) { Factory(:domain, :name => 'example.org', :user => aaron) }
+  let(:admin) { Factory(:admin) }
+
+  it "should show all domains to an admin" do
+    quentin_domain
+    aaron_domain
+
+    Domain.user( admin ).all.should include(quentin_domain)
+    Domain.user( admin ).all.should include(aaron_domain)
   end
 
-  it "should return all zones without a user" do
-    domains = Domain.find( :all )
-    domains.should_not be_empty
-    domains.size.should be( Domain.count )
+  it "should restrict owners" do
+    quentin_domain
+    aaron_domain
+
+    Domain.user( quentin ).all.should include(quentin_domain)
+    Domain.user( quentin ).all.should_not include(aaron_domain)
+
+    Domain.user( aaron ).all.should_not include(quentin_domain)
+    Domain.user( aaron ).all.should include(aaron_domain)
   end
 
-  it "should only return a user's zones if not an admin" do
-    domains = Domain.find( :all, :user => @quentin )
-    domains.should_not be_empty
-    domains.size.should be(1)
-    domains.each { |z| z.user.should eql( @quentin ) }
-  end
-
-  it "should return all zones if the user is an admin" do
-    domains = Domain.find( :all, :user => Factory(:admin) )
-    domains.should_not be_empty
-    domains.size.should be( Domain.count )
-  end
-
-  it "should support will_paginate (no user)" do
-    domains = Domain.paginate( :page => 1 )
-    domains.should_not be_empty
-    domains.size.should be( Domain.count )
-  end
-
-  it "shoud support will_paginate (admin user)" do
-    domains = Domain.paginate( :page => 1, :user => Factory(:admin) )
-    domains.should_not be_empty
-    domains.size.should be( Domain.count )
-  end
-
-  it "should support will_paginate (zone owner)" do
-    domains = Domain.paginate( :page => 1, :user => @quentin )
-    domains.should_not be_empty
-    domains.size.should be(1)
-    domains.each { |z| z.user.should eql(@quentin) }
-  end
+  it "should restrict authentication tokens"
 end
 
 describe "NATIVE/MASTER", Domain, "when created" do
-  before(:each) do
-    @domain = Domain.new
+  it "with additional attributes should create an SOA record" do
+    domain = Domain.new
+    domain.name = 'example.org'
+    domain.primary_ns = 'ns1.example.org'
+    domain.contact = 'admin@example.org'
+    domain.refresh = 10800
+    domain.retry = 7200
+    domain.expire = 604800
+    domain.minimum = 10800
+
+    domain.save.should be_true
+    domain.soa_record.should_not be_nil
+    domain.soa_record.primary_ns.should eql('ns1.example.org')
   end
 
-  it "with additional attributes should create an SOA record" do
-    @domain.name = 'example.org'
-    @domain.primary_ns = 'ns1.example.org'
-    @domain.contact = 'admin@example.org'
-    @domain.refresh = 10800
-    @domain.retry = 7200
-    @domain.expire = 604800
-    @domain.minimum = 10800
+  it "with bulk additional attributes should be acceptable" do
+    domain = Domain.new(
+      :name => 'example.org',
+      :primary_ns => 'ns1.example.org',
+      :contact => 'admin@example.org',
+      :refresh => 10800,
+      :retry => 7200,
+      :expire => 608400,
+      :minimum => 10800
+    )
 
-    @domain.save.should be_true
-    @domain.soa_record.should_not be_nil
-    @domain.soa_record.primary_ns.should eql('ns1.example.org')
+    domain.save.should be_true
+    domain.soa_record.should_not be_nil
+    domain.soa_record.primary_ns.should eql('ns1.example.org')
   end
 end
 
@@ -194,11 +183,10 @@ end
 
 describe Domain, "when deleting" do
   it "should delete its records as well" do
-    @domain = Factory(:domain)
-    #Factory(:soa, :domain => @domain)
-    lambda {
-      @domain.destroy
-    }.should change(Record, :count).by(-@domain.records.size)
+    domain = Factory(:domain)
+    expect {
+      domain.destroy
+    }.to change(Record, :count).by(-domain.records.size)
   end
 end
 
@@ -218,29 +206,5 @@ describe Domain, "when searching" do
 
   it "should return unscoped results" do
     Domain.search('exa', 1).should_not be_empty
-  end
-end
-
-describe Domain, "when serializing to XML" do
-  before(:each) do
-    @domain = Factory(:domain)
-  end
-
-  it "should not show the user_id" do
-    xml = @domain.to_xml
-    xml.should_not match(/<user[\-_]id>/)
-  end
-
-  it "should not include records by default" do
-    xml = @domain.to_xml
-
-    xml.should match(/<name>#{@domain.name}<\/name>/)
-    xml.should_not match(/<records[^>]*>/)
-  end
-
-  it "should preserve original options passed" do
-    xml = @domain.to_xml :skip_instruct => true
-
-    xml.should_not match(/<\?xml/)
   end
 end

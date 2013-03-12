@@ -171,3 +171,16 @@ ul.start li {
     margin: 0;
     vertical-align: middle;
 }
+
+#ajaxBusy {
+  display: none;
+  margin: 0;
+  margin-left: -50px;
+  padding: 5px;
+  position: fixed;
+  top: 0;
+  left: 50%;
+  width: 100px;
+  background-color: #F9D955;
+  z-index: 1;
+}

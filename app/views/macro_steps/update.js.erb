@@ -1,0 +1,8 @@
+<% if @macro_step.errors.empty? %>
+  $('#show_macro_step_<%= @macro_step.id %>').remove();
+  $('#edit_macro_step_<%= @macro_step.id %>').remove();
+  $('#marker_macro_step_<%= @macro_step.id %>').replaceWith('<%= escape_javascript render(:partial => @macro_step) %>');
+  humane("<%= escape_javascript t(:message_macro_step_updated) %>");
+<% else %>
+    humane("<%= escape_javascript t(:message_macro_step_cannot_update) %>");
+<% end %>

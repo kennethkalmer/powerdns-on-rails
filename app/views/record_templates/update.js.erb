@@ -1,0 +1,8 @@
+<% if @record_template.errors.empty? %>
+  $('#show_record_template_<%= @record_template.id %>').remove();
+  $('#edit_record_template_<%= @record_template.id %>').remove();
+  $('#marker_record_template_<%= @record_template.id %>').replaceWith('<%= escape_javascript render(:partial => '/templates/record_template', :object => @record_template) %>');
+  humane("<%= escape_javascript t(:message_record_template_updated) %>");
+<% else %>
+  humane("<%= escape_javascript t(:message_record_template_update_fail) %>");
+<% end %>

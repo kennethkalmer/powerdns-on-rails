@@ -15,11 +15,11 @@
 
 %h2.underline= t :title_audit_rr_revisions
 
-- if @domain.record_audits.size > 0
+- if @domain.associated_audits.size > 0
   %p= t :text_audit_order_description
 
   %ul
-    = render :partial => 'record_audit', :collection => sort_audits_by_date( @domain.record_audits )
+    = render :partial => 'record_audit', :collection => sort_audits_by_date( @domain.associated_audits )
 - else
   %p
     %em= t :text_audit_no_resource_revision

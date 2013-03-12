@@ -1,5 +1,3 @@
-require 'scoped_finders'
-
 # = Overview
 #
 # Macros are used by PowerDNS on Rails to apply a whole sequence of updates to a
@@ -24,13 +22,13 @@ require 'scoped_finders'
 #
 class Macro < ActiveRecord::Base
 
-  scope_user
-
   validates_presence_of :name
   validates_uniqueness_of :name
 
   has_many :macro_steps, :dependent => :destroy, :order => 'position'
   belongs_to :user
+
+  scope :user, lambda { |user| user.admin? ? nil : where(:user_id => user.id) }
 
   class << self
 
@@ -71,7 +69,7 @@ class Macro < ActiveRecord::Base
   def macro_change( domain, step )
     changed = false
 
-    domain.records.find(:all, :conditions => { :type => step.record_type }).each do |record|
+    domain.records.all( :conditions => { :type => step.record_type }).each do |record|
       next unless record.shortname == step.name
 
       record.content = step.content.gsub('%ZONE%', domain.name)
@@ -92,7 +90,7 @@ class Macro < ActiveRecord::Base
 
   # Apply the remove macro to the domain
   def macro_remove( domain, step )
-    domain.records.find(:all, :conditions => { :type => step.record_type }).each do |record|
+    domain.records.all( :conditions => { :type => step.record_type }).each do |record|
 
       # wild card or shortname match
       record.destroy if step.name == '*' || record.shortname == step.name

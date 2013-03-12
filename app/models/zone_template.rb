@@ -1,8 +1,4 @@
-require 'scoped_finders'
-
 class ZoneTemplate < ActiveRecord::Base
-
-  scope_user
 
   belongs_to :user
   has_many :record_templates
@@ -10,6 +6,11 @@ class ZoneTemplate < ActiveRecord::Base
   validates_presence_of :name
   validates_uniqueness_of :name
   validates_presence_of :ttl
+
+  # Scopes
+  scope :user, lambda { |user| user.admin? ? nil : where(:user_id => user.id) }
+  scope :with_soa, joins(:record_templates).where('record_templates.record_type = ?', 'SOA')
+  default_scope order('name')
 
   class << self
 

@@ -1,9 +1,10 @@
 !!!
-%html{ "xml:lang" => "en", :lang => "en", :xmlns => "http://www.w3.org/1999/xhtml" }
+%html
   %head
     %title= page_title
-    = stylesheet_link_tag 'application', 'prototip'
-    = javascript_include_tag :defaults, 'prototip'
+    = stylesheet_link_tag 'application', 'tipTip', 'bold-dark'
+    = javascript_include_tag :defaults, 'jquery.tipTip', 'humane'
+    = csrf_meta_tag
   %body
     #Container
       #Header
@@ -11,7 +12,7 @@
           =t :layout_main_title
       - if current_user
         #search-bar{:style => "display: inline; float: right;"}
-          - form_tag( { :controller => :search, :action => :results }, { :method => :get } ) do
+          = form_tag( { :controller => :search, :action => :results }, { :method => :get } ) do
             = text_field_tag :q
             = submit_tag( t(:generic_search) )
         #Nav
@@ -24,7 +25,7 @@
               %li= link_to((t :layout_menu_logs), audits_path)
               %li= link_to((t :layout_menu_users), users_path)
               %li= link_to((t :layout_menu_reports), reports_path)
-            %li= link_to((t :layout_menu_logout), logout_path)
+            %li= link_to((t :layout_menu_logout), destroy_user_session_path)
 
       #Body
         = show_flash
@@ -32,7 +33,7 @@
         = yield
       #Footer
         = link_to "PowerDNS on Rails", "http://www.opensourcery.co.za/powerdns-on-rails", :target => '_blank'
-        \- &copy; Clear Planet Information Solutions (Pty) Ltd
+        \- &copy; Kenneth Kalmer
         %br
         Released under the MIT License.
         %br

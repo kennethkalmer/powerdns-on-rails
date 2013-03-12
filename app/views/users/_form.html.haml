@@ -1,0 +1,46 @@
+%div{:style => "display: none"}
+  #admin-user= t :help_user_is_admin
+  #domain-owner= t :help_user_is_user
+  #token-user-help= t :help_user_token_info
+
+- form_for( @user ) do |f|
+  = error_messages_for( :user )
+
+  %table
+    %tr
+      %td= t :label_user_name
+      %td= f.text_field :login
+    %tr
+      %td= t :label_user_email
+      %td= f.text_field :email
+    %tr
+      %td.top= t :label_user_password
+      %td
+        = f.password_field :password
+        - unless @user.new_record?
+          %br
+          %em= t :text_user_password_edit_notice
+    %tr
+      %td.top= t :label_user_password_again
+      %td= f.password_field :password_confirmation
+    %tr
+      %td.top= t :label_user_role_sign
+      %td
+        = f.radio_button :admin, true
+        = t "label_user_roles.admin"
+        = help_icon('admin-user')
+        %br
+        = f.radio_button :admin, false
+        = t "label_user_roles.domain_owner"
+        = help_icon('domain-owner')
+        %br
+        = f.check_box 'auth_tokens'
+        = t :text_user_manage_token
+        = help_icon('token-user-help')
+    %tr
+      %td &nbsp;
+      %td &nbsp;
+    %tr
+      %td.right= link_to t(:generic_cancel), users_path
+      %td= submit_tag t(:generic_save)
+

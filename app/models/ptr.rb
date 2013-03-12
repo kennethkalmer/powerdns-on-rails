@@ -9,6 +9,6 @@
 #
 class PTR < Record
 
-  validates_presence_of :content
+  validates :content, :presence => true, :hostname => true
 
 end

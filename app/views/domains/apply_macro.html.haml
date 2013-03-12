@@ -4,7 +4,7 @@
 
 %p= t :text_macro_description
 
-- form_tag( apply_macro_domain_path( @domain ) ) do
+= form_tag( apply_macro_domain_path( @domain ) ) do
   %table.grid
     %tr
       %td= t :label_macro_sign

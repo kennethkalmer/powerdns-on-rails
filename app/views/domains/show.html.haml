@@ -17,6 +17,8 @@
   #help-expire=t :help_domain_expire
   #help-minimum=t :help_domain_minimum
   #delete-reset=t :help_delete_reset
+  #record-template-edit= t :label_domain_edit_record
+  #record-template-delete= t :label_domain_delete_record
 
 - if current_user && current_user.admin? && @domain.user
   #warning-message.flash-warning{ :style => 'display: none' }
@@ -25,31 +27,31 @@
     %br
     %br
     = t :warning_this_domain_has_owner
-    = link_to prototip_info_icon('database_delete.png', 'delete-zone'), domain_path( @domain ),  :method => :delete, :confirm => t(:confirm_domain_delete, :domain => @domain.name)
+    = link_to info_icon('database_delete.png', 'delete-zone'), domain_path( @domain ),  :method => :delete, :confirm => t(:confirm_domain_delete, :domain => @domain.name)
     %br
     or
     %br
     = t :confirm_delete_this_domain
-    = link_to_function prototip_info_icon('cancel.png', 'delete-reset'), "deleteDomain();"
+    = link_to_function info_icon('cancel.png', 'delete-reset'), "deleteDomain();"
 
 %h1.underline
   = @domain.name
 
 #domain-name.padded
-  %table.grid
+  %table.gridwide
     %tr
-      %td= t :label_domain_name
+      %td{ :width => "100" }= t :label_domain_name
       %td= @domain.name
-      %td
+      %td{ :width => "100" }
         - if current_user
-          = link_to prototip_info_icon('table_edit.png', 'zone-edit'), edit_domain_path(@domain)
-          = link_to prototip_info_icon('report_magnify.png', 'audits'), audits_path(:action => :domain, :id => @domain)
+          = link_to info_icon('table_edit.png', 'zone-edit'), edit_domain_path(@domain)
+          = link_to info_icon('report_magnify.png', 'audits'), audits_path(:action => :domain, :id => @domain)
           - unless @domain.slave?
-            = link_to prototip_info_icon('brick_go.png', 'macro'), apply_macro_domain_path( @domain )
+            = link_to info_icon('brick_go.png', 'macro'), apply_macro_domain_path( @domain )
           - if current_user.admin? && @domain.user
-            = link_to_function prototip_info_icon('database_delete.png', 'delete-zone'), "deleteDomain();" , :id => "delete-link-buffer"
+            = link_to_function info_icon('database_delete.png', 'delete-zone'), "deleteDomain();" , :id => "delete-link-buffer"
           - elsif !current_token
-            = link_to prototip_info_icon('database_delete.png', 'delete-zone'), domain_path( @domain ), :method => :delete, :confirm => t(:confirm_domain_delete, :domain => @domain.name)
+            = link_to info_icon('database_delete.png', 'delete-zone'), domain_path( @domain ), :method => :delete, :confirm => t(:confirm_domain_delete, :domain => @domain.name)
     %tr
       %td=t :label_domain_type
       %td= @domain.type.humanize
@@ -71,23 +73,23 @@
             - else
               \-
           #owner-edit{ :style => 'display: none' }
-            - remote_form_for( :domain, @domain, :url => change_owner_domain_path( @domain, :format => :js ), :html => { :method => :put } ) do |f|
+            = form_for( @domain, :url => change_owner_domain_path( @domain, :remote => true ) ) do |f|
               = f.collection_select "user_id", @users, :id, :login, :include_blank => true
               = submit_tag(t(:generic_save))
-        %td= link_to_function prototip_info_icon('user_edit.png', 'change-owner'), "changeOwner()"
+        %td= link_to_function info_icon('user_edit.png', 'change-owner'), "changeOwner()"
       %tr
         %td{ :valign => 'top' }=t :label_domain_notes
         %td{ :colspan => 2 }
-          #note-row
-            = @domain.notes
+          #note
+            #note-text= @domain.notes
             %br
-            = link_to_function prototip_info_icon('note_edit.png', 'note-edit'), "showNote()"
+            = link_to_function info_icon('note_edit.png', 'note-edit'), "showNoteForm()"
 
-          #note{ :style => "display: none;" }
-            - remote_form_for( :domain, @domain, :url => update_note_domain_path( @domain, :format => :js ), :html => { :method => :put } ) do |f|
-              = f.text_area :notes, :rows => 5, :cols => 17
+          #note-form{ :style => "display: none;" }
+            = form_for( @domain, :url => update_note_domain_path( @domain ), :remote => true ) do |f|
+              = f.text_area :notes, :rows => 4, :cols => 30
               %br
-              = link_to_function t(:generic_cancel), "hideNote()"
+              = link_to_function t(:generic_cancel), "hideNoteForm()"
               = submit_tag(t(:generic_update))
 
 #domain-soa.padded
@@ -95,7 +97,7 @@
     = t :title_soa_record
     &nbsp;
     - if current_user
-      = link_to_function prototip_info_icon('database_edit.png', 'soa-record-edit'), "showSOAEdit()"
+      = link_to_function info_icon('database_edit.png', 'soa-record-edit'), "showSOAEdit()"
   - if @domain.soa_record.nil?
     %p
       %em= t :label_soa_record_yet_propagated_from_master
@@ -116,17 +118,16 @@
 
 - unless @domain.slave?
   - if current_user || current_token.allow_new_records?
-    = link_to_function prototip_info_icon('database_add.png', 'record-template-new'), "displayRecordForm()"
+    = link_to_function info_icon('database_add.png', 'record-template-new'), "displayRecordForm()"
     = link_to_function t(:label_domain_record_new), "displayRecordForm()"
 
     #record-form-div{ :style => "display: none;" }
-      - remote_form_for( :record, @record, :url => domain_records_path( @domain, :format => :js ), :html => { :id => 'record-form' } ) do |f|
+      = form_for( :record, :url => domain_records_path( @domain ), :remote => true, :html => { :id => 'record-form' } ) do |f|
         %table
           %tr.all
             %td= t :label_domain_record_type
             %td
               = select_record_type( f )
-              = observe_field "record_type", :function => "toggleRecordFields(element,value)"
           %tr.all
             %td= t :label_domain_record_host
             %td= f.text_field :name
@@ -165,53 +166,49 @@
 
 :javascript
   function editRecord(id, type) {
-    $('show_' + type + '_' + id).hide();
-    $('edit_' + type + '_' + id).show();
+    $('#show_' + type + '_' + id).hide();
+    $('#edit_' + type + '_' + id).show();
   }
   function hideRecord(id, type) {
-    $('edit_' + type + '_' + id).hide();
-    $('show_' + type + '_' + id).show();
+    $('#edit_' + type + '_' + id).hide();
+    $('#show_' + type + '_' + id).show();
   }
   function displayRecordForm() {
-    $('record-form-div').show();
+    $('#record-form-div').show();
   }
   function hideRecordForm() {
-    $('record-form-div').hide();
+    $('#record-form-div').hide();
   }
-  function resetRecordForm() {
-    $('record-form').reset();
-  }
-  function toggleRecordFields(e,v){
+  function toggleRecordFields(v){
     t = 'rt-' + v.toLowerCase();
-    $('record-form-div').select('tr').each(function(r){
-      if(r.hasClassName(t) || r.hasClassName('all'))
-        r.show();
+    $('#record-form-div tr').each(function(){
+      if($(this).hasClass(t) || $(this).hasClass('all'))
+        $(this).show();
       else
-        r.hide();
+        $(this).hide();
     });
   }
-  function showNote() {
-    $('note-row').hide();
-    $('note').show();
+  function showNoteForm() {
+    $('#note').hide();
+    $('#note-form').show();
   }
-  function hideNote() {
-    $('note').hide();
-    $('note-row').show();
+  function hideNoteForm() {
+    $('#note-form').hide();
+    $('#note').show();
   }
   function showSOAEdit() {
-    $('soa-form').hide();
-    $('soa-edit-form').show();
+    $('#soa-view').hide();
+    $('#soa-form').show();
   }
   function showSOAForm() {
-    $('soa-edit-form').hide();
-    $('soa-form').show();
+    $('#soa-form').hide();
+    $('#soa-view').show();
   }
   function changeOwner() {
-    $('owner-info').toggle();
-    $('owner-edit').toggle();
+    $('#owner-info').toggle();
+    $('#owner-edit').toggle();
   }
-
   function deleteDomain() {
-    $('warning-message').toggle();
-    $('delete-link-buffer').toggle();
+    $('#warning-message').toggle();
+    $('#delete-link-buffer').toggle();
   }

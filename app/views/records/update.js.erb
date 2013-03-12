@@ -1,0 +1,9 @@
+<% if resource.errors.empty? %>
+  $('#show_<%= resource.type.downcase %>_<%= resource.id %>').remove();
+  $('#edit_<%= resource.type.downcase %>_<%= resource.id %>').remove();
+  $('#marker_<%= resource.type.downcase %>_<%= resource.id %>').replaceWith('<%= escape_javascript render(:partial => '/domains/record', :object => resource) %>');
+  humane("<%= escape_javascript t(:message_record_updated) %>");
+<% else %>
+  humane("<%= escape_javascript t(:message_record_update_fail) %>");
+<% end %>
+  

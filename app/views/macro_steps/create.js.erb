@@ -1,0 +1,10 @@
+$('#record-form div.errorExplanation').remove();
+
+<% if !@macro_step.new_record? %>
+  $('#record-form-div').hide();
+  $('#record-form input:text').val('');
+  $('#steps-table').append('<%= escape_javascript render(:partial => @macro_step) %>');
+  humane('<%= escape_javascript t(:message_macro_step_created) %>');
+<% else %>
+  $('#record-form').prepend('<%= escape_javascript error_messages_for(@macro_step) %>');
+<% end %>
