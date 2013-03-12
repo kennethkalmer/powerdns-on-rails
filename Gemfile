@@ -2,10 +2,11 @@ source 'http://rubygems.org'
 
 gem 'rails', '~> 3.2.12'
 
-# Bundle edge Rails instead:
-# gem 'rails', :git => 'git://github.com/rails/rails.git'
-
+# Database drivers
 gem 'mysql2', '~> 0.3.11'
+gem 'pg'
+gem 'sqlite3'
+
 gem 'haml-rails'
 gem 'jquery-rails'
 gem 'will_paginate', '~> 3.0.4'
