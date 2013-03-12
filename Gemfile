@@ -16,7 +16,7 @@ gem 'rabl'
 gem 'state_machine'
 
 group :development do
-  gem 'debugger', platform: :mri_19
+  gem 'debugger', :platform => :mri_19
   #gem 'RedCloth', '>= 4.1.1'
 end
 
