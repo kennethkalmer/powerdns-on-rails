@@ -21,7 +21,7 @@ describe "New MASTER/NATIVE", Domain do
   end
 
   it "should not allow duplicate names" do
-    Factory(:domain)
+    FactoryGirl.create(:domain)
     subject.name = "example.com"
     subject.should have(1).error_on(:name)
   end
@@ -61,7 +61,7 @@ end
 
 describe Domain, "when loaded" do
   before(:each) do
-    @domain = Factory(:domain)
+    @domain = FactoryGirl.create(:domain)
   end
 
   it "should have a name" do
@@ -73,8 +73,8 @@ describe Domain, "when loaded" do
   end
 
   it "should have NS records" do
-    ns1 = Factory(:ns, :domain => @domain)
-    ns2 = Factory(:ns, :domain => @domain)
+    ns1 = FactoryGirl.create(:ns, :domain => @domain)
+    ns2 = FactoryGirl.create(:ns, :domain => @domain)
     ns = @domain.ns_records
     ns.should be_a_kind_of( Array )
     ns.should include( ns1 )
@@ -82,21 +82,21 @@ describe Domain, "when loaded" do
   end
 
   it "should have MX records" do
-    mx_f = Factory(:mx, :domain => @domain)
+    mx_f = FactoryGirl.create(:mx, :domain => @domain)
     mx = @domain.mx_records
     mx.should be_a_kind_of( Array )
     mx.should include( mx_f )
   end
 
   it "should have A records" do
-    a_f = Factory(:a, :domain => @domain)
+    a_f = FactoryGirl.create(:a, :domain => @domain)
     a = @domain.a_records
     a.should be_a_kind_of( Array )
     a.should include( a_f )
   end
 
   it "should give access to all records excluding the SOA" do
-    Factory(:a, :domain => @domain)
+    FactoryGirl.create(:a, :domain => @domain)
     @domain.records_without_soa.size.should be( @domain.records.size - 1 )
   end
 
@@ -106,11 +106,11 @@ describe Domain, "when loaded" do
 end
 
 describe Domain, "scopes" do
-  let(:quentin) { Factory(:quentin) }
-  let(:aaron) { Factory(:aaron) }
-  let(:quentin_domain) { Factory(:domain, :user => quentin) }
-  let(:aaron_domain) { Factory(:domain, :name => 'example.org', :user => aaron) }
-  let(:admin) { Factory(:admin) }
+  let(:quentin) { FactoryGirl.create(:quentin) }
+  let(:aaron) { FactoryGirl.create(:aaron) }
+  let(:quentin_domain) { FactoryGirl.create(:domain, :user => quentin) }
+  let(:aaron_domain) { FactoryGirl.create(:domain, :name => 'example.org', :user => aaron) }
+  let(:admin) { FactoryGirl.create(:admin) }
 
   it "should show all domains to an admin" do
     quentin_domain
@@ -183,7 +183,7 @@ end
 
 describe Domain, "when deleting" do
   it "should delete its records as well" do
-    domain = Factory(:domain)
+    domain = FactoryGirl.create(:domain)
     expect {
       domain.destroy
     }.to change(Record, :count).by(-domain.records.size)
@@ -192,12 +192,12 @@ end
 
 describe Domain, "when searching" do
   before(:each) do
-    @quentin = Factory(:quentin)
-    Factory(:domain, :user => @quentin)
+    @quentin = FactoryGirl.create(:quentin)
+    FactoryGirl.create(:domain, :user => @quentin)
   end
 
   it "should return results for admins" do
-    Domain.search('exa', 1, Factory(:admin)).should_not be_empty
+    Domain.search('exa', 1, FactoryGirl.create(:admin)).should_not be_empty
   end
 
   it "should return results for users" do

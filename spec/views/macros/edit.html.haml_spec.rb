@@ -15,7 +15,7 @@ describe "macros/edit.html.haml" do
 
   context "for existing records" do
     before(:each) do
-      @macro = Factory(:macro)
+      @macro = FactoryGirl.create(:macro)
       assign(:macro, @macro)
       render
     end

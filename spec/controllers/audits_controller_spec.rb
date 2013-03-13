@@ -3,7 +3,7 @@ require 'spec_helper'
 describe AuditsController do
 
   before(:each) do
-    sign_in(Factory(:admin))
+    sign_in(FactoryGirl.create(:admin))
   end
 
   it "should have a search form" do
@@ -13,7 +13,7 @@ describe AuditsController do
   end
 
   it "should have a domain details page" do
-    get :domain, :id => Factory(:domain).id
+    get :domain, :id => FactoryGirl.create(:domain).id
 
     assigns(:domain).should_not be_nil
 

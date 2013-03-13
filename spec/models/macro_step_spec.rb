@@ -76,7 +76,7 @@ end
 
 describe MacroStep, "when created" do
   before(:each) do
-    @macro = Factory(:macro)
+    @macro = FactoryGirl.create(:macro)
     @macro_step = MacroStep.create!(
       :macro => @macro,
       :record_type => 'A',

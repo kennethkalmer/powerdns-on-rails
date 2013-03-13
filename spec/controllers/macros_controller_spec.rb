@@ -3,11 +3,11 @@ require 'spec_helper'
 describe MacrosController, "for admins" do
 
   before(:each) do
-    sign_in( Factory(:admin) )
+    sign_in( FactoryGirl.create(:admin) )
 
-    @macro = Factory(:macro)
+    @macro = FactoryGirl.create(:macro)
 
-    Factory(:quentin)
+    FactoryGirl.create(:quentin)
   end
 
   it "should have a list of macros" do
@@ -102,10 +102,10 @@ end
 describe MacrosController, "for owners" do
 
   before(:each) do
-    quentin = Factory(:quentin)
+    quentin = FactoryGirl.create(:quentin)
     sign_in(quentin)
 
-    @macro = Factory(:macro, :user => quentin)
+    @macro = FactoryGirl.create(:macro, :user => quentin)
   end
 
   it "should have a form to create a new macro" do

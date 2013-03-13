@@ -12,7 +12,7 @@ describe UsersController do
 
   describe "with an admin" do
     before(:each) do
-      @admin = Factory(:admin)
+      @admin = FactoryGirl.create(:admin)
       sign_in( @admin )
     end
 
@@ -100,7 +100,7 @@ describe UsersController do
     end
 
     it 'should update a user without password changes' do
-      user = Factory(:quentin)
+      user = FactoryGirl.create(:quentin)
 
       lambda {
         post :update, :id => user.id, :user => {
@@ -116,7 +116,7 @@ describe UsersController do
     end
 
     it 'should be able to suspend users' do
-      @user = Factory(:quentin)
+      @user = FactoryGirl.create(:quentin)
       put 'suspend', :id => @user.id
 
       response.should be_redirect

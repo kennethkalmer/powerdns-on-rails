@@ -3,7 +3,7 @@ require File.dirname(__FILE__) + '/../../spec_helper'
 describe "/reports/results" do
 
   before(:each) do
-    @admin = Factory(:admin)
+    @admin = FactoryGirl.create(:admin)
   end
 
   it "should handle no results" do

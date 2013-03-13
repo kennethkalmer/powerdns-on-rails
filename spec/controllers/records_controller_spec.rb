@@ -2,9 +2,9 @@ require 'spec_helper'
 
 describe RecordsController, ", users, and non-SOA records" do
   before( :each ) do
-    sign_in(Factory(:admin))
+    sign_in(FactoryGirl.create(:admin))
 
-    @domain = Factory(:domain)
+    @domain = FactoryGirl.create(:domain)
   end
 
   # Test adding various records
@@ -47,7 +47,7 @@ describe RecordsController, ", users, and non-SOA records" do
   end
 
   it "should update when valid" do
-    record = Factory(:ns, :domain => @domain)
+    record = FactoryGirl.create(:ns, :domain => @domain)
 
     params = {
       'name' => "",
@@ -62,7 +62,7 @@ describe RecordsController, ", users, and non-SOA records" do
   end
 
   it "shouldn't update when invalid" do
-    record = Factory(:ns, :domain => @domain)
+    record = FactoryGirl.create(:ns, :domain => @domain)
 
     params = {
       'name' => "@",
@@ -81,7 +81,7 @@ describe RecordsController, ", users, and non-SOA records" do
   end
 
   it "should destroy when requested to do so" do
-    delete :destroy, :domain_id => @domain.id, :id => Factory(:mx, :domain => @domain).id
+    delete :destroy, :domain_id => @domain.id, :id => FactoryGirl.create(:mx, :domain => @domain).id
 
     response.should be_redirect
     response.should redirect_to( domain_path( @domain ) )
@@ -90,9 +90,9 @@ end
 
 describe RecordsController, ", users, and SOA records" do
   it "should update when valid" do
-    sign_in( Factory(:admin) )
+    sign_in( FactoryGirl.create(:admin) )
 
-    target_soa = Factory(:domain).soa_record
+    target_soa = FactoryGirl.create(:domain).soa_record
 
     xhr :put, :update_soa, :id => target_soa.id, :domain_id => target_soa.domain.id,
       :soa => {
@@ -107,15 +107,15 @@ end
 
 describe RecordsController, "and tokens" do
   before( :each ) do
-    @domain = Factory(:domain)
-    @admin = Factory(:admin)
+    @domain = FactoryGirl.create(:domain)
+    @admin = FactoryGirl.create(:admin)
     @token = AuthToken.new(
       :domain => @domain, :expires_at => 1.hour.since, :user => @admin
     )
   end
 
   xit "should not be allowed to touch the SOA record" do
-    token = Factory(:auth_token, :domain => @domain, :user => @admin)
+    token = FactoryGirl.create(:auth_token, :domain => @domain, :user => @admin)
     tokenize_as( token )
 
     target_soa = @domain.soa_record
@@ -151,7 +151,7 @@ describe RecordsController, "and tokens" do
   xit "should not allow updating NS records" do
     controller.stubs(:current_token).returns(@token)
 
-    record = Factory(:ns, :domain => @domain)
+    record = FactoryGirl.create(:ns, :domain => @domain)
 
     params = {
       'name' => '',
@@ -213,7 +213,7 @@ describe RecordsController, "and tokens" do
   end
 
   xit "should update when allowed" do
-    record = Factory(:www, :domain => @domain)
+    record = FactoryGirl.create(:www, :domain => @domain)
     @token.can_change( record )
     controller.stubs(:current_token).returns( @token )
 
@@ -234,7 +234,7 @@ describe RecordsController, "and tokens" do
   end
 
   xit "should not update if not allowed" do
-    record = Factory(:www, :domain => @domain)
+    record = FactoryGirl.create(:www, :domain => @domain)
     controller.stubs(:current_token).returns(@token)
 
     params = {
@@ -254,7 +254,7 @@ describe RecordsController, "and tokens" do
   end
 
   xit "should destroy when allowed" do
-    record = Factory(:mx, :domain => @domain)
+    record = FactoryGirl.create(:mx, :domain => @domain)
     @token.can_change( record )
     @token.remove_records=( true )
     controller.stubs(:current_token).returns(@token)
@@ -269,7 +269,7 @@ describe RecordsController, "and tokens" do
 
   xit "should not destroy records if not allowed" do
     controller.stubs(:current_token).returns( @token )
-    record = Factory(:a, :domain => @domain)
+    record = FactoryGirl.create(:a, :domain => @domain)
 
     expect {
       delete :destroy, :domain_id => @domain.id, :id => record.id
@@ -289,7 +289,7 @@ describe RecordsController, "and tokens" do
       'content' => '127.0.0.3'
     }
 
-    xhr :post, :create, :domain_id => Factory(:domain, :name => 'example.net').id, :record => record
+    xhr :post, :create, :domain_id => FactoryGirl.create(:domain, :name => 'example.net').id, :record => record
 
     response.code.should == "403"
   end
