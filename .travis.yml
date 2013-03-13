@@ -13,6 +13,7 @@ env:
 before_script:
   - mysql -e 'create database powerdns_test;'
   - psql -c 'create database powerdns_test;' -U postgres
+  - mv config/database.yml.template config/database.yml
 script: "bundle exec rake db:migrate spec"
 matrix:
   allow_failures:

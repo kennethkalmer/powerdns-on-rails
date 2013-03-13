@@ -15,7 +15,7 @@ platforms :ruby do
   gem 'therubyracer'
 end
 
-gem 'haml'
+gem 'haml-rails'
 gem 'jquery-rails'
 gem 'will_paginate', '~> 3.0.4'
 gem "audited-activerecord", "~> 3.0.0.rc2"
