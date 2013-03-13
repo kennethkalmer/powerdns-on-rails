@@ -1,3 +1,4 @@
+require 'digest/sha1'
 class User < ActiveRecord::Base
   # Include default devise modules. Others available are:
   # :token_authenticatable, :confirmable, :lockable and :timeoutable
@@ -34,10 +35,11 @@ class User < ActiveRecord::Base
   # Named scopes
   scope :active_owners, where(:state => :active, :admin => false)
 
+  StateMachine::Machine.ignore_method_conflicts = true
   state_machine :initial => :active do
-    state :active #, :enter => :do_activate
-    state :suspended
-    state :deleted #, :enter => :do_delete
+    event :activate do
+      transition :suspended => :active
+    end
 
     event :suspend do
       transition :active => :suspended
@@ -48,7 +50,7 @@ class User < ActiveRecord::Base
     end
 
     event :delete do
-      transition [:suspended, :active] => :deleted
+      transition all => :deleted
     end
   end
 

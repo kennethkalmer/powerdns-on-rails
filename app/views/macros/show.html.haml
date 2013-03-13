@@ -26,7 +26,7 @@
   %tr
     %td= t :label_macro_owner
     %td &nbsp;
-    %td= @macro.user.nil? ? '-' : @macro.user.login
+    %td= @macro.user.nil? ? '-' : link_to(@macro.user.login, user_path(@macro.user))
   %tr
     %td= t :label_macro_active
     %td &nbsp;

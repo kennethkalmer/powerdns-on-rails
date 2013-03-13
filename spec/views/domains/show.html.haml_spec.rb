@@ -10,7 +10,7 @@ describe "domains/show.html.haml" do
       assign(:domain, @domain)
       assign(:users, User.active_owners)
 
-      render :template => "/domains/show.html.haml", :layout => "layouts/application"
+      render :template => "/domains/show", :layout => "layouts/application"
     end
 
     it "should have the domain name in the title and dominant on the page" do

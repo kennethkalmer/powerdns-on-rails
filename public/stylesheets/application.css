@@ -184,3 +184,7 @@ ul.start li {
   background-color: #F9D955;
   z-index: 1;
 }
+
+.odd {
+    background-color: #F0F0F0;
+}

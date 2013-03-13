@@ -1,0 +1,3 @@
+$('#owner-info').html('<%= escape_javascript(@domain.user.nil? ? "-" : @domain.user.login) %>');
+$('#owner-info').show();
+$('#owner-edit').hide();

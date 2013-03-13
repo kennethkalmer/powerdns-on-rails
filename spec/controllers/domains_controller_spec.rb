@@ -56,6 +56,9 @@ describe DomainsController, "when creating" do
   end
 
   it "should not save a partial form" do
+    FactoryGirl.create(:template_soa, :zone_template => FactoryGirl.create(:zone_template))
+    FactoryGirl.create(:zone_template, :name => 'No SOA')
+
     expect {
       post 'create', :domain => { :name => 'example.org' }, :zone_template => { :id => "" }
     }.to_not change( Domain, :count )

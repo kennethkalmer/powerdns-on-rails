@@ -1,3 +1,0 @@
-page.replace_html "owner-info", @domain.user.nil? ? "-" : @domain.user.login
-page.show "owner-info"
-page.hide "owner-edit"

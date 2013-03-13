@@ -14,6 +14,7 @@ mysql: &mysql
 
 postgresql: &postgresql
   adapter: postgresql
+  encoding: unicode
   username: postgres
   password:
   database: powerdns_<%= Rails.env %>

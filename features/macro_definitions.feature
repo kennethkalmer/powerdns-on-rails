@@ -1,6 +1,7 @@
-Example: Test the database operations of macros
+Feature: Test the database operations of macros
 Test the impact different types have on existing and non-existing records
 Test the interpolation of %ZONE% in content
+
 
 Scenario: Macro to create records
 Given I have a domain
@@ -8,6 +9,7 @@ Given I have a macro
 And the macro "creates" an "A" record for "www" with "127.0.0.1"
 When I apply the macro
 Then the domain should have an "A" record for "www" with "127.0.0.1"
+
 
 Scenario: Macro to create interpolated records
 Given I have a domain named "example.com"

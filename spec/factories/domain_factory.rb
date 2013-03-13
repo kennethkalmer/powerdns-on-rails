@@ -8,7 +8,7 @@ FactoryGirl.define do
     primary_ns { |d| "ns1.#{d.name}" }
     contact { |d| "admin@#{d.name}" }
     refresh 10800
-    self.retry 7200
+    self.retry 7200 # retry is a keyword in ruby
     expire 604800
     minimum 10800
   end

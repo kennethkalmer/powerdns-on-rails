@@ -33,7 +33,7 @@ end
 describe ZoneTemplate, "when loaded" do
 
   before(:each) do
-    @zone_template = FactoryGirl.create( :zone_template )
+    @zone_template = FactoryGirl.create(:zone_template)
     FactoryGirl.create(:template_soa, :zone_template => @zone_template)
   end
 
@@ -87,7 +87,7 @@ end
 describe ZoneTemplate, "when used to build a zone" do
 
   before(:each) do
-    @zone_template = FactoryGirl.create( :zone_template )
+    @zone_template = FactoryGirl.create(:zone_template)
     FactoryGirl.create(:template_soa, :zone_template => @zone_template)
     FactoryGirl.create(:template_ns, :zone_template => @zone_template)
     FactoryGirl.create(:template_ns, :content => 'ns2.%ZONE%', :zone_template => @zone_template)

@@ -24,4 +24,19 @@ class MacrosController < InheritedResources::Base
     end
   end
 
+  def create_resource(macro)
+    macro.user = macro_owner_from_params
+    super
+  end
+
+  def update_resource(macro, attributes)
+    super
+    macro.user = macro_owner_from_params
+  end
+
+  protected
+  def macro_owner_from_params
+    puts params
+    current_user.admin? ? User.find(params[:macro][:user_id]) : current_user
+  end
 end
