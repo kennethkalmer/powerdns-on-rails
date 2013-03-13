@@ -27,7 +27,7 @@ end
 
 group :test do
   gem 'factory_girl_rails'
-  gem "cucumber-rails", require: false
+  gem "cucumber-rails", :require => false
   gem 'mocha'
   gem 'webrat'
 end
