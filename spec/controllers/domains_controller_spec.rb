@@ -160,6 +160,8 @@ describe DomainsController, "and macros" do
 end
 
 describe DomainsController, "should handle a REST client" do
+  render_views
+
   let(:domain) { FactoryGirl.create(:domain) }
 
   before(:each) do
