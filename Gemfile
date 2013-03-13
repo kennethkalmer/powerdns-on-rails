@@ -2,19 +2,31 @@ source 'http://rubygems.org'
 
 gem 'rails', '~> 3.2.12'
 
-# Database drivers
-gem 'mysql2', '~> 0.3.11'
-gem 'pg'
-gem 'sqlite3'
+group :assets do
+  gem 'sass-rails'
+  gem 'coffee-rails'
+  gem 'uglifier'
+end
+
+platforms :ruby do
+  gem 'mysql2', '~> 0.3.11'
+  gem 'pg', '>= 0.9.0'
+  gem 'sqlite3'
+  gem 'therubyracer'
+end
 
 gem 'haml-rails'
 gem 'jquery-rails'
 gem 'will_paginate', '~> 3.0.4'
-gem 'acts_as_audited', '~> 2.1.0'
+gem "audited-activerecord", "~> 3.0.0.rc2"
 gem 'inherited_resources'
 gem 'devise'
+gem "devise-encryptable"
 gem 'rabl'
 gem 'state_machine'
+
+gem 'acts_as_list'
+gem 'dynamic_form'
 
 group :development do
   gem 'debugger', :platform => :mri_19
@@ -22,12 +34,15 @@ group :development do
 end
 
 group :development, :test do
-  gem "rspec-rails", "~> 2.13.0"
+  gem "rspec-rails"
+  gem 'RedCloth', '>= 4.1.1'
 end
 
 group :test do
-  gem 'factory_girl_rails'
+  gem "factory_girl_rails", "~> 4.0"
+
   gem "cucumber-rails", :require => false
-  gem 'mocha'
+  gem 'mocha', :require => false
   gem 'webrat'
+  gem 'database_cleaner'
 end

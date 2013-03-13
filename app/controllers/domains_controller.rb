@@ -20,7 +20,6 @@ class DomainsController < InheritedResources::Base
     else
       @domain = @domain.find( current_token.domain_id )
     end
-
     @domain
   end
 

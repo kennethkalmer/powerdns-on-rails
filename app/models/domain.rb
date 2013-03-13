@@ -10,8 +10,7 @@ require 'scoped_finders'
 # * It specifies a default $TTL
 #
 class Domain < ActiveRecord::Base
-
-  acts_as_audited :protect => false
+  audited :allow_mass_assignment => true
   has_associated_audits
 
   belongs_to :user
@@ -28,6 +27,7 @@ class Domain < ActiveRecord::Base
   has_many :aaaa_records,  :class_name => 'AAAA'
   has_many :spf_records,   :class_name => 'SPF'
   has_many :srv_records,   :class_name => 'SRV'
+  has_many :sshfp_records, :class_name => 'SSHFP'
   has_many :ptr_records,   :class_name => 'PTR'
 
   validates_presence_of :name
@@ -75,6 +75,11 @@ class Domain < ActiveRecord::Base
 
   end
 
+  # arguably should have as_json includes here too FIX
+  def to_xml(options={})
+    super(options.merge(:include => :records))
+  end
+  
   # Are we a slave domain
   def slave?
     self.type == 'SLAVE'
@@ -82,7 +87,7 @@ class Domain < ActiveRecord::Base
 
   # return the records, excluding the SOA record
   def records_without_soa
-    records.all( :include => :domain ).select { |r| !r.is_a?( SOA ) }
+    records.includes(:domain).all.select { |r| !r.is_a?( SOA ) }.sort_by {|r| [r.shortname, r.type]}
   end
 
   # Expand our validations to include SOA details

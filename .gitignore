@@ -3,3 +3,5 @@ db/*.sqlite3
 log/*.log
 *.swp
 tmp/*
+config/initializers/secret_token.rb
+config/database.yml

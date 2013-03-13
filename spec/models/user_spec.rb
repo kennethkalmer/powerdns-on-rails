@@ -83,8 +83,8 @@ end
 describe User, "and roles" do
 
   it "should have a admin boolean flag" do
-    FactoryGirl.create( :admin ).admin.should be_true
-    FactoryGirl.create( :quentin ).admin.should be_false
+    FactoryGirl.create(:admin).admin.should be_true
+    FactoryGirl.create(:quentin).admin.should be_false
   end
 
   it "should have a way to easily find active owners" do
