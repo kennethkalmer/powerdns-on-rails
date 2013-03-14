@@ -1,7 +1,6 @@
 language: ruby
 bundler_args: --without development
 rvm:
-  - 1.8.7
   - 1.9.2
   - 1.9.3
   - 2.0.0
@@ -9,10 +8,10 @@ rvm:
 env:
   - DB=sqlite
   - DB=mysql
-  - DB=postgres
+  - DB=postgresql
 before_script:
   - mv config/database.yml.template config/database.yml
-  - rake secret
+  - rake generate_secret_token
   - mysql -e 'create database powerdns_test;'
   - psql -c 'create database powerdns_test;' -U postgres
 script: "bundle exec rake db:migrate spec"
