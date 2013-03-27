@@ -213,7 +213,7 @@ describe DomainsController, "should handle a REST client" do
     }.to_not change( Domain, :count )
 
     data = ActiveSupport::JSON.decode( response.body )
-    data.keys.should include("id", "name", "type", "records", "errors")
+    data.keys.should include("errors")
     data["errors"].should_not be_empty
   end
 
