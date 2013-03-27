@@ -2,12 +2,14 @@ require 'spec_helper'
 
 describe MacrosController, "for admins" do
 
+  let(:admin) { FactoryGirl.create(:admin) }
+
   before(:each) do
-    sign_in( FactoryGirl.create(:admin) )
+    sign_in( admin )
 
     @macro = FactoryGirl.create(:macro)
 
-    FactoryGirl.create(:quentin)
+    @user = FactoryGirl.create(:quentin)
   end
 
   it "should have a list of macros" do
@@ -38,8 +40,8 @@ describe MacrosController, "for admins" do
     expect {
       post :create, :macro => {
         :name => 'Test Macro',
-        :active => '0'
-
+        :active => '0',
+        :user_id => @user.id
       }
     }.to change(Macro, :count).by(1)
 
@@ -68,7 +70,7 @@ describe MacrosController, "for admins" do
 
   it "should accept valid updates to macros" do
     expect {
-      put :update, :id => @macro.id, :macro => { :name => 'Foo Macro' }
+      put :update, :id => @macro.id, :macro => { :name => 'Foo Macro', :user_id => @user.id }
       @macro.reload
     }.to change(@macro, :name)
 
