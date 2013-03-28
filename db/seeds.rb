@@ -12,7 +12,7 @@ user.login = 'admin' # Not used anymore
 user.password = 'secret'
 user.password_confirmation = 'secret'
 user.admin = true
-user.confirmed_at = Time.now
+user.confirmed_at = Time.zone.now
 user.save!
 user.confirm!
 
