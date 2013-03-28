@@ -14,7 +14,9 @@ before_script:
   - rake generate_secret_token
   - mysql -e 'create database powerdns_test;'
   - psql -c 'create database powerdns_test;' -U postgres
-script: "bundle exec rake db:migrate db:seed spec"
+  - bundle exec rake db:migrate
+  - bundle exec rake db:seed
+script: "bundle exec rake spec"
 matrix:
   allow_failures:
     - rvm: jruby-19mode
