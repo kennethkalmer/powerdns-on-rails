@@ -21,7 +21,7 @@ class SOA < Record
     :less_than_or_equal_to => 10800
 
   validates_uniqueness_of :domain_id
-  validates_format_of :contact, :with => /\A[a-zA-Z0-9\-\.]+@[a-zA-Z0-9-]+\.[a-zA-Z.]{2,6}\z/
+  validates_format_of :contact, :with => /\A[^@\s]+@([^@\s]+\.)+[^@\s]+\z/
   validates :name, :presence => true, :hostname => true
 
   before_validation :set_content
