@@ -10,8 +10,6 @@
 #
 ################################################################################
 
-require 'iconv'
-
 namespace :migrate do
 
   desc 'Migrate an existing PowerDNS database into a clean copy'
@@ -214,15 +212,8 @@ namespace :migrate do
         end
       end
 
-      def self.encoding(charset)
-        @ic = Iconv.new('UTF-8', charset)
-      rescue Iconv::InvalidEncoding
-        puts "Invalid encoding!"
-        return false
-      end
-
       def self.encode(text)
-        @ic.iconv text
+        text.encode('utf-8')
       rescue
         text
       end
@@ -251,7 +242,6 @@ namespace :migrate do
     prompt("PowerDNS database name" ) { |name| PowerDnsMigration.db_name = name }
     prompt("PowerDNS database username") { |user| PowerDnsMigration.db_username = user }
     prompt("PowerDNS database password") { |pass| PowerDnsMigration.db_password = pass }
-    prompt('PowerDNS database encoding', :default => 'UTF-8') { |encoding| PowerDnsMigration.encoding encoding }
 
     puts
     puts "A complete log file containing verbose data will be available at the path below after the migration"
