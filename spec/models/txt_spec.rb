@@ -1,20 +1,19 @@
 require 'spec_helper'
 
-describe TXT, "when new" do
-  before(:each) do
-    @txt = TXT.new
-  end
+describe TXT do
+  context "when new" do
 
-  it "should be invalid by default" do
-    @txt.should_not be_valid
-  end
-  
-  it "should require content" do
-    @txt.should have(1).error_on(:content)
-  end
-  
-  it "should not tamper with content" do
-    @txt.content = "google.com"
-    @txt.content.should eql("google.com")
+    it "should be invalid by default" do
+      subject.should_not be_valid
+    end
+
+    it "should require content" do
+      subject.should have(1).error_on(:content)
+    end
+
+    it "should not tamper with content" do
+      subject.content = "google.com"
+      subject.content.should eql("google.com")
+    end
   end
 end

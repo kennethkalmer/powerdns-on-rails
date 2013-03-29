@@ -1,7 +1,5 @@
 require 'spec_helper'
 
 describe LOC do
-  
-  it "should have tests" 
-  
+  it "should be tested"
 end
