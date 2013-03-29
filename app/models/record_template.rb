@@ -6,6 +6,7 @@ class RecordTemplate < ActiveRecord::Base
   validates_presence_of :zone_template_id
   validates_associated :zone_template
   validates_presence_of :record_type
+  validates_format_of :contact, :if => :soa?, :with => /\A[^@\s]+@(%ZONE%|([^@\s]+\.)+[^@\s]+)\z/
 
   before_save :update_soa_content
   before_validation :inherit_ttl
@@ -43,7 +44,7 @@ class RecordTemplate < ActiveRecord::Base
     attrs.delete( :id )
 
     # parse each attribute, looking for %ZONE%
-    unless domain_name.nil?
+    if domain_name.present?
       attrs.keys.each do |k|
         attrs[k] = attrs[k].gsub( '%ZONE%', domain_name ) if attrs[k].is_a?( String )
       end
@@ -52,7 +53,13 @@ class RecordTemplate < ActiveRecord::Base
     # Handle SOA convenience fields if needed
     if soa?
       SOA::SOA_FIELDS.each do |soa_field|
-        attrs[soa_field] = instance_variable_get("@#{soa_field}")
+        soa_val = instance_variable_get("@#{soa_field}")
+
+        if domain_name.present? && soa_val.is_a?( String )
+          soa_val = soa_val.gsub( '%ZONE%', domain_name )
+        end
+
+        attrs[soa_field] = soa_val
       end
       attrs[:serial] = 0
     end
@@ -89,7 +96,7 @@ class RecordTemplate < ActiveRecord::Base
       record = build
       record.errors.each do |k,v|
         # skip associations we don't have, validations we don't care about
-        next if k == :domain_id || k == :name
+        next if k == :domain_id || k == :name || k == :contact
 
         self.errors.add( k, v )
       end unless record.valid?

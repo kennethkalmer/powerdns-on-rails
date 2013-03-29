@@ -75,6 +75,19 @@ describe RecordTemplate, "should inherit" do
     @record_template.should_not be_valid
 
     @record_template.should have(1).error_on(:primary_ns)
+  end
+
+  it "validates contact address in SOA" do
+    @record_template.record_type = 'SOA'
+    @record_template.should have(1).error_on(:contact)
+
+    @record_template.contact = 'admin@example.com'
+    @record_template.should have(:no).errors_on(:contact)
+
+    @record_template.contact = 'admin@%ZONE%'
+    @record_template.should have(:no).errors_on(:contact)
+
+    @record_template.contact = 'admin'
     @record_template.should have(1).error_on(:contact)
   end
 
@@ -82,13 +95,13 @@ describe RecordTemplate, "should inherit" do
     @record_template.record_type = 'SOA'
 
     @record_template.primary_ns = 'ns1.%ZONE%'
-    @record_template.contact = 'admin@example.com'
+    @record_template.contact = 'admin@%ZONE%'
     @record_template.refresh = 7200
     @record_template.retry = 1800
     @record_template.expire = 604800
     @record_template.minimum = 10800
 
-    @record_template.content.should eql('ns1.%ZONE% admin@example.com 0 7200 1800 604800 10800')
+    @record_template.content.should eql('ns1.%ZONE% admin@%ZONE% 0 7200 1800 604800 10800')
     @record_template.should be_valid
     @record_template.save.should be_true
   end
@@ -106,7 +119,8 @@ describe RecordTemplate, "when building" do
 
     record.should_not be_nil
     record.should be_a_kind_of( SOA )
-    record.primary_ns.should eql('ns1.example.org')
+    record.primary_ns.should == 'ns1.example.org'
+    record.contact.should == 'admin@example.org'
   end
 
   it "an NS should replace the %ZONE% token with the provided domain name" do

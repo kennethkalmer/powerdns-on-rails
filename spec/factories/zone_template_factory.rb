@@ -10,7 +10,7 @@ FactoryGirl.define do
     record_type 'SOA'
     #content 'ns1.%ZONE% admin@%ZONE% 0 10800 7200 604800 3600'
     primary_ns 'ns1.%ZONE%'
-    contact 'admin@example.com'
+    contact 'admin@%ZONE%'
     refresh 10800
     self.retry 7200
     expire 604800
