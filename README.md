@@ -96,3 +96,9 @@ Apart from the extensive programmatic tests, we'll be implementing tests that
 actually seed a DNS database and use BIND's dig utility to query a configured
 PowerDNS installation.
 
+## License
+
+Copyright 2008-2013, Kenneth Kalmer.
+
+PowerDNS on Rails made available under the MIT License. See [LICENSE.txt](LICENSE.txt) for details.
+
