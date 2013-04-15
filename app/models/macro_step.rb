@@ -20,7 +20,7 @@ class MacroStep < ActiveRecord::Base
     # make a clean copy of ourself
     attrs = self.attributes.dup
     attrs.delete_if { |k,_| !record_class.columns.map(&:name).include?( k ) }
-    attrs.delete(:id)
+    attrs.delete('id')
 
     # parse each attribute for %ZONE%
     unless domain.nil?
