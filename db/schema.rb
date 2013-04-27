@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120819220815) do
+ActiveRecord::Schema.define(:version => 20130419205056) do
 
   create_table "audits", :force => true do |t|
     t.integer  "auditable_id"
@@ -130,6 +130,7 @@ ActiveRecord::Schema.define(:version => 20120819220815) do
     t.datetime "confirmation_sent_at"
     t.string   "reset_password_token"
     t.datetime "remember_created_at"
+    t.datetime "reset_password_sent_at"
   end
 
   create_table "zone_templates", :force => true do |t|
