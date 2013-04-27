@@ -7,9 +7,9 @@ class CreateRecords < ActiveRecord::Migration
       t.string :content, :null => false
       t.integer :ttl, :null => false
       t.integer :prio
-      t.integer :change_date, :null => false
+      t.integer :change_date, :null => true 
       
-      t.timestamps
+      t.timestamps :null => true
     end
     
     add_index :records, :domain_id
