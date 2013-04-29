@@ -20,15 +20,6 @@
       %td{:width => "300"}=t :label_domain_name
       %td= f.text_field :name
       %td= help_icon('help-domain')
-    %tr
-      %td=t :label_domain_type
-      %td
-        = f.select :type, ['NATIVE','MASTER','SLAVE']
-      %td= help_icon('help-type')
-    %tr#master-address{ :style => 'display: none' }
-      %td=t :label_domain_master_address
-      %td= f.text_field :master
-      %td= help_icon('help-master')
     %tr#zone-templates
       %td=t :label_domain_zone_template
       %td
@@ -39,6 +30,15 @@
             =link_to((t :label_create_zone_templates), new_zone_template_path)
             =t :label_zone_for_eazy_management
       %td &nbsp;
+    %tr#domain-type
+      %td=t :label_domain_type
+      %td
+        = f.select :type, ['NATIVE','MASTER','SLAVE']
+      %td= help_icon('help-type')
+    %tr#master-address{ :style => 'display: none' }
+      %td=t :label_domain_master_address
+      %td= f.text_field :master
+      %td= help_icon('help-master')
 
 
   #no-template-input
