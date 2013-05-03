@@ -32,6 +32,21 @@ More information:
 
 _Note on versions:_ PowerDNS on Rails is version-less, and the master branch will _nearly_ always have stable useable code.
 
+## Demo 
+
+There is now a vagrant/virtualbox demo environment included.  
+You will need to have [virtualbox](https://www.virtualbox.org/) and [vagrant](http://www.vagrantup.com) already installed.  
+To see powerdns-on-rails in action:  ( _only tested with vagrant on linux_ )
+
+* clone this repo
+* change into the new directory
+* `$ vagrant up`
+* point your browser at `http://localhost:3000`
+* login with `admin@example.com` and `secret`
+
+The first time you run this it will download a base virtual machine (401MB) and bootstrap a working powerdns-on-rails system.  
+Currently there will be no working powerdns server but powerdns-on-rails will be fully functional still.
+
 ## Features (current and planned)
 
 * RESTful architecture to support rich UI and API access

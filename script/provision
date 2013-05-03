@@ -1,0 +1,12 @@
+#!/bin/bash -x
+
+apt-get install -yq libsqlite3-dev libsqlite3-0 libpq5 postgresql postgresql-9.1 postgresql-client-9.1 postgresql-client-common postgresql-common ssl-cert libpq-dev
+
+su vagrant -c "git clone https://github.com/kennethkalmer/powerdns-on-rails.git"
+su vagrant -c "source /etc/profile.d/rbenv.sh && cd powerdns-on-rails && bundle install"
+su vagrant -c "cd powerdns-on-rails && cp config/database.yml.template config/database.yml"
+su vagrant -c 'source /etc/profile.d/rbenv.sh && cd powerdns-on-rails && SECRET=`rake secret` && sed -i "/^    config.active_record.whitelist_attributes = false/a \ \ \ \ config.secret_token = \"$SECRET\"" config/application.rb'
+su vagrant -c "source /etc/profile.d/rbenv.sh && cd powerdns-on-rails && DB=sqlite RAILS_ENV=test rake db:migrate"
+su vagrant -c "source /etc/profile.d/rbenv.sh && cd powerdns-on-rails && DB=sqlite RAILS_ENV=test rake db:seed"
+su vagrant -c "source /etc/profile.d/rbenv.sh && cd powerdns-on-rails && DB=sqlite RAILS_ENV=test script/rails s -d"
+
