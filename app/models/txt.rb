@@ -11,5 +11,7 @@
 class TXT < Record
   
   validates_presence_of :content
+
+  validates :content, format: { with: /\A".*"\Z/, message: "TXT records must be in quotes" }
   
 end
