@@ -48,16 +48,16 @@ class RecordsController < InheritedResources::Base
       return
     end
 
-    if @record.save
-      # Give the token the right to undo what it just did
-      if current_token
-        current_token.can_change @record
-        current_token.remove_records = true
-        current_token.save
+    create! do
+      if @record.persisted?
+        # Give the token the right to undo what it just did
+        if current_token
+          current_token.can_change @record
+          current_token.remove_records = true
+          current_token.save
+        end
       end
     end
-
-    create!
   end
 
   def update
