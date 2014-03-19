@@ -1,6 +1,6 @@
 source 'http://rubygems.org'
 
-gem 'rails', '~> 3.2.12'
+gem 'rails', '~> 3.2.16'
 
 group :assets do
   gem 'sass-rails'
@@ -9,10 +9,7 @@ group :assets do
 end
 
 platforms :ruby do
-  gem 'mysql2', '~> 0.3.11'
-  gem 'pg', '>= 0.9.0'
-  gem 'sqlite3'
-  gem 'therubyracer'
+  gem 'mysql2', '~> 0.3.15'
 end
 
 gem 'haml-rails'
@@ -46,3 +43,6 @@ group :test do
   gem 'webrat'
   gem 'database_cleaner'
 end
+
+gem 'capistrano', '~> 3'
+gem 'dotenv-rails'

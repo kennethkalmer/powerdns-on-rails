@@ -40,8 +40,8 @@ ActiveRecord::Schema.define(:version => 20130419205056) do
     t.integer  "user_id"
     t.string   "token",       :null => false
     t.text     "permissions", :null => false
-    t.datetime "created_at",  :null => false
-    t.datetime "updated_at",  :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.datetime "expires_at",  :null => false
   end
 
@@ -49,12 +49,13 @@ ActiveRecord::Schema.define(:version => 20130419205056) do
     t.string   "name"
     t.string   "master"
     t.integer  "last_check"
-    t.string   "type",            :default => "NATIVE"
+    t.string   "type",            :default => "MASTER"
     t.integer  "notified_serial"
     t.string   "account"
     t.integer  "ttl",             :default => 86400
-    t.datetime "created_at",                            :null => false
-    t.datetime "updated_at",                            :null => false
+    t.integer  "integer",         :default => 86400
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.integer  "user_id"
     t.text     "notes"
   end
@@ -72,8 +73,8 @@ ActiveRecord::Schema.define(:version => 20130419205056) do
     t.integer  "position",                      :null => false
     t.boolean  "active",      :default => true
     t.string   "note"
-    t.datetime "created_at",                    :null => false
-    t.datetime "updated_at",                    :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "macros", :force => true do |t|
@@ -81,8 +82,8 @@ ActiveRecord::Schema.define(:version => 20130419205056) do
     t.string   "description"
     t.integer  "user_id"
     t.boolean  "active",      :default => false
-    t.datetime "created_at",                     :null => false
-    t.datetime "updated_at",                     :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "record_templates", :force => true do |t|
@@ -92,8 +93,8 @@ ActiveRecord::Schema.define(:version => 20130419205056) do
     t.string   "content",          :null => false
     t.integer  "ttl",              :null => false
     t.integer  "prio"
-    t.datetime "created_at",       :null => false
-    t.datetime "updated_at",       :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "records", :force => true do |t|
@@ -116,15 +117,16 @@ ActiveRecord::Schema.define(:version => 20130419205056) do
     t.string   "login"
     t.string   "email"
     t.string   "encrypted_password",        :limit => 128, :default => "",        :null => false
-    t.string   "password_salt",             :limit => 40,  :default => "",        :null => false
+    t.string   "password_salt",                            :default => "",        :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "remember_token"
     t.datetime "remember_token_expires_at"
-    t.string   "confirmation_token",        :limit => 40
+    t.string   "confirmation_token"
     t.datetime "confirmed_at"
     t.string   "state",                                    :default => "passive"
     t.datetime "deleted_at"
+    t.string   "master_ip",                 :limit => 15
     t.boolean  "admin",                                    :default => false
     t.boolean  "auth_tokens",                              :default => false
     t.datetime "confirmation_sent_at"
@@ -136,8 +138,8 @@ ActiveRecord::Schema.define(:version => 20130419205056) do
   create_table "zone_templates", :force => true do |t|
     t.string   "name"
     t.integer  "ttl",        :default => 86400
-    t.datetime "created_at",                    :null => false
-    t.datetime "updated_at",                    :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.integer  "user_id"
   end
 
