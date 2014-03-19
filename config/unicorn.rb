@@ -1,7 +1,7 @@
-working_directory "/home/herman/apps/powerdns"
-pid "/home/herman/apps/powerdns/tmp/pids/unicorn.pid"
-stderr_path "/home/herman/apps/powerdns/log/unicorn.log"
-stdout_path "/home/herman/apps/powerdns/log/unicorn.log"
+working_directory "/home/herman/apps/powerdns/current"
+pid "/home/herman/apps/powerdns/shared/tmp/pids/unicorn.pid"
+stderr_path "/home/herman/apps/powerdns/shared/log/unicorn.log"
+stdout_path "/home/herman/apps/powerdns/shared/log/unicorn.log"
 
 listen "/tmp/unicorn.powerdns.sock"
 worker_processes 2
