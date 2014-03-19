@@ -1,5 +1,5 @@
 working_directory "/home/herman/apps/powerdns/current"
-pid "/home/herman/apps/powerdns/shared/tmp/pids/unicorn.pid"
+pid "/home/herman/apps/powerdns/current/tmp/pids/unicorn.pid"
 stderr_path "/home/herman/apps/powerdns/shared/log/unicorn.log"
 stdout_path "/home/herman/apps/powerdns/shared/log/unicorn.log"
 
