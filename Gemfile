@@ -45,4 +45,5 @@ group :test do
 end
 
 gem 'capistrano', '~> 3'
+gem 'capistrano-rails', group: :development
 gem 'dotenv-rails'
