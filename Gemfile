@@ -47,3 +47,7 @@ end
 gem 'capistrano', '~> 3'
 gem 'capistrano-rails', group: :development
 gem 'dotenv-rails'
+
+group :production do
+  gem 'unicorn'
+end
