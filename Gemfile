@@ -51,3 +51,5 @@ gem 'dotenv-rails'
 group :production do
   gem 'unicorn'
 end
+
+gem 'pry-byebug'
