@@ -1,4 +1,6 @@
 PowerdnsOnRails::Application.routes.draw do
+  get "content/domains", format: :text
+
   devise_for :users, :controllers => { :sessions => "sessions" }, :path => "sessions"
 
   root :to => 'dashboard#index'
