@@ -5,3 +5,4 @@ log/*.log
 tmp/*
 config/database.yml
 .env.*
+public/assets

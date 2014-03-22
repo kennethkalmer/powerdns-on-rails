@@ -41,7 +41,7 @@ div.humane.humane-show:hover { opacity: 0.2; }
   background-image      : -o-linear-gradient(top, rgba(0,0,0,.8), rgba(50,50,50,.8));
   background-image      : -webkit-gradient(linear, left top, left bottom, from(rgba(0,0,0,.8)), to(rgba(50,50,50,.8)));
   background-image      : -webkit-linear-gradient(top, rgba(0,0,0,.8), rgba(50,50,50,.8));
-  background-image      : linear-gradient(top, rgba(0,0,0,.8), rgba(50,50,50,.8));;
+  background-image      : linear-gradient(top, rgba(0,0,0,.8), rgba(50,50,50,.8));
   -moz-border-radius    : 15px;
   -webkit-border-radius : 15px;
   -o-border-radius      : 15px;
