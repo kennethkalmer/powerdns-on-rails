@@ -1,3 +1,8 @@
+/* ...
+*= require_self
+*= require_tree .
+*/
+
 body {
     margin: 0;
     padding: 0;
@@ -12,7 +17,7 @@ body {
 }
 #Header {
     height: 80px;
-    background-image: url(../images/top-background.png);
+    background-image: url(<%= asset_path("top-background.png")%>);
     background-repeat: repeat-x;
     padding-left: 20px;
 }
@@ -118,17 +123,17 @@ a img {
 .flash-info, .flash-notice {
     border: 1px solid #97FF97;
     background-color: #DFD;
-    background-image: url(../images/accept.png);
+    background-image: url(<%= asset_path("accept.png")%>);
 }
 .flash-error, .errorExplanation {
     border: 1px solid #F66;
     background-color: #FFC;
-    background-image: url(../images/exclamation.png);
+    background-image: url(<%= asset_path("exclamation.png")%>);
 }
 .flash-warning {
     border: 1px solid #FF6;
     background-color: #FFC;
-    background-image: url(../images/error.png);
+    background-image: url(<%= asset_path("error.png")%>);
 }
 .errorExplanation {
     margin: 5px 0;

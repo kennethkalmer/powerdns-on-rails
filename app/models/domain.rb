@@ -114,6 +114,7 @@ class Domain < ActiveRecord::Base
       soa.send( "#{f}=", send( f ) )
     end
     soa.serial = serial unless serial.nil? # Optional
+    soa.minimum = [10800, soa.minimum].min
     soa.save
   end
 

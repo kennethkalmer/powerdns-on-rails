@@ -8,7 +8,7 @@
  * @example
  *  humane('hello world');
  */
-;(function(win,doc){
+(function(win,doc){
     var eventOn, eventOff;
     if (win.addEventListener) {
        eventOn = function(obj,type,fn){obj.addEventListener(type,fn,false)};

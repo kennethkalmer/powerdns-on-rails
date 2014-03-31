@@ -1,0 +1,13 @@
+%h1.underline= t :title_import_zone
+
+= form_for(:import, url: import_bind_index_path) do |f|
+  = error_messages_for :import
+  %p &nbsp;
+  #no-template-input
+    %table.grid
+      %tr
+        %td{:width => "300"}=t :label_import_file
+        %td= f.file_field :filename
+      %tr
+        %td
+        %td= submit_tag(t :import_button)

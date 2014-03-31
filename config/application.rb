@@ -41,5 +41,10 @@ module PowerdnsOnRails
     config.filter_parameters += [:password]
 
     config.active_record.whitelist_attributes = false
+
+    config.action_mailer.default_url_options = { :host => ENV['HOST_URL'] }
+
+    config.assets.enabled = true
+    config.assets.version = "1.0"
   end
 end

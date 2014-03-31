@@ -268,7 +268,9 @@ en:
 # Domains index
   help_adds_new_domain: "Adds a new domain"
   help_delete_domain: "Delete this domain from the system"
+  help_import_zone: "Imports a bind compatible zone file as new domain"
   label_add_new_zone: "Add new zone"
+  label_import_zone: "Import zone from bind"
   title_domains_list: "Domains"
 
 # Domains new
@@ -282,6 +284,11 @@ en:
   message_macro_step_updated: "Macro step updated"
   message_macro_step_cannot_update: "Could not update macro step"
 
+# Import new
+  title_import_zone: "Import Bind Zonefile"
+  label_import_file: "File to import"
+  import_button: "Import"
+  
 # Macros edit
   title_macro_new: "New Macro"
   title_macro_update: "Update Macro"
