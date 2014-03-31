@@ -52,4 +52,6 @@ group :production do
   gem 'unicorn'
 end
 
+gem 'dns-zonefile'
+
 gem 'pry-byebug'

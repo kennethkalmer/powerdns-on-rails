@@ -94,6 +94,9 @@ GEM
     devise-encryptable (0.1.2)
       devise (>= 2.1.0)
     diff-lcs (1.2.5)
+    dns-zonefile (1.0.4)
+      polyglot
+      treetop
     dotenv (0.8.0)
     dotenv-rails (0.8.0)
       dotenv (= 0.8.0)
@@ -255,6 +258,7 @@ DEPENDENCIES
   debugger
   devise
   devise-encryptable
+  dns-zonefile
   dotenv-rails
   dynamic_form
   factory_girl_rails (~> 4.0)
