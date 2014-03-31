@@ -5,11 +5,15 @@
   #delete-zone=t :help_delete_zone
   #audits=t :help_audits
   #macro=t :help_macro
+  #import-zone=t :help_import_zone
 
 %ul.start
   %li
     = link_to info_icon('database_add.png', 'new-zone'), new_domain_path
     = link_to t(:label_add_new_zone), new_domain_path
+  %li
+    = link_to info_icon('database_add.png', 'import-zone'), new_import_bind_path
+    = link_to t(:label_import_zone), new_import_bind_path
 
 %h1.underline= t :title_domains_list
 

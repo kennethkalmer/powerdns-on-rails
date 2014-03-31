@@ -1,4 +1,7 @@
 PowerdnsOnRails::Application.routes.draw do
+
+  resources :import_bind, only: [:new, :create]
+
   get "content/domains", format: :text
 
   devise_for :users, :controllers => { :sessions => "sessions" }, :path => "sessions"
