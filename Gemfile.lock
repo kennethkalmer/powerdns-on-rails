@@ -206,7 +206,7 @@ GEM
       rack (>= 1.0)
       rack-test (>= 0.5.3)
     websocket (1.0.4)
-    will_paginate (3.0.4)
+    will_paginate (3.0.7)
     xpath (1.0.0)
       nokogiri (~> 1.3)
 
