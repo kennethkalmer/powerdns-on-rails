@@ -1,12 +1,53 @@
-#!/bin/bash -x
+#!/bin/bash
 
-apt-get install -yq libsqlite3-dev libsqlite3-0 libpq5 postgresql postgresql-9.1 postgresql-client-9.1 postgresql-client-common postgresql-common ssl-cert libpq-dev
+set -x
+set -e
 
-su vagrant -c "git clone https://github.com/kennethkalmer/powerdns-on-rails.git"
-su vagrant -c "source /etc/profile.d/rbenv.sh && cd powerdns-on-rails && bundle install"
-su vagrant -c "cd powerdns-on-rails && cp config/database.yml.template config/database.yml"
-su vagrant -c 'source /etc/profile.d/rbenv.sh && cd powerdns-on-rails && SECRET=`rake secret` && sed -i "/^    config.active_record.whitelist_attributes = false/a \ \ \ \ config.secret_token = \"$SECRET\"" config/application.rb'
-su vagrant -c "source /etc/profile.d/rbenv.sh && cd powerdns-on-rails && DB=sqlite RAILS_ENV=test rake db:migrate"
-su vagrant -c "source /etc/profile.d/rbenv.sh && cd powerdns-on-rails && DB=sqlite RAILS_ENV=test rake db:seed"
-su vagrant -c "source /etc/profile.d/rbenv.sh && cd powerdns-on-rails && DB=sqlite RAILS_ENV=test script/rails s -d"
+# Back to the future
+sudo apt-get update -q
 
+# Support for Brightbox's ruby-ng ppa
+sudo apt-get install -y python-software-properties
+sudo apt-add-repository ppa:brightbox/ruby-ng
+sudo apt-get update -q
+
+# Dependencies
+sudo apt-get install -yq build-essential ssl-cert \
+  libsqlite3-dev libsqlite3-0 \
+  libpq5 libpq-dev \
+  libmysqlclient-dev \
+  ruby2.1 ruby2.1-dev
+
+# Disable documentation generation for gems
+echo 'gem: --no-rdoc --no-ri' >> ~/.gemrc
+sudo gem install bundler
+
+# Application itself
+cd /vagrant
+bundle install
+
+# Database setup
+if [[ ! -f config/database.yml ]]; then
+  cp config/database.yml.template config/database.yml
+fi
+
+# Tokens
+rake generate_secret_token
+
+# Bootstrap
+DB=sqlite rake db:setup
+
+# And run a daemon
+DB=sqlite script/rails s -d
+
+set +x
+
+echo "-"
+echo "-"
+echo "-  We're all done here! You can now visit http://localhost:8080 in your browser"
+echo "-  to play with a demo of powerdns-on-rails."
+echo "-"
+echo "-"
+echo "-  Please refer to the README for more information."
+echo "-"
+echo "-"
