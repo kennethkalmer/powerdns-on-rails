@@ -28,6 +28,11 @@ describe ZoneTemplate, "when new" do
   it "should not require optional owner" do
     @zone_template.should have(:no).errors_on(:user_id)
   end
+
+  it "should require a master if it is a slave" do
+    @zone_template.type = 'SLAVE'
+    @zone_template.should have(1).error_on(:master)
+  end
 end
 
 describe ZoneTemplate, "when loaded" do

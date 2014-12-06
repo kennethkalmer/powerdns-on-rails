@@ -34,8 +34,10 @@ $(document).ready(function() {
   $('#domain_zone_template_id').change(function() {
     if ( $(this).val() == '' ) {
       $('#no-template-input').show();
+      $('#domain-type').show();
     } else {
       $('#no-template-input').hide();
+      $('#domain-type').hide();
     }
   });
 

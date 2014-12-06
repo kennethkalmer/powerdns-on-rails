@@ -1,10 +1,11 @@
 language: ruby
 bundler_args: --without development
 rvm:
-  - 1.9.2
-  - 1.9.3
+  - 2.1.0
   - 2.0.0
   - rbx-19mode
+  - 1.9.3
+  - 1.9.2
 env:
   - DB=sqlite
   - DB=mysql

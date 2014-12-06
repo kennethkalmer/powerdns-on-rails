@@ -1,6 +1,6 @@
 source 'http://rubygems.org'
 
-gem 'rails', '~> 3.2.12'
+gem 'rails', '~> 3.2.21'
 
 group :assets do
   gem 'sass-rails'
@@ -20,7 +20,7 @@ gem 'jquery-rails'
 gem 'will_paginate', '~> 3.0.4'
 gem "audited-activerecord", "~> 3.0.0.rc2"
 gem 'inherited_resources'
-gem 'devise'
+gem 'devise', '~> 2.2.8'
 gem "devise-encryptable"
 gem 'rabl'
 gem 'state_machine'

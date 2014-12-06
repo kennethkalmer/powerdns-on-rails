@@ -13,6 +13,14 @@
       %td= t :label_template_zone_ttl
       %td &nbsp;
       %td= f.text_field :ttl, :size => 6
+    %tr
+      %td= t :label_template_zone_type
+      %td &nbsp;
+      %td= f.select :type, ['NATIVE','MASTER','SLAVE'] 
+    %tr
+      %td= t :label_template_zone_master
+      %td &nbsp;
+      %td= f.text_field :master, :size => 15 
     - if User.active_owners.any?
       %tr
         %td= t :label_template_zone_owner
