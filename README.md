@@ -21,14 +21,19 @@ More information:
 
 ## Quick Installation
 
-* $ git clone git://github.com/kennethkalmer/powerdns-on-rails.git
-* $ cd powerdns-on-rails
-* Review config/database.yml and modify as needed
-* $ rake db:migrate
-* $ rake db:seed
-* $ rails s
-* Point your browser to http://localhost:3000
-* Login with 'admin' and 'secret'
+_Instructions for running a demo version with Vagrant is provided further down._
+
+    $ git clone git://github.com/kennethkalmer/powerdns-on-rails.git
+    $ cd powerdns-on-rails
+    $ bundle install
+    $ cp config/database.yml.template config/database.yml
+
+Review config/database.yml and modify as needed. By default it will use the MySQL connection settings.
+
+    $ bundle exec rake generate_secret_token db:setup
+    $ bundle exec rails s
+
+Point your browser to http://localhost:3000, and login with 'admin@example.com' and 'secret'.
 
 _Note on versions:_ PowerDNS on Rails is version-less, and the master branch will _nearly_ always have stable useable code.
 
@@ -62,6 +67,28 @@ the project off to use our existing PowerDNS infrastructure.  Using Rails 2 for
 a interface just makes sense because we can build a rich interface and an REST
 API in a single go. We have a lot of integration needs, and this was our main
 driver.
+
+## Demo with Vagrant
+
+There is now a vagrant/virtualbox demo environment included.
+
+### Requirements
+
+You will need to have [virtualbox](https://www.virtualbox.org/) and [vagrant](http://www.vagrantup.com) already installed.
+
+### Running locally
+
+Once you have Vagrant installed, you can follow these steps:
+
+    $ git clone git://github.com/kennethkalmer/powerdns-on-rails.git
+    $ cd powerdns-on-rails
+    $ vagrant up
+
+Once this command completes, you can access the powerdns-on-rails by pointing your browser to http://localhost:8080 and logging in with 'admin@example.com' & secret.
+
+The first time you run this it will download a base virtual machine and bootstrap a working powerdns-on-rails system. This might take some time, use some storage space (~2GB) and bandwidth (~500MB).
+
+Please note that this is just a demo, we don't install or configure PowerDNS itself in the VM.
 
 ## PowerDNS Information
 

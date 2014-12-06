@@ -29,6 +29,7 @@ class Record < ActiveRecord::Base
   before_validation :inherit_attributes_from_domain
   before_save :update_change_date
   after_save  :update_soa_serial
+  after_destroy  :update_soa_serial
 
   # Known record types
 
@@ -87,9 +88,8 @@ class Record < ActiveRecord::Base
   end
 
   def update_soa_serial #:nodoc:
-    unless self.type == 'SOA' || @serial_updated || self.domain.slave?
+    unless self.type == 'SOA' || self.domain.slave?
       self.domain.soa_record.update_serial!
-      @serial_updated = true
     end
   end
 

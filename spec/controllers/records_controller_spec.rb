@@ -33,6 +33,13 @@ describe RecordsController, ", users, and non-SOA records" do
     end
   end
 
+  it "should increment the serial on create" do
+    @soa = @domain.soa_record
+    serial = @soa.serial
+    xhr :post, :create, :domain_id => @domain.id, :record => {:name =>'test', :ttl=>3600, :type=>'A', :content=>'127.0.0.1'}
+    @soa.tap(&:reload).serial.should eql(serial + 1)
+  end
+
   it "shouldn't save when invalid" do
     params = {
       'name' => "",
@@ -61,6 +68,14 @@ describe RecordsController, ", users, and non-SOA records" do
     response.should render_template("records/update")
   end
 
+  it "should increment the serial on update" do
+    record = FactoryGirl.create(:a, :domain => @domain)
+    @soa = @domain.soa_record
+    serial = @soa.serial
+    xhr :put, :update, :id => record.id, :domain_id => @domain.id, :record => {:content => '0.0.0.0'}
+    @soa.tap(&:reload).serial.should eql(serial + 1)
+  end
+
   it "shouldn't update when invalid" do
     record = FactoryGirl.create(:ns, :domain => @domain)
 
@@ -86,6 +101,15 @@ describe RecordsController, ", users, and non-SOA records" do
     response.should be_redirect
     response.should redirect_to( domain_path( @domain ) )
   end
+
+  it "should increment the serial on delete" do
+    record = FactoryGirl.create(:a, :domain => @domain)
+    @soa = @domain.soa_record
+    serial = @soa.serial
+    delete :destroy, :domain_id => @domain.id, :id => record.id
+    @soa.tap(&:reload).serial.should eql(serial + 1)
+  end
+
 end
 
 describe RecordsController, ", users, and SOA records" do

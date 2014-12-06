@@ -73,7 +73,7 @@
             - else
               \-
           #owner-edit{ :style => 'display: none' }
-            = form_for( @domain, :url => change_owner_domain_path( @domain, :remote => true ) ) do |f|
+            = form_for( @domain, :url => change_owner_domain_path( @domain ), :remote => true ) do |f|
               = f.collection_select "user_id", @users, :id, :login, :include_blank => true
               = submit_tag(t(:generic_save))
         %td= link_to_function info_icon('user_edit.png', 'change-owner'), "changeOwner()"
