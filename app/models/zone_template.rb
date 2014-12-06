@@ -6,7 +6,13 @@ class ZoneTemplate < ActiveRecord::Base
   validates_presence_of :name
   validates_uniqueness_of :name
   validates_presence_of :ttl
-
+  validates_inclusion_of :type, :in => %w(NATIVE MASTER SLAVE), :message => "must be one of NATIVE, MASTER"
+  validates_presence_of :master, :if => :slave?
+  validates_format_of :master, :if => :slave?,
+    :allow_blank => true,
+    :with => /\A(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\z/
+  # Disable single table inheritence (STI)
+  self.inheritance_column = 'not_used_here'
   # Scopes
   scope :user, lambda { |user| user.admin? ? nil : where(:user_id => user.id) }
   scope :with_soa, joins(:record_templates).where('record_templates.record_type = ?', 'SOA')
@@ -39,7 +45,8 @@ class ZoneTemplate < ActiveRecord::Base
   # This method will throw exceptions as it encounters errors, and will use a
   # transaction to complete/rollback the operation.
   def build( domain_name, user = nil )
-    domain = Domain.new( :name => domain_name, :ttl => self.ttl )
+    domain = Domain.new( :name => domain_name, :ttl => self.ttl, :type => self.type )
+    domain.master = self.master if slave?
     domain.user = user if user.is_a?( User )
 
     self.class.transaction do
@@ -74,5 +81,8 @@ class ZoneTemplate < ActiveRecord::Base
   def has_soa?
     record_templates.count( :conditions => "record_type LIKE 'SOA'" ) == 1
   end
-
+  # Are we a slave domain template
+  def slave?
+    self.type == 'SLAVE'
+  end
 end

@@ -402,6 +402,8 @@ en:
     The name by which our zone templates will be known.
   label_template_zone_name: "Name"
   label_template_zone_ttl: "TTL"
+  label_template_zone_type: "Type"
+  label_template_zone_master: "Master IP"
   label_template_zone_owner: "Owner"
 
 # Templates index

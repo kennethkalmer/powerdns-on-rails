@@ -25,6 +25,9 @@
     %td= t :label_template_zone_ttl
     %td= @zone_template.ttl
   %tr
+    %td= t :label_template_zone_type
+    %td= @zone_template.type.humanize
+  %tr
     %td= t :label_template_zone_owner
     %td
       - if @zone_template.user
