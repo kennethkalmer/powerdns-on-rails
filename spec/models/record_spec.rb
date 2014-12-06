@@ -43,15 +43,31 @@ describe Record do
       @soa = domain.soa_record
     end
 
-    it "should update the serial on the SOA" do
+    it "should update the serial on the SOA on create" do
       serial = @soa.serial
 
       record = FactoryGirl.create(:a, :domain => domain)
+
+      @soa.tap(&:reload).serial.should_not eql( serial )
+    end
+
+    it "should update the serial on the SOA on change" do
+      record = FactoryGirl.create(:a, :domain => domain)
+      serial = @soa.tap(&:reload).serial
       record.content = '10.0.0.1'
       record.save.should be_true
 
-      @soa.reload
-      @soa.serial.should_not eql( serial )
+      @soa.tap(&:reload).serial.should_not eql( serial )
+    end
+
+    it "should update the serial on the SOA when deleted" do
+      record = FactoryGirl.create(:a, :domain => domain)
+
+      serial = @soa.tap(&:reload).serial
+
+      record.destroy.should be_true
+
+      @soa.tap(&:reload).serial.should_not eql( serial )
     end
 
     it "should be able to restrict the serial number to one change (multiple updates)" do
