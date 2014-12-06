@@ -234,7 +234,7 @@ DEPENDENCIES
   mysql2 (~> 0.3.11)
   pg (>= 0.9.0)
   rabl
-  rails (~> 3.2.12)
+  rails (~> 3.2.21)
   rspec-rails
   sass-rails
   sqlite3
