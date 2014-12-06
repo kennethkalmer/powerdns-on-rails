@@ -14,7 +14,7 @@ describe RecordsController, ", users, and non-SOA records" do
    { :name => '', :ttl => '86400', :type => 'MX', :content => 'mail.example.com', :prio => '10' },
    { :name => 'foo', :ttl => '86400', :type => 'CNAME', :content => 'bar.example.com' },
    { :name => '', :ttl => '86400', :type => 'AAAA', :content => '::1' },
-   { :name => '', :ttl => '86400', :type => 'TXT', :content => 'Hello world' },
+   { :name => '', :ttl => '86400', :type => 'TXT', :content => '"Hello world"' },
    { :name => '166.188.77.208.in-addr.arpa.', :type => 'PTR', :content => 'www.example.com' },
    # TODO: Test these
    { :type => 'SPF', :pending => true },

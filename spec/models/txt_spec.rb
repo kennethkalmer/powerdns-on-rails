@@ -12,8 +12,8 @@ describe TXT do
     end
 
     it "should not tamper with content" do
-      subject.content = "google.com"
-      subject.content.should eql("google.com")
+      subject.content = %Q{"google.com"}
+      subject.content.should eql(%Q{"google.com"})
     end
   end
 end

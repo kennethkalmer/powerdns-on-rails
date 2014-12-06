@@ -12,8 +12,6 @@
 #
 class SPF < Record
 
-  validates_presence_of :content
-
   validates :content, format: { with: /\A".*"\Z/, message: "SPF records must be in quotes" }
 
 end
