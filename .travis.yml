@@ -1,15 +1,20 @@
 language: ruby
+
 bundler_args: --without development
+
 rvm:
-  - 2.1.0
-  - 2.0.0
+  - 2.2
+  - 2.1
+  - 2.0
   - rbx-19mode
   - 1.9.3
   - 1.9.2
+
 env:
   - DB=sqlite
   - DB=mysql
   - DB=postgresql
+
 before_script:
   - mv config/database.yml.template config/database.yml
   - rake generate_secret_token
@@ -17,9 +22,14 @@ before_script:
   - psql -c 'create database powerdns_test;' -U postgres
   - bundle exec rake db:migrate
   - bundle exec rake db:seed
+
 script: "bundle exec rake spec"
+
 matrix:
   allow_failures:
+    - rvm: 2.2
     - rvm: jruby-19mode
     - rvm: rbx-19mode
     - env: DB=sqlite
+
+sudo: false
