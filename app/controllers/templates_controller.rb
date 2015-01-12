@@ -9,10 +9,14 @@ class TemplatesController < InheritedResources::Base
     @zone_templates = ZoneTemplate.user(current_user).all
   end
 
+  def template_params
+    params.require(:zone_template).permit(:name)
+  end
+
   public
 
   def create
-    @zone_template = ZoneTemplate.new(params[:zone_template])
+    @zone_template = ZoneTemplate.new(template_params)
     @zone_template.user = current_user unless current_user.admin?
 
     create! { zone_template_path( @zone_template ) }
