@@ -227,7 +227,7 @@ PLATFORMS
 DEPENDENCIES
   RedCloth (>= 4.1.1)
   acts_as_list
-  audited-activerecord (~> 3.0.0.rc2)
+  audited-activerecord (~> 3.0.0)
   coffee-rails
   cucumber-rails
   database_cleaner
