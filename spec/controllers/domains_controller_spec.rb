@@ -232,7 +232,7 @@ describe DomainsController, "should handle a REST client" do
     get :index, :format => 'json'
 
     data = ActiveSupport::JSON.decode( response.body )
-    data.should have(1).entry
+    expect( data.size ).to eq(1)
     data.first.keys.should include("id", "name")
   end
 
@@ -252,7 +252,7 @@ describe DomainsController, "should handle a REST client" do
     get :apply_macro, :id => domain.id, :format => 'json'
 
     data = ActiveSupport::JSON.decode( response.body )
-    data.should have(1).entry
+    expect( data.size ).to eq(1)
   end
 
   it "applying a macro to a domain" do

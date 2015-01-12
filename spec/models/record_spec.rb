@@ -10,30 +10,36 @@ describe Record do
     end
 
     it "should require a domain" do
-      subject.should have(1).error_on(:domain_id)
+      subject.valid?
+      expect( subject.errors[:domain_id].size ).to eq(1)
     end
 
     it "should require a ttl" do
-      subject.should have(1).error_on(:ttl)
+      subject.valid?
+      expect( subject.errors[:ttl].size ).to eq(1)
     end
 
     it "should only allow positive numeric ttl's" do
       subject.ttl = -100
-      subject.should have(1).error_on(:ttl)
+      subject.valid?
+      expect( subject.errors[:ttl].size ).to eq(1)
 
       subject.ttl = '2d'
-      subject.should have(1).error_on(:ttl)
+      subject.valid?
+      expect( subject.errors[:ttl].size ).to eq(1)
 
       subject.ttl = 86400
-      subject.should have(:no).errors_on(:ttl)
+      subject.valid?
+      expect( subject.errors[:ttl].size ).to eq(0)
     end
 
     it "should require a name" do
-      subject.should have(1).error_on(:name)
+      subject.valid?
+      expect( subject.errors[:name].size ).to eq(1)
     end
 
     it "should not support priorities by default" do
-      subject.supports_prio?.should be_false
+      subject.supports_prio?.should be false
     end
 
   end
@@ -55,7 +61,7 @@ describe Record do
       record = FactoryGirl.create(:a, :domain => domain)
       serial = @soa.tap(&:reload).serial
       record.content = '10.0.0.1'
-      record.save.should be_true
+      record.save.should be true
 
       @soa.tap(&:reload).serial.should_not eql( serial )
     end
@@ -65,7 +71,8 @@ describe Record do
 
       serial = @soa.tap(&:reload).serial
 
-      record.destroy.should be_true
+      record.destroy
+      expect( record.destroyed? ).to be true
 
       @soa.tap(&:reload).serial.should_not eql( serial )
     end
@@ -82,7 +89,7 @@ describe Record do
           :content => '10.0.0.5',
           :ttl => 86400
         )
-        record.save.should be_true
+        record.save.should be true
 
         record = A.new(
           :domain => domain,
@@ -90,7 +97,7 @@ describe Record do
           :content => '10.0.0.6',
           :ttl => 86400
         )
-        record.save.should be_true
+        record.save.should be true
 
         record = A.new(
           :domain => domain,
@@ -98,7 +105,7 @@ describe Record do
           :content => '10.0.0.7',
           :ttl => 86400
         )
-        record.save.should be_true
+        record.save.should be true
       end
 
       # Our serial should have move just one position, not three
@@ -123,7 +130,7 @@ describe Record do
         :content => '10.0.0.5',
         :ttl => 86400
       )
-      record.save.should be_true
+      record.save.should be true
 
       @soa.reload
       @soa.serial.should_not eql(serial)
@@ -134,7 +141,7 @@ describe Record do
         :domain => domain,
         :content => '10.0.0.6'
       )
-      record.save.should be_true
+      record.save.should be true
 
       record.name.should eql('example.com')
     end
@@ -145,7 +152,7 @@ describe Record do
         :name => 'test',
         :content => '10.0.0.6'
       )
-      record.save.should be_true
+      record.save.should be true
 
       record.shortname.should eql('test')
       record.name.should eql('test.example.com')
@@ -160,7 +167,7 @@ describe Record do
         :name => 'ftp',
         :content => '10.0.0.6'
       )
-      record.save.should be_true
+      record.save.should be true
 
       record.ttl.should be( 86400 )
     end
@@ -172,7 +179,7 @@ describe Record do
         :content => '10.0.0.6',
         :ttl => 43200
       )
-      record.save.should be_true
+      record.save.should be true
 
       record.ttl.should be( 43200 )
     end

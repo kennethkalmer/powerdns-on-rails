@@ -8,7 +8,8 @@ describe TXT do
     end
 
     it "should require content" do
-      subject.should have(1).error_on(:content)
+      subject.valid?
+      expect( subject.errors[:content].size ).to eq(1)
     end
 
     it "should not tamper with content" do

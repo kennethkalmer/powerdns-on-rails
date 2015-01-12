@@ -9,23 +9,27 @@ describe Domain do
 
     it "should not accept rubbish types" do
       subject.type = 'DOMINANCE'
-      subject.should have(1).error_on(:type)
+      subject.valid?
+      expect( subject.errors[:type].size ).to eq(1)
     end
   end
 
   context "new MASTER/NATIVE" do
     it "should require a name" do
-      subject.should have(1).error_on(:name)
+      subject.valid?
+      expect( subject.errors[:name].size ).to eq(1)
     end
 
     it "should not allow duplicate names" do
       FactoryGirl.create(:domain)
       subject.name = "example.com"
-      subject.should have(1).error_on(:name)
+      subject.valid?
+      expect( subject.errors[:name].size ).to eq(1)
     end
 
     it "should bail out on missing SOA fields" do
-      subject.should have(1).error_on( :primary_ns )
+      subject.valid?
+      expect( subject.errors[:primary_ns].size ).to eq(1)
     end
 
     it "should be NATIVE by default" do
@@ -41,12 +45,14 @@ describe Domain do
     subject { Domain.new( :type => 'SLAVE' ) }
 
     it "should require a master address" do
-      subject.should have(1).error_on(:master)
+      subject.valid?
+      expect( subject.errors[:master].size ).to eq(1)
     end
 
     it "should require a valid master address" do
       subject.master = 'foo'
-      subject.should have(1).error_on(:master)
+      subject.valid?
+      expect( subject.errors[:master].size ).to eq(1)
 
       subject.master = '127.0.0.1'
       subject.should have(:no).errors_on(:master)

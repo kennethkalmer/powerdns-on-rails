@@ -9,26 +9,32 @@ describe SOA do
 
     it "should be unique per domain" do
       subject.domain = FactoryGirl.create(:domain)
-      subject.should have(1).error_on(:domain_id)
+      subject.valid?
+      expect( subject.errors[:domain_id].size ).to eq(1)
     end
 
     it "should require a primary NS" do
-      subject.should have(1).error_on(:primary_ns)
+      subject.valid?
+      expect( subject.errors[:primary_ns].size ).to eq(1)
     end
 
     it "should require a contact" do
-      subject.should have(1).error_on(:contact)
+      subject.valid?
+      expect( subject.errors[:contact].size ).to eq(1)
     end
 
     it "should require a valid email address for the contact" do
       subject.contact = 'test'
-      subject.should have(1).error_on(:contact)
+      subject.valid?
+      expect( subject.errors[:contact].size ).to eq(1)
 
       subject.contact = 'test@example'
-      subject.should have(1).error_on(:contact)
+      subject.valid?
+      expect( subject.errors[:contact].size ).to eq(1)
 
       subject.contact = 'test@example.com'
-      subject.should have(:no).errors_on(:contact)
+      subject.valid?
+      expect( subject.errors[:contact].size ).to eq(0)
     end
 
     it "should flip the first period in the contact to an @" do
@@ -45,28 +51,35 @@ describe SOA do
 
     it "should only accept positive integers as serials" do
       subject.serial = -2008040101
-      subject.should have(1).error_on(:serial)
+      subject.valid?
+      expect( subject.errors[:serial].size ).to eq(1)
 
       subject.serial = 'ISBN123456789'
-      subject.should have(1).error_on(:serial)
+      subject.valid?
+      expect( subject.errors[:serial].size ).to eq(1)
 
       subject.serial = 2008040101
-      subject.should have(:no).errors_on(:serial)
+      subject.valid?
+      expect( subject.errors[:serial].size ).to eq(0)
     end
 
     it "should require a refresh time" do
-      subject.should have(1).error_on(:refresh)
+      subject.valid?
+      expect( subject.errors[:refresh].size ).to eq(1)
     end
 
     it "should only accept positive integers as refresh time" do
       subject.refresh = -86400
-      subject.should have(1).error_on(:refresh)
+      subject.valid?
+      expect( subject.errors[:refresh].size ).to eq(1)
 
       subject.refresh = '12h'
-      subject.should have(1).error_on(:refresh)
+      subject.valid?
+      expect( subject.errors[:refresh].size ).to eq(1)
 
       subject.refresh = 2008040101
-      subject.should have(:no).errors_on(:refresh)
+      subject.valid?
+      expect( subject.errors[:refresh].size ).to eq(0)
     end
 
     it "should require a retry time" do
@@ -75,48 +88,60 @@ describe SOA do
 
     it "should only accept positive integers as retry time" do
       subject.retry = -86400
-      subject.should have(1).error_on(:retry)
+      subject.valid?
+      expect( subject.errors[:retry].size ).to eq(1)
 
       subject.retry = '15m'
-      subject.should have(1).error_on(:retry)
+      subject.valid?
+      expect( subject.errors[:retry].size ).to eq(1)
 
       subject.retry = 2008040101
-      subject.should have(:no).errors_on(:retry)
+      subject.valid?
+      expect( subject.errors[:retry].size ).to eq(0)
     end
 
     it "should require a expiry time" do
-      subject.should have(1).error_on(:expire)
+      subject.valid?
+      expect( subject.errors[:expire].size ).to eq(1)
     end
 
     it "should only accept positive integers as expiry times" do
       subject.expire = -86400
-      subject.should have(1).error_on(:expire)
+      subject.valid?
+      expect( subject.errors[:expire].size ).to eq(1)
 
       subject.expire = '2w'
-      subject.should have(1).error_on(:expire)
+      subject.valid?
+      expect( subject.errors[:expire].size ).to eq(1)
 
       subject.expire = 2008040101
-      subject.should have(:no).errors_on(:expire)
+      subject.valid?
+      expect( subject.errors[:expire].size ).to eq(0)
     end
 
     it "should require a minimum time" do
-      subject.should have(1).error_on(:minimum)
+      subject.valid?
+      expect( subject.errors[:minimum].size ).to eq(1)
     end
 
     it "should only accept positive integers as minimum times" do
       subject.minimum = -86400
-      subject.should have(1).error_on(:minimum)
+      subject.valid?
+      expect( subject.errors[:minimum].size ).to eq(1)
 
       subject.minimum = '3h'
-      subject.should have(1).error_on(:minimum)
+      subject.valid?
+      expect( subject.errors[:minimum].size ).to eq(1)
 
       subject.minimum = 10800
-      subject.should have(:no).errors_on(:minimum)
+      subject.valid?
+      expect( subject.errors[:minimum].size ).to eq(0)
     end
 
     it "should not allow a minimum of more than 10800 seconds (RFC2308)" do
       subject.minimum = 84600
-      subject.should have(1).error_on(:minimum)
+      subject.valid?
+      expect( subject.errors[:minimum].size ).to eq(1)
     end
 
   end

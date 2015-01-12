@@ -5,13 +5,15 @@ describe Macro do
   context "when new" do
 
     it "should require a new" do
-      subject.should have(1).error_on(:name)
+      subject.valid?
+      expect( subject.errors[:name].size ).to eq(1)
     end
 
     it "should have a unique name" do
       m = FactoryGirl.create(:macro)
       subject.name = m.name
-      subject.should have(1).error_on(:name)
+      subject.valid?
+      expect( subject.errors[:name].size ).to eq(1)
     end
 
     it "should be disabled by default" do

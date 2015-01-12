@@ -8,11 +8,13 @@ describe MacroStep do
     end
 
     it "should require a macro" do
-      subject.should have(1).error_on(:macro_id)
+      subject.valid?
+      expect( subject.errors[:macro_id].size ).to eq(1)
     end
 
     it "should require an action" do
-      subject.should have(1).error_on(:action)
+      subject.valid?
+      expect( subject.errors[:action].size ).to eq(1)
     end
 
     it "should only accept allowed actions" do
@@ -22,11 +24,13 @@ describe MacroStep do
       end
 
       subject.action = 'foo'
-      subject.should have(1).error_on(:action)
+      subject.valid?
+      expect( subject.errors[:action].size ).to eq(1)
     end
 
     it "should require a record type" do
-      subject.should have(1).error_on(:record_type)
+      subject.valid?
+      expect( subject.errors[:record_type].size ).to eq(1)
     end
 
     it "should only accept valid record types" do
@@ -39,7 +43,8 @@ describe MacroStep do
       end
 
       subject.record_type = 'SOA'
-      subject.should have(1).error_on(:record_type)
+      subject.valid?
+      expect( subject.errors[:record_type].size ).to eq(1)
     end
 
     it "should not require a record name" do
@@ -47,7 +52,8 @@ describe MacroStep do
     end
 
     it "should require content" do
-      subject.should have(1).error_on(:content)
+      subject.valid?
+      expect( subject.errors[:content].size ).to eq(1)
     end
 
     it "should be active by default" do
@@ -58,14 +64,18 @@ describe MacroStep do
       it "from A records" do
         subject.record_type = 'A'
         subject.content = 'foo'
-        subject.should have(1).error_on(:content)
-        subject.should have(:no).errors_on(:name)
+
+        subject.valid?
+        expect( subject.errors[:content].size ).to eq(1)
+        expect( subject.errors[:name].size ).to eq(0)
       end
 
       it "from MX records" do
         subject.record_type = 'MX'
-        subject.should have(1).error_on(:prio)
-        subject.should have(:no).errors_on(:name)
+        subject.valid?
+
+        expect( subject.errors[:prio].size ).to eq(1)
+        expect( subject.errors[:name].size ).to eq(0)
       end
 
     end

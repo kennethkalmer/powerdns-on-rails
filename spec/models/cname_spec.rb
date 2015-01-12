@@ -9,7 +9,8 @@ describe CNAME do
     end
 
     it "should require content" do
-      subject.should have(2).error_on(:content)
+      subject.valid?
+      expect( subject.errors[:content].size ).to eq(2)
     end
 
   end

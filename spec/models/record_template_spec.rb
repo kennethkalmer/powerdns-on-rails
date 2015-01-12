@@ -19,73 +19,87 @@ describe RecordTemplate do
       subject.should_not be_valid
 
       subject.content = '256.256.256.256'
-      subject.should have(1).error_on(:content)
+      subject.valid?
+      expect( subject.errors[:content].size ).to eq(1)
 
       subject.content = 'google.com'
-      subject.should have(1).error_on(:content)
+      subject.valid?
+      expect( subject.errors[:content].size ).to eq(1)
 
       subject.content = '10.0.0.9'
-      subject.should have(:no).error_on(:content)
+      subject.valid?
+      expect( subject.errors[:content].size ).to eq(0)
     end
 
     it "validations from CNAME" do
       subject.record_type = 'NS'
       subject.should_not be_valid
 
-      subject.should have(2).error_on(:content)
+      subject.valid?
+      expect( subject.errors[:content].size ).to eq(2)
     end
 
     it "validations from MX" do
       subject.record_type = 'MX'
       subject.should_not be_valid
 
-      subject.should have(1).error_on(:prio)
-      subject.should have(2).error_on(:content)
+      subject.valid?
+      expect( subject.errors[:prio].size ).to eq(1)
+      expect( subject.errors[:content].size ).to eq(2)
 
       subject.prio = -10
-      subject.should have(1).error_on(:prio)
+      subject.valid?
+      expect( subject.errors[:prio].size ).to eq(1)
 
       # FIXME: Why is priority 0 at this stage?
       #subject.prio = 'low'
       #subject.should have(1).error_on(:prio)
 
       subject.prio = 10
-      subject.should have(:no).errors_on(:prio)
+      subject.valid?
+      expect( subject.errors[:prio].size ).to eq(0)
     end
 
     it "validations from NS" do
       subject.record_type = 'NS'
       subject.should_not be_valid
 
-      subject.should have(2).error_on(:content)
+      subject.valid?
+      expect( subject.errors[:content].size ).to eq(2)
     end
 
     it "validations from TXT" do
       subject.record_type = 'TXT'
       subject.should_not be_valid
 
-      subject.should have(1).error_on(:content)
+      subject.valid?
+      expect( subject.errors[:content].size ).to eq(1)
     end
 
     it "validations from SOA" do
       subject.record_type = 'SOA'
       subject.should_not be_valid
 
-      subject.should have(1).error_on(:primary_ns)
+      subject.valid?
+      expect( subject.errors[:primary_ns].size ).to eq(1)
     end
 
     it "validates contact address in SOA" do
       subject.record_type = 'SOA'
-      subject.should have(1).error_on(:contact)
+      subject.valid?
+      expect( subject.errors[:contact].size ).to eq(1)
 
       subject.contact = 'admin@example.com'
-      subject.should have(:no).errors_on(:contact)
+      subject.valid?
+      expect( subject.errors[:contact].size ).to eq(0)
 
       subject.contact = 'admin@%ZONE%'
-      subject.should have(:no).errors_on(:contact)
+      subject.valid?
+      expect( subject.errors[:contact].size ).to eq(0)
 
       subject.contact = 'admin'
-      subject.should have(1).error_on(:contact)
+      subject.valid?
+      expect( subject.errors[:contact].size ).to eq(1)
     end
 
     it "convenience methods from SOA" do
