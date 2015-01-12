@@ -32,11 +32,12 @@ gem 'dynamic_form'
 
 group :development do
   gem 'debugger', :platform => :mri_19
+  gem 'guard-rspec', :require => false
   #gem 'RedCloth', '>= 4.1.1'
 end
 
 group :development, :test do
-  gem "rspec-rails"
+  gem "rspec-rails", "~> 2.99.0"
   gem 'RedCloth', '>= 4.1.1'
 end
 
