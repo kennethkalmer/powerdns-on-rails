@@ -26,7 +26,6 @@ script: "bundle exec rake spec"
 
 matrix:
   allow_failures:
-    - rvm: 2.2
     - rvm: jruby-19mode
     - rvm: rbx-19mode
     - env: DB=sqlite
