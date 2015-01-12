@@ -15,6 +15,8 @@ platforms :ruby do
   gem 'therubyracer'
 end
 
+gem 'strong_parameters'
+
 gem 'haml-rails'
 gem 'jquery-rails'
 gem 'will_paginate', '~> 3.0.4'
