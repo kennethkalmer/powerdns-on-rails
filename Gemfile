@@ -31,7 +31,6 @@ gem 'acts_as_list'
 gem 'dynamic_form'
 
 group :development do
-  gem 'debugger', :platform => :mri_19
   gem 'guard-rspec', :require => false
   #gem 'RedCloth', '>= 4.1.1'
 end
