@@ -36,9 +36,9 @@ group :development do
 end
 
 group :development, :test do
+  gem "test-unit"
   gem "rspec-rails", "~> 2.99.0"
   gem 'RedCloth', '>= 4.1.1'
-  gem 'test-unit'
 end
 
 group :test do
