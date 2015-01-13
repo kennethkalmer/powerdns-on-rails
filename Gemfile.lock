@@ -298,6 +298,7 @@ DEPENDENCIES
   sqlite3 (~> 1.3.10)
   state_machine
   strong_parameters
+  test-unit
   therubyracer
   uglifier
   webrat
