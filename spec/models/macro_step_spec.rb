@@ -20,7 +20,8 @@ describe MacroStep do
     it "should only accept allowed actions" do
       [ 'create', 'remove', 'update' ].each do |valid_action|
         subject.action = valid_action
-        subject.should have(:no).errors_on(:action)
+        subject.valid?
+        expect( subject.errors[:action].size ).to eq(0)
       end
 
       subject.action = 'foo'
@@ -39,7 +40,8 @@ describe MacroStep do
         next if known_record_type == 'SOA'
 
         subject.record_type = known_record_type
-        subject.should have(:no).errors_on(:record_type)
+        subject.valid?
+        expect( subject.errors[:record_type].size ).to eq(0)
       end
 
       subject.record_type = 'SOA'
@@ -48,7 +50,8 @@ describe MacroStep do
     end
 
     it "should not require a record name" do
-      subject.should have(:no).errors_on(:name)
+      subject.valid?
+      expect( subject.errors[:name].size ).to eq(0)
     end
 
     it "should require content" do
@@ -106,12 +109,14 @@ describe MacroStep do
     end
 
     it "should not require content" do
-      subject.should have(:no).errors_on(:content)
+      subject.valid?
+      expect( subject.errors[:content].size ).to eq(0)
     end
 
     it "should not require prio on MX" do
       subject.record_type = 'MX'
-      subject.should have(:no).errors_on(:prio)
+      subject.valid?
+      expect( subject.errors[:prio].size ).to eq(0)
     end
 
   end

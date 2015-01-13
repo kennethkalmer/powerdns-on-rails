@@ -37,7 +37,8 @@ describe Domain do
     end
 
     it "should not require a MASTER" do
-      subject.should have(:no).errors_on(:master)
+      subject.valid?
+      expect( subject.errors[:master].size ).to eq(0)
     end
   end
 
@@ -55,11 +56,13 @@ describe Domain do
       expect( subject.errors[:master].size ).to eq(1)
 
       subject.master = '127.0.0.1'
-      subject.should have(:no).errors_on(:master)
+      subject.valid?
+      expect( subject.errors[:master].size ).to eq(0)
     end
 
     it "should not bail out on missing SOA fields" do
-      subject.should have(:no).errors_on( :primary_ns )
+      subject.valid?
+      expect( subject.errors[:primary_ns].size ).to eq(0)
     end
   end
 
@@ -103,7 +106,8 @@ describe Domain do
     end
 
     it "should not complain about missing SOA fields" do
-      subject.should have(:no).errors_on(:primary_ns)
+      subject.valid?
+      expect( subject.errors[:primary_ns].size ).to eq(0)
     end
   end
 
