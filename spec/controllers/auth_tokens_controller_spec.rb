@@ -5,11 +5,11 @@ describe AuthTokensController do
   it "should not allow access to admins or owners" do
     sign_in( FactoryGirl.create(:admin) )
     post :create
-    response.code.should eql("302")
+    expect(response.code).to eql("302")
 
     sign_in(FactoryGirl.create(:quentin))
     post :create
-    response.code.should eql("302")
+    expect(response.code).to eql("302")
   end
 
   it "should bail cleanly on missing auth_token" do
@@ -17,7 +17,7 @@ describe AuthTokensController do
 
     post :create
 
-    response.code.should eql("422")
+    expect(response.code).to eql("422")
   end
 
   it "should bail cleanly on missing domains" do
@@ -25,7 +25,7 @@ describe AuthTokensController do
 
     post :create, :auth_token => { :domain => 'example.org' }
 
-    response.code.should eql("404")
+    expect(response.code).to eql("404")
   end
 
   it "bail cleanly on invalid requests" do
@@ -35,7 +35,7 @@ describe AuthTokensController do
 
     post :create, :auth_token => { :domain => 'example.com' }
 
-    response.should have_selector('error')
+    expect(response).to have_selector('error')
   end
 
   describe "generating tokens" do
@@ -50,35 +50,35 @@ describe AuthTokensController do
     it "with allow_new set" do
       post :create, :auth_token => @params.merge(:allow_new => 'true')
 
-      response.should have_selector('token > expires')
-      response.should have_selector('token > auth_token')
-      response.should have_selector('token > url')
+      expect(response).to have_selector('token > expires')
+      expect(response).to have_selector('token > auth_token')
+      expect(response).to have_selector('token > url')
 
-      assigns(:auth_token).should_not be_nil
-      assigns(:auth_token).domain.should eql( @domain )
-      assigns(:auth_token).should be_allow_new_records
+      expect(assigns(:auth_token)).not_to be_nil
+      expect(assigns(:auth_token).domain).to eql( @domain )
+      expect(assigns(:auth_token)).to be_allow_new_records
     end
 
     it "with remove set" do
       a = FactoryGirl.create(:www, :domain => @domain)
       post :create, :auth_token => @params.merge(:remove => 'true', :record => ['www.example.com'])
 
-      response.should have_selector('token > expires')
-      response.should have_selector('token > auth_token')
-      response.should have_selector('token > url')
+      expect(response).to have_selector('token > expires')
+      expect(response).to have_selector('token > auth_token')
+      expect(response).to have_selector('token > url')
 
-      assigns(:auth_token).remove_records?.should be_true
-      assigns(:auth_token).can_remove?( a ).should be_true
+      expect(assigns(:auth_token).remove_records?).to be_truthy
+      expect(assigns(:auth_token).can_remove?( a )).to be_truthy
     end
 
     it "with policy set" do
       post :create, :auth_token => @params.merge(:policy => 'allow')
 
-      response.should have_selector('token > expires')
-      response.should have_selector('token > auth_token')
-      response.should have_selector('token > url')
+      expect(response).to have_selector('token > expires')
+      expect(response).to have_selector('token > auth_token')
+      expect(response).to have_selector('token > url')
 
-      assigns(:auth_token).policy.should eql(:allow)
+      expect(assigns(:auth_token).policy).to eql(:allow)
     end
 
     it "with protected records" do
@@ -91,14 +91,14 @@ describe AuthTokensController do
         :policy => 'allow'
       )
 
-      response.should have_selector('token > expires')
-      response.should have_selector('token > auth_token')
-      response.should have_selector('token > url')
+      expect(response).to have_selector('token > expires')
+      expect(response).to have_selector('token > auth_token')
+      expect(response).to have_selector('token > url')
 
-      assigns(:auth_token).should_not be_nil
-      assigns(:auth_token).can_change?( a ).should be_false
-      assigns(:auth_token).can_change?( mx ).should be_true
-      assigns(:auth_token).can_change?( www ).should be_false
+      expect(assigns(:auth_token)).not_to be_nil
+      expect(assigns(:auth_token).can_change?( a )).to be_falsey
+      expect(assigns(:auth_token).can_change?( mx )).to be_truthy
+      expect(assigns(:auth_token).can_change?( www )).to be_falsey
     end
 
     it "with protected record types" do
@@ -106,7 +106,7 @@ describe AuthTokensController do
 
       post :create, :auth_token => @params.merge(:policy => 'allow', :protect_type => ['MX'])
 
-      assigns(:auth_token).can_change?( mx ).should be_false
+      expect(assigns(:auth_token).can_change?( mx )).to be_falsey
     end
 
     it "with allowed records" do
@@ -116,9 +116,9 @@ describe AuthTokensController do
 
       post :create, :auth_token => @params.merge(:record => ['example.com'])
 
-      assigns(:auth_token).can_change?( www ).should be_false
-      assigns(:auth_token).can_change?( a ).should be_true
-      assigns(:auth_token).can_change?( mx ).should be_true
+      expect(assigns(:auth_token).can_change?( www )).to be_falsey
+      expect(assigns(:auth_token).can_change?( a )).to be_truthy
+      expect(assigns(:auth_token).can_change?( mx )).to be_truthy
     end
 
   end

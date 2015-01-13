@@ -11,11 +11,11 @@ describe "macro_steps/create.js.rjs" do
     end
 
     xit "should insert errors into the page" do
-      response.should have_rjs(:replace_html, 'record-form-error')
+      expect(response).to have_rjs(:replace_html, 'record-form-error')
     end
 
     xit "should have a error flash" do
-      response.should include_text(%{showflash("error"})
+      expect(response).to include_text(%{showflash("error"})
     end
   end
 
@@ -28,11 +28,11 @@ describe "macro_steps/create.js.rjs" do
     end
 
     xit "should display a notice flash" do
-      response.should include_text(%{showflash("info"} )
+      expect(response).to include_text(%{showflash("info"} )
     end
 
     xit "should insert the steps into the table" do
-      response.should have_rjs(:insert, :bottom, 'steps-table')
+      expect(response).to have_rjs(:insert, :bottom, 'steps-table')
     end
 
   end

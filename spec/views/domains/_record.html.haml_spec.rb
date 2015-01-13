@@ -12,24 +12,24 @@ describe "domains/_record" do
     end
 
     it "should have a marker row (used by AJAX)" do
-      rendered.should have_tag("tr#marker_ns_#{@record.id}")
+      expect(rendered).to have_tag("tr#marker_ns_#{@record.id}")
     end
 
     it "should have a row with the record details" do
-      rendered.should have_tag("tr#show_ns_#{@record.id} > td", :content => "") # shortname
-      rendered.should have_tag("tr#show_ns_#{@record.id} > td", :content => "") # ttl
-      rendered.should have_tag("tr#show_ns_#{@record.id} > td", :content => "NS") # shortname
-      rendered.should have_tag("tr#show_ns_#{@record.id} > td", :content => "") # prio
-      rendered.should have_tag("tr#show_ns_#{@record.id} > td", :content => "ns1.example.com")
+      expect(rendered).to have_tag("tr#show_ns_#{@record.id} > td", :content => "") # shortname
+      expect(rendered).to have_tag("tr#show_ns_#{@record.id} > td", :content => "") # ttl
+      expect(rendered).to have_tag("tr#show_ns_#{@record.id} > td", :content => "NS") # shortname
+      expect(rendered).to have_tag("tr#show_ns_#{@record.id} > td", :content => "") # prio
+      expect(rendered).to have_tag("tr#show_ns_#{@record.id} > td", :content => "ns1.example.com")
     end
 
     it "should have a row for editing record details" do
-      rendered.should have_tag("tr#edit_ns_#{@record.id} > td[colspan='7'] > form")
+      expect(rendered).to have_tag("tr#edit_ns_#{@record.id} > td[colspan='7'] > form")
     end
 
     it "should have links to edit/remove the record" do
-      rendered.should have_tag("a[onclick^=editRecord]")
-      rendered.should have_tag("a > img[src*=database_delete]")
+      expect(rendered).to have_tag("a[onclick^=editRecord]")
+      expect(rendered).to have_tag("a > img[src*=database_delete]")
     end
   end
 
@@ -43,25 +43,25 @@ describe "domains/_record" do
     end
 
     it "should not have tooltips ready" do
-      rendered.should_not have_tag("div#record-template-edit-#{@record.id}")
-      rendered.should_not have_tag("div#record-template-delete-#{@record.id}")
+      expect(rendered).not_to have_tag("div#record-template-edit-#{@record.id}")
+      expect(rendered).not_to have_tag("div#record-template-delete-#{@record.id}")
     end
 
     it "should have a row with the record details" do
-      rendered.should have_tag("tr#show_a_#{@record.id} > td", :content => "") # shortname
-      rendered.should have_tag("tr#show_a_#{@record.id} > td", :content => "") # ttl
-      rendered.should have_tag("tr#show_a_#{@record.id} > td", :content => "A")
-      rendered.should have_tag("tr#show_a_#{@record.id} > td", :content => "") # prio
-      rendered.should have_tag("tr#show_a_#{@record.id} > td", :content => "foo")
+      expect(rendered).to have_tag("tr#show_a_#{@record.id} > td", :content => "") # shortname
+      expect(rendered).to have_tag("tr#show_a_#{@record.id} > td", :content => "") # ttl
+      expect(rendered).to have_tag("tr#show_a_#{@record.id} > td", :content => "A")
+      expect(rendered).to have_tag("tr#show_a_#{@record.id} > td", :content => "") # prio
+      expect(rendered).to have_tag("tr#show_a_#{@record.id} > td", :content => "foo")
     end
 
     it "should not have a row for editing record details" do
-      rendered.should_not have_tag("tr#edit_ns_#{@record.id} > td[colspan='7'] > form")
+      expect(rendered).not_to have_tag("tr#edit_ns_#{@record.id} > td[colspan='7'] > form")
     end
 
     it "should not have links to edit/remove the record" do
-      rendered.should_not have_tag("a[onclick^=editRecord]")
-      rendered.should_not have_tag("a > img[src*=database_delete]")
+      expect(rendered).not_to have_tag("a[onclick^=editRecord]")
+      expect(rendered).not_to have_tag("a > img[src*=database_delete]")
     end
   end
 
@@ -78,8 +78,8 @@ describe "domains/_record" do
 
       render :partial => 'domains/record', :object => record
 
-      rendered.should_not have_tag("a[onclick^=editRecord]")
-      rendered.should_not have_tag("tr#edit_ns_#{record.id}")
+      expect(rendered).not_to have_tag("a[onclick^=editRecord]")
+      expect(rendered).not_to have_tag("tr#edit_ns_#{record.id}")
     end
 
     it "should not allow removing NS records" do
@@ -87,16 +87,16 @@ describe "domains/_record" do
 
       render :partial => 'domains/record', :object => record
 
-      rendered.should_not have_tag("a > img[src*=database_delete]")
+      expect(rendered).not_to have_tag("a > img[src*=database_delete]")
     end
 
     it "should allow edit records that aren't protected" do
       record = FactoryGirl.create(:a, :domain => @domain)
       render :partial => 'domains/record', :object => record
 
-      rendered.should have_tag("a[onclick^=editRecord]")
-      rendered.should_not have_tag("a > img[src*=database_delete]")
-      rendered.should have_tag("tr#edit_a_#{record.id}")
+      expect(rendered).to have_tag("a[onclick^=editRecord]")
+      expect(rendered).not_to have_tag("a > img[src*=database_delete]")
+      expect(rendered).to have_tag("tr#edit_a_#{record.id}")
     end
 
     it "should allow removing records if permitted" do
@@ -110,7 +110,7 @@ describe "domains/_record" do
 
       render :partial => 'domains/record', :object => record
 
-      rendered.should have_tag("a > img[src*=database_delete]")
+      expect(rendered).to have_tag("a > img[src*=database_delete]")
     end
   end
 end

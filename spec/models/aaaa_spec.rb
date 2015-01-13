@@ -5,7 +5,7 @@ describe AAAA do
   context "when new" do
 
     it "should be invalid by default" do
-      subject.should_not be_valid
+      expect(subject).not_to be_valid
     end
 
     it "should only accept IPv6 address as content"

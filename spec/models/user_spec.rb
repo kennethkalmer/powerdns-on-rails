@@ -5,17 +5,17 @@ describe User do
   it 'suspends user' do
     quentin = FactoryGirl.create(:quentin)
     quentin.suspend!
-    quentin.should be_suspended
+    expect(quentin).to be_suspended
   end
 
   it 'does not authenticate suspended user'
 
   it 'deletes user' do
     quentin = FactoryGirl.create(:quentin)
-    quentin.deleted_at.should be_nil
+    expect(quentin.deleted_at).to be_nil
     quentin.delete!
     #quentin.deleted_at.should_not be_nil
-    quentin.should be_deleted
+    expect(quentin).to be_deleted
   end
 
   it 'does not authenticate deleted users'
@@ -29,7 +29,7 @@ describe User do
 
     it 'reverts to active state' do
       @user.unsuspend!
-      @user.should be_active
+      expect(@user).to be_active
     end
 
   end
@@ -45,15 +45,15 @@ describe User, "as owner" do
   end
 
   it "should have domains" do
-    @user.domains.should_not be_empty
+    expect(@user.domains).not_to be_empty
   end
 
   it "should have templates" do
-    @user.zone_templates.should_not be_empty
+    expect(@user.zone_templates).not_to be_empty
   end
 
   it "should not have auth_tokens" do
-    @user.auth_tokens?.should be_false
+    expect(@user.auth_tokens?).to be_falsey
   end
 end
 
@@ -64,31 +64,31 @@ describe User, "as admin" do
   end
 
   it "should not own domains" do
-    @admin.domains.should be_empty
+    expect(@admin.domains).to be_empty
   end
 
   it "should not own zone templates" do
-    @admin.zone_templates.should be_empty
+    expect(@admin.zone_templates).to be_empty
   end
 
   it "should have auth tokens" do
-    @admin.auth_tokens?.should be_true
+    expect(@admin.auth_tokens?).to be_truthy
   end
 end
 
 describe User, "and roles" do
 
   it "should have a admin boolean flag" do
-    FactoryGirl.create(:admin).admin.should be_true
-    FactoryGirl.create(:quentin).admin.should be_false
+    expect(FactoryGirl.create(:admin).admin).to be_truthy
+    expect(FactoryGirl.create(:quentin).admin).to be_falsey
   end
 
   it "should have a way to easily find active owners" do
     FactoryGirl.create(:quentin)
     candidates = User.active_owners
     candidates.each do |user|
-      user.should be_active
-      user.should_not be_admin
+      expect(user).to be_active
+      expect(user).not_to be_admin
     end
   end
 end
@@ -101,14 +101,14 @@ describe User, "and audits" do
       domain =FactoryGirl.create(:domain)
       audit = domain.audits.first
 
-      audit.user.should eql( admin )
-      audit.username.should be_nil
+      expect(audit.user).to eql( admin )
+      expect(audit.username).to be_nil
 
       admin.destroy
       audit.reload
 
-      audit.user.should eql( 'admin' )
-      audit.username.should eql('admin')
+      expect(audit.user).to eql( 'admin' )
+      expect(audit.username).to eql('admin')
     end
   end
 end

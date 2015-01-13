@@ -9,9 +9,9 @@ describe DomainsController, "index" do
 
     get 'index'
 
-    response.should render_template('domains/index')
-    assigns(:domains).should_not be_empty
-    assigns(:domains).size.should be(Domain.count)
+    expect(response).to render_template('domains/index')
+    expect(assigns(:domains)).not_to be_empty
+    expect(assigns(:domains).size).to be(Domain.count)
   end
 
   it "should restrict zones for owners" do
@@ -23,9 +23,9 @@ describe DomainsController, "index" do
 
     get 'index'
 
-    response.should render_template('domains/index')
-    assigns(:domains).should_not be_empty
-    assigns(:domains).size.should be(1)
+    expect(response).to render_template('domains/index')
+    expect(assigns(:domains)).not_to be_empty
+    expect(assigns(:domains).size).to be(1)
   end
 
   it "should display all zones as XML" do
@@ -35,8 +35,8 @@ describe DomainsController, "index" do
 
     get :index, :format => 'xml'
 
-    assigns(:domains).should_not be_empty
-    response.should have_tag('domains')
+    expect(assigns(:domains)).not_to be_empty
+    expect(response).to have_tag('domains')
   end
 end
 
@@ -52,7 +52,7 @@ describe DomainsController, "when creating" do
 
     get 'new'
 
-    response.should render_template('domains/new')
+    expect(response).to render_template('domains/new')
   end
 
   it "should not save a partial form" do
@@ -63,8 +63,8 @@ describe DomainsController, "when creating" do
       post 'create', :domain => { :name => 'example.org' }, :zone_template => { :id => "" }
     }.to_not change( Domain, :count )
 
-    response.should_not be_redirect
-    response.should render_template('domains/new')
+    expect(response).not_to be_redirect
+    expect(response).to render_template('domains/new')
   end
 
   it "should build from a zone template if selected" do
@@ -75,9 +75,9 @@ describe DomainsController, "when creating" do
       post 'create', :domain => { :name => 'example.org', :zone_template_id => zone_template.id }
     }.to change( Domain, :count ).by(1)
 
-    assigns(:domain).should_not be_nil
-    response.should be_redirect
-    response.should redirect_to( domain_path(assigns(:domain)) )
+    expect(assigns(:domain)).not_to be_nil
+    expect(response).to be_redirect
+    expect(response).to redirect_to( domain_path(assigns(:domain)) )
   end
 
   it "should be redirected to the zone details after a successful save" do
@@ -88,9 +88,9 @@ describe DomainsController, "when creating" do
         :expire => 604800, :minimum => 10800, :zone_template_id => "" }
     }.to change( Domain, :count ).by(1)
 
-    response.should be_redirect
-    response.should redirect_to( domain_path( assigns(:domain) ) )
-    flash[:notice].should_not be_nil
+    expect(response).to be_redirect
+    expect(response).to redirect_to( domain_path( assigns(:domain) ) )
+    expect(flash[:notice]).not_to be_nil
   end
 
   it "should ignore the zone template if a slave is created" do
@@ -105,10 +105,10 @@ describe DomainsController, "when creating" do
       }
     }.to change( Domain, :count ).by(1)
 
-    assigns(:domain).should be_slave
-    assigns(:domain).soa_record.should be_nil
+    expect(assigns(:domain)).to be_slave
+    expect(assigns(:domain).soa_record).to be_nil
 
-    response.should be_redirect
+    expect(response).to be_redirect
   end
 
 end
@@ -127,7 +127,7 @@ describe DomainsController do
       domain.reload
     }.to change( domain, :user_id )
 
-    response.should render_template('domains/change_owner')
+    expect(response).to render_template('domains/change_owner')
   end
 end
 
@@ -143,18 +143,18 @@ describe DomainsController, "and macros" do
   it "should have a selection for the user" do
     get :apply_macro, :id => @domain.id
 
-    assigns(:domain).should_not be_nil
-    assigns(:macros).should_not be_empty
+    expect(assigns(:domain)).not_to be_nil
+    expect(assigns(:macros)).not_to be_empty
 
-    response.should render_template('domains/apply_macro')
+    expect(response).to render_template('domains/apply_macro')
   end
 
   it "should apply the selected macro" do
     post :apply_macro, :id => @domain.id, :macro_id => @macro.id
 
-    flash[:notice].should_not be_blank
-    response.should be_redirect
-    response.should redirect_to( domain_path( @domain ) )
+    expect(flash[:notice]).not_to be_blank
+    expect(response).to be_redirect
+    expect(response).to redirect_to( domain_path( @domain ) )
   end
 
 end
@@ -178,7 +178,7 @@ describe DomainsController, "should handle a REST client" do
     }.to change( Domain, :count ).by( 1 )
 
     data = ActiveSupport::JSON.decode( response.body )
-    data.keys.should include("id", "name", "type", "records")
+    expect(data.keys).to include("id", "name", "type", "records")
   end
 
   it "creating a zone with a template" do
@@ -190,7 +190,7 @@ describe DomainsController, "should handle a REST client" do
       :format => "json"
 
     data = ActiveSupport::JSON.decode( response.body )
-    data.keys.should include("id", "name", "type", "records")
+    expect(data.keys).to include("id", "name", "type", "records")
   end
 
   it "creating a zone with a named template" do
@@ -202,7 +202,7 @@ describe DomainsController, "should handle a REST client" do
       :format => "json"
 
     data = ActiveSupport::JSON.decode( response.body )
-    data.keys.should include("id", "name", "type", "records")
+    expect(data.keys).to include("id", "name", "type", "records")
   end
 
   it "creating a zone with invalid input" do
@@ -213,8 +213,8 @@ describe DomainsController, "should handle a REST client" do
     }.to_not change( Domain, :count )
 
     data = ActiveSupport::JSON.decode( response.body )
-    data.keys.should include("errors")
-    data["errors"].should_not be_empty
+    expect(data.keys).to include("errors")
+    expect(data["errors"]).not_to be_empty
   end
 
   it "removing zones" do
@@ -233,7 +233,7 @@ describe DomainsController, "should handle a REST client" do
 
     data = ActiveSupport::JSON.decode( response.body )
     expect( data.size ).to eq(1)
-    data.first.keys.should include("id", "name")
+    expect(data.first.keys).to include("id", "name")
   end
 
   it "viewing a zone" do
@@ -243,7 +243,7 @@ describe DomainsController, "should handle a REST client" do
     get :show, :id => domain.id, :format => 'json'
 
     data = ActiveSupport::JSON.decode( response.body )
-    data.keys.should include("records")
+    expect(data.keys).to include("records")
   end
 
   it "getting a list of macros to apply" do
@@ -260,10 +260,10 @@ describe DomainsController, "should handle a REST client" do
 
     post :apply_macro, :id => domain.id, :macro_id => macro.id, :format => 'json'
 
-    response.code.should == "202"
+    expect(response.code).to eq("202")
 
     data = ActiveSupport::JSON.decode( response.body )
-    data.keys.should include("id", "name", "type", "records")
+    expect(data.keys).to include("id", "name", "type", "records")
   end
 
 end
@@ -280,24 +280,24 @@ describe DomainsController, "and auth tokens" do
   xit "should display the domain in the token" do
     get :show, :id => @domain.id
 
-    response.should render_template('domains/show')
+    expect(response).to render_template('domains/show')
   end
 
   xit "should restrict the domain to that of the token" do
     get :show, :id => rand(1_000_000)
 
-    assigns(:domain).should eql(@domain)
+    expect(assigns(:domain)).to eql(@domain)
   end
 
   xit "should not allow a list of domains" do
     get :index
 
-    response.should be_redirect
+    expect(response).to be_redirect
   end
 
   xit "should not accept updates to the domain" do
     put :update, :id => @domain, :domain => { :name => 'hack' }
 
-    response.should be_redirect
+    expect(response).to be_redirect
   end
 end

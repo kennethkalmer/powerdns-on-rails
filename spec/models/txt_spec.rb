@@ -4,7 +4,7 @@ describe TXT do
   context "when new" do
 
     it "should be invalid by default" do
-      subject.should_not be_valid
+      expect(subject).not_to be_valid
     end
 
     it "should require content" do
@@ -14,7 +14,7 @@ describe TXT do
 
     it "should not tamper with content" do
       subject.content = %Q{"google.com"}
-      subject.content.should eql(%Q{"google.com"})
+      expect(subject.content).to eql(%Q{"google.com"})
     end
   end
 end

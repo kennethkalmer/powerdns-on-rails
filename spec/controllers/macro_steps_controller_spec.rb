@@ -23,7 +23,7 @@ describe MacroStepsController do
         }, :format => 'js'
     }.to change(@macro.macro_steps(true), :count)
 
-    response.should render_template('macro_steps/create')
+    expect(response).to render_template('macro_steps/create')
   end
 
   it "should position a valid step correctly" do
@@ -36,7 +36,7 @@ describe MacroStepsController do
       :position => '1'
     }, :format => 'js'
 
-    assigns(:macro_step).position.should == 1
+    expect(assigns(:macro_step).position).to eq(1)
   end
 
   it "should not create an invalid step" do
@@ -48,7 +48,7 @@ describe MacroStepsController do
         }, :format => 'js'
     }.to_not change(@macro.macro_steps(true), :count)
 
-    response.should render_template('macro_steps/create')
+    expect(response).to render_template('macro_steps/create')
   end
 
   it "should accept valid updates to steps" do
@@ -57,9 +57,9 @@ describe MacroStepsController do
         :name => 'local'
       }, :format => 'js'
 
-    response.should render_template('macro_steps/update')
+    expect(response).to render_template('macro_steps/update')
 
-    @step.reload.name.should == 'local'
+    expect(@step.reload.name).to eq('local')
   end
 
   it "should not accept valid updates" do
@@ -68,7 +68,7 @@ describe MacroStepsController do
         :name => ''
       }, :format => 'js'
 
-    response.should render_template('macro_steps/update')
+    expect(response).to render_template('macro_steps/update')
   end
 
   it "should re-position existing steps" do
@@ -77,15 +77,15 @@ describe MacroStepsController do
     put :update, :macro_id => @macro.id, :id => @step.id,
     :macro_step => { :position => '2' }
 
-    @step.reload.position.should == 2
+    expect(@step.reload.position).to eq(2)
   end
 
   it "should remove selected steps when asked" do
     delete :destroy, :macro_id => @macro, :id => @step.id, :format => 'js'
 
-    flash[:info].should_not be_blank
-    response.should be_redirect
-    response.should redirect_to(macro_path(@macro))
+    expect(flash[:info]).not_to be_blank
+    expect(response).to be_redirect
+    expect(response).to redirect_to(macro_path(@macro))
 
     expect { @step.reload }.to raise_error( ActiveRecord::RecordNotFound )
   end

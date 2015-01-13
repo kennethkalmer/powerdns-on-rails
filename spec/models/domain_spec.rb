@@ -4,7 +4,7 @@ describe Domain do
 
   context "'untyped'" do
     it "should be NATIVE by default" do
-      subject.type.should == 'NATIVE'
+      expect(subject.type).to eq('NATIVE')
     end
 
     it "should not accept rubbish types" do
@@ -33,7 +33,7 @@ describe Domain do
     end
 
     it "should be NATIVE by default" do
-      subject.type.should eql('NATIVE')
+      expect(subject.type).to eql('NATIVE')
     end
 
     it "should not require a MASTER" do
@@ -70,39 +70,39 @@ describe Domain do
     subject { FactoryGirl.create(:domain) }
 
     it "should have a name" do
-      subject.name.should eql('example.com')
+      expect(subject.name).to eql('example.com')
     end
 
     it "should have an SOA record" do
-      subject.soa_record.should be_a_kind_of( SOA )
+      expect(subject.soa_record).to be_a_kind_of( SOA )
     end
 
     it "should have NS records" do
       ns1 = FactoryGirl.create(:ns, :domain => subject)
       ns2 = FactoryGirl.create(:ns, :domain => subject)
       ns = subject.ns_records
-      ns.should be_a_kind_of( Array )
-      ns.should include( ns1 )
-      ns.should include( ns2 )
+      expect(ns).to be_a_kind_of( Array )
+      expect(ns).to include( ns1 )
+      expect(ns).to include( ns2 )
     end
 
     it "should have MX records" do
       mx_f = FactoryGirl.create(:mx, :domain => subject)
       mx = subject.mx_records
-      mx.should be_a_kind_of( Array )
-      mx.should include( mx_f )
+      expect(mx).to be_a_kind_of( Array )
+      expect(mx).to include( mx_f )
     end
 
     it "should have A records" do
       a_f = FactoryGirl.create(:a, :domain => subject)
       a = subject.a_records
-      a.should be_a_kind_of( Array )
-      a.should include( a_f )
+      expect(a).to be_a_kind_of( Array )
+      expect(a).to include( a_f )
     end
 
     it "should give access to all records excluding the SOA" do
       FactoryGirl.create(:a, :domain => subject)
-      subject.records_without_soa.size.should be( subject.records.size - 1 )
+      expect(subject.records_without_soa.size).to be( subject.records.size - 1 )
     end
 
     it "should not complain about missing SOA fields" do
@@ -122,19 +122,19 @@ describe Domain do
       quentin_domain
       aaron_domain
 
-      Domain.user( admin ).all.should include(quentin_domain)
-      Domain.user( admin ).all.should include(aaron_domain)
+      expect(Domain.user( admin ).all).to include(quentin_domain)
+      expect(Domain.user( admin ).all).to include(aaron_domain)
     end
 
     it "should restrict owners" do
       quentin_domain
       aaron_domain
 
-      Domain.user( quentin ).all.should include(quentin_domain)
-      Domain.user( quentin ).all.should_not include(aaron_domain)
+      expect(Domain.user( quentin ).all).to include(quentin_domain)
+      expect(Domain.user( quentin ).all).not_to include(aaron_domain)
 
-      Domain.user( aaron ).all.should_not include(quentin_domain)
-      Domain.user( aaron ).all.should include(aaron_domain)
+      expect(Domain.user( aaron ).all).not_to include(quentin_domain)
+      expect(Domain.user( aaron ).all).to include(aaron_domain)
     end
 
     it "should restrict authentication tokens"
@@ -150,9 +150,9 @@ describe Domain do
       subject.expire = 604800
       subject.minimum = 10800
 
-      subject.save.should be_true
-      subject.soa_record.should_not be_nil
-      subject.soa_record.primary_ns.should eql('ns1.example.org')
+      expect(subject.save).to be_truthy
+      expect(subject.soa_record).not_to be_nil
+      expect(subject.soa_record.primary_ns).to eql('ns1.example.org')
     end
   end
 
@@ -163,8 +163,8 @@ describe Domain do
       subject.name = 'example.org'
       subject.master = '127.0.0.1'
 
-      subject.save.should be_true
-      subject.soa_record.should be_nil
+      expect(subject.save).to be_truthy
+      expect(subject.soa_record).to be_nil
     end
   end
 
@@ -185,15 +185,15 @@ describe Domain do
     end
 
     it "should return results for admins" do
-      Domain.search('exa', 1, FactoryGirl.create(:admin)).should_not be_empty
+      expect(Domain.search('exa', 1, FactoryGirl.create(:admin))).not_to be_empty
     end
 
     it "should return results for users" do
-      Domain.search('exa', 1, quentin).should_not be_empty
+      expect(Domain.search('exa', 1, quentin)).not_to be_empty
     end
 
     it "should return unscoped results" do
-      Domain.search('exa', 1).should_not be_empty
+      expect(Domain.search('exa', 1)).not_to be_empty
     end
   end
 end

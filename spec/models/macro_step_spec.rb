@@ -4,7 +4,7 @@ describe MacroStep do
   context "when new" do
 
     it "should be invalid by default" do
-      subject.should_not be_valid
+      expect(subject).not_to be_valid
     end
 
     it "should require a macro" do
@@ -60,7 +60,7 @@ describe MacroStep do
     end
 
     it "should be active by default" do
-      subject.should be_active
+      expect(subject).to be_active
     end
 
     describe "should inherit validations" do
@@ -99,7 +99,7 @@ describe MacroStep do
     end
 
     it "should have a position" do
-      @macro_step.position.should_not be_blank
+      expect(@macro_step.position).not_to be_blank
     end
   end
 
@@ -130,7 +130,7 @@ describe MacroStep do
       }
 
       record = subject.build
-      record.should be_an_instance_of( A )
+      expect(record).to be_an_instance_of( A )
     end
 
   end

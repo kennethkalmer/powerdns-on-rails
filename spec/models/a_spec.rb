@@ -5,7 +5,7 @@ describe A do
   context "new record" do
 
     it "should be invalid by default" do
-      subject.should_not be_valid
+      expect(subject).not_to be_valid
     end
 
     it "should only accept valid IPv4 addresses as content" do

@@ -8,8 +8,8 @@ describe "macros/index.html.haml" do
 
     render
 
-    rendered.should have_tag('h1', :content => 'Macros')
-    render.should have_tag("table a[href^='/macro']")
+    expect(rendered).to have_tag('h1', :content => 'Macros')
+    expect(render).to have_tag("table a[href^='/macro']")
   end
 
   it "should indicate no macros are present" do
@@ -17,7 +17,7 @@ describe "macros/index.html.haml" do
 
     render
 
-    rendered.should have_tag('em', :content => "don't have any macros")
+    expect(rendered).to have_tag('em', :content => "don't have any macros")
   end
 
 end

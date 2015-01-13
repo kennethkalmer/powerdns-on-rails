@@ -3,7 +3,7 @@ require 'spec_helper'
 describe "macros/edit.html.haml" do
   before(:each) do
     admin = FactoryGirl.build_stubbed( :admin )
-    view.stub( :current_user ).and_return( admin )
+    allow(view).to receive( :current_user ).and_return( admin )
   end
 
   context "for new macros" do
@@ -13,7 +13,7 @@ describe "macros/edit.html.haml" do
     end
 
     it "should behave accordingly" do
-      rendered.should have_tag('h1', :content => 'New Macro')
+      expect(rendered).to have_tag('h1', :content => 'New Macro')
     end
 
   end
@@ -26,7 +26,7 @@ describe "macros/edit.html.haml" do
     end
 
     it "should behave accordingly" do
-      rendered.should have_tag('h1', :content => 'Update Macro')
+      expect(rendered).to have_tag('h1', :content => 'Update Macro')
     end
   end
 
@@ -39,7 +39,7 @@ describe "macros/edit.html.haml" do
     end
 
     it "should display the errors" do
-      rendered.should have_tag('div.errorExplanation')
+      expect(rendered).to have_tag('div.errorExplanation')
     end
   end
 

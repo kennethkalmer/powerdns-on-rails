@@ -3,7 +3,7 @@ require 'spec_helper'
 describe AuthToken, "when new" do
 
   it "should be invalid by default" do
-    subject.should_not be_valid
+    expect(subject).not_to be_valid
   end
 
   it "should require a domain" do
@@ -17,7 +17,7 @@ describe AuthToken, "when new" do
   end
 
   it "should require an auth token" do
-    subject.token.should_not be_nil
+    expect(subject.token).not_to be_nil
 
     subject.token = nil
     subject.valid?
@@ -25,7 +25,7 @@ describe AuthToken, "when new" do
   end
 
   it "should require the permissions hash" do
-    subject.permissions.should_not be_nil
+    expect(subject.permissions).not_to be_nil
 
     subject.permissions = nil
     subject.valid?
@@ -54,36 +54,36 @@ describe AuthToken, "internals" do
   it "should extract the name and RR class from Record objects" do
     record = FactoryGirl.create(:a, :domain => @domain)
     name, type = @auth_token.send(:get_name_and_type_from_param, record )
-    name.should eql('example.com')
-    type.should eql('A')
+    expect(name).to eql('example.com')
+    expect(type).to eql('A')
   end
 
   it "should correctly set the name and RR class from string input" do
     name, type = @auth_token.send(:get_name_and_type_from_param, 'example.com', 'A' )
-    name.should eql('example.com')
-    type.should eql('A')
+    expect(name).to eql('example.com')
+    expect(type).to eql('A')
   end
 
   it "should correctly set the name and wildcard RR from string input" do
     name, type = @auth_token.send(:get_name_and_type_from_param, 'example.com' )
-    name.should eql('example.com')
-    type.should eql('*')
+    expect(name).to eql('example.com')
+    expect(type).to eql('*')
 
     name, type = @auth_token.send(:get_name_and_type_from_param, 'example.com', nil )
-    name.should eql('example.com')
-    type.should eql('*')
+    expect(name).to eql('example.com')
+    expect(type).to eql('*')
   end
 
   it "should append the domain name to string records missing it" do
     name, type = @auth_token.send(:get_name_and_type_from_param, 'mail', nil )
-    name.should eql('mail.example.com')
-    type.should eql('*')
+    expect(name).to eql('mail.example.com')
+    expect(type).to eql('*')
   end
 
   it 'should take the domain name exactly if given a blank name string' do
     name, type = @auth_token.send(:get_name_and_type_from_param, '')
-    name.should eql('example.com')
-    type.should eql('*')
+    expect(name).to eql('example.com')
+    expect(type).to eql('*')
   end
 
 end
@@ -99,62 +99,62 @@ describe AuthToken, "and permissions" do
   end
 
   it "should have a default policy of 'deny'" do
-    @auth_token.policy.should eql(:deny)
+    expect(@auth_token.policy).to eql(:deny)
   end
 
   it "should accept a default policy" do
     @auth_token.policy = :allow
-    @auth_token.policy.should eql(:allow)
+    expect(@auth_token.policy).to eql(:allow)
   end
 
   it "should only accept valid policies" do
-    lambda {
+    expect {
       @auth_token.policy = :allow
       @auth_token.policy = :deny
-    }.should_not raise_error
+    }.not_to raise_error
 
-    lambda {
+    expect {
       @auth_token.policy = :open_sesame
-    }.should raise_error
+    }.to raise_error
   end
 
   it "should deny new RR's by default" do
-    @auth_token.allow_new_records?.should be false
+    expect(@auth_token.allow_new_records?).to be false
   end
 
   it "should allow for adding new RR" do
     @auth_token.allow_new_records = true
-    @auth_token.allow_new_records?.should be true
+    expect(@auth_token.allow_new_records?).to be true
   end
 
   it "should deny removing RR's by default" do
-    @auth_token.remove_records?.should be false
+    expect(@auth_token.remove_records?).to be false
   end
 
   it "should allow for removing RR's" do
     @auth_token.remove_records = true
-    @auth_token.remove_records?.should be true
+    expect(@auth_token.remove_records?).to be true
 
     a = FactoryGirl.create(:a, :domain => @domain)
-    @auth_token.can_remove?( a ).should be false
-    @auth_token.can_remove?( 'example.com', 'A' ).should be false
+    expect(@auth_token.can_remove?( a )).to be false
+    expect(@auth_token.can_remove?( 'example.com', 'A' )).to be false
 
     @auth_token.can_change( a )
 
-    @auth_token.can_remove?( a ).should be true
-    @auth_token.can_remove?( 'example.com', 'A' ).should be true
+    expect(@auth_token.can_remove?( a )).to be true
+    expect(@auth_token.can_remove?( 'example.com', 'A' )).to be true
   end
 
   it "should allow for setting permissions to edit specific RR's (AR)" do
     a = FactoryGirl.create(:a, :domain => @domain)
     @auth_token.can_change( a )
 
-    @auth_token.can_change?( 'example.com' ).should be true
-    @auth_token.can_change?( 'example.com', 'MX' ).should be false
+    expect(@auth_token.can_change?( 'example.com' )).to be true
+    expect(@auth_token.can_change?( 'example.com', 'MX' )).to be false
 
     mx = FactoryGirl.create(:mx, :domain => @domain)
-    @auth_token.can_change?( a ).should be true
-    @auth_token.can_change?( mx ).should be false
+    expect(@auth_token.can_change?( a )).to be true
+    expect(@auth_token.can_change?( mx )).to be false
   end
 
   it "should allow for setting permissions to edit specific RR's (name)" do
@@ -163,10 +163,10 @@ describe AuthToken, "and permissions" do
 
     @auth_token.can_change( 'mail.example.com' )
 
-    @auth_token.can_change?( 'mail.example.com' ).should be true
-    @auth_token.can_change?( mail ).should be true
+    expect(@auth_token.can_change?( 'mail.example.com' )).to be true
+    expect(@auth_token.can_change?( mail )).to be true
 
-    @auth_token.can_change?( a ).should be false
+    expect(@auth_token.can_change?( a )).to be false
   end
 
   it "should allow for protecting certain RR's" do
@@ -178,13 +178,13 @@ describe AuthToken, "and permissions" do
     @auth_token.protect( mail )
     @auth_token.protect( mx )
 
-    @auth_token.can_change?( a ).should be true
-    @auth_token.can_change?( 'example.com', 'A' ).should be true
+    expect(@auth_token.can_change?( a )).to be true
+    expect(@auth_token.can_change?( 'example.com', 'A' )).to be true
 
-    @auth_token.can_change?( mx ).should be false
-    @auth_token.can_change?( 'example.com', 'MX' ).should be false
+    expect(@auth_token.can_change?( mx )).to be false
+    expect(@auth_token.can_change?( 'example.com', 'MX' )).to be false
 
-    @auth_token.can_change?( mail ).should be false
+    expect(@auth_token.can_change?( mail )).to be false
   end
 
   it "should allow for protecting RR's by type" do
@@ -194,8 +194,8 @@ describe AuthToken, "and permissions" do
     @auth_token.policy = :allow
     @auth_token.protect_type 'A'
 
-    @auth_token.can_change?( mail ).should be false
-    @auth_token.can_change?( mx ).should be true
+    expect(@auth_token.can_change?( mail )).to be false
+    expect(@auth_token.can_change?( mx )).to be true
   end
 
   it "should prevent removing RR's by type" do
@@ -204,7 +204,7 @@ describe AuthToken, "and permissions" do
     @auth_token.policy = :allow
     @auth_token.protect_type 'MX'
 
-    @auth_token.can_remove?( mx ).should be false
+    expect(@auth_token.can_remove?( mx )).to be false
   end
 
   it "should prevent adding RR's by type" do
@@ -212,7 +212,7 @@ describe AuthToken, "and permissions" do
     @auth_token.allow_new_records = true
     @auth_token.protect_type 'MX'
 
-    @auth_token.can_add?( MX.new( :name => '', :domain => @domain ) ).should be false
+    expect(@auth_token.can_add?( MX.new( :name => '', :domain => @domain ) )).to be false
   end
 
   it "should always protect NS records" do
@@ -222,26 +222,26 @@ describe AuthToken, "and permissions" do
     @auth_token.policy = :allow
     @auth_token.remove_records = true
     @auth_token.can_change( ns1 )
-    @auth_token.can_change?( ns1 ).should be false
-    @auth_token.can_remove?( ns2 ).should be false
+    expect(@auth_token.can_change?( ns1 )).to be false
+    expect(@auth_token.can_remove?( ns2 )).to be false
   end
 
   it "should always protect SOA records" do
     @auth_token.policy = :allow
     @auth_token.remove_records = true
     @auth_token.can_change( @domain.soa_record )
-    @auth_token.can_change?( @domain.soa_record ).should be false
-    @auth_token.can_remove?( @domain.soa_record ).should be false
+    expect(@auth_token.can_change?( @domain.soa_record )).to be false
+    expect(@auth_token.can_remove?( @domain.soa_record )).to be false
   end
 
   it "should provide a list of new RR types allowed" do
-    @auth_token.new_types.should be_empty
+    expect(@auth_token.new_types).to be_empty
 
     @auth_token.allow_new_records = true
-    @auth_token.new_types.include?('MX').should be true
+    expect(@auth_token.new_types.include?('MX')).to be true
 
     @auth_token.protect_type 'MX'
-    @auth_token.new_types.include?('MX').should be false
+    expect(@auth_token.new_types.include?('MX')).to be false
   end
 end
 
@@ -253,27 +253,27 @@ describe AuthToken, "and authentication" do
   end
 
   it "should authenticate current tokens" do
-    AuthToken.authenticate( '5zuld3g9dv76yosy' ).should eql( @auth_token )
+    expect(AuthToken.authenticate( '5zuld3g9dv76yosy' )).to eql( @auth_token )
   end
 
   it "should not authenticate expired tokens" do
-    AuthToken.authenticate( 'invalid' ).should be_nil
+    expect(AuthToken.authenticate( 'invalid' )).to be_nil
   end
 
   it "should have an easy way to test if it expired" do
-    @auth_token.should_not be_expired
+    expect(@auth_token).not_to be_expired
     @auth_token.expire
-    @auth_token.expires_at.should <( Time.now )
-    @auth_token.should be_expired
+    expect(@auth_token.expires_at).to be <( Time.now )
+    expect(@auth_token).to be_expired
   end
 
   it "should correctly report the 'token' role" do
-    @auth_token.has_role?('token').should be true
-    @auth_token.has_role?('admin').should be false
+    expect(@auth_token.has_role?('token')).to be true
+    expect(@auth_token.has_role?('admin')).to be false
   end
 
   it "should correctly report permissions (deserialized)" do
     a = FactoryGirl.create(:a, :domain => @domain)
-    @auth_token.can_change?( a ).should be true
+    expect(@auth_token.can_change?( a )).to be true
   end
 end

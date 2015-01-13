@@ -3,17 +3,17 @@ require 'spec_helper'
 describe AuditsHelper, "display_hash" do
 
   it "should handle a blank changes hash" do
-    helper.display_hash( nil ).should eql('')
+    expect(helper.display_hash( nil )).to eql('')
   end
 
   it "should have a way to display the changes hash with blank stipped" do
     result = helper.display_hash( 'key' => 'value', :blank => nil )
-    result.should eql("<em>key</em>: value")
+    expect(result).to eql("<em>key</em>: value")
   end
 
   it "should seperate items in the change hash with breaks" do
     result = helper.display_hash( 'one' => 'one', 'two' => 'two' )
-    result.should match(/<br \/>/)
+    expect(result).to match(/<br \/>/)
   end
 
 end
@@ -27,7 +27,7 @@ describe AuditsHelper, "link_to_domain_audit" do
 
       results = helper.link_to_domain_audit( audit )
 
-      results.should match(/1 create by admin/)
+      expect(results).to match(/1 create by admin/)
     end
   end
 
@@ -37,7 +37,7 @@ describe AuditsHelper, "link_to_domain_audit" do
 
       results = helper.link_to_domain_audit( audit )
 
-      results.should match(/1 create by admin/)
+      expect(results).to match(/1 create by admin/)
     end
   end
 
@@ -49,7 +49,7 @@ describe AuditsHelper, "link_to_domain_audit" do
 
       results = helper.link_to_domain_audit( audit )
 
-      results.should match(/2 destroy by admin/)
+      expect(results).to match(/2 destroy by admin/)
     end
   end
 
@@ -61,7 +61,7 @@ describe AuditsHelper, "link_to_domain_audit" do
 
       results = helper.link_to_domain_audit( audit )
 
-      results.should match(/2 destroy by admin/)
+      expect(results).to match(/2 destroy by admin/)
     end
   end
 
@@ -76,7 +76,7 @@ describe AuditsHelper, "link_to_record_audit" do
       audit = record.audits.first
 
       result = helper.link_to_record_audit( audit )
-      result.should match(/A \(example\.com\) 1 create by admin/)
+      expect(result).to match(/A \(example\.com\) 1 create by admin/)
     end
   end
 
@@ -87,7 +87,7 @@ describe AuditsHelper, "link_to_record_audit" do
       audit = record.audits.first
 
       result = helper.link_to_record_audit( audit )
-      result.should match(/A \(example\.com\) 1 create by admin/)
+      expect(result).to match(/A \(example\.com\) 1 create by admin/)
     end
   end
 
@@ -99,7 +99,7 @@ describe AuditsHelper, "link_to_record_audit" do
       audit = record.audits.last
 
       result = helper.link_to_record_audit( audit )
-      result.should match(/A \(example\.com\) 2 destroy by admin/)
+      expect(result).to match(/A \(example\.com\) 2 destroy by admin/)
     end
   end
 
@@ -111,7 +111,7 @@ describe AuditsHelper, "link_to_record_audit" do
       audit = record.audits.last
 
       result = helper.link_to_record_audit( audit )
-      result.should match(/A \(example\.com\) 2 destroy by admin/)
+      expect(result).to match(/A \(example\.com\) 2 destroy by admin/)
     end
   end
 
@@ -127,7 +127,7 @@ describe AuditsHelper, "link_to_record_audit" do
     )
 
     result = helper.link_to_record_audit( audit )
-    result.should match(/A \(example\.com\) 1 create by admin/)
+    expect(result).to match(/A \(example\.com\) 1 create by admin/)
   end
 
   it "should handle removed records without a 'type' key in the changes hash" do
@@ -141,7 +141,7 @@ describe AuditsHelper, "link_to_record_audit" do
     )
 
     result = helper.link_to_record_audit( audit )
-    result.should match(/\[UNKNOWN\] \(local\.example\.com\) 1 destroy by admin/)
+    expect(result).to match(/\[UNKNOWN\] \(local\.example\.com\) 1 destroy by admin/)
   end
 
 end
@@ -158,7 +158,7 @@ describe AuditsHelper, "audit_user" do
       :audited_changes => { 'name' => 'local.example.com' }
     )
 
-    helper.audit_user( audit ).should == 'admin'
+    expect(helper.audit_user( audit )).to eq('admin')
   end
 
   it "should display usernames if present" do
@@ -171,7 +171,7 @@ describe AuditsHelper, "audit_user" do
       :audited_changes => { 'name' => 'local.example.com' }
     )
 
-    helper.audit_user( audit ).should == 'foo'
+    expect(helper.audit_user( audit )).to eq('foo')
   end
 
   it "should not bork on missing user information" do
@@ -183,6 +183,6 @@ describe AuditsHelper, "audit_user" do
       :audited_changes => { 'name' => 'local.example.com' }
     )
 
-    helper.audit_user( audit ).should == 'UNKNOWN'
+    expect(helper.audit_user( audit )).to eq('UNKNOWN')
   end
 end

@@ -13,23 +13,23 @@ describe "templates/show.html.haml" do
     end
 
     it "should have the template name" do
-      rendered.should have_tag('h1', :content => @zone_template.name)
+      expect(rendered).to have_tag('h1', :content => @zone_template.name)
     end
 
     it "should have a table with template overview" do
-      rendered.should have_selector('table.grid td', :content => 'Name')
-      rendered.should have_selector('table.grid td', :content => 'TTL')
+      expect(rendered).to have_selector('table.grid td', :content => 'Name')
+      expect(rendered).to have_selector('table.grid td', :content => 'TTL')
     end
 
     it "should have the record templates" do
-      rendered.should have_selector('h1', :content => 'Record templates')
-      rendered.should have_selector('table#record-table')
+      expect(rendered).to have_selector('h1', :content => 'Record templates')
+      expect(rendered).to have_selector('table#record-table')
     end
 
     it "should not have an SOA warning" do
       violated "ZoneTemplate does not have SOA" unless @zone_template.has_soa?
 
-      rendered.should_not have_selector('div#soa-warning')
+      expect(rendered).not_to have_selector('div#soa-warning')
     end
   end
 
@@ -44,7 +44,7 @@ describe "templates/show.html.haml" do
     end
 
     it "should have an SOA warning" do
-      rendered.should have_tag('div#soa-warning')
+      expect(rendered).to have_tag('div#soa-warning')
     end
 
   end

@@ -10,7 +10,7 @@ describe SSHFP do
   context "when new" do
 
     it "should be invalid by default" do
-      subject.should_not be_valid
+      expect(subject).not_to be_valid
     end
 
     it "must accept a RSA key with a 40 digit hex SHA-1 fingerprint" do

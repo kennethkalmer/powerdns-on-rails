@@ -12,7 +12,7 @@ describe "domains/apply_macro.html.haml" do
   end
 
   it "should have a selection of macros" do
-    rendered.should have_tag('select[name=macro_id]')
+    expect(rendered).to have_tag('select[name=macro_id]')
   end
 
 end

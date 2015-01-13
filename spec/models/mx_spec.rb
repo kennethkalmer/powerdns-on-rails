@@ -4,7 +4,7 @@ describe MX do
   context "when new" do
 
     it "should be invalid by default" do
-      subject.should_not be_valid
+      expect(subject).not_to be_valid
     end
 
     it "should require a priority" do
@@ -31,7 +31,7 @@ describe MX do
     end
 
     it "should require content" do
-      subject.should have(2).error_on(:content)
+      expect(subject).to have(2).error_on(:content)
     end
 
     it "should not accept IP addresses as content" do
@@ -47,7 +47,7 @@ describe MX do
     end
 
     it "should support priorities" do
-      subject.supports_prio?.should be_true
+      expect(subject.supports_prio?).to be_truthy
     end
 
   end
