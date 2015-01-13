@@ -32,7 +32,7 @@ gem 'dynamic_form'
 
 group :development do
   gem 'guard-rspec', :require => false
-  #gem 'RedCloth', '>= 4.1.1'
+  gem 'guard-cucumber', :require => false
 end
 
 group :development, :test do
