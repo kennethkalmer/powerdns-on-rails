@@ -31,3 +31,8 @@ matrix:
     - env: DB=sqlite
 
 sudo: false
+
+notifications:
+  webhooks:
+    urls:
+      -  https://webhooks.gitter.im/e/fd712cc811935fc71415
