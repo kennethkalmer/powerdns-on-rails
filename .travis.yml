@@ -22,7 +22,7 @@ before_script:
   - bundle exec rake db:migrate
   - bundle exec rake db:seed
 
-script: "bundle exec rake spec"
+script: "bundle exec rake ci"
 
 matrix:
   allow_failures:
