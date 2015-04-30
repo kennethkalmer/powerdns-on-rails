@@ -1,6 +1,7 @@
 source 'http://rubygems.org'
 
 gem 'rails', '~> 3.2.21'
+gem 'mysql2'
 
 group :assets do
   gem 'sass-rails'
@@ -9,7 +10,6 @@ group :assets do
 end
 
 platforms :ruby do
-  gem 'mysql2', '~> 0.3.11'
   gem 'pg', '>= 0.9.0'
   gem 'sqlite3'
   gem 'therubyracer'

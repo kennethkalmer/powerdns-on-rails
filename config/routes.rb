@@ -1,7 +1,7 @@
 PowerdnsOnRails::Application.routes.draw do
   devise_for :users, :controllers => { :sessions => "sessions" }, :path => "sessions"
 
-  root :to => 'dashboard#index'
+  root :to => 'domains#index'
 
   resources :domains do
     member do
