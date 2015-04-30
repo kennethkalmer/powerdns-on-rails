@@ -43,6 +43,11 @@ body {
     display: inline;
     padding-right: 5px;
 }
+
+#Nav ul li:last-child{
+    float:right;
+}
+
 #Nav a:link, #Nav a:active, #Nav a:visited {
     color: #FFF;
     font-weight: bold;
