@@ -9,12 +9,20 @@ body {
 #Container {
     width: 800px;
     margin: 0 auto;
+    padding-top:20px;
 }
 #Header {
-    height: 80px;
+    height: 30px;
     background-image: url(../images/top-background.png);
     background-repeat: repeat-x;
-    padding-left: 20px;
+    padding-left: 40px;
+    padding-top: 6px;
+
+    -moz-border-radius-topright: 10px;
+    border-top-right-radius: 10px;
+    -moz-border-radius-topleft: 10px;
+    border-top-left-radius: 10px;
+
 }
 #Header h1 {
     padding: 0;
@@ -24,7 +32,6 @@ body {
     color: #FFF;
 }
 #Nav {
-    border-bottom: 1px solid #333;
     padding: 5px 20px
 }
 #Nav ul {
@@ -37,7 +44,7 @@ body {
     padding-right: 5px;
 }
 #Nav a:link, #Nav a:active, #Nav a:visited {
-    color: #003;
+    color: #FFF;
     font-weight: bold;
     text-decoration: none;
 }
