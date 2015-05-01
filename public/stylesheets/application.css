@@ -51,13 +51,19 @@ body {
     padding-right:20px;
 }
 
-#Nav a:link, #Nav a:active, #Nav a:visited {
+#Nav a:link, #Nav a:visited, td.small {
     color: #FFF;
     font-weight: bold;
     text-decoration: none;
 }
-#Nav a:hover {
+#Nav a:hover, #Nav a:active{
     color: #1388d6;
+}
+
+#Nav.small {
+    height:15px;
+    margin-top:20px;
+    margin-bottom:-25px;
 }
 
 
@@ -73,6 +79,10 @@ body {
     text-align:left;
     overflow:auto;
     margin-top:-20px;
+
+    line-height: 30px;
+    padding-left: 60px;
+
 }
 
 #header.leftwrapper {
@@ -93,6 +103,7 @@ body {
 #header.lower {
     margin-top:0;
 }
+
 
 #domain-name{
     display:inline-block;
@@ -238,6 +249,7 @@ ul.start li {
     margin: 0;
     vertical-align: middle;
 }
+
 
 #ajaxBusy {
   display: none;
