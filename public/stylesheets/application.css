@@ -11,28 +11,25 @@ body {
     margin: 0 auto;
     padding-top:20px;
 }
-#Header {
+
+#Logo {
+    background-image: url(../images/logo.png) no-repeat top left;
+
+}
+
+#Nav {
+
     height: 30px;
     background-image: url(../images/top-background.png);
     background-repeat: repeat-x;
     padding-left: 40px;
-    padding-top: 6px;
+    padding-top: 15px;
 
     -moz-border-radius-topright: 10px;
     border-top-right-radius: 10px;
     -moz-border-radius-topleft: 10px;
     border-top-left-radius: 10px;
-
-}
-#Header h1 {
-    padding: 0;
-    margin: 0;
-    line-height: 80px;
-    vertical-align: middle;
-    color: #FFF;
-}
-#Nav {
-    padding: 5px 20px
+    
 }
 #Nav ul {
     list-style-type: none;
@@ -42,10 +39,14 @@ body {
 #Nav ul li {
     display: inline;
     padding-right: 5px;
+
 }
+
+
 
 #Nav ul li:last-child{
     float:right;
+    padding-right:20px;
 }
 
 #Nav a:link, #Nav a:active, #Nav a:visited {
