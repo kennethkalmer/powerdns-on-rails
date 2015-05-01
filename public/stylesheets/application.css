@@ -12,17 +12,13 @@ body {
     padding-top:20px;
 }
 
-#Logo {
-    background-image: url(../images/logo.png) no-repeat top left;
-
-}
 
 #Nav {
 
     height: 30px;
     background-image: url(../images/top-background.png);
     background-repeat: repeat-x;
-    padding-left: 40px;
+    padding-left: 25px;
     padding-top: 15px;
 
     -moz-border-radius-topright: 10px;
@@ -31,6 +27,7 @@ body {
     border-top-left-radius: 10px;
     
 }
+
 #Nav ul {
     list-style-type: none;
     padding: 0;
@@ -43,6 +40,13 @@ body {
 }
 
 
+#Nav ul li:first-child{
+    background: url(../images/logo.png) no-repeat;
+    padding-right: 50px;
+    padding-top:5px;
+    padding-bottom:10px;
+
+}
 
 #Nav ul li:last-child{
     float:right;

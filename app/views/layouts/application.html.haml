@@ -8,18 +8,17 @@
   %body
     #Container
       #Nav
-        #Logo
-          - if current_user
-            %ul
-              %li= link_to((t :layout_menu_home), root_url)
-              %li= link_to((t :layout_menu_domains), domains_path)
-              %li= link_to((t :layout_menu_templates), zone_templates_path)
-              %li= link_to((t :layout_menu_macros), macros_path)
-              - if current_user.admin?
-                %li= link_to((t :layout_menu_logs), audits_path)
-                %li= link_to((t :layout_menu_users), users_path)
-                %li= link_to((t :layout_menu_reports), reports_path)
-              %li= link_to((t :layout_menu_logout), destroy_user_session_path)
+        - if current_user
+          %ul
+            %li 
+            %li= link_to((t :layout_menu_domains), domains_path)
+            %li= link_to((t :layout_menu_templates), zone_templates_path)
+            %li= link_to((t :layout_menu_macros), macros_path)
+            - if current_user.admin?
+              %li= link_to((t :layout_menu_logs), audits_path)
+              %li= link_to((t :layout_menu_users), users_path)
+              %li= link_to((t :layout_menu_reports), reports_path)
+            %li= link_to((t :layout_menu_logout), destroy_user_session_path)
       #Body
         = show_flash
 
