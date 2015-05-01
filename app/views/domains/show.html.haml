@@ -34,7 +34,7 @@
     = t :confirm_delete_this_domain
     = link_to_function info_icon('cancel.png', 'delete-reset'), "deleteDomain();"
 
-%h1.underline
+#header.lefwrapper
   = @domain.name
 
 #domain-name.padded
@@ -93,7 +93,7 @@
               = submit_tag(t(:generic_update))
 
 #domain-soa.padded
-  %h2.underline
+  #header.rightwrapper
     = t :title_soa_record
     &nbsp;
     - if current_user
@@ -105,7 +105,8 @@
     = render :partial => '/domains/soa_record', :object => @domain.soa_record
 
 #domain-records.padded
-  %h2.underline= t :title_domian_rrs
+  #header.lower
+    = t :title_domian_rrs
   %table.gridwide#record-table
     %tr
       %td.small= t :label_domain_record_host
