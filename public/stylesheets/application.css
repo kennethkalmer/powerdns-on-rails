@@ -81,29 +81,23 @@ body {
     margin-top:-20px;
 
     line-height: 30px;
-    padding-left: 60px;
-
 }
 
-#header.leftwrapper {
-    margin-top: -20px;
+.header_icons{
+    margin-bottom:-3px;
+    height:15px;
+    width:15px;
+    padding-left: 30px;
+    padding-right: 10px;
 }
 
-#header.rightwrapper {
-    width:400px;
-    margin-top:-50px;
-    margin-bottom: 12px;
+#header left {
+    padding-right: 200px;
 }
 
-#header.upper.left {
-    width:400px;
-
+#header right {
+    padding-right: 200px;
 }
-
-#header.lower {
-    margin-top:0;
-}
-
 
 #domain-name{
     display:inline-block;
@@ -116,7 +110,9 @@ body {
     margin-left: 400px;  
     position: relative;
     width:380px;
+    padding-bottom:30px;
 }
+
 
 #soa {
     margin-top:-5px;
@@ -175,6 +171,7 @@ table.gridwide {
 }
 a img {
     border: none;
+    margin-bottom:-6px;
 }
 
 .center {

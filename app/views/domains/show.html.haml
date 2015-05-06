@@ -34,8 +34,17 @@
     = t :confirm_delete_this_domain
     = link_to_function info_icon('cancel.png', 'delete-reset'), "deleteDomain();"
 
-#header.lefwrapper
-  = @domain.name
+#header
+  %planet
+    =image_tag "../images/planet.png",  :class => "header_icons"
+  %left= @domain.name
+  - if current_user
+    = link_to info_icon('edit.png', 'zone-edit'), edit_domain_path(@domain)
+  %tools
+    =image_tag "../images/tools.png",  :class => "header_icons"
+  %right= t :title_soa_record
+  - if current_user
+    = link_to_function info_icon('edit.png', 'soa-record-edit'), "showSOAEdit()"
 
 #domain-name.padded
   %table.gridwide
@@ -93,11 +102,6 @@
               = submit_tag(t(:generic_update))
 
 #domain-soa.padded
-  #header.rightwrapper
-    = t :title_soa_record
-    &nbsp;
-    - if current_user
-      = link_to_function info_icon('database_edit.png', 'soa-record-edit'), "showSOAEdit()"
   - if @domain.soa_record.nil?
     %p
       %em= t :label_soa_record_yet_propagated_from_master
@@ -106,7 +110,9 @@
 
 #domain-records.padded
   #header.lower
-    = t :title_domian_rrs
+    %planet
+      =image_tag "../images/planet.png",  :class => "header_icons"
+    %b= t :title_domian_rrs
   %table.gridwide#record-table
     #Nav.small
     %tr
