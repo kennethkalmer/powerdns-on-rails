@@ -28,28 +28,54 @@ body {
 }
 
 #Nav ul {
-    list-style-type: none;
     padding: 0;
     margin: 0;
 }
-#Nav ul li {
+
+#Nav li {
+    list-style-type: none;
     display: inline;
-    padding-right: 10px;
+    background-color: #3c3c3c;
+    margin-left:-5px;
+    padding-top:4px;
+    padding-bottom:4px;
+    padding-right:10px;
+    padding-left:10px;
+    border:solid #393939 1px;
 }
 
+#Nav li:hover {
+    background-color: #1c9cde;
+}
 
-#Nav ul li:first-child{
+#Nav li:nth-child(7){
+    border-top-right-radius: 8px;
+    border-bottom-right-radius: 8px;
+}
+
+#Nav li:nth-child(2){
+    border-top-left-radius: 8px;
+    border-bottom-left-radius: 8px;
+}
+
+#Nav li:first-child{
     background: url(../images/logo.png) no-repeat;
     padding-right: 50px;
     padding-top:5px;
     padding-bottom:10px;
-
+    border:none;
 }
 
-#Nav ul li:last-child{
+#Nav li:last-child{
     float:right;
-    padding-right:20px;
+    margin-right:20px;
+    margin-top:-5px;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    border-bottom-right-radius: 8px;
+    border-bottom-left-radius: 8px;
 }
+
 
 #Nav a:link, #Nav a:visited, td.small {
     color: #FFF;
@@ -57,7 +83,8 @@ body {
     text-decoration: none;
 }
 #Nav a:hover, #Nav a:active{
-    color: #1388d6;
+    background-color: #1c9cde;
+
 }
 
 #Nav.small {
