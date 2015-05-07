@@ -128,14 +128,13 @@
       %td.small= t :label_domain_record_type
       %td.small= t :label_domain_record_priority
       %td.small= t :label_domain_record_data
-      %td &nbsp;
+      %td.small= "EDIT"
     = render :partial => 'record', :collection => @domain.records_without_soa
-
-/- unless @domain.slave?
-/
-  - if current_user || current_token.allow_new_records?
-    = link_to_function info_icon('database_add.png', 'record-template-new'), "displayRecordForm()"
-    = link_to_function t(:label_domain_record_new), "displayRecordForm()"
+#edit-records{ :style => "display: none;" }
+  - unless @domain.slave?
+    - if current_user || current_token.allow_new_records?
+      = link_to_function info_icon('database_add.png', 'record-template-new'), "displayRecordForm()"
+      = link_to_function t(:label_domain_record_new), "displayRecordForm()"
 
     #record-form-div{ :style => "display: none;" }
       = form_for( :record, :url => domain_records_path( @domain ), :remote => true, :html => { :id => 'record-form' } ) do |f|
@@ -156,6 +155,7 @@
           %tr.all
             %td= t :label_domain_record_data
             %td= f.text_field :content
+
           %tr.rt-soa{ :style => 'display :none' }
             %td= t :label_primary_name_server
             %td= f.text_field :primary_ns
@@ -176,9 +176,11 @@
             %td= f.text_field :minimum, :size => 6
           %tr.all
             %td &nbsp;
+            
             %td
               = link_to_function(t(:generic_cancel), "hideRecordForm()")
               = submit_tag(t(:generic_create))
+
 
 :javascript
   function editRecord(id, type) {
@@ -237,4 +239,9 @@
     $('#owner-info').toggle();
     $('#owner-edit').toggle();
     $('#domainedit').toggle();
+  }
+
+  function showRecordsEdit(){
+    $('#edit-records').toggle();
+    $('#record-table td:nth-of-type(6)').toggle();
   }

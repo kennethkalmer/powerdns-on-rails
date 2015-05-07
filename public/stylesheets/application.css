@@ -82,16 +82,17 @@ body {
     font-weight: bold;
     text-decoration: none;
 }
-#Nav a:hover, #Nav a:active{
-    background-color: #1c9cde;
-
-}
 
 #Nav.small {
     height:15px;
     margin-top:20px;
     margin-bottom:-25px;
 }
+
+#Nav li.active{
+    background-color: #1c9cde;
+}
+
 
 
 #header {
@@ -152,12 +153,9 @@ body {
     padding:5px;
 }
 
-#editdomain {
-    display: none;
-}
-
-#soa_primary_ns, #soa_contact {
-    width:150px;
+#edit-records {
+    padding-top:30px;
+    padding-left:300px;
 }
 
 #Body {
@@ -203,23 +201,27 @@ table.gridwide {
    
 }
 
-
+#editdomain {
+    display: none;
+}
 
 
 td:first-child{
-    border-left: 1px solid #f0f0f0;
     padding-left: 10px;
 }
 
-
-td:nth-child(2) {
-    border-right: 1px solid #f0f0f0;
-    text-align:right;
-
+tr{
+    border: 1px solid #f0f0f0;
 }
 
+
+table.gridwide#domainnametable td:nth-child(2), table.grid td:nth-child(2) {
+    text-align:right;
+}
+
+
+
 table, td {
-    border-top: 1px solid #f0f0f0;
     border-bottom: 1px solid #f0f0f0;
     border-collapse: collapse;
 }
@@ -228,26 +230,36 @@ table {
     font-size: 12px;
     line-height: 24px;
     text-align: left;
-    width: 800px;
 } 
 
 td {
     padding:5px;
 }
 
+table#domainnametable td:nth-child(2){
+    border-right:1px solid #f0f0f0;
+}
+
 table#record-table tr:first-child{
     background-color:#454545;
-    border-top:none;
+    border:none;
 }
 
 table#record-table tr:first-child td:first-child{
     border-top-left-radius:10px;
-    border-left:none;
+}
+
+table#record-table tr:first-child td:nth-child(5){
+    border-top-right-radius:10px;
+}
+
+table#record-table td:nth-child(6){
+    display:none;
 }
 
 table#record-table tr:first-child td:last-child{
     border-top-right-radius:10px;
-    border-right:none;
+    border-top-left-radius:10px;
 }
 
 table#record-table td{
@@ -265,6 +277,7 @@ table#record-table td:nth-child(5){
 
 table#record-table td:last-child{
     width:40px;
+    text-align: center;
 }
 
 table#record-table {
@@ -278,11 +291,6 @@ table#soa-view {
 table.gridwide#domainnametable tr:last-child{
     height:100px;
 }
-
-.editrow {
-    display:none;
-}
-
 
 .small {
     font-size: 90%;
