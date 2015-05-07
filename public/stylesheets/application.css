@@ -129,21 +129,19 @@ body {
 #domain-name{
     display:inline-block;
     position: absolute;
-    width: 380px;
+    width: 370px;
+    margin-top:15px;
 }
 
 #domain-soa{
     display:inline-block;
-    margin-left: 400px;  
+    margin-left: 390px;  
     position: relative;
     width:380px;
+    margin-top:15px;
     padding-bottom:30px;
 }
 
-
-#soa {
-    margin-top:-5px;
-}
 
 #Body {
     padding: 20px;
@@ -168,6 +166,10 @@ body {
 p {
     margin: 5px 0;
 }
+
+b{
+    padding-right:590px;
+}
 label {
     width: 200px;
 }
@@ -175,10 +177,12 @@ div.padded {
     margin: 5px 0;
 }
 table.grid {
-    width: 400px;
+    width: 370px;
 }
+
 table.gridwide {
     width: 100%;
+    height: 211px;
    
 }
 
@@ -189,11 +193,14 @@ table.gridwide {
 
 td:first-child{
     border-left: 1px solid #f0f0f0;
+    padding-left: 10px;
 }
 
 
 td:last-child {
     border-right: 1px solid #f0f0f0;
+    text-align:right;
+
 }
 
 table, td {
@@ -207,12 +214,16 @@ table {
     line-height: 24px;
     text-align: left;
     width: 800px;
-}   
+} 
+
+td {
+    padding:5px;
+}
+
 
 table#record-table tr:first-child{
     background-color:#454545;
     border-top:none;
-
 }
 
 table#record-table tr:first-child td:first-child{
@@ -223,6 +234,39 @@ table#record-table tr:first-child td:first-child{
 table#record-table tr:first-child td:last-child{
     border-top-right-radius:10px;
     border-right:none;
+}
+
+table#record-table td{
+    width:80px;
+    text-align: left;
+}
+
+table#record-table td:first-child{
+    width:200px;
+}
+
+table#record-table td:nth-child(5){
+    width:150px;
+}
+
+table#record-table td:last-child{
+    width:40px;
+}
+
+table#record-table {
+    margin-top:15px;
+}
+
+table#soa-view {
+    width:370px;
+}
+
+table.gridwide#domainnametable tr:last-child{
+    height:100px;
+}
+
+.editrow {
+    display:none;
 }
 
 

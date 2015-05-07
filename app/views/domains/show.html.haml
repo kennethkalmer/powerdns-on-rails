@@ -39,19 +39,25 @@
     =image_tag "../images/planet.png",  :class => "header_icons"
   %left= @domain.name
   - if current_user
-    = link_to info_icon('edit.png', 'zone-edit'), edit_domain_path(@domain)
+    = link_to_function info_icon('edit.png', 'zone-edit'), "showNameForm()"
   %tools
     =image_tag "../images/tools.png",  :class => "header_icons"
   %right= t :title_soa_record
   - if current_user
     = link_to_function info_icon('edit.png', 'soa-record-edit'), "showSOAEdit()"
 
+
+//////////////////////////// DOMAIN TABLE //////////////////////////////////
+
 #domain-name.padded
-  %table.gridwide
+  %table.gridwide#domainnametable
     %tr
       %td{ :width => "200" }= t :label_domain_name
       %td= @domain.name
-      %td{ :width => "100" }
+
+      /
+      /%td{ :width => "100" } 
+      /
         - if current_user
           = link_to info_icon('table_edit.png', 'zone-edit'), edit_domain_path(@domain)
           = link_to info_icon('report_magnify.png', 'audits'), audits_path(:action => :domain, :id => @domain)
@@ -64,7 +70,8 @@
     %tr
       %td=t :label_domain_type
       %td= @domain.type.humanize
-      %td &nbsp;
+
+      /%td &nbsp;
 
     - if @domain.slave?
       %tr
@@ -81,18 +88,19 @@
               = @domain.user.login
             - else
               \-
-          #owner-edit{ :style => 'display: none' }
+          /   OLD 
+          /#owner-edit{ :style => 'display: none' }
+          /
             = form_for( @domain, :url => change_owner_domain_path( @domain ), :remote => true ) do |f|
               = f.collection_select "user_id", @users, :id, :login, :include_blank => true
               = submit_tag(t(:generic_save))
-        %td= link_to_function info_icon('user_edit.png', 'change-owner'), "changeOwner()"
+        /%td= link_to_function info_icon('user_edit.png', 'change-owner'), "changeOwner()"
       %tr
         %td{ :valign => 'top' }=t :label_domain_notes
         %td{ :colspan => 2 }
           #note
             #note-text= @domain.notes
-            %br
-            = link_to_function info_icon('note_edit.png', 'note-edit'), "showNoteForm()"
+            /= link_to_function info_icon('note_edit.png', 'note-edit'), "showNoteForm()"
 
           #note-form{ :style => "display: none;" }
             = form_for( @domain, :url => update_note_domain_path( @domain ), :remote => true ) do |f|
@@ -101,6 +109,9 @@
               = link_to_function t(:generic_cancel), "hideNoteForm()"
               = submit_tag(t(:generic_update))
 
+
+//////////////////////////// SOA TABLE //////////////////////////////////
+
 #domain-soa.padded
   - if @domain.soa_record.nil?
     %p
@@ -108,11 +119,16 @@
   - else
     = render :partial => '/domains/soa_record', :object => @domain.soa_record
 
+
+//////////////////////////// RECORDS TABLE //////////////////////////////////
+
 #domain-records.padded
   #header.lower
     %planet
       =image_tag "../images/planet.png",  :class => "header_icons"
     %b= t :title_domian_rrs
+    - if current_user
+      = link_to_function info_icon('edit.png', 'record-template-edit'), "showRecordsEdit()"
   %table.gridwide#record-table
     %tr
       %td.small= t :label_domain_record_host
@@ -123,7 +139,8 @@
       %td &nbsp;
     = render :partial => 'record', :collection => @domain.records_without_soa
 
-- unless @domain.slave?
+/- unless @domain.slave?
+/
   - if current_user || current_token.allow_new_records?
     = link_to_function info_icon('database_add.png', 'record-template-new'), "displayRecordForm()"
     = link_to_function t(:label_domain_record_new), "displayRecordForm()"
@@ -218,4 +235,8 @@
   function deleteDomain() {
     $('#warning-message').toggle();
     $('#delete-link-buffer').toggle();
+  }
+
+  function showDomainEdit() {
+    $('td:nth-child(2)').hide();
   }

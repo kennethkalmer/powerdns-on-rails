@@ -8,6 +8,8 @@
   %td{ :width => 30 }= record.prio
   %td{ :width => 250 }= record.content
   %td{ :width => 39 }
+
+  /
     - unless record.domain.slave?
       - if current_user || current_token.can_change?( record )
         = link_to_function info_icon('database_edit.png', "record-template-edit"), "editRecord(#{record.id}, '#{record.type.downcase}')"
