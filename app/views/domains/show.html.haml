@@ -49,7 +49,7 @@
 #domain-name.padded
   %table.gridwide
     %tr
-      %td{ :width => "100" }= t :label_domain_name
+      %td{ :width => "200" }= t :label_domain_name
       %td= @domain.name
       %td{ :width => "100" }
         - if current_user
@@ -114,7 +114,6 @@
       =image_tag "../images/planet.png",  :class => "header_icons"
     %b= t :title_domian_rrs
   %table.gridwide#record-table
-    #Nav.small
     %tr
       %td.small= t :label_domain_record_host
       %td.small= t :label_domain_record_ttl
