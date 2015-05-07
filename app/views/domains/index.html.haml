@@ -6,16 +6,17 @@
   #audits=t :help_audits
   #macro=t :help_macro
 
+#header
+  %planet
+    =image_tag "../images/planet.png",  :class => "header_icons"
+  %left= t :title_domains_list
+
+#domainslist
+  %table
+    = render :partial => 'domain', :collection => @domains
+  = will_paginate @domains
+
 %ul.start
-  %li
-    = link_to info_icon('database_add.png', 'new-zone'), new_domain_path
-    = link_to t(:label_add_new_zone), new_domain_path
-
-%h1.underline= t :title_domains_list
-
-%table
-  = render :partial => 'domain', :collection => @domains
-
-= will_paginate @domains
-
+  = link_to info_icon('database_add.png', 'new-zone'), new_domain_path
+  = link_to t(:label_add_new_zone), new_domain_path
 

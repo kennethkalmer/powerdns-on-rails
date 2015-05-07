@@ -93,7 +93,21 @@ body {
     background-color: #1c9cde;
 }
 
+#domainslist {
+    padding-left:200px;
+}
 
+#domainslist table td{
+    width:100px;
+}
+
+#domainslist table tr{
+    border: 3px solid #f0f0f0;
+}
+
+#domainslist table td:last-child{
+    text-align: right;
+}
 
 #header {
     height: 30px;
@@ -127,11 +141,11 @@ body {
     padding-right: 200px;
 }
 
+
 #domain-name{
     display:inline-block;
     position: absolute;
     width: 370px;
-    margin-top:15px;
 }
 
 #domain-soa{
@@ -139,7 +153,6 @@ body {
     margin-left: 390px;  
     position: relative;
     width:380px;
-    margin-top:15px;
     padding-bottom:30px;
 }
 
@@ -230,6 +243,7 @@ table {
     font-size: 12px;
     line-height: 24px;
     text-align: left;
+    margin-top:15px;
 } 
 
 td {
@@ -374,18 +388,8 @@ input.nb, textarea.nb {
 }
 
 ul.start {
-    list-style-type: none;
-    padding: 0;
-    margin: 0 0 10px 0;
+    padding-left: 320px;
 }
-ul.start li {
-    display: inline;
-    padding: 0;
-    padding-right: 10px;
-    margin: 0;
-    vertical-align: middle;
-}
-
 
 #ajaxBusy {
   display: none;
