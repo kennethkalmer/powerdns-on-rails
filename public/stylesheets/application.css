@@ -142,6 +142,23 @@ body {
     padding-bottom:30px;
 }
 
+#domainedit {
+    margin-top:-12px;
+    padding-bottom: 10px;
+    padding-left: 200px;
+}
+
+#domainedit a {
+    padding:5px;
+}
+
+#editdomain {
+    display: none;
+}
+
+#soa_primary_ns, #soa_contact {
+    width:150px;
+}
 
 #Body {
     padding: 20px;
@@ -186,9 +203,7 @@ table.gridwide {
    
 }
 
-#editdomain {
-    display: none;
-}
+
 
 
 td:first-child{
@@ -197,7 +212,7 @@ td:first-child{
 }
 
 
-td:last-child {
+td:nth-child(2) {
     border-right: 1px solid #f0f0f0;
     text-align:right;
 
@@ -219,7 +234,6 @@ table {
 td {
     padding:5px;
 }
-
 
 table#record-table tr:first-child{
     background-color:#454545;

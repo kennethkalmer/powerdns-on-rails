@@ -86,4 +86,9 @@ class RecordsController < InheritedResources::Base
     @domain.soa_record.update_attributes( params[:soa] )
   end
 
+  def update_domain
+    @domain = parent
+    @domain.domain_info.update_attributes(params[:domain])
+  end
+
 end

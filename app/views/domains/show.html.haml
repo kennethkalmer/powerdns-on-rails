@@ -39,7 +39,7 @@
     =image_tag "../images/planet.png",  :class => "header_icons"
   %left= @domain.name
   - if current_user
-    = link_to_function info_icon('edit.png', 'zone-edit'), "showNameForm()"
+    = link_to_function info_icon('edit.png', 'zone-edit'), "showDomainEdit()"
   %tools
     =image_tag "../images/tools.png",  :class => "header_icons"
   %right= t :title_soa_record
@@ -54,19 +54,16 @@
     %tr
       %td{ :width => "200" }= t :label_domain_name
       %td= @domain.name
-
-      /
-      /%td{ :width => "100" } 
-      /
+      #domainedit{style: "display: none"} 
         - if current_user
-          = link_to info_icon('table_edit.png', 'zone-edit'), edit_domain_path(@domain)
-          = link_to info_icon('report_magnify.png', 'audits'), audits_path(:action => :domain, :id => @domain)
+          %a= link_to info_icon('table_edit.png', 'zone-edit'), edit_domain_path(@domain)
+          %a= link_to info_icon('report_magnify.png', 'audits'), audits_path(:action => :domain, :id => @domain)
           - unless @domain.slave?
-            = link_to info_icon('brick_go.png', 'macro'), apply_macro_domain_path( @domain )
+            %a= link_to info_icon('brick_go.png', 'macro'), apply_macro_domain_path( @domain )
           - if current_user.admin? && @domain.user
-            = link_to_function info_icon('database_delete.png', 'delete-zone'), "deleteDomain();" , :id => "delete-link-buffer"
+            %a= link_to_function info_icon('database_delete.png', 'delete-zone'), "deleteDomain();" , :id => "delete-link-buffer"
           - elsif !current_token
-            = link_to info_icon('database_delete.png', 'delete-zone'), domain_path( @domain ), :method => :delete, :confirm => t(:confirm_domain_delete, :domain => @domain.name)
+            %a= link_to info_icon('database_delete.png', 'delete-zone'), domain_path( @domain ), :method => :delete, :confirm => t(:confirm_domain_delete, :domain => @domain.name)
     %tr
       %td=t :label_domain_type
       %td= @domain.type.humanize
@@ -88,25 +85,20 @@
               = @domain.user.login
             - else
               \-
-          /   OLD 
-          /#owner-edit{ :style => 'display: none' }
-          /
+          #owner-edit{ :style => 'display: none' }
             = form_for( @domain, :url => change_owner_domain_path( @domain ), :remote => true ) do |f|
               = f.collection_select "user_id", @users, :id, :login, :include_blank => true
               = submit_tag(t(:generic_save))
-        /%td= link_to_function info_icon('user_edit.png', 'change-owner'), "changeOwner()"
+      
       %tr
         %td{ :valign => 'top' }=t :label_domain_notes
         %td{ :colspan => 2 }
           #note
             #note-text= @domain.notes
-            /= link_to_function info_icon('note_edit.png', 'note-edit'), "showNoteForm()"
-
           #note-form{ :style => "display: none;" }
             = form_for( @domain, :url => update_note_domain_path( @domain ), :remote => true ) do |f|
               = f.text_area :notes, :rows => 4, :cols => 30
               %br
-              = link_to_function t(:generic_cancel), "hideNoteForm()"
               = submit_tag(t(:generic_update))
 
 
@@ -212,6 +204,7 @@
         $(this).hide();
     });
   }
+
   function showNoteForm() {
     $('#note').hide();
     $('#note-form').show();
@@ -220,9 +213,10 @@
     $('#note-form').hide();
     $('#note').show();
   }
+
   function showSOAEdit() {
-    $('#soa-view').hide();
-    $('#soa-form').show();
+    $('#soa-view').toggle();
+    $('#soa-form').toggle();
   }
   function showSOAForm() {
     $('#soa-form').hide();
@@ -238,5 +232,9 @@
   }
 
   function showDomainEdit() {
-    $('td:nth-child(2)').hide();
+    $('#note').toggle();
+    $('#note-form').toggle();
+    $('#owner-info').toggle();
+    $('#owner-edit').toggle();
+    $('#domainedit').toggle();
   }
