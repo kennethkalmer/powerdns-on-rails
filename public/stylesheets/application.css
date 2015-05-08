@@ -101,6 +101,10 @@ body {
     padding-left:260px;
 }
 
+#macroslist {
+    padding-left:340px;
+}
+
 #domainslist table td{
     width:100px;
 }

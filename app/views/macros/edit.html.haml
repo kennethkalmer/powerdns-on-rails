@@ -1,5 +1,7 @@
-%h1.underline
-  = @macro.new_record? ? t(:title_macro_new) : t(:title_macro_update)
+#header
+  %planet
+    =image_tag "../images/planet.png",  :class => "header_icons"
+  %left= @macro.new_record? ? t(:title_macro_new) : t(:title_macro_update)
 
 %div{ :style => "display:none" }
   #macro-name= t :help_macro_name
