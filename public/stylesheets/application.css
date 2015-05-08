@@ -105,6 +105,10 @@ body {
     padding-left:340px;
 }
 
+#userslist {
+    padding-left:200px;
+}
+
 #domainslist table td{
     width:100px;
 }
@@ -226,7 +230,8 @@ table.grid {
 
 table.gridwide {
     width: 100%;
-    height: 211px;
+    height: 80px
+    margin-top: -5px;
    
 }
 
