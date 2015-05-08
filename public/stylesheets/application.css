@@ -97,6 +97,10 @@ body {
     padding-left:200px;
 }
 
+#templateslist {
+    padding-left:260px;
+}
+
 #domainslist table td{
     width:100px;
 }
@@ -139,6 +143,14 @@ body {
 
 #header right {
     padding-right: 200px;
+}
+
+#header long {
+    padding-right: 550px;
+}
+
+#header.padded {
+    margin-top: 10px;
 }
 
 

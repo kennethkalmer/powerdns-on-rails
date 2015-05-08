@@ -1,10 +1,15 @@
-%h1.underline
+#header
+  %planet
+    =image_tag "../images/planet.png",  :class => "header_icons"
   = t :title_audit_information_for
   = link_to @domain.name, domain_path(@domain)
 
 %p= t :text_audit_click_on_revision_for_detail
 
-%h2.underline= t :title_audit_domain_revisions
+#header.padded
+  %planet
+    =image_tag "../images/planet.png",  :class => "header_icons"
+  %left= t :title_audit_domain_revisions
 
 - if @domain.audits.size > 0
   %ul
@@ -13,7 +18,10 @@
   %p
     %em= t :label_audit_no_domain_revisions
 
-%h2.underline= t :title_audit_rr_revisions
+#header.padded
+  %planet
+    =image_tag "../images/planet.png",  :class => "header_icons"
+  %left= t :title_audit_rr_revisions
 
 - if @domain.associated_audits.size > 0
   %p= t :text_audit_order_description

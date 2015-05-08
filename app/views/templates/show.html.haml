@@ -12,10 +12,12 @@
   #help-expire= t :help_domain_expire
   #help-minimum= t :help_domain_minimum
 
-%h1.underline
-  = @zone_template.name
+#header
+  %planet
+    =image_tag "../images/planet.png",  :class => "header_icons"
+  %long=  @zone_template.name
   &nbsp;
-  = link_to info_icon( 'database_edit.png', 'edit-template' ), edit_zone_template_path(@zone_template)
+  = link_to info_icon( 'edit.png', 'edit-template' ), edit_zone_template_path(@zone_template)
 
 %table.grid
   %tr
@@ -37,7 +39,10 @@
 
 %p &nbsp;
 
-%h1.underline= t :title_template_records
+#header
+  %planet
+    =image_tag "../images/planet.png",  :class => "header_icons"
+  %left= t :title_template_records
 
 - unless @zone_template.has_soa?
   &nbsp;
@@ -56,10 +61,11 @@
     %td
   = render :partial => "record_template", :collection => @zone_template.record_templates
 
-%p &nbsp;
+#edit-records
+  %p &nbsp;
 
-= link_to_function info_icon('table_add.png', 'new-record-template'), "displayRecordForm()"
-= link_to_function t(:label_template_record_create_new), "displayRecordForm()"
+  = link_to_function info_icon('table_add.png', 'new-record-template'), "displayRecordForm()"
+  = link_to_function t(:label_template_record_create_new), "displayRecordForm()"
 
 #record-form-div{ :style => 'display:none' }
   = form_for( RecordTemplate.new, :remote => true, :html => { :id => 'record-form' } ) do |f|

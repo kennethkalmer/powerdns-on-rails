@@ -1,4 +1,7 @@
-%h1.underline Zone Templates
+#header
+  %planet
+    =image_tag "../images/planet.png",  :class => "header_icons"
+  %left Zone Templates
 
 %div{ :style => "display: none;" }
   #new-template= t :help_template_zone_new
@@ -6,10 +9,10 @@
   #delete-template= t :help_template_zone_delete
   #missing-soa= t :help_template_zone_soa_missing
 
-%table.grid
-  %tr
-    %td
-      = link_to info_icon('table_add.png', 'new-template'), new_zone_template_path
-      = link_to t(:label_template_create_new), new_zone_template_path
-    %td &nbsp;
-  = render :partial => 'zone_template', :collection => @zone_templates
+#templateslist
+  %table
+    = render :partial => 'zone_template', :collection => @zone_templates
+
+%ul.start
+  = link_to info_icon('table_add.png', 'new-template'), new_zone_template_path
+  = link_to t(:label_template_create_new), new_zone_template_path
