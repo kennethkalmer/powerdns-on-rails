@@ -127,7 +127,7 @@ body {
     background-color: #1388d6;
     margin-left: -20px;
 
-    color: #FFF;
+    color:#FFF;
     font-weight: bold;
     text-decoration: none;
     text-align:left;
@@ -135,6 +135,36 @@ body {
     margin-top:-20px;
 
     line-height: 30px;
+}
+
+#header.short {
+    width:400px;
+}
+
+#header-text {
+    margin-top: -22px;
+    padding-left: 40px;
+    width:250px;
+    overflow:hidden;
+
+    color:#FFF;
+    font-weight: bold;
+    text-decoration: none;
+    text-align:left;
+}
+
+#header-text.right {
+    margin-left:420px;
+}
+
+#header-edit {
+    float:right;
+}
+
+#header.right{
+    margin-left:380px;
+    margin-top:-23px;
+
 }
 
 .header_icons{
@@ -161,7 +191,6 @@ body {
     margin-top: 10px;
 }
 
-
 #domain-name{
     display:inline-block;
     position: absolute;
@@ -177,7 +206,7 @@ body {
 }
 
 #domainedit {
-    margin-top:-12px;
+    padding-top: 20px;
     padding-bottom: 10px;
     padding-left: 200px;
 }
@@ -363,6 +392,7 @@ a img {
     padding-left: 30px;
     background-position: 5px 5px;
     background-repeat: no-repeat;
+    z-index:2;
 }
 .flash-info, .flash-notice {
     border: 1px solid #97FF97;

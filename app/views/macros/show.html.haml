@@ -11,10 +11,10 @@
 #header
   %planet
     =image_tag "../images/planet.png",  :class => "header_icons"
-  %long= @macro.name
-  &nbsp;
-  = link_to edit_macro_path( @macro ) do
-    = info_icon( 'edit.png', 'edit-macro' )
+  #header-edit
+    = link_to edit_macro_path( @macro ) do
+      = info_icon( 'edit.png', 'edit-macro' )
+#header-text= @macro.name
 
 %table.grid
   %tr

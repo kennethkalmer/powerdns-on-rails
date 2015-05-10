@@ -34,17 +34,19 @@
     = t :confirm_delete_this_domain
     = link_to_function info_icon('cancel.png', 'delete-reset'), "deleteDomain();"
 
-#header
+#header.short
   %planet
     =image_tag "../images/planet.png",  :class => "header_icons"
-  %left= @domain.name
   - if current_user
-    = link_to_function info_icon('edit.png', 'zone-edit'), "showDomainEdit()"
+    #header-edit= link_to_function info_icon('edit.png', 'zone-edit'), "showDomainEdit()"
+#header-text= @domain.name
+
+#header.right.short
   %tools
     =image_tag "../images/tools.png",  :class => "header_icons"
-  %right= t :title_soa_record
   - if current_user
-    = link_to_function info_icon('edit.png', 'soa-record-edit'), "showSOAEdit()"
+    #header-edit= link_to_function info_icon('edit.png', 'soa-record-edit'), "showSOAEdit()"
+#header-text.right= t :title_soa_record
 
 
 //////////////////////////// DOMAIN TABLE //////////////////////////////////
@@ -115,7 +117,7 @@
 //////////////////////////// RECORDS TABLE //////////////////////////////////
 
 #domain-records.padded
-  #header.lower
+  #header
     %planet
       =image_tag "../images/planet.png",  :class => "header_icons"
     %b= t :title_domian_rrs
