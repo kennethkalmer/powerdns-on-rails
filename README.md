@@ -105,7 +105,7 @@ PowerDNS does not allow you to alter the database schema at all, and you're
 forced to use at least one set database table. It can however handle additions
 to the table without problems.
 
-We also add several additional tables to accomodate users, templates, macros
+We also add several additional tables to accommodate users, templates, macros
 and other features.
 
 ## Migration to PowerDNS
