@@ -1,6 +1,9 @@
 - @page_title = t :title_macro_for, :domain => @domain.name
 
-%h1.underline= t :title_macro_apply
+#header
+  %planet
+    =image_tag "../images/planet.png",  :class => "header_icons"
+  %left= t :title_macro_apply
 
 %p= t :text_macro_description
 

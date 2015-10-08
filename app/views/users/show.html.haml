@@ -1,31 +1,34 @@
-%h1.underline
-  = t(:title_user_detail_for, :user => @user.login)
+#header
+  %planet
+    =image_tag "../images/planet.png",  :class => "header_icons"
+  %left= t(:title_user_detail_for, :user => @user.login)
 
-%table.grid
-  %tr
-    %td= t :label_user_name
-    %td= @user.login
-  %tr
-    %td= t :label_user_email
-    %td= @user.email
-  %tr
-    %td= t :label_user_admin
-    %td= @user.admin? ? 'Yes' : 'No'
-  %tr
-    %td= t :label_user_auth_tokens
-    %td= @user.auth_tokens? ? 'Yes' : 'No'
-  %tr
-    %td &nbsp;
-    %td &nbsp;
-  %tr
-    %td &nbsp;
-    %td
-      = link_to image_tag('user_edit.png'), edit_user_path( @user )
-      = link_to t(:generic_change), edit_user_path( @user )
-      &nbsp;&nbsp;&nbsp;
-      = link_to image_tag('user_delete.png'), user_path( @user ), :method => :delete, :confirm => t(:confirm_user_remove)
-      = link_to t(:generic_remove), user_path( @user ), :method => :delete, :confirm => t(:confirm_user_remove)
-      - unless @user.admin?
+#userslist
+  %table.grid
+    %tr
+      %td= t :label_user_name
+      %td= @user.login
+    %tr
+      %td= t :label_user_email
+      %td= @user.email
+    %tr
+      %td= t :label_user_admin
+      %td= @user.admin? ? 'Yes' : 'No'
+    %tr
+      %td= t :label_user_auth_tokens
+      %td= @user.auth_tokens? ? 'Yes' : 'No'
+    %tr
+      %td &nbsp;
+      %td &nbsp;
+    %tr
+      %td &nbsp;
+      %td
+        = link_to image_tag('user_edit.png'), edit_user_path( @user )
+        = link_to t(:generic_change), edit_user_path( @user )
         &nbsp;&nbsp;&nbsp;
-        = link_to image_tag('help.png') , :controller => :reports , :action => :view , :id => @user
-        = link_to t(:label_user_detail) , :controller => :reports , :action => :view , :id => @user
+        = link_to image_tag('user_delete.png'), user_path( @user ), :method => :delete, :confirm => t(:confirm_user_remove)
+        = link_to t(:generic_remove), user_path( @user ), :method => :delete, :confirm => t(:confirm_user_remove)
+        - unless @user.admin?
+          &nbsp;&nbsp;&nbsp;
+          = link_to image_tag('help.png') , :controller => :reports , :action => :view , :id => @user
+          = link_to t(:label_user_detail) , :controller => :reports , :action => :view , :id => @user

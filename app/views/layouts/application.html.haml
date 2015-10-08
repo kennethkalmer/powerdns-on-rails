@@ -7,29 +7,20 @@
     = csrf_meta_tag
   %body
     #Container
-      #Header
-        %h1
-          =t :layout_main_title
-      - if current_user
-        #search-bar{:style => "display: inline; float: right;"}
-          = form_tag( { :controller => :search, :action => :results }, { :method => :get } ) do
-            = text_field_tag :q
-            = submit_tag( t(:generic_search) )
-        #Nav
-          %ul
-            %li= link_to((t :layout_menu_home), root_url)
-            %li= link_to((t :layout_menu_domains), domains_path)
-            %li= link_to((t :layout_menu_templates), zone_templates_path)
-            %li= link_to((t :layout_menu_macros), macros_path)
+      #Nav
+        - if current_user
+          %ul{:id => "navbar"}
+            %li
+            %li{:class => "active", :onclick => "turnActive(this)"}= link_to((t :layout_menu_domains), domains_path)
+            %li{:onclick => "turnActive(this)"}= link_to((t :layout_menu_templates), zone_templates_path)
+            %li{:onclick => "turnActive(this)"}= link_to((t :layout_menu_macros), macros_path)
             - if current_user.admin?
-              %li= link_to((t :layout_menu_logs), audits_path)
-              %li= link_to((t :layout_menu_users), users_path)
-              %li= link_to((t :layout_menu_reports), reports_path)
+              %li{:onclick => "turnActive(this)"}= link_to((t :layout_menu_logs), audits_path)
+              %li{:onclick => "turnActive(this)"}= link_to((t :layout_menu_users), users_path)
+              %li{:onclick => "turnActive(this)"}= link_to((t :layout_menu_reports), reports_path)
             %li= link_to((t :layout_menu_logout), destroy_user_session_path)
-
       #Body
         = show_flash
-
         = yield
       #Footer
         = link_to "PowerDNS on Rails", "http://www.opensourcery.co.za/powerdns-on-rails", :target => '_blank'
@@ -42,3 +33,15 @@
         \-
         = link_to "Github", "http://github.com/kennethkalmer/powerdns-on-rails", :target => '_blank'
 
+:javascript
+    function turnActive(element) {
+     //get all list items:
+     var liArray = document.getElementById("navbar").getElementsByTagName("li");
+
+      //make all items inactive
+      for (var i = 0; i < liArray.length; i++)
+          liArray[i].className = "inactive";
+
+      //make clicked item active:
+      element.className = "active";
+  }

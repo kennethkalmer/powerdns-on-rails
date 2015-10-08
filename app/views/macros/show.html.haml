@@ -8,11 +8,13 @@
   #content-field=t :help_macro_content_field
   #name-field=t :help_macro_name_field
 
-%h1.underline
-  = @macro.name
-  &nbsp;
-  = link_to edit_macro_path( @macro ) do
-    = info_icon( 'brick_edit.png', 'edit-macro' )
+#header
+  %planet
+    =image_tag "../images/planet.png",  :class => "header_icons"
+  #header-edit
+    = link_to edit_macro_path( @macro ) do
+      = info_icon( 'edit.png', 'edit-macro' )
+#header-text= @macro.name
 
 %table.grid
   %tr

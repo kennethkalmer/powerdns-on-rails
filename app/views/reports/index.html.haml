@@ -1,4 +1,7 @@
-%h2.underline= t :title_user_reports
+#header
+  %planet
+    =image_tag "../images/planet.png",  :class => "header_icons"
+  = t :title_user_reports
 
 #search-user-bar.padded
   - form_tag( { :controller => :reports, :action => :results }, { :method => :get } ) do

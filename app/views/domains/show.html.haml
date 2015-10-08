@@ -34,28 +34,43 @@
     = t :confirm_delete_this_domain
     = link_to_function info_icon('cancel.png', 'delete-reset'), "deleteDomain();"
 
-%h1.underline
-  = @domain.name
+#header.short
+  %planet
+    =image_tag "../images/planet.png",  :class => "header_icons"
+  - if current_user
+    #header-edit= link_to_function info_icon('edit.png', 'zone-edit'), "showDomainEdit()"
+#header-text= @domain.name
+
+#header.right.short
+  %tools
+    =image_tag "../images/tools.png",  :class => "header_icons"
+  - if current_user
+    #header-edit= link_to_function info_icon('edit.png', 'soa-record-edit'), "showSOAEdit()"
+#header-text.right= t :title_soa_record
+
+
+//////////////////////////// DOMAIN TABLE //////////////////////////////////
 
 #domain-name.padded
-  %table.gridwide
+  %table.gridwide#domainnametable
     %tr
-      %td{ :width => "100" }= t :label_domain_name
+      %td{ :width => "200" }= t :label_domain_name
       %td= @domain.name
-      %td{ :width => "100" }
+      #domainedit{style: "display: none"} 
         - if current_user
-          = link_to info_icon('table_edit.png', 'zone-edit'), edit_domain_path(@domain)
-          = link_to info_icon('report_magnify.png', 'audits'), audits_path(:action => :domain, :id => @domain)
+          %a= link_to info_icon('table_edit.png', 'zone-edit'), edit_domain_path(@domain)
+          %a= link_to info_icon('report_magnify.png', 'audits'), audits_path(:action => :domain, :id => @domain)
           - unless @domain.slave?
-            = link_to info_icon('brick_go.png', 'macro'), apply_macro_domain_path( @domain )
+            %a= link_to info_icon('brick_go.png', 'macro'), apply_macro_domain_path( @domain )
           - if current_user.admin? && @domain.user
-            = link_to_function info_icon('database_delete.png', 'delete-zone'), "deleteDomain();" , :id => "delete-link-buffer"
+            %a= link_to_function info_icon('database_delete.png', 'delete-zone'), "deleteDomain();" , :id => "delete-link-buffer"
           - elsif !current_token
-            = link_to info_icon('database_delete.png', 'delete-zone'), domain_path( @domain ), :method => :delete, :confirm => t(:confirm_domain_delete, :domain => @domain.name)
+            %a= link_to info_icon('database_delete.png', 'delete-zone'), domain_path( @domain ), :method => :delete, :confirm => t(:confirm_domain_delete, :domain => @domain.name)
     %tr
       %td=t :label_domain_type
       %td= @domain.type.humanize
-      %td &nbsp;
+
+      /%td &nbsp;
 
     - if @domain.slave?
       %tr
@@ -76,36 +91,38 @@
             = form_for( @domain, :url => change_owner_domain_path( @domain ), :remote => true ) do |f|
               = f.collection_select "user_id", @users, :id, :login, :include_blank => true
               = submit_tag(t(:generic_save))
-        %td= link_to_function info_icon('user_edit.png', 'change-owner'), "changeOwner()"
+      
       %tr
         %td{ :valign => 'top' }=t :label_domain_notes
         %td{ :colspan => 2 }
           #note
             #note-text= @domain.notes
-            %br
-            = link_to_function info_icon('note_edit.png', 'note-edit'), "showNoteForm()"
-
           #note-form{ :style => "display: none;" }
             = form_for( @domain, :url => update_note_domain_path( @domain ), :remote => true ) do |f|
               = f.text_area :notes, :rows => 4, :cols => 30
               %br
-              = link_to_function t(:generic_cancel), "hideNoteForm()"
               = submit_tag(t(:generic_update))
 
+
+//////////////////////////// SOA TABLE //////////////////////////////////
+
 #domain-soa.padded
-  %h2.underline
-    = t :title_soa_record
-    &nbsp;
-    - if current_user
-      = link_to_function info_icon('database_edit.png', 'soa-record-edit'), "showSOAEdit()"
   - if @domain.soa_record.nil?
     %p
       %em= t :label_soa_record_yet_propagated_from_master
   - else
     = render :partial => '/domains/soa_record', :object => @domain.soa_record
 
+
+//////////////////////////// RECORDS TABLE //////////////////////////////////
+
 #domain-records.padded
-  %h2.underline= t :title_domian_rrs
+  #header
+    %planet
+      =image_tag "../images/planet.png",  :class => "header_icons"
+    %b= t :title_domian_rrs
+    - if current_user
+      = link_to_function info_icon('edit.png', 'record-template-edit'), "showRecordsEdit()"
   %table.gridwide#record-table
     %tr
       %td.small= t :label_domain_record_host
@@ -113,13 +130,13 @@
       %td.small= t :label_domain_record_type
       %td.small= t :label_domain_record_priority
       %td.small= t :label_domain_record_data
-      %td &nbsp;
+      %td.small= "EDIT"
     = render :partial => 'record', :collection => @domain.records_without_soa
-
-- unless @domain.slave?
-  - if current_user || current_token.allow_new_records?
-    = link_to_function info_icon('database_add.png', 'record-template-new'), "displayRecordForm()"
-    = link_to_function t(:label_domain_record_new), "displayRecordForm()"
+#edit-records{ :style => "display: none;" }
+  - unless @domain.slave?
+    - if current_user || current_token.allow_new_records?
+      = link_to_function info_icon('database_add.png', 'record-template-new'), "displayRecordForm()"
+      = link_to_function t(:label_domain_record_new), "displayRecordForm()"
 
     #record-form-div{ :style => "display: none;" }
       = form_for( :record, :url => domain_records_path( @domain ), :remote => true, :html => { :id => 'record-form' } ) do |f|
@@ -140,6 +157,7 @@
           %tr.all
             %td= t :label_domain_record_data
             %td= f.text_field :content
+
           %tr.rt-soa{ :style => 'display :none' }
             %td= t :label_primary_name_server
             %td= f.text_field :primary_ns
@@ -160,9 +178,11 @@
             %td= f.text_field :minimum, :size => 6
           %tr.all
             %td &nbsp;
+            
             %td
               = link_to_function(t(:generic_cancel), "hideRecordForm()")
               = submit_tag(t(:generic_create))
+
 
 :javascript
   function editRecord(id, type) {
@@ -188,6 +208,7 @@
         $(this).hide();
     });
   }
+
   function showNoteForm() {
     $('#note').hide();
     $('#note-form').show();
@@ -196,9 +217,10 @@
     $('#note-form').hide();
     $('#note').show();
   }
+
   function showSOAEdit() {
-    $('#soa-view').hide();
-    $('#soa-form').show();
+    $('#soa-view').toggle();
+    $('#soa-form').toggle();
   }
   function showSOAForm() {
     $('#soa-form').hide();
@@ -211,4 +233,17 @@
   function deleteDomain() {
     $('#warning-message').toggle();
     $('#delete-link-buffer').toggle();
+  }
+
+  function showDomainEdit() {
+    $('#note').toggle();
+    $('#note-form').toggle();
+    $('#owner-info').toggle();
+    $('#owner-edit').toggle();
+    $('#domainedit').toggle();
+  }
+
+  function showRecordsEdit(){
+    $('#edit-records').toggle();
+    $('#record-table td:nth-of-type(6)').toggle();
   }
