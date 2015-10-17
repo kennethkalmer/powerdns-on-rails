@@ -10,16 +10,16 @@ describe TemplatesController, "and admins" do
 
     get :index
 
-    assigns(:zone_templates).should_not be_empty
-    assigns(:zone_templates).size.should be( ZoneTemplate.count )
+    expect(assigns(:zone_templates)).not_to be_empty
+    expect(assigns(:zone_templates).size).to be( ZoneTemplate.count )
   end
 
   it "should have a detailed view of a template" do
     get :show, :id => FactoryGirl.create(:zone_template).id
 
-    assigns(:zone_template).should_not be_nil
+    expect(assigns(:zone_template)).not_to be_nil
 
-    response.should render_template('templates/show')
+    expect(response).to render_template('templates/show')
   end
 
   it "should redirect to the template on create" do
@@ -27,7 +27,7 @@ describe TemplatesController, "and admins" do
       post :create, :zone_template => { :name => 'Foo' }
     }.to change( ZoneTemplate, :count ).by(1)
 
-    response.should redirect_to( zone_template_path( assigns(:zone_template) ) )
+    expect(response).to redirect_to( zone_template_path( assigns(:zone_template) ) )
   end
 
 end
@@ -44,14 +44,14 @@ describe TemplatesController, "and users" do
 
     get :index
 
-    assigns(:zone_templates).should_not be_empty
-    assigns(:zone_templates).size.should be(1)
+    expect(assigns(:zone_templates)).not_to be_empty
+    expect(assigns(:zone_templates).size).to be(1)
   end
 
   it "should not have a list of users when showing the new form" do
     get :new
 
-    assigns(:users).should be_nil
+    expect(assigns(:users)).to be_nil
   end
 end
 
@@ -65,6 +65,6 @@ describe TemplatesController, "should handle a REST client" do
 
     get :index, :format => "xml"
 
-    response.should have_tag('zone-templates > zone-template')
+    expect(response).to have_tag('zone-templates > zone-template')
   end
 end

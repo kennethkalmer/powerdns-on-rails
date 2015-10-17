@@ -27,6 +27,10 @@ class DomainsController < InheritedResources::Base
     redirect_to domain_path( current_token.domain ) if current_token
   end
 
+  def domain_params
+    params.require(:domain).permit(:name, :zone_template_id, :zone_template_name, :primary_ns, :contact, :refresh, :retry, :expire, :minimum, :type, :master)
+  end
+
   public
 
   def show
@@ -38,15 +42,15 @@ class DomainsController < InheritedResources::Base
   end
 
   def create
-    @domain = Domain.new( params[:domain] )
+    @domain = Domain.new( domain_params )
 
     unless @domain.slave?
-      @zone_template = ZoneTemplate.find(params[:domain][:zone_template_id]) unless params[:domain][:zone_template_id].blank?
-      @zone_template ||= ZoneTemplate.find_by_name(params[:domain][:zone_template_name]) unless params[:domain][:zone_template_name].blank?
+      @zone_template = ZoneTemplate.find(domain_params[:zone_template_id]) unless params[:domain][:zone_template_id].blank?
+      @zone_template ||= ZoneTemplate.find_by_name(domain_params[:zone_template_name]) unless params[:domain][:zone_template_name].blank?
 
       unless @zone_template.nil?
         begin
-          @domain = @zone_template.build( params[:domain][:name] )
+          @domain = @zone_template.build( domain_params[:name] )
         rescue ActiveRecord::RecordInvalid => e
           @domain.attach_errors(e)
 

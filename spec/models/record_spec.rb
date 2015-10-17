@@ -6,34 +6,40 @@ describe Record do
   context "when new" do
 
     it "should be invalid by default" do
-      subject.should_not be_valid
+      expect(subject).not_to be_valid
     end
 
     it "should require a domain" do
-      subject.should have(1).error_on(:domain_id)
+      subject.valid?
+      expect( subject.errors[:domain_id].size ).to eq(1)
     end
 
     it "should require a ttl" do
-      subject.should have(1).error_on(:ttl)
+      subject.valid?
+      expect( subject.errors[:ttl].size ).to eq(1)
     end
 
     it "should only allow positive numeric ttl's" do
       subject.ttl = -100
-      subject.should have(1).error_on(:ttl)
+      subject.valid?
+      expect( subject.errors[:ttl].size ).to eq(1)
 
       subject.ttl = '2d'
-      subject.should have(1).error_on(:ttl)
+      subject.valid?
+      expect( subject.errors[:ttl].size ).to eq(1)
 
       subject.ttl = 86400
-      subject.should have(:no).errors_on(:ttl)
+      subject.valid?
+      expect( subject.errors[:ttl].size ).to eq(0)
     end
 
     it "should require a name" do
-      subject.should have(1).error_on(:name)
+      subject.valid?
+      expect( subject.errors[:name].size ).to eq(1)
     end
 
     it "should not support priorities by default" do
-      subject.supports_prio?.should be_false
+      expect(subject.supports_prio?).to be false
     end
 
   end
@@ -48,16 +54,16 @@ describe Record do
 
       record = FactoryGirl.create(:a, :domain => domain)
 
-      @soa.tap(&:reload).serial.should_not eql( serial )
+      expect(@soa.tap(&:reload).serial).not_to eql( serial )
     end
 
     it "should update the serial on the SOA on change" do
       record = FactoryGirl.create(:a, :domain => domain)
       serial = @soa.tap(&:reload).serial
       record.content = '10.0.0.1'
-      record.save.should be_true
+      expect(record.save).to be true
 
-      @soa.tap(&:reload).serial.should_not eql( serial )
+      expect(@soa.tap(&:reload).serial).not_to eql( serial )
     end
 
     it "should update the serial on the SOA when deleted" do
@@ -65,9 +71,10 @@ describe Record do
 
       serial = @soa.tap(&:reload).serial
 
-      record.destroy.should be_true
+      record.destroy
+      expect( record.destroyed? ).to be true
 
-      @soa.tap(&:reload).serial.should_not eql( serial )
+      expect(@soa.tap(&:reload).serial).not_to eql( serial )
     end
 
     it "should be able to restrict the serial number to one change (multiple updates)" do
@@ -82,7 +89,7 @@ describe Record do
           :content => '10.0.0.5',
           :ttl => 86400
         )
-        record.save.should be_true
+        expect(record.save).to be true
 
         record = A.new(
           :domain => domain,
@@ -90,7 +97,7 @@ describe Record do
           :content => '10.0.0.6',
           :ttl => 86400
         )
-        record.save.should be_true
+        expect(record.save).to be true
 
         record = A.new(
           :domain => domain,
@@ -98,13 +105,13 @@ describe Record do
           :content => '10.0.0.7',
           :ttl => 86400
         )
-        record.save.should be_true
+        expect(record.save).to be true
       end
 
       # Our serial should have move just one position, not three
       @soa.reload
-      @soa.serial.should_not be( serial )
-      @soa.serial.to_s.should eql( Time.now.strftime( "%Y%m%d" ) + '01' )
+      expect(@soa.serial).not_to be( serial )
+      expect(@soa.serial.to_s).to eql( Time.now.strftime( "%Y%m%d" ) + '01' )
     end
 
   end
@@ -123,10 +130,10 @@ describe Record do
         :content => '10.0.0.5',
         :ttl => 86400
       )
-      record.save.should be_true
+      expect(record.save).to be true
 
       @soa.reload
-      @soa.serial.should_not eql(serial)
+      expect(@soa.serial).not_to eql(serial)
     end
 
     it "should inherit the name from the parent domain if not provided" do
@@ -134,9 +141,9 @@ describe Record do
         :domain => domain,
         :content => '10.0.0.6'
       )
-      record.save.should be_true
+      expect(record.save).to be true
 
-      record.name.should eql('example.com')
+      expect(record.name).to eql('example.com')
     end
 
     it "should append the domain name to the name if not present" do
@@ -145,24 +152,24 @@ describe Record do
         :name => 'test',
         :content => '10.0.0.6'
       )
-      record.save.should be_true
+      expect(record.save).to be true
 
-      record.shortname.should eql('test')
-      record.name.should eql('test.example.com')
+      expect(record.shortname).to eql('test')
+      expect(record.name).to eql('test.example.com')
     end
 
     it "should inherit the TTL from the parent domain if not provided" do
       ttl = domain.ttl
-      ttl.should be( 86400 )
+      expect(ttl).to be( 86400 )
 
       record = A.new(
         :domain => domain,
         :name => 'ftp',
         :content => '10.0.0.6'
       )
-      record.save.should be_true
+      expect(record.save).to be true
 
-      record.ttl.should be( 86400 )
+      expect(record.ttl).to be( 86400 )
     end
 
     it "should prefer own TTL over that of parent domain" do
@@ -172,9 +179,9 @@ describe Record do
         :content => '10.0.0.6',
         :ttl => 43200
       )
-      record.save.should be_true
+      expect(record.save).to be true
 
-      record.ttl.should be( 43200 )
+      expect(record.ttl).to be( 43200 )
     end
 
   end
@@ -183,11 +190,11 @@ describe Record do
     subject { FactoryGirl.create(:a, :domain => domain) }
 
     it "should have a full name" do
-      subject.name.should eql('example.com')
+      expect(subject.name).to eql('example.com')
     end
 
     it "should have a short name" do
-      subject.shortname.should be_blank
+      expect(subject.shortname).to be_blank
     end
   end
 
@@ -195,7 +202,7 @@ describe Record do
     subject { FactoryGirl.create(:a, :domain => domain) }
 
     it "should have a root tag of the record type" do
-      subject.to_xml.should match(/<a>/)
+      expect(subject.to_xml).to match(/<a>/)
     end
   end
 

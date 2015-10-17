@@ -15,25 +15,25 @@ describe MacrosController, "for admins" do
   it "should have a list of macros" do
     get :index
 
-    assigns(:macros).should_not be_nil
+    expect(assigns(:macros)).not_to be_nil
 
-    response.should render_template('macros/index')
+    expect(response).to render_template('macros/index')
   end
 
   it "should have a detailed view of a macro" do
     get :show, :id => @macro.id
 
-    assigns(:macro).should == @macro
+    expect(assigns(:macro)).to eq(@macro)
 
-    response.should render_template('macros/show')
+    expect(response).to render_template('macros/show')
   end
 
   it "should have a form for creating new macros" do
     get :new
 
-    assigns(:macro).should be_a_new_record
+    expect(assigns(:macro)).to be_a_new_record
 
-    response.should render_template('macros/edit')
+    expect(response).to render_template('macros/edit')
   end
 
   it "should create valid macros" do
@@ -45,9 +45,9 @@ describe MacrosController, "for admins" do
       }
     }.to change(Macro, :count).by(1)
 
-    flash[:notice].should_not be_nil
-    response.should be_redirect
-    response.should redirect_to( macro_path(assigns(:macro) ) )
+    expect(flash[:notice]).not_to be_nil
+    expect(response).to be_redirect
+    expect(response).to redirect_to( macro_path(assigns(:macro) ) )
   end
 
   it "should render the form on invalid macros" do
@@ -55,17 +55,17 @@ describe MacrosController, "for admins" do
       :name => ''
     }
 
-    flash[:info].should be_nil
-    response.should_not be_redirect
-    response.should render_template('macros/edit')
+    expect(flash[:info]).to be_nil
+    expect(response).not_to be_redirect
+    expect(response).to render_template('macros/edit')
   end
 
   it "should have an edit form for macros" do
     get :edit, :id => @macro.id
 
-    assigns(:macro).should == @macro
+    expect(assigns(:macro)).to eq(@macro)
 
-    response.should render_template('macros/edit')
+    expect(response).to render_template('macros/edit')
   end
 
   it "should accept valid updates to macros" do
@@ -74,9 +74,9 @@ describe MacrosController, "for admins" do
       @macro.reload
     }.to change(@macro, :name)
 
-    flash[:notice].should_not be_nil
-    response.should be_redirect
-    response.should redirect_to( macro_path( @macro ) )
+    expect(flash[:notice]).not_to be_nil
+    expect(response).to be_redirect
+    expect(response).to redirect_to( macro_path( @macro ) )
   end
 
   it "should reject invalid updates" do
@@ -85,18 +85,18 @@ describe MacrosController, "for admins" do
       @macro.reload
     }.to_not change(@macro, :name)
 
-    flash[:notice].should be_blank
-    response.should_not be_redirect
-    response.should render_template('macros/edit')
+    expect(flash[:notice]).to be_blank
+    expect(response).not_to be_redirect
+    expect(response).to render_template('macros/edit')
   end
 
   it "should remove a macro if asked to" do
     delete :destroy, :id => @macro.id
 
-    assigns(:macro).should be_frozen
-    flash[:notice].should_not be_nil
-    response.should be_redirect
-    response.should redirect_to( macros_path )
+    expect(assigns(:macro)).to be_frozen
+    expect(flash[:notice]).not_to be_nil
+    expect(response).to be_redirect
+    expect(response).to redirect_to( macros_path )
   end
 
 end
@@ -113,10 +113,10 @@ describe MacrosController, "for owners" do
   it "should have a form to create a new macro" do
     get :new
 
-    assigns(:users).should be_nil
-    assigns(:macro).should be_a_new_record
+    expect(assigns(:users)).to be_nil
+    expect(assigns(:macro)).to be_a_new_record
 
-    response.should render_template('macros/edit')
+    expect(response).to render_template('macros/edit')
   end
 
 end

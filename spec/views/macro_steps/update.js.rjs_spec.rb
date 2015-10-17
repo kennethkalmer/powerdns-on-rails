@@ -13,13 +13,13 @@ describe "macro_steps/update.js.rjs" do
     end
     
     xit "should display a notice" do
-      response.should include_text(%{showflash("info"})
+      expect(response).to include_text(%{showflash("info"})
     end
     
     xit "should update the steps table" do
-      response.should have_rjs(:remove, "show_macro_step_#{@macro_step.id}")
-      response.should have_rjs(:remove, "edit_macro_step_#{@macro_step.id}")
-      response.should have_rjs(:replace, "marker_macro_step_#{@macro_step.id}")
+      expect(response).to have_rjs(:remove, "show_macro_step_#{@macro_step.id}")
+      expect(response).to have_rjs(:remove, "edit_macro_step_#{@macro_step.id}")
+      expect(response).to have_rjs(:replace, "marker_macro_step_#{@macro_step.id}")
     end
       
   end
@@ -35,7 +35,7 @@ describe "macro_steps/update.js.rjs" do
       
    
     xit "should display an error" do
-      response.should have_rjs(:replace_html, "error_macro_step_#{@macro_step.id}")
+      expect(response).to have_rjs(:replace_html, "error_macro_step_#{@macro_step.id}")
     end
     
   end

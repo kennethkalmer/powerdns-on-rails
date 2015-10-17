@@ -13,8 +13,8 @@ describe "domains/new.html.haml" do
 
     render
 
-    rendered.should have_selector("a[href='#{new_zone_template_path}']")
-    rendered.should_not have_selector("select[name*=zone_template_id]")
+    expect(rendered).to have_selector("a[href='#{new_zone_template_path}']")
+    expect(rendered).not_to have_selector("select[name*=zone_template_id]")
   end
 
   it "should have a list of zone templates to select from" do
@@ -23,8 +23,8 @@ describe "domains/new.html.haml" do
 
     render
 
-    rendered.should have_selector("select[name*=zone_template_id]")
-    rendered.should_not have_selector("a[href='#{new_zone_template_path}']")
+    expect(rendered).to have_selector("select[name*=zone_template_id]")
+    expect(rendered).not_to have_selector("a[href='#{new_zone_template_path}']")
   end
 
 end

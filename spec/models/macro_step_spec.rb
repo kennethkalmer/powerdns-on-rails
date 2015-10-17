@@ -4,29 +4,34 @@ describe MacroStep do
   context "when new" do
 
     it "should be invalid by default" do
-      subject.should_not be_valid
+      expect(subject).not_to be_valid
     end
 
     it "should require a macro" do
-      subject.should have(1).error_on(:macro_id)
+      subject.valid?
+      expect( subject.errors[:macro_id].size ).to eq(1)
     end
 
     it "should require an action" do
-      subject.should have(1).error_on(:action)
+      subject.valid?
+      expect( subject.errors[:action].size ).to eq(1)
     end
 
     it "should only accept allowed actions" do
       [ 'create', 'remove', 'update' ].each do |valid_action|
         subject.action = valid_action
-        subject.should have(:no).errors_on(:action)
+        subject.valid?
+        expect( subject.errors[:action].size ).to eq(0)
       end
 
       subject.action = 'foo'
-      subject.should have(1).error_on(:action)
+      subject.valid?
+      expect( subject.errors[:action].size ).to eq(1)
     end
 
     it "should require a record type" do
-      subject.should have(1).error_on(:record_type)
+      subject.valid?
+      expect( subject.errors[:record_type].size ).to eq(1)
     end
 
     it "should only accept valid record types" do
@@ -35,37 +40,45 @@ describe MacroStep do
         next if known_record_type == 'SOA'
 
         subject.record_type = known_record_type
-        subject.should have(:no).errors_on(:record_type)
+        subject.valid?
+        expect( subject.errors[:record_type].size ).to eq(0)
       end
 
       subject.record_type = 'SOA'
-      subject.should have(1).error_on(:record_type)
+      subject.valid?
+      expect( subject.errors[:record_type].size ).to eq(1)
     end
 
     it "should not require a record name" do
-      subject.should have(:no).errors_on(:name)
+      subject.valid?
+      expect( subject.errors[:name].size ).to eq(0)
     end
 
     it "should require content" do
-      subject.should have(1).error_on(:content)
+      subject.valid?
+      expect( subject.errors[:content].size ).to eq(1)
     end
 
     it "should be active by default" do
-      subject.should be_active
+      expect(subject).to be_active
     end
 
     describe "should inherit validations" do
       it "from A records" do
         subject.record_type = 'A'
         subject.content = 'foo'
-        subject.should have(1).error_on(:content)
-        subject.should have(:no).errors_on(:name)
+
+        subject.valid?
+        expect( subject.errors[:content].size ).to eq(1)
+        expect( subject.errors[:name].size ).to eq(0)
       end
 
       it "from MX records" do
         subject.record_type = 'MX'
-        subject.should have(1).error_on(:prio)
-        subject.should have(:no).errors_on(:name)
+        subject.valid?
+
+        expect( subject.errors[:prio].size ).to eq(1)
+        expect( subject.errors[:name].size ).to eq(0)
       end
 
     end
@@ -86,7 +99,7 @@ describe MacroStep do
     end
 
     it "should have a position" do
-      @macro_step.position.should_not be_blank
+      expect(@macro_step.position).not_to be_blank
     end
   end
 
@@ -96,12 +109,14 @@ describe MacroStep do
     end
 
     it "should not require content" do
-      subject.should have(:no).errors_on(:content)
+      subject.valid?
+      expect( subject.errors[:content].size ).to eq(0)
     end
 
     it "should not require prio on MX" do
       subject.record_type = 'MX'
-      subject.should have(:no).errors_on(:prio)
+      subject.valid?
+      expect( subject.errors[:prio].size ).to eq(0)
     end
 
   end
@@ -115,7 +130,7 @@ describe MacroStep do
       }
 
       record = subject.build
-      record.should be_an_instance_of( A )
+      expect(record).to be_an_instance_of( A )
     end
 
   end

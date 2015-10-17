@@ -13,7 +13,7 @@ describe "search/results.html.haml" do
 
     render
 
-    rendered.should have_tag("strong", :content => "No domains found")
+    expect(rendered).to have_tag("strong", :content => "No domains found")
   end
 
   it "should handle results within the pagination limit" do
@@ -21,14 +21,14 @@ describe "search/results.html.haml" do
       zone = Domain.new
       zone.id = i
       zone.name = "zone-#{i}.com"
-      zone.save( :validate => false ).should be_true
+      expect(zone.save( :validate => false )).to be_truthy
     end
 
     assign(:results, Domain.search( 'zone', 1, @admin ))
 
     render 
 
-    rendered.should have_tag("table a", :content => "zone-1.com")
+    expect(rendered).to have_tag("table a", :content => "zone-1.com")
   end
 
   it "should handle results with pagination and scoping" do
@@ -36,14 +36,14 @@ describe "search/results.html.haml" do
       zone = Domain.new
       zone.id = i
       zone.name = "domain-#{i}.com"
-      zone.save( :validate => false ).should be_true
+      expect(zone.save( :validate => false )).to be_truthy
     end
 
     assign(:results, Domain.search( 'domain', 1, @admin ))
 
     render
 
-    rendered.should have_tag("table a", :content => "domain-1.com")
+    expect(rendered).to have_tag("table a", :content => "domain-1.com")
   end
 
 end

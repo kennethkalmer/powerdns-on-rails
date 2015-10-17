@@ -22,14 +22,14 @@ describe RecordsController, ", users, and non-SOA records" do
    { :type => 'SPF', :pending => true }
   ].each do |record|
     it "should create a #{record[:type]} record when valid" do
-      pending "Still need test for #{record[:type]}" if record.delete(:pending)
+      skip "Still need test for #{record[:type]}" if record.delete(:pending)
 
       expect {
         xhr :post, :create, :domain_id => @domain.id, :record => record
       }.to change( @domain.records, :count ).by(1)
 
-      assigns(:domain).should_not be_nil
-      assigns(:record).should_not be_nil
+      expect(assigns(:domain)).not_to be_nil
+      expect(assigns(:record)).not_to be_nil
     end
   end
 
@@ -37,7 +37,7 @@ describe RecordsController, ", users, and non-SOA records" do
     @soa = @domain.soa_record
     serial = @soa.serial
     xhr :post, :create, :domain_id => @domain.id, :record => {:name =>'test', :ttl=>3600, :type=>'A', :content=>'127.0.0.1'}
-    @soa.tap(&:reload).serial.should eql(serial + 1)
+    expect(@soa.tap(&:reload).serial).to eql(serial + 1)
   end
 
   it "shouldn't save when invalid" do
@@ -50,7 +50,7 @@ describe RecordsController, ", users, and non-SOA records" do
 
     xhr :post, :create, :domain_id => @domain.id, :record => params
 
-    response.should render_template( 'records/create' )
+    expect(response).to render_template( 'records/create' )
   end
 
   it "should update when valid" do
@@ -65,7 +65,7 @@ describe RecordsController, ", users, and non-SOA records" do
 
     xhr :put, :update, :id => record.id, :domain_id => @domain.id, :record => params
 
-    response.should render_template("records/update")
+    expect(response).to render_template("records/update")
   end
 
   it "should increment the serial on update" do
@@ -73,7 +73,7 @@ describe RecordsController, ", users, and non-SOA records" do
     @soa = @domain.soa_record
     serial = @soa.serial
     xhr :put, :update, :id => record.id, :domain_id => @domain.id, :record => {:content => '0.0.0.0'}
-    @soa.tap(&:reload).serial.should eql(serial + 1)
+    expect(@soa.tap(&:reload).serial).to eql(serial + 1)
   end
 
   it "shouldn't update when invalid" do
@@ -91,15 +91,15 @@ describe RecordsController, ", users, and non-SOA records" do
       record.reload
     }.to_not change( record, :content )
 
-    response.should_not be_redirect
-    response.should render_template( "records/update" )
+    expect(response).not_to be_redirect
+    expect(response).to render_template( "records/update" )
   end
 
   it "should destroy when requested to do so" do
     delete :destroy, :domain_id => @domain.id, :id => FactoryGirl.create(:mx, :domain => @domain).id
 
-    response.should be_redirect
-    response.should redirect_to( domain_path( @domain ) )
+    expect(response).to be_redirect
+    expect(response).to redirect_to( domain_path( @domain ) )
   end
 
   it "should increment the serial on delete" do
@@ -107,7 +107,7 @@ describe RecordsController, ", users, and non-SOA records" do
     @soa = @domain.soa_record
     serial = @soa.serial
     delete :destroy, :domain_id => @domain.id, :id => record.id
-    @soa.tap(&:reload).serial.should eql(serial + 1)
+    expect(@soa.tap(&:reload).serial).to eql(serial + 1)
   end
 
 end
@@ -125,7 +125,7 @@ describe RecordsController, ", users, and SOA records" do
       }
 
     target_soa.reload
-    target_soa.contact.should eql('dnsadmin@example.com')
+    expect(target_soa.contact).to eql('dnsadmin@example.com')
   end
 end
 
@@ -168,8 +168,8 @@ describe RecordsController, "and tokens" do
       xhr :post, :create, :domain_id => @domain.id, :record => params
     }.to_not change( @domain.records, :size )
 
-    response.should_not be_success
-    response.code.should == "403"
+    expect(response).not_to be_success
+    expect(response.code).to eq("403")
   end
 
   xit "should not allow updating NS records" do
@@ -189,8 +189,8 @@ describe RecordsController, "and tokens" do
       record.reload
     }.to_not change( record, :content )
 
-    response.should_not be_success
-    response.code.should == "403"
+    expect(response).not_to be_success
+    expect(response.code).to eq("403")
   end
 
   xit "should create when allowed" do
@@ -208,14 +208,14 @@ describe RecordsController, "and tokens" do
       xhr :post, :create, :domain_id => @domain.id, :record => params
     }.to change( @domain.records, :size )
 
-    response.should be_success
+    expect(response).to be_success
 
-    assigns(:domain).should_not be_nil
-    assigns(:record).should_not be_nil
+    expect(assigns(:domain)).not_to be_nil
+    expect(assigns(:record)).not_to be_nil
 
     # Ensure the token han been updated
-    @token.can_change?( 'test', 'A' ).should be_true
-    @token.can_remove?( 'test', 'A' ).should be_true
+    expect(@token.can_change?( 'test', 'A' )).to be_truthy
+    expect(@token.can_remove?( 'test', 'A' )).to be_truthy
   end
 
   xit "should not create if not allowed" do
@@ -232,8 +232,8 @@ describe RecordsController, "and tokens" do
       xhr :post, :create, :domain_id => @domain.id, :record => params
     }.to_not change( @domain.records, :size )
 
-    response.should_not be_success
-    response.code.should == "403"
+    expect(response).not_to be_success
+    expect(response.code).to eq("403")
   end
 
   xit "should update when allowed" do
@@ -253,8 +253,8 @@ describe RecordsController, "and tokens" do
       record.reload
     }.to change( record, :content )
 
-    response.should be_success
-    response.should render_template("update")
+    expect(response).to be_success
+    expect(response).to render_template("update")
   end
 
   xit "should not update if not allowed" do
@@ -273,8 +273,8 @@ describe RecordsController, "and tokens" do
       record.reload
     }.to_not change( record, :content )
 
-    response.should_not be_success
-    response.code.should == "403"
+    expect(response).not_to be_success
+    expect(response.code).to eq("403")
   end
 
   xit "should destroy when allowed" do
@@ -287,8 +287,8 @@ describe RecordsController, "and tokens" do
       delete :destroy, :domain_id => @domain.id, :id => record.id
     }.to change( @domain.records, :size ).by(-1)
 
-    response.should be_redirect
-    response.should redirect_to( domain_path( @domain ) )
+    expect(response).to be_redirect
+    expect(response).to redirect_to( domain_path( @domain ) )
   end
 
   xit "should not destroy records if not allowed" do
@@ -299,8 +299,8 @@ describe RecordsController, "and tokens" do
       delete :destroy, :domain_id => @domain.id, :id => record.id
     }.to_not change( @domain.records, :count )
 
-    response.should_not be_success
-    response.code.should == "403"
+    expect(response).not_to be_success
+    expect(response.code).to eq("403")
   end
 
   xit "should not allow tampering with other domains" do
@@ -315,6 +315,6 @@ describe RecordsController, "and tokens" do
 
     xhr :post, :create, :domain_id => FactoryGirl.create(:domain, :name => 'example.net').id, :record => record
 
-    response.code.should == "403"
+    expect(response.code).to eq("403")
   end
 end

@@ -11,7 +11,7 @@ describe DashboardController, "and admins" do
   end
 
   it "should have a list of the latest zones" do
-    assigns(:latest_domains).should_not be_empty
+    expect(assigns(:latest_domains)).not_to be_empty
   end
 
 end

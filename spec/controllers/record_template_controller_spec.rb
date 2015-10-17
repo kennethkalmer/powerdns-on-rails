@@ -27,7 +27,7 @@ describe RecordTemplatesController, "when updating SOA records" do
     }
 
     target_soa.reload
-    target_soa.primary_ns.should eql('ns1.provider.net')
+    expect(target_soa.primary_ns).to eql('ns1.provider.net')
   end
 
 end

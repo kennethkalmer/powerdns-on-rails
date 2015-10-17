@@ -37,10 +37,18 @@ class RecordsController < InheritedResources::Base
     return false
   end
 
+  def record_params
+    params.require(:record).permit(:name, :ttl, :type, :content, :prio)
+  end
+
+  def soa_params
+    params.require(:soa).permit(:primary_ns, :contact, :refresh, :retry, :minimum, :expire)
+  end
+
   public
 
   def create
-    @record = parent.send( "#{params[:record][:type].downcase}_records".to_sym ).new( params[:record] )
+    @record = parent.send( "#{record_params[:type].downcase}_records".to_sym ).new( record_params )
 
     if current_token && !current_token.allow_new_records? &&
         !current_token.can_add?( @record )
@@ -83,7 +91,7 @@ class RecordsController < InheritedResources::Base
   # Non-CRUD methods
   def update_soa
     @domain = parent
-    @domain.soa_record.update_attributes( params[:soa] )
+    @domain.soa_record.update_attributes( soa_params )
   end
 
 end

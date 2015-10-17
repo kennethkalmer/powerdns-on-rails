@@ -9,14 +9,14 @@ describe AuditsController do
   it "should have a search form" do
     get :index
 
-    response.should render_template('audits/index')
+    expect(response).to render_template('audits/index')
   end
 
   it "should have a domain details page" do
     get :domain, :id => FactoryGirl.create(:domain).id
 
-    assigns(:domain).should_not be_nil
+    expect(assigns(:domain)).not_to be_nil
 
-    response.should render_template('audits/domain')
+    expect(response).to render_template('audits/domain')
   end
 end

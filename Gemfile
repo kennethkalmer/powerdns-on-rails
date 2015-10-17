@@ -1,4 +1,4 @@
-source 'http://rubygems.org'
+source 'https://rubygems.org'
 
 gem 'rails', '~> 3.2.21'
 
@@ -9,16 +9,18 @@ group :assets do
 end
 
 platforms :ruby do
-  gem 'mysql2', '~> 0.3.11'
-  gem 'pg', '>= 0.9.0'
-  gem 'sqlite3'
+  gem 'mysql2', '~> 0.3.17'
+  gem 'pg', '~> 0.18.1'
+  gem 'sqlite3', '~> 1.3.10'
   gem 'therubyracer'
 end
+
+gem 'strong_parameters'
 
 gem 'haml-rails'
 gem 'jquery-rails'
 gem 'will_paginate', '~> 3.0.4'
-gem "audited-activerecord", "~> 3.0.0.rc2"
+gem "audited-activerecord", "~> 3.0.0"
 gem 'inherited_resources'
 gem 'devise', '~> 2.2.8'
 gem "devise-encryptable"
@@ -29,12 +31,13 @@ gem 'acts_as_list'
 gem 'dynamic_form'
 
 group :development do
-  gem 'debugger', :platform => :mri_19
-  #gem 'RedCloth', '>= 4.1.1'
+  gem 'guard-rspec', :require => false
+  gem 'guard-cucumber', :require => false
 end
 
 group :development, :test do
-  gem "rspec-rails"
+  gem "test-unit"
+  gem "rspec-rails", "~> 3.1.0"
   gem 'RedCloth', '>= 4.1.1'
 end
 

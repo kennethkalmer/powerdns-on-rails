@@ -1,8 +1,8 @@
 class RecordTemplatesController < ApplicationController
 
   def create
-    @record_template = RecordTemplate.new(params[:record_template])
     @zone_template = ZoneTemplate.find(params[:zone_template][:id])
+    @record_template = RecordTemplate.new( record_template_params )
     @record_template.zone_template = @zone_template
     @record_template.save
 
@@ -14,7 +14,7 @@ class RecordTemplatesController < ApplicationController
   def update
     @record_template = RecordTemplate.find(params[:id])
 
-    @record_template.update_attributes(params[:record_template])
+    @record_template.update_attributes( record_template_params )
 
     respond_to do |format|
       format.js
@@ -28,6 +28,12 @@ class RecordTemplatesController < ApplicationController
 
     flash[:info] = t(:message_record_template_removed)
     redirect_to zone_template_path( zt )
+  end
+
+  private
+
+  def record_template_params
+    params.require(:record_template).permit(:retry, :primary_ns, :contact, :refresh, :minimum, :expire, :record_type)
   end
 
 end

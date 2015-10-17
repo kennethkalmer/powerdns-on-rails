@@ -6,7 +6,7 @@ describe UsersController do
     it "should require a login" do
       get 'index'
 
-      response.should redirect_to( new_user_session_path )
+      expect(response).to redirect_to( new_user_session_path )
     end
   end
 
@@ -19,22 +19,22 @@ describe UsersController do
     it "should show a list of current users" do
       get 'index'
 
-      response.should render_template( 'users/index')
-      assigns(:users).should_not be_empty
+      expect(response).to render_template( 'users/index')
+      expect(assigns(:users)).not_to be_empty
     end
 
     it 'should load a users details' do
       get 'show', :id => @admin.id
 
-      response.should render_template( 'users/show' )
-      assigns(:user).should_not be_nil
+      expect(response).to render_template( 'users/show' )
+      expect(assigns(:user)).not_to be_nil
     end
 
     it 'should have a form for creating a new user' do
       get 'new'
 
-      response.should render_template( 'users/new' )
-      assigns(:user).should_not be_nil
+      expect(response).to render_template( 'users/new' )
+      expect(assigns(:user)).not_to be_nil
     end
 
     it "should create a new administrator" do
@@ -46,10 +46,10 @@ describe UsersController do
           :admin => 'true'
         }
 
-      assigns(:user).should be_an_admin
+      expect(assigns(:user)).to be_an_admin
 
-      response.should be_redirect
-      response.should redirect_to( user_path( assigns(:user) ) )
+      expect(response).to be_redirect
+      expect(response).to redirect_to( user_path( assigns(:user) ) )
     end
 
     it 'should create a new administrator with token privs' do
@@ -62,11 +62,11 @@ describe UsersController do
           :auth_tokens => '1'
         }
 
-      assigns(:user).admin?.should be_true
-      assigns(:user).auth_tokens?.should be_true
+      expect(assigns(:user).admin?).to be_truthy
+      expect(assigns(:user).auth_tokens?).to be_truthy
 
-      response.should be_redirect
-      response.should redirect_to( user_path( assigns(:user) ) )
+      expect(response).to be_redirect
+      expect(response).to redirect_to( user_path( assigns(:user) ) )
     end
 
     it "should create a new owner" do
@@ -77,10 +77,10 @@ describe UsersController do
           :password_confirmation => 'secret',
         }
 
-      assigns(:user).should_not be_an_admin
+      expect(assigns(:user)).not_to be_an_admin
 
-      response.should be_redirect
-      response.should redirect_to( user_path( assigns(:user) ) )
+      expect(response).to be_redirect
+      expect(response).to redirect_to( user_path( assigns(:user) ) )
     end
 
     it 'should create a new owner ignoring token privs' do
@@ -92,35 +92,35 @@ describe UsersController do
           :auth_tokens => '1'
         }
 
-      assigns(:user).should_not be_an_admin
-      assigns(:user).auth_tokens?.should be_false
+      expect(assigns(:user)).not_to be_an_admin
+      expect(assigns(:user).auth_tokens?).to be_falsey
 
-      response.should be_redirect
-      response.should redirect_to( user_path( assigns(:user) ) )
+      expect(response).to be_redirect
+      expect(response).to redirect_to( user_path( assigns(:user) ) )
     end
 
     it 'should update a user without password changes' do
       user = FactoryGirl.create(:quentin)
 
-      lambda {
+      expect {
         post :update, :id => user.id, :user => {
             :email => 'new@example.com',
             :password => '',
             :password_confirmation => ''
           }
         user.reload
-      }.should change( user, :email )
+      }.to change( user, :email )
 
-      response.should be_redirect
-      response.should redirect_to( user_path( user ) )
+      expect(response).to be_redirect
+      expect(response).to redirect_to( user_path( user ) )
     end
 
     it 'should be able to suspend users' do
       @user = FactoryGirl.create(:quentin)
       put 'suspend', :id => @user.id
 
-      response.should be_redirect
-      response.should redirect_to( users_path )
+      expect(response).to be_redirect
+      expect(response).to redirect_to( users_path )
     end
   end
 end

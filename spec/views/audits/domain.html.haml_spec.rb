@@ -13,7 +13,7 @@ describe "audits/domain.html.haml" do
 
       render
 
-      rendered.should have_tag("em", :content => "No revisions found for the domain")
+      expect(rendered).to have_tag("em", :content => "No revisions found for the domain")
     end
 
     it "should handle audit entries on the domain" do
@@ -30,7 +30,7 @@ describe "audits/domain.html.haml" do
       assign(:domain, @domain)
       render
 
-      rendered.should have_tag("ul > li > a", :content => "1 create by")
+      expect(rendered).to have_tag("ul > li > a", :content => "1 create by")
     end
 
   end
@@ -49,7 +49,7 @@ describe "audits/domain.html.haml" do
 
       render
 
-      rendered.should have_tag("em", :content => "No revisions found for any resource records of the domain")
+      expect(rendered).to have_tag("em", :content => "No revisions found for any resource records of the domain")
     end
 
     it "should handle audit entries" do
@@ -57,7 +57,7 @@ describe "audits/domain.html.haml" do
 
       render
 
-      rendered.should have_tag("ul > li > a", :content => "1 create by admin")
+      expect(rendered).to have_tag("ul > li > a", :content => "1 create by admin")
     end
 
   end

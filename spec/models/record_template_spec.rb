@@ -4,7 +4,7 @@ describe RecordTemplate do
   context "when new" do
 
     it "should be invalid by default" do
-      subject.should_not be_valid
+      expect(subject).not_to be_valid
     end
 
   end
@@ -16,76 +16,90 @@ describe RecordTemplate do
 
     it "validations from A" do
       subject.record_type = 'A'
-      subject.should_not be_valid
+      expect(subject).not_to be_valid
 
       subject.content = '256.256.256.256'
-      subject.should have(1).error_on(:content)
+      subject.valid?
+      expect( subject.errors[:content].size ).to eq(1)
 
       subject.content = 'google.com'
-      subject.should have(1).error_on(:content)
+      subject.valid?
+      expect( subject.errors[:content].size ).to eq(1)
 
       subject.content = '10.0.0.9'
-      subject.should have(:no).error_on(:content)
+      subject.valid?
+      expect( subject.errors[:content].size ).to eq(0)
     end
 
     it "validations from CNAME" do
       subject.record_type = 'NS'
-      subject.should_not be_valid
+      expect(subject).not_to be_valid
 
-      subject.should have(2).error_on(:content)
+      subject.valid?
+      expect( subject.errors[:content].size ).to eq(2)
     end
 
     it "validations from MX" do
       subject.record_type = 'MX'
-      subject.should_not be_valid
+      expect(subject).not_to be_valid
 
-      subject.should have(1).error_on(:prio)
-      subject.should have(2).error_on(:content)
+      subject.valid?
+      expect( subject.errors[:prio].size ).to eq(1)
+      expect( subject.errors[:content].size ).to eq(2)
 
       subject.prio = -10
-      subject.should have(1).error_on(:prio)
+      subject.valid?
+      expect( subject.errors[:prio].size ).to eq(1)
 
       # FIXME: Why is priority 0 at this stage?
       #subject.prio = 'low'
       #subject.should have(1).error_on(:prio)
 
       subject.prio = 10
-      subject.should have(:no).errors_on(:prio)
+      subject.valid?
+      expect( subject.errors[:prio].size ).to eq(0)
     end
 
     it "validations from NS" do
       subject.record_type = 'NS'
-      subject.should_not be_valid
+      expect(subject).not_to be_valid
 
-      subject.should have(2).error_on(:content)
+      subject.valid?
+      expect( subject.errors[:content].size ).to eq(2)
     end
 
     it "validations from TXT" do
       subject.record_type = 'TXT'
-      subject.should_not be_valid
+      expect(subject).not_to be_valid
 
-      subject.should have(1).error_on(:content)
+      subject.valid?
+      expect( subject.errors[:content].size ).to eq(1)
     end
 
     it "validations from SOA" do
       subject.record_type = 'SOA'
-      subject.should_not be_valid
+      expect(subject).not_to be_valid
 
-      subject.should have(1).error_on(:primary_ns)
+      subject.valid?
+      expect( subject.errors[:primary_ns].size ).to eq(1)
     end
 
     it "validates contact address in SOA" do
       subject.record_type = 'SOA'
-      subject.should have(1).error_on(:contact)
+      subject.valid?
+      expect( subject.errors[:contact].size ).to eq(1)
 
       subject.contact = 'admin@example.com'
-      subject.should have(:no).errors_on(:contact)
+      subject.valid?
+      expect( subject.errors[:contact].size ).to eq(0)
 
       subject.contact = 'admin@%ZONE%'
-      subject.should have(:no).errors_on(:contact)
+      subject.valid?
+      expect( subject.errors[:contact].size ).to eq(0)
 
       subject.contact = 'admin'
-      subject.should have(1).error_on(:contact)
+      subject.valid?
+      expect( subject.errors[:contact].size ).to eq(1)
     end
 
     it "convenience methods from SOA" do
@@ -98,9 +112,9 @@ describe RecordTemplate do
       subject.expire = 604800
       subject.minimum = 10800
 
-      subject.content.should eql('ns1.%ZONE% admin@%ZONE% 0 7200 1800 604800 10800')
-      subject.should be_valid
-      subject.save.should be_true
+      expect(subject.content).to eql('ns1.%ZONE% admin@%ZONE% 0 7200 1800 604800 10800')
+      expect(subject).to be_valid
+      expect(subject.save).to be_truthy
     end
   end
 
@@ -114,28 +128,28 @@ describe RecordTemplate do
       template = FactoryGirl.create(:template_soa, :zone_template => @zone_template)
       record = template.build( 'example.org' )
 
-      record.should_not be_nil
-      record.should be_a_kind_of( SOA )
-      record.primary_ns.should == 'ns1.example.org'
-      record.contact.should == 'admin@example.org'
+      expect(record).not_to be_nil
+      expect(record).to be_a_kind_of( SOA )
+      expect(record.primary_ns).to eq('ns1.example.org')
+      expect(record.contact).to eq('admin@example.org')
     end
 
     it "an NS should replace the %ZONE% token with the provided domain name" do
       template = FactoryGirl.create(:template_ns, :zone_template => @zone_template)
       record = template.build( 'example.org' )
 
-      record.should_not be_nil
-      record.should be_a_kind_of( NS )
-      record.content.should eql('ns1.example.org')
+      expect(record).not_to be_nil
+      expect(record).to be_a_kind_of( NS )
+      expect(record.content).to eql('ns1.example.org')
     end
 
     it "a MX should replace the %ZONE% token with provided domain name" do
       template = FactoryGirl.create(:template_mx, :zone_template => @zone_template)
       record = template.build( 'example.org' )
 
-      record.should_not be_nil
-      record.should be_a_kind_of( MX )
-      record.content.should eql('mail.example.org')
+      expect(record).not_to be_nil
+      expect(record).to be_a_kind_of( MX )
+      expect(record.content).to eql('mail.example.org')
     end
   end
 
@@ -148,9 +162,9 @@ describe RecordTemplate do
       record_template = RecordTemplate.new( :zone_template => @zone_template )
       record_template.record_type = 'A'
       record_template.content = '10.0.0.1'
-      record_template.save.should be_true
+      expect(record_template.save).to be_truthy
 
-      record_template.ttl.should be(@zone_template.ttl)
+      expect(record_template.ttl).to be(@zone_template.ttl)
     end
 
     it "should prefer own TTL over that of the ZoneTemplate" do
@@ -158,9 +172,9 @@ describe RecordTemplate do
       record_template.record_type = 'A'
       record_template.content = '10.0.0.1'
       record_template.ttl = 43200
-      record_template.save.should be_true
+      expect(record_template.save).to be_truthy
 
-      record_template.ttl.should be(43200)
+      expect(record_template.ttl).to be(43200)
     end
   end
 
@@ -168,8 +182,8 @@ describe RecordTemplate do
     it "should have SOA convenience, if an SOA template" do
       zone_template = FactoryGirl.create(:zone_template)
       record_template = FactoryGirl.create(:template_soa, :zone_template => zone_template)
-      record_template.primary_ns.should eql('ns1.%ZONE%')
-      record_template.retry.should be(7200)
+      expect(record_template.primary_ns).to eql('ns1.%ZONE%')
+      expect(record_template.retry).to be(7200)
     end
   end
 
@@ -182,7 +196,7 @@ describe RecordTemplate do
       record_template.save
       record_template.reload
 
-      record_template.primary_ns.should eql('ns1.provider.net')
+      expect(record_template.primary_ns).to eql('ns1.provider.net')
     end
   end
 end

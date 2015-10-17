@@ -17,14 +17,14 @@ end
 
 Given /^the macro "([^\"]*)" an? "([^\"]*)" record for "([^\"]*)" with "([^\"]*)"$/ do |action, type, name, content|
   # clean up the action by singularizing the components
-  action.gsub!(/s$/,'').gsub!('s_', '_')
+  action = action.gsub(/s$/,'').gsub('s_', '_')
 
   MacroStep.create!(:macro => @macro, :action => action, :record_type => type, :name => name, :content => content)
 end
 
 Given /^the macro "([^\"]*)" an "([^\"]*)" record for "([^\"]*)"$/ do |action, type, name|
   # clean up the action by singularizing the components
-  action.gsub!(/s$/,'').gsub!(/s_/, '')
+  action = action.gsub(/s$/,'').gsub('s_', '_')
 
   MacroStep.create!(:macro => @macro, :action => action, :record_type => type, :name => name)
 end
@@ -43,27 +43,35 @@ end
 Then /^the domain should have an? "([^\"]*)" record for "([^\"]*)" with "([^\"]*)"$/ do |type, name, content|
   records = @domain.send("#{type.downcase}_records", true)
 
-  records.should_not be_empty
+  expect( records ).to_not be_empty
 
-  records.detect { |r| r.name =~ /^#{name}\./ && r.content == content }.should_not be_nil
+  expect(
+    records.detect { |r| r.name =~ /^#{name}\./ && r.content == content }
+  ).to be_present
 end
 
 Then /^the domain should have an? "([^\"]*)" record with priority "([^\"]*)"$/ do |type, prio|
   records = @domain.send("#{type.downcase}_records", true)
 
-  records.should_not be_empty
+  expect( records ).to_not be_empty
 
-  records.detect { |r| r.prio == prio.to_i }.should_not be_nil
+  expect(
+    records.detect { |r| r.prio == prio.to_i }
+  ).to be_present
 end
 
 Then /^the domain should not have an? "([^\"]*)" record for "([^\"]*)" with "([^\"]*)"$/ do |type, name, content|
   records = @domain.send("#{type.downcase}_records", true)
 
-  records.detect { |r| r.name =~ /^#{name}\./ && r.content == content }.should be_nil
+  expect(
+    records.detect { |r| r.name =~ /^#{name}\./ && r.content == content }
+  ).to be_nil
 end
 
 Then /^the domain should not have an "([^\"]*)" record for "([^\"]*)"$/ do |type, name|
   records = @domain.send("#{type.downcase}_records", true)
 
-  records.detect { |r| r.name =~ /^#{name}\./ }.should be_nil
+  expect(
+    records.detect { |r| r.name =~ /^#{name}\./ }
+  ).to be_nil
 end

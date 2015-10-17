@@ -8,7 +8,6 @@ rvm:
   - 2.0
   - rbx-19mode
   - 1.9.3
-  - 1.9.2
 
 env:
   - DB=sqlite
@@ -23,13 +22,17 @@ before_script:
   - bundle exec rake db:migrate
   - bundle exec rake db:seed
 
-script: "bundle exec rake spec"
+script: "bundle exec rake ci"
 
 matrix:
   allow_failures:
-    - rvm: 2.2
     - rvm: jruby-19mode
     - rvm: rbx-19mode
     - env: DB=sqlite
 
 sudo: false
+
+notifications:
+  webhooks:
+    urls:
+      -  https://webhooks.gitter.im/e/fd712cc811935fc71415
