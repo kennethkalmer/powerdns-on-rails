@@ -27,6 +27,9 @@ cd /vagrant
 bundle install
 
 # Database setup
+if [[ -f config/database.yml ]]; then
+  rm config/database.yml
+fi
 if [[ ! -f config/database.yml ]]; then
   cp config/database.yml.template config/database.yml
 fi

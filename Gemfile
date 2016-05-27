@@ -12,8 +12,8 @@ end
 
 platforms :ruby do
   gem 'mysql2', '~> 0.3.11'
-  # gem 'pg', '>= 0.9.0'
-  # gem 'sqlite3'
+  gem 'pg', '>= 0.9.0'
+  gem 'sqlite3'
 end
 
 gem 'haml-rails'
