@@ -26,11 +26,11 @@ _Instructions for running a demo version with Vagrant is provided further down._
     $ git clone git://github.com/kennethkalmer/powerdns-on-rails.git
     $ cd powerdns-on-rails
     $ bundle install
-    $ cp config/database.yml.template config/database.yml
 
-Review config/database.yml and modify as needed. By default it will use the MySQL connection settings.
+Review env.bak and modify as needed. By default it will use the MySQL connection settings.
 
-    $ bundle exec rake generate_secret_token db:setup
+    $ cp env.bak .env
+    $ bundle exec rake db:setup
     $ bundle exec rails s
 
 Point your browser to http://localhost:3000, and login with 'admin@example.com' and 'secret'.

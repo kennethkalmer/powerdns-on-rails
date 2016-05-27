@@ -1,6 +1,8 @@
-source 'http://rubygems.org'
+source 'https://rubygems.org'
 
-gem 'rails', '~> 3.2.21'
+# dotenv-rails >= 2.0 now only supports Rails 4
+gem "dotenv", '1.0.2', :require => false
+gem 'rails', '~> 3.2.22'
 
 group :assets do
   gem 'sass-rails'
@@ -10,9 +12,8 @@ end
 
 platforms :ruby do
   gem 'mysql2', '~> 0.3.11'
-  gem 'pg', '>= 0.9.0'
-  gem 'sqlite3'
-  gem 'therubyracer'
+  # gem 'pg', '>= 0.9.0'
+  # gem 'sqlite3'
 end
 
 gem 'haml-rails'
@@ -34,6 +35,7 @@ group :development do
 end
 
 group :development, :test do
+  gem 'therubyracer'
   gem "rspec-rails"
   gem 'RedCloth', '>= 4.1.1'
 end
