@@ -16,8 +16,9 @@ env:
   - DB=postgresql
 
 before_script:
+  - rm config/database.yml
   - mv config/database.yml.template config/database.yml
-  - rake generate_secret_token
+  - cp env.test .env
   - mysql -e 'create database powerdns_test;'
   - psql -c 'create database powerdns_test;' -U postgres
   - bundle exec rake db:migrate
