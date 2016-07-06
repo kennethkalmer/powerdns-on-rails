@@ -3,7 +3,7 @@
 Devise.setup do |config|
   # ==> Mailer Configuration
   # Configure the e-mail address which will be shown in DeviseMailer.
-  config.mailer_sender = "please-change-me@config-initializers-devise.com"
+  config.mailer_sender = ENV['SMTP_SENDER']
 
   # Configure the class responsible to send e-mails.
   # config.mailer = "Devise::Mailer"
@@ -37,7 +37,7 @@ Devise.setup do |config|
   # ==> Configuration for :database_authenticatable
   # For bcrypt, this is the cost for hashing the password and defaults to 10. If
   # using other encryptors, it sets how many times you want the password re-encrypted.
-  config.stretches = 1
+  config.stretches = (ENV['REST_AUTH_DIGEST_STRETCHES'] || 10).to_i
 
   # Define which will be the encryption algorithm. Devise also supports encryptors
   # from others authentication tools as :clearance_sha1, :authlogic_sha512 (then
@@ -46,7 +46,7 @@ Devise.setup do |config|
   config.encryptor = :restful_authentication_sha1
 
   # Setup a pepper to generate the encrypted password.
-  config.pepper = "" #"f0c822c4f45b7677c1e78715f022f4a7a83a0fa8620230b8aa92493c83c8d0c83c3075499863e05be7d5730ad0106540d3985b252ab46aa59ffc7960c64f167a"
+  config.pepper = ENV['REST_AUTH_SITE_KEY']
 
   # ==> Configuration for :confirmable
   # The time you want to give your user to confirm his account. During this time
@@ -68,8 +68,8 @@ Devise.setup do |config|
   # config.extend_remember_period = false
 
   # ==> Configuration for :validatable
-  # Range for password length
-  # config.password_length = 6..20
+  # Range for password length to access our crown jewels
+  config.password_length = 12..200
 
   # Regex to use to validate the email address
   # config.email_regexp = /\A([\w\.%\+\-]+)@([\w\-]+\.)+([\w]{2,})\z/i
@@ -94,10 +94,10 @@ Devise.setup do |config|
 
   # Number of authentication tries before locking an account if lock_strategy
   # is failed attempts.
-  # config.maximum_attempts = 20
+  config.maximum_attempts = 5
 
   # Time interval to unlock the account if :time is enabled as unlock_strategy.
-  # config.unlock_in = 1.hour
+  config.unlock_in = 1.hour
 
   # ==> Configuration for :token_authenticatable
   # Defines name of the authentication token params key
