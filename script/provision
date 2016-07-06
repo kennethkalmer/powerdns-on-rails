@@ -33,9 +33,9 @@ fi
 if [[ ! -f config/database.yml ]]; then
   cp config/database.yml.template config/database.yml
 fi
-
-# Tokens
-rake generate_secret_token
+if [[ ! -f .env ]]; then
+  cp env.test .env
+fi
 
 # Bootstrap
 DB=sqlite rake db:setup
