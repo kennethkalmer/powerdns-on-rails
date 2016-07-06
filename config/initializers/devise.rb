@@ -37,7 +37,7 @@ Devise.setup do |config|
   # ==> Configuration for :database_authenticatable
   # For bcrypt, this is the cost for hashing the password and defaults to 10. If
   # using other encryptors, it sets how many times you want the password re-encrypted.
-  config.stretches = ENV['REST_AUTH_DIGEST_STRETCHES']
+  config.stretches = (ENV['REST_AUTH_DIGEST_STRETCHES'] || 10).to_i
 
   # Define which will be the encryption algorithm. Devise also supports encryptors
   # from others authentication tools as :clearance_sha1, :authlogic_sha512 (then
