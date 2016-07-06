@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130429134229) do
+ActiveRecord::Schema.define(:version => 20160706131040) do
 
   create_table "audits", :force => true do |t|
     t.integer  "auditable_id"
@@ -38,12 +38,48 @@ ActiveRecord::Schema.define(:version => 20130429134229) do
   create_table "auth_tokens", :force => true do |t|
     t.integer  "domain_id"
     t.integer  "user_id"
-    t.string   "token",       :null => false
-    t.text     "permissions", :null => false
-    t.datetime "created_at",  :null => false
-    t.datetime "updated_at",  :null => false
-    t.datetime "expires_at",  :null => false
+    t.string   "token",       :default => "", :null => false
+    t.text     "permissions",                 :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.datetime "expires_at",                  :null => false
   end
+
+  create_table "comments", :force => true do |t|
+    t.integer  "domain_id"
+    t.string   "name"
+    t.string   "type"
+    t.integer  "modified_at"
+    t.string   "account"
+    t.text     "comment",     :limit => 16777215
+    t.datetime "created_at",                      :null => false
+    t.datetime "updated_at",                      :null => false
+  end
+
+  add_index "comments", ["domain_id", "modified_at"], :name => "index_comments_on_domain_id_and_modified_at"
+  add_index "comments", ["domain_id"], :name => "index_comments_on_domain_id"
+  add_index "comments", ["name", "type"], :name => "index_comments_on_name_and_type"
+
+  create_table "cryptokeys", :force => true do |t|
+    t.integer  "domain_id"
+    t.integer  "flags"
+    t.boolean  "active"
+    t.text     "content"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
+  add_index "cryptokeys", ["domain_id"], :name => "index_cryptokeys_on_domain_id"
+
+  create_table "domainmetadata", :force => true do |t|
+    t.integer  "domain_id"
+    t.string   "kind"
+    t.text     "content"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
+  add_index "domainmetadata", ["domain_id"], :name => "index_domainmetadata_on_domain_id"
 
   create_table "domains", :force => true do |t|
     t.string   "name"
@@ -53,8 +89,8 @@ ActiveRecord::Schema.define(:version => 20130429134229) do
     t.integer  "notified_serial"
     t.string   "account"
     t.integer  "ttl",             :default => 86400
-    t.datetime "created_at",                            :null => false
-    t.datetime "updated_at",                            :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.integer  "user_id"
     t.text     "notes"
   end
@@ -72,8 +108,8 @@ ActiveRecord::Schema.define(:version => 20130429134229) do
     t.integer  "position",                      :null => false
     t.boolean  "active",      :default => true
     t.string   "note"
-    t.datetime "created_at",                    :null => false
-    t.datetime "updated_at",                    :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "macros", :force => true do |t|
@@ -81,47 +117,68 @@ ActiveRecord::Schema.define(:version => 20130429134229) do
     t.string   "description"
     t.integer  "user_id"
     t.boolean  "active",      :default => false
-    t.datetime "created_at",                     :null => false
-    t.datetime "updated_at",                     :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "record_templates", :force => true do |t|
     t.integer  "zone_template_id"
     t.string   "name"
-    t.string   "record_type",      :null => false
-    t.string   "content",          :null => false
-    t.integer  "ttl",              :null => false
+    t.string   "record_type",      :default => "", :null => false
+    t.string   "content",          :default => "", :null => false
+    t.integer  "ttl",                              :null => false
     t.integer  "prio"
-    t.datetime "created_at",       :null => false
-    t.datetime "updated_at",       :null => false
-  end
-
-  create_table "records", :force => true do |t|
-    t.integer  "domain_id",   :null => false
-    t.string   "name",        :null => false
-    t.string   "type",        :null => false
-    t.string   "content",     :null => false
-    t.integer  "ttl",         :null => false
-    t.integer  "prio"
-    t.integer  "change_date", :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
+  create_table "records", :force => true do |t|
+    t.integer  "domain_id",                      :null => false
+    t.string   "name",        :default => "",    :null => false
+    t.string   "type",        :default => "",    :null => false
+    t.string   "content",     :default => "",    :null => false
+    t.integer  "ttl",                            :null => false
+    t.integer  "prio"
+    t.integer  "change_date",                    :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "user_id"
+    t.boolean  "disabled",    :default => false
+    t.boolean  "auth",        :default => true
+    t.boolean  "ordername",   :default => true
+  end
+
+  add_index "records", ["domain_id", "ordername"], :name => "index_records_on_domain_id_and_ordername"
   add_index "records", ["domain_id"], :name => "index_records_on_domain_id"
   add_index "records", ["name", "type"], :name => "index_records_on_name_and_type"
   add_index "records", ["name"], :name => "index_records_on_name"
+
+  create_table "supermasters", :force => true do |t|
+    t.string "ip",         :limit => 25
+    t.string "nameserver"
+    t.string "account",    :limit => 40
+  end
+
+  create_table "tsigkeys", :force => true do |t|
+    t.string   "name"
+    t.string   "algorithm"
+    t.string   "secret"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
+  add_index "tsigkeys", ["name", "algorithm"], :name => "index_tsigkeys_on_name_and_algorithm", :unique => true
 
   create_table "users", :force => true do |t|
     t.string   "login"
     t.string   "email"
     t.string   "encrypted_password",        :limit => 128, :default => "",        :null => false
-    t.string   "password_salt",             :limit => 40,  :default => "",        :null => false
+    t.string   "password_salt",                            :default => "",        :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "remember_token"
     t.datetime "remember_token_expires_at"
-    t.string   "confirmation_token",        :limit => 40
+    t.string   "confirmation_token"
     t.datetime "confirmed_at"
     t.string   "state",                                    :default => "passive"
     t.datetime "deleted_at"
@@ -136,8 +193,8 @@ ActiveRecord::Schema.define(:version => 20130429134229) do
   create_table "zone_templates", :force => true do |t|
     t.string   "name"
     t.integer  "ttl",        :default => 86400
-    t.datetime "created_at",                    :null => false
-    t.datetime "updated_at",                    :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.integer  "user_id"
     t.string   "type",       :default => "NATIVE"
     t.string   "master"
